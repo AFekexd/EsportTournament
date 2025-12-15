@@ -1,0 +1,221 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum Role {
+  ADMIN
+  ORGANIZER
+  MODERATOR
+  STUDENT
+}
+
+enum TeamRole {
+  CAPTAIN
+  MEMBER
+}
+
+enum TournamentFormat {
+  SINGLE_ELIMINATION
+  DOUBLE_ELIMINATION
+  ROUND_ROBIN
+  SWISS
+}
+
+enum TournamentStatus {
+  DRAFT
+  REGISTRATION
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum MatchStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum NotificationType {
+  TOURNAMENT_INVITE
+  TEAM_INVITE
+  MATCH_SCHEDULED
+  MATCH_RESULT
+  SYSTEM
+}
+
+// ============================================
+// MODELS
+// ============================================
+
+// Felhasználó (Keycloak-ból szinkronizált adatok)
+model User {
+  id            String   @id @default(uuid())
+  keycloakId    String   @unique
+  email         String   @unique
+  username      String   @unique
+  displayName   String?
+  avatarUrl     String?
+  role          Role     @default(STUDENT)
+  elo           Int      @default(1000)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  teamMemberships TeamMember[]
+  ownedTeams      Team[]         @relation("TeamOwner")
+  notifications   Notification[]
+  gameStats       GameStats[]
+}
+
+// Csapat
+model Team {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  logoUrl     String?
+  joinCode    String   @unique
+  ownerId     String
+  owner       User     @relation("TeamOwner", fields: [ownerId], references: [id])
+  elo         Int      @default(1000)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members           TeamMember[]
+  tournamentEntries TournamentEntry[]
+  homeMatches       Match[]           @relation("HomeTeam")
+  awayMatches       Match[]           @relation("AwayTeam")
+  wonMatches        Match[]           @relation("WinnerTeam")
+}
+
+// Csapattag
+model TeamMember {
+  id       String   @id @default(uuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  teamId   String
+  team     Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  role     TeamRole @default(MEMBER)
+  joinedAt DateTime @default(now())
+
+  @@unique([userId, teamId])
+}
+
+// Játék típus
+model Game {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  imageUrl    String?
+  rules       String?
+  teamSize    Int      // 1, 2, 3, 5
+  createdAt   DateTime @default(now())
+
+  tournaments Tournament[]
+  gameStats   GameStats[]
+}
+
+// Verseny
+model Tournament {
+  id                   String           @id @default(uuid())
+  name                 String
+  description          String?
+  gameId               String
+  game                 Game             @relation(fields: [gameId], references: [id])
+  format               TournamentFormat @default(SINGLE_ELIMINATION)
+  status               TournamentStatus @default(DRAFT)
+  maxTeams             Int
+  startDate            DateTime
+  endDate              DateTime?
+  registrationDeadline DateTime
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+
+  entries TournamentEntry[]
+  matches Match[]
+}
+
+// Verseny jelentkezés
+model TournamentEntry {
+  id           String     @id @default(uuid())
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  teamId       String
+  team         Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  seed         Int?
+  registeredAt DateTime   @default(now())
+
+  @@unique([tournamentId, teamId])
+}
+
+// Meccs
+model Match {
+  id           String      @id @default(uuid())
+  tournamentId String
+  tournament   Tournament  @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  round        Int
+  position     Int
+  homeTeamId   String?
+  homeTeam     Team?       @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeamId   String?
+  awayTeam     Team?       @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  homeScore    Int?
+  awayScore    Int?
+  winnerId     String?
+  winner       Team?       @relation("WinnerTeam", fields: [winnerId], references: [id])
+  status       MatchStatus @default(PENDING)
+  scheduledAt  DateTime?
+  playedAt     DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+// Játékos statisztikák
+model GameStats {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gameId    String
+  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  inGameId  String?
+  stats     Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, gameId])
+}
+
+// Értesítések
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  title     String
+  message   String
+  link      String?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+}
+
+// Fun aktivitások (játéknapok, közös események)
+model Event {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  eventDate   DateTime
+  location    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
