@@ -7,6 +7,8 @@ interface TournamentsState {
     tournaments: Tournament[];
     currentTournament: Tournament | null;
     isLoading: boolean;
+    createLoading: boolean;
+    updateLoading: boolean;
     error: string | null;
     pagination: {
         page: number;
@@ -20,6 +22,8 @@ const initialState: TournamentsState = {
     tournaments: [],
     currentTournament: null,
     isLoading: false,
+    createLoading: false,
+    updateLoading: false,
     error: null,
     pagination: null,
 };
@@ -123,6 +127,132 @@ export const unregisterFromTournament = createAsyncThunk(
     }
 );
 
+export const createTournament = createAsyncThunk(
+    'tournaments/createTournament',
+    async (
+        tournamentData: {
+            name: string;
+            description?: string;
+            gameId: string;
+            format?: string;
+            maxTeams: number;
+            startDate: string;
+            endDate?: string;
+            registrationDeadline: string;
+            prizePool?: string;
+        },
+        { getState }
+    ) => {
+        const state = getState() as RootState;
+        const token = getToken(state);
+
+        if (!token) throw new Error('Not authenticated');
+
+        const response = await fetch(`${API_URL}/tournaments`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(tournamentData),
+        });
+
+        const data: ApiResponse<Tournament> = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.error?.message || 'Failed to create tournament');
+        }
+
+        return data.data!;
+    }
+);
+
+export const updateTournament = createAsyncThunk(
+    'tournaments/updateTournament',
+    async (
+        { id, data }: { id: string; data: { status?: string; name?: string; description?: string } },
+        { getState }
+    ) => {
+        const state = getState() as RootState;
+        const token = getToken(state);
+
+        if (!token) throw new Error('Not authenticated');
+
+        const response = await fetch(`${API_URL}/tournaments/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+        });
+
+        const result: ApiResponse<Tournament> = await response.json();
+
+        if (!result.success) {
+            throw new Error(result.error?.message || 'Failed to update tournament');
+        }
+
+        return result.data!;
+    }
+);
+
+export const generateBracket = createAsyncThunk(
+    'tournaments/generateBracket',
+    async (tournamentId: string, { getState }) => {
+        const state = getState() as RootState;
+        const token = getToken(state);
+
+        if (!token) throw new Error('Not authenticated');
+
+        const response = await fetch(`${API_URL}/tournaments/${tournamentId}/generate-bracket`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        const result: ApiResponse<any> = await response.json();
+
+        if (!result.success) {
+            throw new Error(result.error?.message || 'Failed to generate bracket');
+        }
+
+        return { tournamentId, matches: result.data };
+    }
+);
+
+export const updateMatch = createAsyncThunk(
+    'tournaments/updateMatch',
+    async (
+        { matchId, data }: { matchId: string; data: { homeScore?: number; awayScore?: number; winnerId?: string } },
+        { getState }
+    ) => {
+        const state = getState() as RootState;
+        const token = getToken(state);
+
+        if (!token) throw new Error('Not authenticated');
+
+        const response = await fetch(`${API_URL}/matches/${matchId}/result`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+        });
+
+        const result: ApiResponse<any> = await response.json();
+
+        if (!result.success) {
+            throw new Error(result.error?.message || 'Failed to update match');
+        }
+
+        return result.data;
+    }
+);
+
+
 const tournamentsSlice = createSlice({
     name: 'tournaments',
     initialState,
@@ -162,6 +292,75 @@ const tournamentsSlice = createSlice({
             .addCase(fetchTournament.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.error.message || 'Failed to fetch tournament';
+            })
+            // Create tournament
+            .addCase(createTournament.pending, (state) => {
+                state.createLoading = true;
+                state.error = null;
+            })
+            .addCase(createTournament.fulfilled, (state, action) => {
+                state.createLoading = false;
+                state.tournaments.unshift(action.payload);
+            })
+            .addCase(createTournament.rejected, (state, action) => {
+                state.createLoading = false;
+                state.error = action.error.message || 'Failed to create tournament';
+            })
+            // Update tournament
+            .addCase(updateTournament.pending, (state) => {
+                state.updateLoading = true;
+                state.error = null;
+            })
+            .addCase(updateTournament.fulfilled, (state, action) => {
+                state.updateLoading = false;
+                // Update in tournaments list
+                const index = state.tournaments.findIndex(t => t.id === action.payload.id);
+                if (index !== -1) {
+                    state.tournaments[index] = action.payload;
+                }
+                // Update current tournament if it's the same
+                if (state.currentTournament?.id === action.payload.id) {
+                    state.currentTournament = action.payload;
+                }
+            })
+            .addCase(updateTournament.rejected, (state, action) => {
+                state.updateLoading = false;
+                state.error = action.error.message || 'Failed to update tournament';
+            })
+            // Generate bracket
+            .addCase(generateBracket.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(generateBracket.fulfilled, (state, action) => {
+                state.isLoading = false;
+                // Refresh current tournament to get updated matches
+                if (state.currentTournament?.id === action.payload.tournamentId) {
+                    // Will be refreshed by fetchTournament call
+                }
+            })
+            .addCase(generateBracket.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.error.message || 'Failed to generate bracket';
+            })
+            // Update match
+            .addCase(updateMatch.pending, (state) => {
+                state.updateLoading = true;
+                state.error = null;
+            })
+            .addCase(updateMatch.fulfilled, (state, action) => {
+                state.updateLoading = false;
+                // Update match in current tournament
+                if (state.currentTournament?.matches) {
+                    const index = state.currentTournament.matches.findIndex(m => m.id === action.payload.id);
+                    if (index !== -1) {
+                        state.currentTournament.matches[index] = action.payload;
+                    }
+                }
+            })
+            .addCase(updateMatch.rejected, (state, action) => {
+                state.updateLoading = false;
+                state.error = action.error.message || 'Failed to update match';
             });
     },
 });

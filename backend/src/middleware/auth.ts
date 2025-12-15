@@ -44,6 +44,24 @@ export interface AuthenticatedRequest extends Request {
     user?: KeycloakTokenPayload;
 }
 
+// Helper function to get the highest role from Keycloak token
+export const getHighestRole = (tokenPayload: KeycloakTokenPayload): 'ADMIN' | 'MODERATOR' | 'ORGANIZER' | 'STUDENT' => {
+    const realmRoles = tokenPayload.realm_access?.roles || [];
+    
+    // Check for roles in priority order
+    if (realmRoles.includes('ADMIN')) {
+        return 'ADMIN';
+    }
+    if (realmRoles.includes('MODERATOR')) {
+        return 'MODERATOR';
+    }
+    if (realmRoles.includes('ORGANIZER')) {
+        return 'ORGANIZER';
+    }
+    
+    return 'STUDENT';
+};
+
 export const authenticate = async (
     req: AuthenticatedRequest,
     res: Response,

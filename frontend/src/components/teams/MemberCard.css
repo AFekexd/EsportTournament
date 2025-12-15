@@ -1,0 +1,105 @@
+/* Member Card */
+.member-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: hsl(var(--card) / 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid hsl(var(--border));
+    transition: all 0.3s ease;
+}
+
+.member-card:hover {
+    border-color: hsl(var(--primary) / 0.5);
+    box-shadow: 0 0 20px hsla(var(--primary), 0.2);
+}
+
+.member-avatar {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--neon-pink)));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.member-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.captain-badge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--primary)));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border: 2px solid hsl(var(--card));
+}
+
+.member-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.member-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.member-username {
+    font-size: 0.875rem;
+    color: hsl(var(--muted-foreground));
+    margin-bottom: 0.25rem;
+}
+
+.member-elo {
+    font-size: 0.75rem;
+    color: hsl(var(--primary));
+    font-weight: 600;
+}
+
+.member-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.badge-captain {
+    background: linear-gradient(135deg, hsl(var(--accent) / 0.2), hsl(var(--primary) / 0.2));
+    color: hsl(var(--primary));
+    border: 1px solid hsl(var(--primary) / 0.3);
+}
+
+.badge-member {
+    background: hsl(var(--muted) / 0.5);
+    color: hsl(var(--muted-foreground));
+}
+
+.remove-btn {
+    color: hsl(var(--destructive));
+}
+
+.remove-btn:hover {
+    background: hsla(var(--destructive), 0.1);
+}

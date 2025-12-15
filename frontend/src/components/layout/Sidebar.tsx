@@ -13,7 +13,7 @@ import {
 import { useAuth } from '../../hooks/useAuth';
 import { useAppSelector, useAppDispatch } from '../../hooks/useRedux';
 import { toggleSidebar } from '../../store/slices/uiSlice';
-import './Sidebar.css';
+
 
 interface NavItem {
     to: string;
@@ -38,7 +38,7 @@ const adminItems: NavItem[] = [
 export function Sidebar() {
     const location = useLocation();
     const dispatch = useAppDispatch();
-    const { isOpen } = useAppSelector((state) => ({ isOpen: state.ui.sidebarOpen }));
+    const isOpen = useAppSelector((state) => state.ui.sidebarOpen);
     const { user, isAuthenticated } = useAuth();
 
     const isActive = (path: string) => {
@@ -53,74 +53,105 @@ export function Sidebar() {
     };
 
     return (
-        <aside className={`sidebar ${isOpen ? 'sidebar-open' : 'sidebar-collapsed'}`}>
-            <div className="sidebar-header">
-                {isOpen && (
-                    <Link to="/" className="sidebar-logo">
-                        <Gamepad2 size={28} className="logo-icon" />
-                        <span className="logo-text">EsportHub</span>
-                    </Link>
-                )}
-                <button
-                    className="sidebar-toggle"
-                    onClick={() => dispatch(toggleSidebar())}
-                    aria-label={isOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-                >
-                    {isOpen ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
-                </button>
-            </div>
+        <>
+            {/* Mobile Overlay */}
 
-            <nav className="sidebar-nav">
-                <div className="nav-section">
-                    {isOpen && <span className="nav-section-title">Menü</span>}
-                    {navItems.map((item) => (
-                        <Link
-                            key={item.to}
-                            to={item.to}
-                            className={`nav-item ${isActive(item.to) ? 'active' : ''}`}
-                            title={!isOpen ? item.label : undefined}
-                        >
-                            <span className="nav-icon">{item.icon}</span>
-                            {isOpen && <span className="nav-label">{item.label}</span>}
+            <div
+                className={`fixed inset-0 z-40 bg-background/80 backdrop-blur-sm transition-all duration-300 md:hidden ${isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+                    }`}
+                onClick={() => dispatch(toggleSidebar())}
+            />
+
+            <aside
+                className={`fixed inset-y-0 left-0 z-50 flex h-screen flex-col border-r border-white/5 bg-background/60 backdrop-blur-xl transition-all duration-300 ease-in-out ${isOpen ? 'w-64 translate-x-0' : '-translate-x-full md:w-20 md:translate-x-0'
+                    }`}
+            >
+                <div className="flex h-16 items-center border-b border-white/5 px-4">
+                    {isOpen && (
+                        <Link to="/" className="flex items-center gap-2 font-bold text-primary transition-opacity hover:opacity-80">
+                            <Gamepad2 size={24} className="text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)] animate-pulse" />
+                            <span className="text-xl tracking-tight text-white font-black tracking-tighter drop-shadow-[0_0_10px_rgba(139,92,246,0.3)]">EsportHub</span>
                         </Link>
-                    ))}
+                    )}
+                    <button
+                        className={`ml-auto flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-white/10 hover:text-white ${!isOpen && 'mx-auto'
+                            }`}
+                        onClick={() => dispatch(toggleSidebar())}
+                        aria-label={isOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+                    >
+                        {isOpen ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
+                    </button>
                 </div>
 
-                {isAuthenticated && (
-                    <div className="nav-section">
-                        {isOpen && <span className="nav-section-title">Egyéb</span>}
-                        {adminItems.filter(canView).map((item) => (
-                            <Link
-                                key={item.to}
-                                to={item.to}
-                                className={`nav-item ${isActive(item.to) ? 'active' : ''}`}
-                                title={!isOpen ? item.label : undefined}
-                            >
-                                <span className="nav-icon">{item.icon}</span>
-                                {isOpen && <span className="nav-label">{item.label}</span>}
-                            </Link>
-                        ))}
+                <nav className="flex-1 overflow-y-auto py-6">
+                    <div className="mb-8 px-3">
+
+                        <div className="space-y-1">
+                            {navItems.map((item) => (
+                                <Link
+                                    key={item.to}
+                                    to={item.to}
+                                    className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive(item.to)
+                                        ? 'bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30'
+                                        : 'text-muted-foreground hover:bg-white/5 hover:text-white'
+                                        } ${!isOpen && 'justify-center px-0'}`}
+                                    title={!isOpen ? item.label : undefined}
+                                >
+                                    <span className={`transition-transform duration-200 group-hover:scale-110 ${isActive(item.to) ? 'text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]' : ''}`}>
+                                        {item.icon}
+                                    </span>
+                                    {isOpen && <span>{item.label}</span>}
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+
+                    {isAuthenticated && (
+                        <div className="border-t border-white/5 pt-5">
+                            <div className="space-y-1">
+                                {adminItems.filter(canView).map((item) => (
+                                    <Link
+                                        key={item.to}
+                                        to={item.to}
+                                        className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive(item.to)
+                                            ? 'bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30'
+                                            : 'text-muted-foreground hover:bg-white/5 hover:text-white'
+                                            } ${!isOpen && 'justify-center px-0'}`}
+                                        title={!isOpen ? item.label : undefined}
+                                    >
+                                        <span className={`transition-transform duration-200 group-hover:scale-110 ${isActive(item.to) ? 'text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]' : ''}`}>
+                                            {item.icon}
+                                        </span>
+                                        {isOpen && <span>{item.label}</span>}
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </nav>
+
+                {isOpen && user && (
+                    <div className="border-t border-white/5 p-4">
+                        <div className="group flex cursor-pointer items-center gap-3 rounded-xl border border-white/5 bg-white/5 p-3 transition-colors hover:bg-white/10 hover:border-primary/30 hover:shadow-[0_0_15px_rgba(139,92,246,0.1)]">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-primary to-[hsl(var(--neon-pink))] text-white shadow-lg">
+                                {user.avatarUrl ? (
+                                    <img
+                                        src={user.avatarUrl}
+                                        alt={user.displayName || user.username}
+                                        className="h-full w-full rounded-full object-cover"
+                                    />
+                                ) : (
+                                    (user.displayName || user.username).charAt(0).toUpperCase()
+                                )}
+                            </div>
+                            <div className="overflow-hidden">
+                                <p className="truncate text-sm font-medium text-white group-hover:text-primary transition-colors">{user.displayName || user.username}</p>
+                                <p className="truncate text-xs text-muted-foreground">{user.elo} ELO</p>
+                            </div>
+                        </div>
                     </div>
                 )}
-            </nav>
-
-            {isOpen && user && (
-                <div className="sidebar-footer">
-                    <div className="sidebar-user">
-                        <div className="avatar avatar-sm">
-                            {user.avatarUrl ? (
-                                <img src={user.avatarUrl} alt={user.displayName || user.username} />
-                            ) : (
-                                (user.displayName || user.username).charAt(0).toUpperCase()
-                            )}
-                        </div>
-                        <div className="user-info">
-                            <span className="user-name">{user.displayName || user.username}</span>
-                            <span className="user-elo">{user.elo} ELO</span>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </aside>
+            </aside>
+        </>
     );
 }

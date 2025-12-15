@@ -1,6 +1,6 @@
 import { Router, Response } from 'express';
-import prisma from '../lib/prisma';
-import { authenticate, AuthenticatedRequest } from '../middleware/auth.js';
+import prisma from '../lib/prisma.js';
+import { authenticate, AuthenticatedRequest, getHighestRole } from '../middleware/auth.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 
 export const authRouter = Router();
@@ -19,18 +19,31 @@ authRouter.post(
             });
         }
 
+        // Get the role from Keycloak token
+        const role = getHighestRole(req.user!);
+        
+        console.log('Syncing user:', { 
+            keycloakId, 
+            email, 
+            username: preferred_username, 
+            role,
+            realmRoles: req.user!.realm_access?.roles 
+        });
+
         const user = await prisma.user.upsert({
             where: { keycloakId },
             update: {
                 email,
                 username: preferred_username,
                 displayName: name || preferred_username,
+                role, // Update role from Keycloak
             },
             create: {
                 keycloakId,
                 email,
                 username: preferred_username,
                 displayName: name || preferred_username,
+                role, // Set role from Keycloak
             },
         });
 

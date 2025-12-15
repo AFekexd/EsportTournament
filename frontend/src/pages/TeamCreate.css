@@ -1,0 +1,339 @@
+/* Team Create Page */
+.team-create-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Progress Indicator */
+.progress-container {
+    margin-bottom: 3rem;
+}
+
+.progress-steps {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.progress-step-wrapper {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.progress-step-wrapper:last-child {
+    flex: 0;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.step-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: hsl(var(--card));
+    border: 2px solid hsl(var(--border));
+    color: hsl(var(--muted-foreground));
+    transition: all 0.3s ease;
+}
+
+.progress-step.active .step-icon {
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--neon-pink)));
+    border-color: hsl(var(--primary));
+    color: white;
+    box-shadow: 0 0 20px hsla(var(--primary), 0.5);
+}
+
+.progress-step.completed .step-icon {
+    background: hsl(var(--primary) / 0.2);
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary));
+}
+
+.step-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: hsl(var(--muted-foreground));
+    transition: color 0.3s ease;
+}
+
+.progress-step.active .step-label {
+    color: hsl(var(--primary));
+    font-weight: 600;
+}
+
+.progress-step.completed .step-label {
+    color: hsl(var(--foreground));
+}
+
+.progress-line {
+    flex: 1;
+    height: 2px;
+    background: hsl(var(--border));
+    margin: 0 1rem;
+    position: relative;
+    top: -28px;
+    transition: background 0.3s ease;
+}
+
+.progress-line.completed {
+    background: hsl(var(--primary));
+}
+
+/* Form Container */
+.form-container {
+    padding: 2.5rem;
+    background: hsl(var(--card) / 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid hsl(var(--border));
+    border-radius: 1rem;
+}
+
+.step-content {
+    min-height: 400px;
+}
+
+.step-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: hsl(var(--foreground));
+}
+
+.step-description {
+    color: hsl(var(--muted-foreground));
+    margin-bottom: 2rem;
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+    margin-bottom: 0.5rem;
+}
+
+.required {
+    color: hsl(var(--destructive));
+}
+
+.input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    border-radius: 0.5rem;
+    color: hsl(var(--foreground));
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.input:focus {
+    outline: none;
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 3px hsla(var(--primary), 0.1);
+}
+
+.input-error {
+    border-color: hsl(var(--destructive));
+}
+
+.input-error:focus {
+    box-shadow: 0 0 0 3px hsla(var(--destructive), 0.1);
+}
+
+.textarea {
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+}
+
+.help-text {
+    display: block;
+    font-size: 0.75rem;
+    color: hsl(var(--muted-foreground));
+    margin-top: 0.25rem;
+}
+
+.error-message {
+    display: block;
+    font-size: 0.75rem;
+    color: hsl(var(--destructive));
+    margin-top: 0.25rem;
+}
+
+/* Logo Preview */
+.logo-preview {
+    margin-top: 1.5rem;
+}
+
+.logo-preview-container {
+    width: 150px;
+    height: 150px;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 2px solid hsl(var(--border));
+    background: hsl(var(--background));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-preview-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Summary */
+.summary-card {
+    background: hsl(var(--background));
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid hsl(var(--border));
+}
+
+.summary-row {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid hsl(var(--border));
+}
+
+.summary-row:last-child {
+    border-bottom: none;
+}
+
+.summary-label {
+    font-weight: 600;
+    color: hsl(var(--muted-foreground));
+    min-width: 120px;
+}
+
+.summary-value {
+    color: hsl(var(--foreground));
+    flex: 1;
+}
+
+.summary-logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 1px solid hsl(var(--border));
+}
+
+.summary-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Error Alert */
+.error-alert {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: hsla(var(--destructive), 0.1);
+    border: 1px solid hsl(var(--destructive));
+    border-radius: 0.5rem;
+    color: hsl(var(--destructive));
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid hsl(var(--border));
+}
+
+.flex-spacer {
+    flex: 1;
+}
+
+/* Spinner */
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .team-create-page {
+        padding: 1rem 0;
+    }
+
+    .form-container {
+        padding: 1.5rem;
+    }
+
+    .progress-steps {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .progress-step-wrapper {
+        width: 100%;
+    }
+
+    .progress-line {
+        display: none;
+    }
+
+    .step-content {
+        min-height: 300px;
+    }
+
+    .summary-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .summary-label {
+        min-width: auto;
+    }
+}

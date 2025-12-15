@@ -11,6 +11,7 @@ import { teamsRouter } from './routes/teams.js';
 import { tournamentsRouter } from './routes/tournaments.js';
 import { gamesRouter } from './routes/games.js';
 import { matchesRouter } from './routes/matches.js';
+import { statsRouter } from './routes/stats.js';
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ app.use('/api/teams', teamsRouter);
 app.use('/api/tournaments', tournamentsRouter);
 app.use('/api/games', gamesRouter);
 app.use('/api/matches', matchesRouter);
+app.use('/api/stats', statsRouter);
 
 // Error handler
 app.use(errorHandler);

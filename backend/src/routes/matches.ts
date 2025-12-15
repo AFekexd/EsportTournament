@@ -79,9 +79,7 @@ matchesRouter.patch(
             throw new ApiError('Match not found', 404, 'NOT_FOUND');
         }
 
-        if (match.status === 'COMPLETED') {
-            throw new ApiError('Match already completed', 400, 'ALREADY_COMPLETED');
-        }
+        // Allow editing completed matches for corrections
 
         // Validate winner
         if (winnerId && winnerId !== match.homeTeamId && winnerId !== match.awayTeamId) {

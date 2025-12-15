@@ -1,27 +1,46 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './store';
 import { useAppDispatch, useAppSelector } from './hooks/useRedux';
 import { initKeycloak } from './store/slices/authSlice';
 import { Layout } from './components/layout';
-import { HomePage, TournamentsPage, TeamsPage, GamesPage } from './pages';
+import { HomePage, TournamentsPage, TeamsPage, GamesPage, CalendarPage, ProfilePage, SettingsPage, AdminPage, TeamCreatePage, TeamDetailPage, GameDetailPage, TournamentDetailPage } from './pages';
 import './App.css';
+import { PuffLoader } from 'react-spinners';
 
 function AppContent() {
   const dispatch = useAppDispatch();
-  const { isLoading } = useAppSelector((state) => state.auth);
+  const { isLoading, error } = useAppSelector((state) => state.auth);
+  const initRef = useRef(false);
 
   useEffect(() => {
-    dispatch(initKeycloak());
+    // Prevent double initialization in StrictMode
+    if (initRef.current) {
+      return;
+    }
+
+    initRef.current = true;
+
+    const initAuth = async () => {
+      await dispatch(initKeycloak());
+    };
+
+    initAuth();
   }, [dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      console.error('Auth error:', error);
+    }
+  }, [error]);
 
   if (isLoading) {
     return (
       <div className="loading-screen">
         <div className="loading-content">
-          <div className="loading-spinner" />
-          <span className="loading-text">Betöltés...</span>
+          <PuffLoader color="#8b5cf6" size={60} />
+          <span className="font-bold uppercase tracking-widest text-muted-foreground group-hover:text-white transition-colors text-lg">Betöltés...</span>
         </div>
       </div>
     );
@@ -33,13 +52,16 @@ function AppContent() {
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="tournaments" element={<TournamentsPage />} />
+          <Route path="tournaments/:id" element={<TournamentDetailPage />} />
           <Route path="teams" element={<TeamsPage />} />
+          <Route path="teams/create" element={<TeamCreatePage />} />
+          <Route path="teams/:id" element={<TeamDetailPage />} />
           <Route path="games" element={<GamesPage />} />
-          {/* Additional routes to be added */}
-          <Route path="calendar" element={<div className="page-placeholder">Naptár - Hamarosan</div>} />
-          <Route path="profile" element={<div className="page-placeholder">Profil - Hamarosan</div>} />
-          <Route path="settings" element={<div className="page-placeholder">Beállítások - Hamarosan</div>} />
-          <Route path="admin" element={<div className="page-placeholder">Admin - Hamarosan</div>} />
+          <Route path="games/:id" element={<GameDetailPage />} />
+          <Route path="calendar" element={<CalendarPage />} />
+          <Route path="profile" element={<ProfilePage />} />
+          <Route path="settings" element={<SettingsPage />} />
+          <Route path="admin" element={<AdminPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
