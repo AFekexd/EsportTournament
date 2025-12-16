@@ -82,6 +82,7 @@ export function TournamentDetailPage() {
     };
 
     const handleMatchClick = (match: Match) => {
+        console.log('Match clicked:', match.id, 'User role:', user?.role);
         if (user?.role === 'ADMIN' || user?.role === 'ORGANIZER') {
             setSelectedMatch(match);
             setShowMatchModal(true);
@@ -237,37 +238,70 @@ export function TournamentDetailPage() {
             {/* Tab Content */}
             {activeTab === 'info' && (
                 <>
-                    {/* Registered Teams */}
+                    {/* Registered Participants */}
                     <div className="tournament-section card">
-                        <h2 className="section-title">Regisztrált csapatok</h2>
+                        <h2 className="section-title">
+                            {currentTournament.game?.teamSize === 1 ? 'Regisztrált játékosok' : 'Regisztrált csapatok'}
+                        </h2>
 
                         {currentTournament.entries && currentTournament.entries.length > 0 ? (
                             <div className="teams-grid">
-                                {currentTournament.entries.map((entry) => entry.team && (
-                                    <Link
-                                        key={entry.id}
-                                        to={`/teams/${entry.team.id}`}
-                                        className="team-entry card"
-                                    >
-                                        <div className="team-entry-content">
-                                            {entry.team.logoUrl && (
-                                                <div className="team-logo">
-                                                    <img src={entry.team.logoUrl} alt={entry.team.name} />
+                                {currentTournament.entries.map((entry) => {
+                                    // Solo entry (player without team)
+                                    if (entry.user && !entry.team) {
+                                        return (
+                                            <div key={entry.id} className="team-entry card">
+                                                <div className="team-entry-content">
+                                                    {entry.user.avatarUrl ? (
+                                                        <div className="team-logo">
+                                                            <img src={entry.user.avatarUrl} alt={entry.user.displayName || entry.user.username} />
+                                                        </div>
+                                                    ) : (
+                                                        <div className="team-logo player-avatar">
+                                                            {(entry.user.displayName || entry.user.username).charAt(0).toUpperCase()}
+                                                        </div>
+                                                    )}
+                                                    <div className="team-info">
+                                                        <h3>{entry.user.displayName || entry.user.username}</h3>
+                                                        <p className="team-elo">{entry.user.elo || 1000} ELO</p>
+                                                    </div>
                                                 </div>
-                                            )}
-                                            <div className="team-info">
-                                                <h3>{entry.team.name}</h3>
-                                                <p className="team-elo">{entry.team.elo} ELO</p>
+                                                <span className="team-seed">#{entry.seed}</span>
                                             </div>
-                                        </div>
-                                        <span className="team-seed">#{entry.seed}</span>
-                                    </Link>
-                                ))}
+                                        );
+                                    }
+
+                                    // Team entry
+                                    if (entry.team) {
+                                        return (
+                                            <Link
+                                                key={entry.id}
+                                                to={`/teams/${entry.team.id}`}
+                                                className="team-entry card"
+                                            >
+                                                <div className="team-entry-content">
+                                                    {entry.team.logoUrl && (
+                                                        <div className="team-logo">
+                                                            <img src={entry.team.logoUrl} alt={entry.team.name} />
+                                                        </div>
+                                                    )}
+                                                    <div className="team-info">
+                                                        <h3>{entry.team.name}</h3>
+                                                        <p className="team-elo">{entry.team.elo} ELO</p>
+                                                    </div>
+                                                </div>
+                                                <span className="team-seed">#{entry.seed}</span>
+                                            </Link>
+                                        );
+                                    }
+
+                                    return null;
+                                })}
                             </div>
                         ) : (
                             <div className="empty-state">
                                 <Users size={48} />
-                                <p>Még nincsenek regisztrált csapatok</p>
+                                <p>Még nincsenek regisztrált {currentTournament.game?.teamSize === 1 ? 'játékosok' : 'csapatok'}</p>
                             </div>
                         )}
                     </div>
@@ -278,10 +312,25 @@ export function TournamentDetailPage() {
                 <div className="tournament-section card">
                     <div className="section-header">
                         <h2 className="section-title">Bracket</h2>
-                        {(user?.role === 'ADMIN' || user?.role === 'ORGANIZER') && !currentTournament.matches?.length && (
-                            <button className="btn btn-primary" onClick={handleGenerateBracket}>
-                                Bracket generálása
-                            </button>
+                        {(user?.role === 'ADMIN' || user?.role === 'ORGANIZER') && (
+                            <>
+                                {!currentTournament.matches?.length ? (
+                                    <button className="btn btn-primary" onClick={handleGenerateBracket}>
+                                        Bracket generálása
+                                    </button>
+                                ) : (
+                                    <button
+                                        className="btn btn-warning"
+                                        onClick={() => {
+                                            if (window.confirm('Biztosan újra akarod generálni a bracketet? Ez törli az összes jelenlegi meccset és eredményt!')) {
+                                                handleGenerateBracket();
+                                            }
+                                        }}
+                                    >
+                                        Bracket újragenerálása
+                                    </button>
+                                )}
+                            </>
                         )}
                     </div>
                     <TournamentBracket
@@ -336,12 +385,12 @@ export function TournamentDetailPage() {
                                 <span className="match-round">Kör {match.round}</span>
                                 <div className="match-teams">
                                     <div className="match-team">
-                                        <span>{match.homeTeam?.name || 'TBD'}</span>
+                                        <span>{match.homeTeam?.name || 'Nincs meghatározva'}</span>
                                         {match.homeScore !== null && <span className="score">{match.homeScore}</span>}
                                     </div>
                                     <span className="vs">vs</span>
                                     <div className="match-team">
-                                        <span>{match.awayTeam?.name || 'TBD'}</span>
+                                        <span>{match.awayTeam?.name || 'Nincs meghatározva'}</span>
                                         {match.awayScore !== null && <span className="score">{match.awayScore}</span>}
                                     </div>
                                 </div>

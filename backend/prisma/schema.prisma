@@ -48,6 +48,12 @@ enum MatchStatus {
   CANCELLED
 }
 
+enum BracketType {
+  UPPER
+  LOWER
+  GRAND_FINAL
+}
+
 enum NotificationType {
   TOURNAMENT_INVITE
   TEAM_INVITE
@@ -73,10 +79,15 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  teamMemberships TeamMember[]
-  ownedTeams      Team[]         @relation("TeamOwner")
-  notifications   Notification[]
-  gameStats       GameStats[]
+  teamMemberships   TeamMember[]
+  ownedTeams        Team[]             @relation("TeamOwner")
+  notifications     Notification[]
+  gameStats         GameStats[]
+  tournamentEntries TournamentEntry[]  // For solo tournament registration
+  // Match relations for solo tournaments
+  homeMatches       Match[]            @relation("HomeUser")
+  awayMatches       Match[]            @relation("AwayUser")
+  wonMatches        Match[]            @relation("WinnerUser")
 }
 
 // Csapat
@@ -151,12 +162,15 @@ model TournamentEntry {
   id           String     @id @default(uuid())
   tournamentId String
   tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
-  teamId       String
-  team         Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamId       String?    // Null for solo tournaments
+  team         Team?      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  userId       String?    // For solo tournaments (1v1)
+  user         User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
   seed         Int?
   registeredAt DateTime   @default(now())
 
   @@unique([tournamentId, teamId])
+  @@unique([tournamentId, userId])
 }
 
 // Meccs
@@ -166,14 +180,24 @@ model Match {
   tournament   Tournament  @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   round        Int
   position     Int
+  bracketType  BracketType @default(UPPER)
+  // Team references (for team tournaments)
   homeTeamId   String?
   homeTeam     Team?       @relation("HomeTeam", fields: [homeTeamId], references: [id])
   awayTeamId   String?
   awayTeam     Team?       @relation("AwayTeam", fields: [awayTeamId], references: [id])
-  homeScore    Int?
-  awayScore    Int?
   winnerId     String?
   winner       Team?       @relation("WinnerTeam", fields: [winnerId], references: [id])
+  // User references (for solo/1v1 tournaments)
+  homeUserId   String?
+  homeUser     User?       @relation("HomeUser", fields: [homeUserId], references: [id])
+  awayUserId   String?
+  awayUser     User?       @relation("AwayUser", fields: [awayUserId], references: [id])
+  winnerUserId String?
+  winnerUser   User?       @relation("WinnerUser", fields: [winnerUserId], references: [id])
+  // Scores and status
+  homeScore    Int?
+  awayScore    Int?
   status       MatchStatus @default(PENDING)
   scheduledAt  DateTime?
   playedAt     DateTime?

@@ -1,14 +1,30 @@
-import { useState } from 'react';
-import { Users, Trophy, Gamepad2, BarChart3, Shield, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Users, Trophy, Gamepad2, BarChart3, Shield, AlertCircle, Edit2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-import { GameCreateModal, TournamentCreateModal } from '../components/admin';
+import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
+import { fetchTournaments } from '../store/slices/tournamentsSlice';
+import { fetchGames } from '../store/slices/gamesSlice';
+import { GameCreateModal, TournamentCreateModal, TournamentEditModal } from '../components/admin';
+import type { Tournament } from '../types';
 import './Admin.css';
 
 export function AdminPage() {
     const { isAdmin } = useAuth();
+    const dispatch = useAppDispatch();
+    const { tournaments, isLoading: tournamentsLoading } = useAppSelector((state) => state.tournaments);
+    const { games } = useAppSelector((state) => state.games);
+
     const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'tournaments' | 'games'>('overview');
     const [showGameModal, setShowGameModal] = useState(false);
     const [showTournamentModal, setShowTournamentModal] = useState(false);
+    const [editingTournament, setEditingTournament] = useState<Tournament | null>(null);
+
+    useEffect(() => {
+        if (isAdmin) {
+            dispatch(fetchTournaments({ page: 1 }));
+            dispatch(fetchGames());
+        }
+    }, [dispatch, isAdmin]);
 
     if (!isAdmin) {
         return (
@@ -21,6 +37,22 @@ export function AdminPage() {
             </div>
         );
     }
+
+    const formatDate = (dateString: string) => {
+        return new Date(dateString).toLocaleDateString('hu-HU');
+    };
+
+    const getStatusBadge = (status: string) => {
+        const statusConfig: Record<string, { class: string; label: string }> = {
+            DRAFT: { class: 'badge-warning', label: 'Piszkozat' },
+            REGISTRATION: { class: 'badge-success', label: 'Regisztráció' },
+            IN_PROGRESS: { class: 'badge-info', label: 'Folyamatban' },
+            COMPLETED: { class: 'badge-primary', label: 'Befejezett' },
+            CANCELLED: { class: 'badge-error', label: 'Törölve' },
+        };
+        const config = statusConfig[status] || { class: 'badge-secondary', label: status };
+        return <span className={`badge ${config.class}`}>{config.label}</span>;
+    };
 
     return (
         <div className="admin-page">
@@ -37,10 +69,9 @@ export function AdminPage() {
                         <Users size={24} />
                     </div>
                     <div className="stat-content">
-                        <span className="stat-value">1,234</span>
+                        <span className="stat-value">-</span>
                         <span className="stat-label">Felhasználók</span>
                     </div>
-                    <span className="stat-change positive">+12%</span>
                 </div>
 
                 <div className="stat-card card card-glow">
@@ -48,10 +79,9 @@ export function AdminPage() {
                         <Trophy size={24} />
                     </div>
                     <div className="stat-content">
-                        <span className="stat-value">45</span>
-                        <span className="stat-label">Aktív versenyek</span>
+                        <span className="stat-value">{tournaments.length}</span>
+                        <span className="stat-label">Versenyek</span>
                     </div>
-                    <span className="stat-change positive">+5</span>
                 </div>
 
                 <div className="stat-card card card-glow">
@@ -59,10 +89,9 @@ export function AdminPage() {
                         <Users size={24} />
                     </div>
                     <div className="stat-content">
-                        <span className="stat-value">328</span>
+                        <span className="stat-value">-</span>
                         <span className="stat-label">Csapatok</span>
                     </div>
-                    <span className="stat-change positive">+8%</span>
                 </div>
 
                 <div className="stat-card card card-glow">
@@ -70,10 +99,9 @@ export function AdminPage() {
                         <Gamepad2 size={24} />
                     </div>
                     <div className="stat-content">
-                        <span className="stat-value">12</span>
+                        <span className="stat-value">{games.length}</span>
                         <span className="stat-label">Játékok</span>
                     </div>
-                    <span className="stat-change neutral">0</span>
                 </div>
             </div>
 
@@ -157,21 +185,8 @@ export function AdminPage() {
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>András Feke</td>
-                                            <td>feke@example.com</td>
-                                            <td><span className="badge badge-error">ADMIN</span></td>
-                                            <td>2024-01-15</td>
-                                            <td>
-                                                <button className="btn-small btn-secondary">Szerkeszt</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Példa Felhasználó</td>
-                                            <td>user@example.com</td>
-                                            <td><span className="badge badge-success">STUDENT</span></td>
-                                            <td>2024-02-20</td>
-                                            <td>
-                                                <button className="btn-small btn-secondary">Szerkeszt</button>
+                                            <td colSpan={5} className="text-center text-muted">
+                                                Felhasználók betöltése hamarosan...
                                             </td>
                                         </tr>
                                     </tbody>
@@ -198,6 +213,7 @@ export function AdminPage() {
                                         <tr>
                                             <th>Név</th>
                                             <th>Játék</th>
+                                            <th>Formátum</th>
                                             <th>Státusz</th>
                                             <th>Csapatok</th>
                                             <th>Kezdés</th>
@@ -205,16 +221,44 @@ export function AdminPage() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Példa Verseny</td>
-                                            <td>League of Legends</td>
-                                            <td><span className="badge badge-success">REGISTRATION</span></td>
-                                            <td>12/32</td>
-                                            <td>2024-03-15</td>
-                                            <td>
-                                                <button className="btn-small btn-secondary">Szerkeszt</button>
-                                            </td>
-                                        </tr>
+                                        {tournamentsLoading ? (
+                                            <tr>
+                                                <td colSpan={7} className="text-center">
+                                                    <div className="spinner" /> Betöltés...
+                                                </td>
+                                            </tr>
+                                        ) : tournaments.length === 0 ? (
+                                            <tr>
+                                                <td colSpan={7} className="text-center text-muted">
+                                                    Még nincs verseny létrehozva
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            tournaments.map((tournament) => (
+                                                <tr key={tournament.id}>
+                                                    <td>{tournament.name}</td>
+                                                    <td>{tournament.game?.name || '-'}</td>
+                                                    <td>
+                                                        {tournament.format === 'SINGLE_ELIMINATION' && 'Egyenes'}
+                                                        {tournament.format === 'DOUBLE_ELIMINATION' && 'Dupla'}
+                                                        {tournament.format === 'ROUND_ROBIN' && 'Körmérkőzés'}
+                                                        {tournament.format === 'SWISS' && 'Svájci'}
+                                                    </td>
+                                                    <td>{getStatusBadge(tournament.status)}</td>
+                                                    <td>{tournament._count?.entries || 0}/{tournament.maxTeams}</td>
+                                                    <td>{formatDate(tournament.startDate)}</td>
+                                                    <td>
+                                                        <button
+                                                            className="btn-small btn-secondary"
+                                                            onClick={() => setEditingTournament(tournament)}
+                                                        >
+                                                            <Edit2 size={14} />
+                                                            Szerkeszt
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
                                     </tbody>
                                 </table>
                             </div>
@@ -234,24 +278,20 @@ export function AdminPage() {
                             </button>
 
                             <div className="games-grid">
-                                <div className="game-admin-card card">
-                                    <h3>League of Legends</h3>
-                                    <p>MOBA</p>
-                                    <div className="game-stats">
-                                        <span>15 verseny</span>
-                                        <span>234 csapat</span>
-                                    </div>
-                                    <button className="btn-small btn-secondary">Szerkeszt</button>
-                                </div>
-                                <div className="game-admin-card card">
-                                    <h3>Counter-Strike 2</h3>
-                                    <p>FPS</p>
-                                    <div className="game-stats">
-                                        <span>8 verseny</span>
-                                        <span>156 csapat</span>
-                                    </div>
-                                    <button className="btn-small btn-secondary">Szerkeszt</button>
-                                </div>
+                                {games.length === 0 ? (
+                                    <p className="text-muted">Még nincs játék létrehozva</p>
+                                ) : (
+                                    games.map((game) => (
+                                        <div key={game.id} className="game-admin-card card">
+                                            <h3>{game.name}</h3>
+                                            <p>{game.description || 'Nincs leírás'}</p>
+                                            <div className="game-stats">
+                                                <span>{game._count?.tournaments || 0} verseny</span>
+                                                <span>Csapatméret: {game.teamSize}</span>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
                             </div>
                         </div>
                     )}
@@ -263,7 +303,19 @@ export function AdminPage() {
                 <GameCreateModal onClose={() => setShowGameModal(false)} />
             )}
             {showTournamentModal && (
-                <TournamentCreateModal onClose={() => setShowTournamentModal(false)} />
+                <TournamentCreateModal onClose={() => {
+                    setShowTournamentModal(false);
+                    dispatch(fetchTournaments({ page: 1 }));
+                }} />
+            )}
+            {editingTournament && (
+                <TournamentEditModal
+                    tournament={editingTournament}
+                    onClose={() => {
+                        setEditingTournament(null);
+                        dispatch(fetchTournaments({ page: 1 }));
+                    }}
+                />
             )}
         </div>
     );

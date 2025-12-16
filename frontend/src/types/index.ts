@@ -82,8 +82,16 @@ export interface TournamentEntry {
     id: string;
     tournamentId: string;
     tournament?: Tournament;
-    teamId: string;
+    teamId?: string;  // Optional for solo tournaments
     team?: Team;
+    userId?: string;  // For solo tournaments
+    user?: {
+        id: string;
+        username: string;
+        displayName?: string;
+        avatarUrl?: string;
+        elo?: number;
+    };
     seed?: number;
     registeredAt: string;
 }
@@ -94,14 +102,40 @@ export interface Match {
     tournament?: Tournament;
     round: number;
     position: number;
+    bracketType?: 'UPPER' | 'LOWER' | 'GRAND_FINAL';
+    // Team fields (for team tournaments)
     homeTeamId?: string;
     homeTeam?: Team;
     awayTeamId?: string;
     awayTeam?: Team;
-    homeScore?: number;
-    awayScore?: number;
     winnerId?: string;
     winner?: Team;
+    // User fields (for solo/1v1 tournaments)
+    homeUserId?: string;
+    homeUser?: {
+        id: string;
+        username: string;
+        displayName?: string;
+        avatarUrl?: string;
+        elo?: number;
+    };
+    awayUserId?: string;
+    awayUser?: {
+        id: string;
+        username: string;
+        displayName?: string;
+        avatarUrl?: string;
+        elo?: number;
+    };
+    winnerUserId?: string;
+    winnerUser?: {
+        id: string;
+        username: string;
+        displayName?: string;
+    };
+    // Scores and status
+    homeScore?: number;
+    awayScore?: number;
     status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
     scheduledAt?: string;
     playedAt?: string;

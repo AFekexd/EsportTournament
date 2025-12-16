@@ -5,19 +5,45 @@ import type { Match } from '../../types';
 interface MatchEditModalProps {
     match: Match;
     onClose: () => void;
-    onSave: (data: { homeScore?: number; awayScore?: number; winnerId?: string }) => void;
+    onSave: (data: { homeScore?: number; awayScore?: number; winnerId?: string; winnerUserId?: string }) => void;
     isLoading?: boolean;
+}
+
+// Helper to get participant name (team or user)
+function getParticipantName(match: Match, side: 'home' | 'away'): string {
+    if (side === 'home') {
+        if (match.homeUser) {
+            return match.homeUser.displayName || match.homeUser.username;
+        }
+        return match.homeTeam?.name || 'Nincs meghatározva';
+    } else {
+        if (match.awayUser) {
+            return match.awayUser.displayName || match.awayUser.username;
+        }
+        return match.awayTeam?.name || 'Nincs meghatározva';
+    }
+}
+
+// Check if this is a solo (1v1) match
+function isSoloMatch(match: Match): boolean {
+    return !!(match.homeUserId || match.awayUserId || match.homeUser || match.awayUser);
 }
 
 export function MatchEditModal({ match, onClose, onSave, isLoading }: MatchEditModalProps) {
     const [homeScore, setHomeScore] = useState<string>(match.homeScore?.toString() || '');
     const [awayScore, setAwayScore] = useState<string>(match.awayScore?.toString() || '');
-    const [winnerId, setWinnerId] = useState<string>(match.winnerId || '');
+    const [winnerId, setWinnerId] = useState<string>(
+        match.winnerId || match.winnerUserId || ''
+    );
+
+    const solo = isSoloMatch(match);
+    const homeName = getParticipantName(match, 'home');
+    const awayName = getParticipantName(match, 'away');
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const data: { homeScore?: number; awayScore?: number; winnerId?: string } = {};
+        const data: { homeScore?: number; awayScore?: number; winnerId?: string; winnerUserId?: string } = {};
 
         if (homeScore !== '') {
             data.homeScore = parseInt(homeScore, 10);
@@ -26,11 +52,20 @@ export function MatchEditModal({ match, onClose, onSave, isLoading }: MatchEditM
             data.awayScore = parseInt(awayScore, 10);
         }
         if (winnerId) {
-            data.winnerId = winnerId;
+            // For solo matches, use winnerUserId; for team matches, use winnerId
+            if (solo) {
+                data.winnerUserId = winnerId;
+            } else {
+                data.winnerId = winnerId;
+            }
         }
 
         onSave(data);
     };
+
+    // Get the participant ID for winner selection
+    const homeId = solo ? (match.homeUserId || match.homeUser?.id) : match.homeTeamId;
+    const awayId = solo ? (match.awayUserId || match.awayUser?.id) : match.awayTeamId;
 
     return (
         <div className="modal-overlay" onClick={onClose}>
@@ -45,16 +80,16 @@ export function MatchEditModal({ match, onClose, onSave, isLoading }: MatchEditM
                 <form onSubmit={handleSubmit} className="modal-body">
                     <div className="match-info">
                         <div className="match-teams-display">
-                            <span className="team-display">{match.homeTeam?.name || 'TBD'}</span>
+                            <span className="team-display">{homeName}</span>
                             <span className="vs-display">vs</span>
-                            <span className="team-display">{match.awayTeam?.name || 'TBD'}</span>
+                            <span className="team-display">{awayName}</span>
                         </div>
                     </div>
 
                     <div className="form-row">
                         <div className="form-group">
                             <label className="label">
-                                {match.homeTeam?.name || 'Hazai csapat'} pontszám
+                                {homeName} pontszám
                             </label>
                             <input
                                 type="number"
@@ -68,7 +103,7 @@ export function MatchEditModal({ match, onClose, onSave, isLoading }: MatchEditM
 
                         <div className="form-group">
                             <label className="label">
-                                {match.awayTeam?.name || 'Vendég csapat'} pontszám
+                                {awayName} pontszám
                             </label>
                             <input
                                 type="number"
@@ -89,14 +124,14 @@ export function MatchEditModal({ match, onClose, onSave, isLoading }: MatchEditM
                             onChange={(e) => setWinnerId(e.target.value)}
                         >
                             <option value="">Automatikus (pontszám alapján)</option>
-                            {match.homeTeamId && (
-                                <option value={match.homeTeamId}>
-                                    {match.homeTeam?.name || 'Hazai csapat'}
+                            {homeId && (
+                                <option value={homeId}>
+                                    {homeName}
                                 </option>
                             )}
-                            {match.awayTeamId && (
-                                <option value={match.awayTeamId}>
-                                    {match.awayTeam?.name || 'Vendég csapat'}
+                            {awayId && (
+                                <option value={awayId}>
+                                    {awayName}
                                 </option>
                             )}
                         </select>

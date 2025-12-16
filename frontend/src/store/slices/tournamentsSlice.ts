@@ -170,7 +170,17 @@ export const createTournament = createAsyncThunk(
 export const updateTournament = createAsyncThunk(
     'tournaments/updateTournament',
     async (
-        { id, data }: { id: string; data: { status?: string; name?: string; description?: string } },
+        { id, data }: {
+            id: string; data: {
+                status?: string;
+                name?: string;
+                description?: string;
+                format?: string;
+                startDate?: string;
+                endDate?: string;
+                registrationDeadline?: string;
+            }
+        },
         { getState }
     ) => {
         const state = getState() as RootState;

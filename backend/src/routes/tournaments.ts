@@ -114,6 +114,7 @@ tournamentsRouter.get(
                                 },
                             },
                         },
+                        user: { select: { id: true, username: true, displayName: true, avatarUrl: true, elo: true } },
                     },
                     orderBy: { seed: 'asc' },
                 },
@@ -122,6 +123,9 @@ tournamentsRouter.get(
                         homeTeam: { select: { id: true, name: true, logoUrl: true } },
                         awayTeam: { select: { id: true, name: true, logoUrl: true } },
                         winner: { select: { id: true, name: true } },
+                        homeUser: { select: { id: true, username: true, displayName: true, avatarUrl: true, elo: true } },
+                        awayUser: { select: { id: true, username: true, displayName: true, avatarUrl: true, elo: true } },
+                        winnerUser: { select: { id: true, username: true, displayName: true } },
                     },
                     orderBy: [{ round: 'asc' }, { position: 'asc' }],
                 },
@@ -161,6 +165,7 @@ tournamentsRouter.patch(
             name,
             description,
             status,
+            format,
             startDate,
             endDate,
             registrationDeadline,
@@ -172,6 +177,7 @@ tournamentsRouter.patch(
                 ...(name && { name }),
                 ...(description !== undefined && { description }),
                 ...(status && { status }),
+                ...(format && { format }),
                 ...(startDate && { startDate: new Date(startDate) }),
                 ...(endDate !== undefined && { endDate: endDate ? new Date(endDate) : null }),
                 ...(registrationDeadline && { registrationDeadline: new Date(registrationDeadline) }),
@@ -320,9 +326,13 @@ tournamentsRouter.post(
         const tournament = await prisma.tournament.findUnique({
             where: { id: req.params.id },
             include: {
+                game: true,
                 entries: {
-                    include: { team: true },
-                    orderBy: { seed: 'desc' }, // Higher ELO = higher seed
+                    include: {
+                        team: true,
+                        user: true,
+                    },
+                    orderBy: { seed: 'asc' },
                 },
             },
         });
@@ -332,59 +342,160 @@ tournamentsRouter.post(
         }
 
         if (tournament.entries.length < 2) {
-            throw new ApiError('Need at least 2 teams', 400, 'NOT_ENOUGH_TEAMS');
+            throw new ApiError('Need at least 2 participants', 400, 'NOT_ENOUGH_PARTICIPANTS');
         }
 
         // Delete existing matches
         await prisma.match.deleteMany({ where: { tournamentId: tournament.id } });
 
-        const teams = tournament.entries.map((e) => e.team);
-        const numTeams = teams.length;
+        // Check if this is a solo (1v1) tournament
+        const isSoloTournament = tournament.game?.teamSize === 1;
+
+        // Get participants (either teams or users for solo tournaments)
+        // For bracket purposes, we'll use team IDs for team tournaments
+        // For solo tournaments, we'll still use team IDs but they'll be null
+        // The match display will show the user info from entries
+        const numParticipants = tournament.entries.length;
 
         // Calculate number of rounds needed
-        const numRounds = Math.ceil(Math.log2(numTeams));
+        const numRounds = Math.ceil(Math.log2(numParticipants));
         const bracketSize = Math.pow(2, numRounds);
 
-        // Seed the bracket
-        const seededTeams: (typeof teams[0] | null)[] = [];
+        // Create seeded entries array
+        const seededEntries: (typeof tournament.entries[0] | null)[] = [];
         for (let i = 0; i < bracketSize; i++) {
-            seededTeams.push(teams[i] || null);
+            seededEntries.push(tournament.entries[i] || null);
         }
 
-        // Create first round matches
         const matches: any[] = [];
-        const firstRoundMatches = bracketSize / 2;
 
-        for (let i = 0; i < firstRoundMatches; i++) {
-            const homeTeam = seededTeams[i];
-            const awayTeam = seededTeams[bracketSize - 1 - i];
+        if (tournament.format === 'DOUBLE_ELIMINATION') {
+            // ==========================================
+            // DOUBLE ELIMINATION BRACKET
+            // ==========================================
 
+            // Create upper bracket matches (same as single elimination)
+            const firstRoundMatches = bracketSize / 2;
+
+            for (let i = 0; i < firstRoundMatches; i++) {
+                const homeEntry = seededEntries[i];
+                const awayEntry = seededEntries[bracketSize - 1 - i];
+
+                matches.push({
+                    tournamentId: tournament.id,
+                    round: 1,
+                    position: i + 1,
+                    bracketType: 'UPPER',
+                    // Team fields (for team tournaments)
+                    homeTeamId: isSoloTournament ? null : (homeEntry?.team?.id || null),
+                    awayTeamId: isSoloTournament ? null : (awayEntry?.team?.id || null),
+                    // User fields (for solo tournaments)
+                    homeUserId: isSoloTournament ? (homeEntry?.user?.id || null) : null,
+                    awayUserId: isSoloTournament ? (awayEntry?.user?.id || null) : null,
+                    status: 'PENDING',
+                    // Auto-advance if bye
+                    winnerId: !isSoloTournament ? (!homeEntry ? awayEntry?.team?.id : !awayEntry ? homeEntry?.team?.id : null) : null,
+                    winnerUserId: isSoloTournament ? (!homeEntry ? awayEntry?.user?.id : !awayEntry ? homeEntry?.user?.id : null) : null,
+                });
+            }
+
+            // Create subsequent upper bracket rounds
+            let matchesInRound = firstRoundMatches / 2;
+            for (let round = 2; round <= numRounds; round++) {
+                for (let pos = 1; pos <= matchesInRound; pos++) {
+                    matches.push({
+                        tournamentId: tournament.id,
+                        round,
+                        position: pos,
+                        bracketType: 'UPPER',
+                        homeTeamId: null,
+                        awayTeamId: null,
+                        status: 'PENDING',
+                    });
+                }
+                matchesInRound = matchesInRound / 2;
+            }
+
+            // Create lower bracket rounds
+            // Lower bracket has (2 * numRounds - 2) rounds for a standard double elim
+            // Each upper bracket match creates a loser that drops to lower bracket
+            const lowerBracketRounds = numRounds > 1 ? (numRounds - 1) * 2 : 1;
+
+            // Lower round 1: receives losers from upper round 1
+            let lowerMatchesInRound = firstRoundMatches / 2;
+            for (let lowerRound = 1; lowerRound <= lowerBracketRounds; lowerRound++) {
+                for (let pos = 1; pos <= lowerMatchesInRound; pos++) {
+                    matches.push({
+                        tournamentId: tournament.id,
+                        round: lowerRound,
+                        position: pos,
+                        bracketType: 'LOWER',
+                        homeTeamId: null,
+                        awayTeamId: null,
+                        status: 'PENDING',
+                    });
+                }
+                // Every 2 lower rounds, halve the matches
+                if (lowerRound % 2 === 0) {
+                    lowerMatchesInRound = Math.max(1, lowerMatchesInRound / 2);
+                }
+            }
+
+            // Create Grand Final match
             matches.push({
                 tournamentId: tournament.id,
                 round: 1,
-                position: i + 1,
-                homeTeamId: homeTeam?.id || null,
-                awayTeamId: awayTeam?.id || null,
+                position: 1,
+                bracketType: 'GRAND_FINAL',
+                homeTeamId: null, // Upper bracket winner
+                awayTeamId: null, // Lower bracket winner
                 status: 'PENDING',
-                // If one team is bye, auto-advance
-                winnerId: !homeTeam ? awayTeam?.id : !awayTeam ? homeTeam?.id : null,
             });
-        }
 
-        // Create subsequent rounds (empty for now)
-        let matchesInRound = firstRoundMatches / 2;
-        for (let round = 2; round <= numRounds; round++) {
-            for (let pos = 1; pos <= matchesInRound; pos++) {
+        } else {
+            // ==========================================
+            // SINGLE ELIMINATION BRACKET (default)
+            // ==========================================
+            const firstRoundMatches = bracketSize / 2;
+
+            for (let i = 0; i < firstRoundMatches; i++) {
+                const homeEntry = seededEntries[i];
+                const awayEntry = seededEntries[bracketSize - 1 - i];
+
                 matches.push({
                     tournamentId: tournament.id,
-                    round,
-                    position: pos,
-                    homeTeamId: null,
-                    awayTeamId: null,
+                    round: 1,
+                    position: i + 1,
+                    bracketType: 'UPPER',
+                    // Team fields (for team tournaments)
+                    homeTeamId: isSoloTournament ? null : (homeEntry?.team?.id || null),
+                    awayTeamId: isSoloTournament ? null : (awayEntry?.team?.id || null),
+                    // User fields (for solo tournaments)
+                    homeUserId: isSoloTournament ? (homeEntry?.user?.id || null) : null,
+                    awayUserId: isSoloTournament ? (awayEntry?.user?.id || null) : null,
                     status: 'PENDING',
+                    // Auto-advance if bye
+                    winnerId: !isSoloTournament ? (!homeEntry ? awayEntry?.team?.id : !awayEntry ? homeEntry?.team?.id : null) : null,
+                    winnerUserId: isSoloTournament ? (!homeEntry ? awayEntry?.user?.id : !awayEntry ? homeEntry?.user?.id : null) : null,
                 });
             }
-            matchesInRound = matchesInRound / 2;
+
+            // Create subsequent rounds (empty for now)
+            let matchesInRound = firstRoundMatches / 2;
+            for (let round = 2; round <= numRounds; round++) {
+                for (let pos = 1; pos <= matchesInRound; pos++) {
+                    matches.push({
+                        tournamentId: tournament.id,
+                        round,
+                        position: pos,
+                        bracketType: 'UPPER',
+                        homeTeamId: null,
+                        awayTeamId: null,
+                        status: 'PENDING',
+                    });
+                }
+                matchesInRound = matchesInRound / 2;
+            }
         }
 
         await prisma.match.createMany({ data: matches });
@@ -401,7 +512,7 @@ tournamentsRouter.post(
                 homeTeam: { select: { id: true, name: true, logoUrl: true } },
                 awayTeam: { select: { id: true, name: true, logoUrl: true } },
             },
-            orderBy: [{ round: 'asc' }, { position: 'asc' }],
+            orderBy: [{ bracketType: 'asc' }, { round: 'asc' }, { position: 'asc' }],
         });
 
         res.json({ success: true, data: createdMatches });

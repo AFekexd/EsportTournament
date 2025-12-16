@@ -271,10 +271,12 @@ async function main() {
     ]);
     console.log(`✅ Created ${tournaments.length} tournaments`);
 
-    // Create Tournament Entries
+    // Create Tournament Entries for team tournaments
     console.log('📝 Creating tournament entries...');
     let entryCount = 0;
     for (const tournament of tournaments.slice(0, 5)) {
+        // Skip FIFA tournament (will add solo entries separately)
+        const game = games.find(g => tournaments.find(t => t.id === tournament.id && t.gameId === g.id));
         const numEntries = Math.min(tournament.maxTeams, 4 + Math.floor(Math.random() * 4));
         const selectedTeams = teams.sort(() => 0.5 - Math.random()).slice(0, numEntries);
 
@@ -289,7 +291,67 @@ async function main() {
             entryCount++;
         }
     }
-    console.log(`✅ Created ${entryCount} tournament entries`);
+    console.log(`✅ Created ${entryCount} team tournament entries`);
+
+    // Create Solo Tournament (FIFA 24 - 1v1)
+    console.log('🎮 Creating solo tournament...');
+    const soloTournament = await prisma.tournament.create({
+        data: {
+            name: 'FIFA 24 Solo Bajnokság',
+            description: '1v1 FIFA 24 verseny egyéni játékosoknak - nincs szükség csapatra!',
+            gameId: games.find(g => g.name === 'FIFA 24')!.id,
+            format: TournamentFormat.SINGLE_ELIMINATION,
+            status: TournamentStatus.REGISTRATION,
+            maxTeams: 32, // Actually max players for solo
+            startDate: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
+            endDate: new Date(now.getTime() + 8 * 24 * 60 * 60 * 1000),
+            registrationDeadline: new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000),
+        },
+    });
+
+    // Register individual players for solo tournament
+    let soloEntryCount = 0;
+    for (let i = 0; i < Math.min(users.length, 16); i++) {
+        await prisma.tournamentEntry.create({
+            data: {
+                tournament: { connect: { id: soloTournament.id } },
+                user: { connect: { id: users[i].id } },
+                seed: i + 1,
+            },
+        });
+        soloEntryCount++;
+    }
+    console.log(`✅ Created ${soloEntryCount} solo tournament entries`);
+
+    // Create Large Team Tournament (CS2 - 32 teams with many entries)
+    console.log('🏆 Creating large tournament...');
+    const largeTournament = await prisma.tournament.create({
+        data: {
+            name: 'Nagy CS2 Liga 2025',
+            description: 'A legnagyobb Counter-Strike 2 verseny - 32 csapattal!',
+            gameId: games.find(g => g.name === 'Counter-Strike 2')!.id,
+            format: TournamentFormat.DOUBLE_ELIMINATION,
+            status: TournamentStatus.REGISTRATION,
+            maxTeams: 32,
+            startDate: new Date(now.getTime() + 21 * 24 * 60 * 60 * 1000),
+            endDate: new Date(now.getTime() + 28 * 24 * 60 * 60 * 1000),
+            registrationDeadline: new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000),
+        },
+    });
+
+    // Register all teams for large tournament
+    let largeEntryCount = 0;
+    for (let i = 0; i < teams.length; i++) {
+        await prisma.tournamentEntry.create({
+            data: {
+                tournamentId: largeTournament.id,
+                teamId: teams[i].id,
+                seed: i + 1,
+            },
+        });
+        largeEntryCount++;
+    }
+    console.log(`✅ Created ${largeEntryCount} large tournament entries`);
 
     // Create Events
     console.log('📅 Creating events...');

@@ -64,14 +64,16 @@ matchesRouter.patch(
             throw new ApiError('Only organizers can update match results', 403, 'FORBIDDEN');
         }
 
-        const { homeScore, awayScore, winnerId } = req.body;
+        const { homeScore, awayScore, winnerId, winnerUserId } = req.body;
 
         const match = await prisma.match.findUnique({
             where: { id: req.params.id },
             include: {
                 homeTeam: true,
                 awayTeam: true,
-                tournament: true,
+                homeUser: true,
+                awayUser: true,
+                tournament: { include: { game: true } },
             },
         });
 
@@ -79,20 +81,40 @@ matchesRouter.patch(
             throw new ApiError('Match not found', 404, 'NOT_FOUND');
         }
 
-        // Allow editing completed matches for corrections
+        // Check if this is a solo (1v1) tournament
+        const isSoloTournament = match.tournament.game?.teamSize === 1;
 
-        // Validate winner
+        // Validate winner for team matches
         if (winnerId && winnerId !== match.homeTeamId && winnerId !== match.awayTeamId) {
             throw new ApiError('Invalid winner', 400, 'INVALID_WINNER');
         }
 
+        // Validate winner for solo matches
+        if (winnerUserId && winnerUserId !== match.homeUserId && winnerUserId !== match.awayUserId) {
+            throw new ApiError('Invalid winner user', 400, 'INVALID_WINNER');
+        }
+
         // Determine winner if not provided
         let actualWinnerId = winnerId;
-        if (!actualWinnerId && homeScore !== undefined && awayScore !== undefined) {
-            if (homeScore > awayScore) {
-                actualWinnerId = match.homeTeamId;
-            } else if (awayScore > homeScore) {
-                actualWinnerId = match.awayTeamId;
+        let actualWinnerUserId = winnerUserId;
+
+        if (isSoloTournament) {
+            // Solo tournament - determine winnerUserId
+            if (!actualWinnerUserId && homeScore !== undefined && awayScore !== undefined) {
+                if (homeScore > awayScore) {
+                    actualWinnerUserId = match.homeUserId;
+                } else if (awayScore > homeScore) {
+                    actualWinnerUserId = match.awayUserId;
+                }
+            }
+        } else {
+            // Team tournament - determine winnerId
+            if (!actualWinnerId && homeScore !== undefined && awayScore !== undefined) {
+                if (homeScore > awayScore) {
+                    actualWinnerId = match.homeTeamId;
+                } else if (awayScore > homeScore) {
+                    actualWinnerId = match.awayTeamId;
+                }
             }
         }
 
@@ -103,17 +125,37 @@ matchesRouter.patch(
                 homeScore,
                 awayScore,
                 winnerId: actualWinnerId,
+                winnerUserId: actualWinnerUserId,
                 status: 'COMPLETED',
                 playedAt: new Date(),
             },
             include: {
                 homeTeam: true,
                 awayTeam: true,
+                homeUser: true,
+                awayUser: true,
             },
         });
 
-        // Update ELO for both teams
-        if (actualWinnerId && match.homeTeam && match.awayTeam) {
+        // Update ELO
+        if (isSoloTournament && actualWinnerUserId && match.homeUser && match.awayUser) {
+            // Solo match - update user ELO
+            const winnerUser = actualWinnerUserId === match.homeUserId ? match.homeUser : match.awayUser;
+            const loserUser = actualWinnerUserId === match.homeUserId ? match.awayUser : match.homeUser;
+
+            const eloChange = calculateEloChange(winnerUser.elo, loserUser.elo);
+
+            await prisma.user.update({
+                where: { id: winnerUser.id },
+                data: { elo: { increment: eloChange } },
+            });
+
+            await prisma.user.update({
+                where: { id: loserUser.id },
+                data: { elo: { decrement: eloChange } },
+            });
+        } else if (!isSoloTournament && actualWinnerId && match.homeTeam && match.awayTeam) {
+            // Team match - update team ELO
             const winnerTeam = actualWinnerId === match.homeTeamId ? match.homeTeam : match.awayTeam;
             const loserTeam = actualWinnerId === match.homeTeamId ? match.awayTeam : match.homeTeam;
 
@@ -130,35 +172,171 @@ matchesRouter.patch(
             });
         }
 
-        // Advance winner to next round
-        if (actualWinnerId) {
-            const nextRound = match.round + 1;
-            const nextPosition = Math.ceil(match.position / 2);
+        // Advance winner to next round (and handle loser for double elimination)
+        const hasWinner = isSoloTournament ? actualWinnerUserId : actualWinnerId;
 
-            const nextMatch = await prisma.match.findFirst({
-                where: {
-                    tournamentId: match.tournamentId,
-                    round: nextRound,
-                    position: nextPosition,
-                },
-            });
+        if (hasWinner) {
+            // Get loser ID for double elimination drops
+            const loserId = isSoloTournament
+                ? (actualWinnerUserId === match.homeUserId ? match.awayUserId : match.homeUserId)
+                : (actualWinnerId === match.homeTeamId ? match.awayTeamId : match.homeTeamId);
 
-            if (nextMatch) {
-                // Determine if winner goes to home or away slot
-                const isHomeSlot = match.position % 2 === 1;
+            if (match.tournament.format === 'DOUBLE_ELIMINATION') {
+                // ==========================================
+                // DOUBLE ELIMINATION LOGIC
+                // ==========================================
 
-                await prisma.match.update({
-                    where: { id: nextMatch.id },
-                    data: isHomeSlot
-                        ? { homeTeamId: actualWinnerId }
-                        : { awayTeamId: actualWinnerId },
-                });
+                if (match.bracketType === 'UPPER') {
+                    // Winner advances in upper bracket
+                    const nextRound = match.round + 1;
+                    const nextPosition = Math.ceil(match.position / 2);
+
+                    const nextUpperMatch = await prisma.match.findFirst({
+                        where: {
+                            tournamentId: match.tournamentId,
+                            bracketType: 'UPPER',
+                            round: nextRound,
+                            position: nextPosition,
+                        },
+                    });
+
+                    if (nextUpperMatch) {
+                        const isHomeSlot = match.position % 2 === 1;
+                        const updateData = isSoloTournament
+                            ? (isHomeSlot ? { homeUserId: actualWinnerUserId } : { awayUserId: actualWinnerUserId })
+                            : (isHomeSlot ? { homeTeamId: actualWinnerId } : { awayTeamId: actualWinnerId });
+
+                        await prisma.match.update({
+                            where: { id: nextUpperMatch.id },
+                            data: updateData,
+                        });
+                    } else {
+                        // Upper bracket final - winner goes to grand final
+                        const grandFinal = await prisma.match.findFirst({
+                            where: {
+                                tournamentId: match.tournamentId,
+                                bracketType: 'GRAND_FINAL',
+                            },
+                        });
+                        if (grandFinal) {
+                            await prisma.match.update({
+                                where: { id: grandFinal.id },
+                                data: isSoloTournament
+                                    ? { homeUserId: actualWinnerUserId }
+                                    : { homeTeamId: actualWinnerId },
+                            });
+                        }
+                    }
+
+                    // Loser drops to lower bracket
+                    if (loserId) {
+                        const lowerRound = match.round === 1 ? 1 : match.round * 2 - 2;
+                        const lowerPosition = Math.ceil(match.position / 2);
+
+                        const lowerMatch = await prisma.match.findFirst({
+                            where: {
+                                tournamentId: match.tournamentId,
+                                bracketType: 'LOWER',
+                                round: lowerRound,
+                                position: lowerPosition,
+                            },
+                        });
+
+                        if (lowerMatch) {
+                            const updateData = isSoloTournament
+                                ? (lowerMatch.homeUserId ? { awayUserId: loserId } : { homeUserId: loserId })
+                                : (lowerMatch.homeTeamId ? { awayTeamId: loserId } : { homeTeamId: loserId });
+
+                            await prisma.match.update({
+                                where: { id: lowerMatch.id },
+                                data: updateData,
+                            });
+                        }
+                    }
+
+                } else if (match.bracketType === 'LOWER') {
+                    // Winner advances in lower bracket
+                    const nextLowerRound = match.round + 1;
+                    const nextPosition = match.round % 2 === 0
+                        ? Math.ceil(match.position / 2)
+                        : match.position;
+
+                    const nextLowerMatch = await prisma.match.findFirst({
+                        where: {
+                            tournamentId: match.tournamentId,
+                            bracketType: 'LOWER',
+                            round: nextLowerRound,
+                        },
+                        orderBy: { position: 'asc' },
+                    });
+
+                    if (nextLowerMatch) {
+                        const updateData = isSoloTournament
+                            ? (nextLowerMatch.homeUserId ? { awayUserId: actualWinnerUserId } : { homeUserId: actualWinnerUserId })
+                            : (nextLowerMatch.homeTeamId ? { awayTeamId: actualWinnerId } : { homeTeamId: actualWinnerId });
+
+                        await prisma.match.update({
+                            where: { id: nextLowerMatch.id },
+                            data: updateData,
+                        });
+                    } else {
+                        // Lower bracket final - winner goes to grand final
+                        const grandFinal = await prisma.match.findFirst({
+                            where: {
+                                tournamentId: match.tournamentId,
+                                bracketType: 'GRAND_FINAL',
+                            },
+                        });
+                        if (grandFinal) {
+                            await prisma.match.update({
+                                where: { id: grandFinal.id },
+                                data: isSoloTournament
+                                    ? { awayUserId: actualWinnerUserId }
+                                    : { awayTeamId: actualWinnerId },
+                            });
+                        }
+                    }
+
+                } else if (match.bracketType === 'GRAND_FINAL') {
+                    // Grand final completed - tournament done
+                    await prisma.tournament.update({
+                        where: { id: match.tournamentId },
+                        data: { status: 'COMPLETED' },
+                    });
+                }
+
             } else {
-                // This was the final match - tournament complete
-                await prisma.tournament.update({
-                    where: { id: match.tournamentId },
-                    data: { status: 'COMPLETED' },
+                // ==========================================
+                // SINGLE ELIMINATION LOGIC
+                // ==========================================
+                const nextRound = match.round + 1;
+                const nextPosition = Math.ceil(match.position / 2);
+
+                const nextMatch = await prisma.match.findFirst({
+                    where: {
+                        tournamentId: match.tournamentId,
+                        round: nextRound,
+                        position: nextPosition,
+                    },
                 });
+
+                if (nextMatch) {
+                    const isHomeSlot = match.position % 2 === 1;
+                    const updateData = isSoloTournament
+                        ? (isHomeSlot ? { homeUserId: actualWinnerUserId } : { awayUserId: actualWinnerUserId })
+                        : (isHomeSlot ? { homeTeamId: actualWinnerId } : { awayTeamId: actualWinnerId });
+
+                    await prisma.match.update({
+                        where: { id: nextMatch.id },
+                        data: updateData,
+                    });
+                } else {
+                    // This was the final match - tournament complete
+                    await prisma.tournament.update({
+                        where: { id: match.tournamentId },
+                        data: { status: 'COMPLETED' },
+                    });
+                }
             }
         }
 
