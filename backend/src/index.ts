@@ -12,6 +12,9 @@ import { tournamentsRouter } from './routes/tournaments.js';
 import { gamesRouter } from './routes/games.js';
 import { matchesRouter } from './routes/matches.js';
 import { statsRouter } from './routes/stats.js';
+import { notificationsRouter } from './routes/notifications.js';
+import { leaderboardsRouter } from './routes/leaderboards.js';
+import { discordRouter } from './routes/discordSettings.js';
 
 dotenv.config();
 
@@ -40,6 +43,9 @@ app.use('/api/tournaments', tournamentsRouter);
 app.use('/api/games', gamesRouter);
 app.use('/api/matches', matchesRouter);
 app.use('/api/stats', statsRouter);
+app.use('/api/notifications', notificationsRouter);
+app.use('/api/leaderboards', leaderboardsRouter);
+app.use('/api/discord', discordRouter);
 
 // Error handler
 app.use(errorHandler);

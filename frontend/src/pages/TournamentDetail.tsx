@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Trophy, Calendar, Users, Award, UserPlus } from 'lucide-react';
+import { ArrowLeft, Trophy, Calendar, Users, Award, UserPlus, Maximize, Minimize } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import { useAuth } from '../hooks/useAuth';
 import {
@@ -38,6 +38,11 @@ export function TournamentDetailPage() {
     const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
     const [selectedTeamId, setSelectedTeamId] = useState('');
     const [activeTab, setActiveTab] = useState<'info' | 'bracket'>('info');
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
+    const toggleFullscreen = () => {
+        setIsFullscreen(!isFullscreen);
+    };
 
     useEffect(() => {
         if (id) {
@@ -309,29 +314,39 @@ export function TournamentDetailPage() {
             )}
 
             {activeTab === 'bracket' && (
-                <div className="tournament-section card">
+                <div className={`tournament-section card ${isFullscreen ? 'fullscreen-bracket' : ''}`}>
                     <div className="section-header">
                         <h2 className="section-title">Bracket</h2>
-                        {(user?.role === 'ADMIN' || user?.role === 'ORGANIZER') && (
-                            <>
-                                {!currentTournament.matches?.length ? (
-                                    <button className="btn btn-primary" onClick={handleGenerateBracket}>
-                                        Bracket generálása
-                                    </button>
-                                ) : (
-                                    <button
-                                        className="btn btn-warning"
-                                        onClick={() => {
-                                            if (window.confirm('Biztosan újra akarod generálni a bracketet? Ez törli az összes jelenlegi meccset és eredményt!')) {
-                                                handleGenerateBracket();
-                                            }
-                                        }}
-                                    >
-                                        Bracket újragenerálása
-                                    </button>
-                                )}
-                            </>
-                        )}
+                        <div className="section-actions">
+                            {(user?.role === 'ADMIN' || user?.role === 'ORGANIZER') && (
+                                <>
+                                    {!currentTournament.matches?.length ? (
+                                        <button className="btn btn-primary" onClick={handleGenerateBracket}>
+                                            Bracket generálása
+                                        </button>
+                                    ) : (
+                                        <button
+                                            className="btn btn-warning"
+                                            onClick={() => {
+                                                if (window.confirm('Biztosan újra akarod generálni a bracketet? Ez törli az összes jelenlegi meccset és eredményt!')) {
+                                                    handleGenerateBracket();
+                                                }
+                                            }}
+                                        >
+                                            Bracket újragenerálása
+                                        </button>
+                                    )}
+                                </>
+                            )}
+                            <button
+                                className="btn btn-secondary"
+                                onClick={toggleFullscreen}
+                                title={isFullscreen ? 'Kilépés a teljes képernyőből' : 'Teljes képernyő'}
+                            >
+                                {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
+                                {isFullscreen ? 'Kilépés' : 'Teljes képernyő'}
+                            </button>
+                        </div>
                     </div>
                     <TournamentBracket
                         tournament={currentTournament}
@@ -451,6 +466,9 @@ export function TournamentDetailPage() {
                 <TournamentStatusModal
                     tournamentId={currentTournament.id}
                     currentStatus={currentTournament.status}
+                    currentNotifyUsers={currentTournament.notifyUsers}
+                    currentNotifyDiscord={currentTournament.notifyDiscord}
+                    currentDiscordChannel={currentTournament.discordChannelId}
                     onClose={() => setShowStatusModal(false)}
                 />
             )}

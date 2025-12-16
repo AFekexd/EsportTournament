@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
-import type Keycloak from 'keycloak-js';
 import type { User } from '../../types';
 import { authService } from '../../lib/auth-service';
 
@@ -7,7 +6,6 @@ interface AuthState {
     user: User | null;
     token: string | null;
     refreshToken: string | null;
-    keycloak: Keycloak | null;
     isAuthenticated: boolean;
     isLoading: boolean;
     error: string | null;
@@ -17,7 +15,6 @@ const initialState: AuthState = {
     user: null,
     token: null,
     refreshToken: null,
-    keycloak: null,
     isAuthenticated: false,
     isLoading: true,
     error: null,
@@ -29,10 +26,7 @@ export const initKeycloak = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const authenticated = await authService.init();
-            return {
-                authenticated,
-                keycloak: authService.keycloak,
-            };
+            return { authenticated };
         } catch (error) {
             return rejectWithValue(
                 error instanceof Error ? error.message : 'Failed to initialize authentication'
@@ -96,9 +90,6 @@ const authSlice = createSlice({
             state.error = action.payload;
             state.isLoading = false;
         },
-        setKeycloak: (state, action: PayloadAction<Keycloak | null>) => {
-            state.keycloak = action.payload;
-        },
     },
     extraReducers: (builder) => {
         builder
@@ -108,7 +99,6 @@ const authSlice = createSlice({
                 state.error = null;
             })
             .addCase(initKeycloak.fulfilled, (state, action) => {
-                state.keycloak = action.payload.keycloak;
                 state.isAuthenticated = action.payload.authenticated;
                 state.isLoading = false;
                 state.error = null;
@@ -148,6 +138,6 @@ const authSlice = createSlice({
     },
 });
 
-export const { setCredentials, clearCredentials, setLoading, setError, setKeycloak } = authSlice.actions;
+export const { setCredentials, clearCredentials, setLoading, setError } = authSlice.actions;
 export default authSlice.reducer;
 

@@ -68,6 +68,9 @@ export interface Tournament {
     startDate: string;
     endDate?: string;
     registrationDeadline: string;
+    notifyUsers?: boolean;
+    notifyDiscord?: boolean;
+    discordChannelId?: string;
     createdAt: string;
     updatedAt: string;
     entries?: TournamentEntry[];

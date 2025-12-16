@@ -1,10 +1,11 @@
 import { useCallback, useMemo } from 'react';
 import { useAppSelector, useAppDispatch } from './useRedux';
 import { login, logout } from '../store/slices/authSlice';
+import { authService } from '../lib/auth-service';
 
 export function useAuth() {
     const dispatch = useAppDispatch();
-    const { user, keycloak, isAuthenticated, isLoading, error } = useAppSelector(
+    const { user, isAuthenticated, isLoading, error } = useAppSelector(
         (state) => state.auth
     );
 
@@ -17,6 +18,7 @@ export function useAuth() {
     }, [dispatch]);
 
     const getToken = useCallback(async (): Promise<string | null> => {
+        const keycloak = authService.keycloak;
         if (!keycloak) return null;
 
         try {
@@ -26,7 +28,7 @@ export function useAuth() {
         } catch {
             return null;
         }
-    }, [keycloak]);
+    }, []);
 
     const isAdmin = useMemo(() => user?.role === 'ADMIN', [user]);
     const isOrganizer = useMemo(
@@ -40,7 +42,7 @@ export function useAuth() {
 
     return {
         user,
-        keycloak,
+        keycloak: authService.keycloak,
         isAuthenticated,
         isLoading,
         error,

@@ -172,6 +172,36 @@ matchesRouter.patch(
             });
         }
 
+        // Send notifications if enabled
+        if (match.tournament.notifyUsers || match.tournament.notifyDiscord) {
+            // Import notification service
+            const { notificationService } = await import('../services/notificationService.js');
+            const { discordService } = await import('../services/discordService.js');
+
+            // Send in-app notifications to team members
+            if (match.tournament.notifyUsers) {
+                await notificationService.notifyMatchResultToTeams(updatedMatch, match.tournament);
+            }
+
+            // Send Discord notification
+            if (match.tournament.notifyDiscord && (actualWinnerId || actualWinnerUserId)) {
+                const homeTeamName = updatedMatch.homeTeam?.name || updatedMatch.homeUser?.displayName || updatedMatch.homeUser?.username || 'TBD';
+                const awayTeamName = updatedMatch.awayTeam?.name || updatedMatch.awayUser?.displayName || updatedMatch.awayUser?.username || 'TBD';
+                const winnerName = isSoloTournament
+                    ? (actualWinnerUserId === updatedMatch.homeUserId ? homeTeamName : awayTeamName)
+                    : (actualWinnerId === updatedMatch.homeTeamId ? homeTeamName : awayTeamName);
+
+                await discordService.sendMatchResult({
+                    tournament: match.tournament.name,
+                    homeTeam: homeTeamName,
+                    awayTeam: awayTeamName,
+                    homeScore: updatedMatch.homeScore ?? 0,
+                    awayScore: updatedMatch.awayScore ?? 0,
+                    winner: winnerName,
+                }, match.tournament.discordChannelId || 'matches');
+            }
+        }
+
         // Advance winner to next round (and handle loser for double elimination)
         const hasWinner = isSoloTournament ? actualWinnerUserId : actualWinnerId;
 
@@ -309,8 +339,13 @@ matchesRouter.patch(
                 // ==========================================
                 // SINGLE ELIMINATION LOGIC
                 // ==========================================
+                console.log('🏆 Single Elimination - Advancing winner');
+                console.log('Current match:', { round: match.round, position: match.position, winnerId: actualWinnerId });
+
                 const nextRound = match.round + 1;
                 const nextPosition = Math.ceil(match.position / 2);
+
+                console.log('Looking for next match:', { nextRound, nextPosition, tournamentId: match.tournamentId });
 
                 const nextMatch = await prisma.match.findFirst({
                     where: {
@@ -320,18 +355,25 @@ matchesRouter.patch(
                     },
                 });
 
+                console.log('Next match found:', nextMatch ? { id: nextMatch.id, round: nextMatch.round, position: nextMatch.position } : 'NULL');
+
                 if (nextMatch) {
                     const isHomeSlot = match.position % 2 === 1;
                     const updateData = isSoloTournament
                         ? (isHomeSlot ? { homeUserId: actualWinnerUserId } : { awayUserId: actualWinnerUserId })
                         : (isHomeSlot ? { homeTeamId: actualWinnerId } : { awayTeamId: actualWinnerId });
 
+                    console.log('Updating next match with:', { isHomeSlot, updateData });
+
                     await prisma.match.update({
                         where: { id: nextMatch.id },
                         data: updateData,
                     });
+
+                    console.log('✅ Next match updated successfully');
                 } else {
                     // This was the final match - tournament complete
+                    console.log('🏁 Final match - completing tournament');
                     await prisma.tournament.update({
                         where: { id: match.tournamentId },
                         data: { status: 'COMPLETED' },

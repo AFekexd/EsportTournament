@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { Tournament, ApiResponse } from '../../types';
 import { API_URL } from '../../config';
-import type { RootState } from '../index';
+import { authService } from '../../lib/auth-service';
 
 interface TournamentsState {
     tournaments: Tournament[];
@@ -28,16 +28,12 @@ const initialState: TournamentsState = {
     pagination: null,
 };
 
-const getToken = (state: RootState) => state.auth.keycloak?.token;
+const getToken = () => authService.keycloak?.token;
 
 export const fetchTournaments = createAsyncThunk(
     'tournaments/fetchTournaments',
-    async (
-        { page = 1, status, gameId }: { page?: number; status?: string; gameId?: string },
-        { getState }
-    ) => {
-        const state = getState() as RootState;
-        const token = getToken(state);
+    async ({ page = 1, status, gameId }: { page?: number; status?: string; gameId?: string }) => {
+        const token = getToken();
 
         const params = new URLSearchParams({ page: String(page), limit: '12' });
         if (status) params.append('status', status);
@@ -59,9 +55,8 @@ export const fetchTournaments = createAsyncThunk(
 
 export const fetchTournament = createAsyncThunk(
     'tournaments/fetchTournament',
-    async (id: string, { getState }) => {
-        const state = getState() as RootState;
-        const token = getToken(state);
+    async (id: string) => {
+        const token = getToken();
 
         const response = await fetch(`${API_URL}/tournaments/${id}`, {
             headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -79,9 +74,8 @@ export const fetchTournament = createAsyncThunk(
 
 export const registerForTournament = createAsyncThunk(
     'tournaments/register',
-    async ({ tournamentId, teamId }: { tournamentId: string; teamId: string }, { getState }) => {
-        const state = getState() as RootState;
-        const token = getToken(state);
+    async ({ tournamentId, teamId }: { tournamentId: string; teamId: string }) => {
+        const token = getToken();
 
         if (!token) throw new Error('Not authenticated');
 
@@ -106,9 +100,8 @@ export const registerForTournament = createAsyncThunk(
 
 export const unregisterFromTournament = createAsyncThunk(
     'tournaments/unregister',
-    async ({ tournamentId, teamId }: { tournamentId: string; teamId: string }, { getState }) => {
-        const state = getState() as RootState;
-        const token = getToken(state);
+    async ({ tournamentId, teamId }: { tournamentId: string; teamId: string }) => {
+        const token = getToken();
 
         if (!token) throw new Error('Not authenticated');
 
@@ -143,8 +136,7 @@ export const createTournament = createAsyncThunk(
         },
         { getState }
     ) => {
-        const state = getState() as RootState;
-        const token = getToken(state);
+        const token = getToken();
 
         if (!token) throw new Error('Not authenticated');
 
@@ -179,12 +171,14 @@ export const updateTournament = createAsyncThunk(
                 startDate?: string;
                 endDate?: string;
                 registrationDeadline?: string;
+                notifyUsers?: boolean;
+                notifyDiscord?: boolean;
+                discordChannelId?: string;
             }
         },
         { getState }
     ) => {
-        const state = getState() as RootState;
-        const token = getToken(state);
+        const token = getToken();
 
         if (!token) throw new Error('Not authenticated');
 
@@ -209,9 +203,8 @@ export const updateTournament = createAsyncThunk(
 
 export const generateBracket = createAsyncThunk(
     'tournaments/generateBracket',
-    async (tournamentId: string, { getState }) => {
-        const state = getState() as RootState;
-        const token = getToken(state);
+    async (tournamentId: string) => {
+        const token = getToken();
 
         if (!token) throw new Error('Not authenticated');
 
@@ -234,12 +227,8 @@ export const generateBracket = createAsyncThunk(
 
 export const updateMatch = createAsyncThunk(
     'tournaments/updateMatch',
-    async (
-        { matchId, data }: { matchId: string; data: { homeScore?: number; awayScore?: number; winnerId?: string } },
-        { getState }
-    ) => {
-        const state = getState() as RootState;
-        const token = getToken(state);
+    async ({ matchId, data }: { matchId: string; data: { homeScore?: number; awayScore?: number; winnerId?: string } }) => {
+        const token = getToken();
 
         if (!token) throw new Error('Not authenticated');
 

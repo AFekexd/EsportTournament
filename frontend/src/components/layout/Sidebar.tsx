@@ -9,6 +9,8 @@ import {
     Shield,
     ChevronLeft,
     ChevronRight,
+    TrendingUp,
+    MessageSquare,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useAppSelector, useAppDispatch } from '../../hooks/useRedux';
@@ -28,10 +30,12 @@ const navItems: NavItem[] = [
     { to: '/teams', icon: <Users size={20} />, label: 'Csapatok' },
     { to: '/games', icon: <Gamepad2 size={20} />, label: 'Játékok' },
     { to: '/calendar', icon: <Calendar size={20} />, label: 'Naptár' },
+    { to: '/leaderboards', icon: <TrendingUp size={20} />, label: 'Ranglisták' },
 ];
 
 const adminItems: NavItem[] = [
     { to: '/admin', icon: <Shield size={20} />, label: 'Admin', roles: ['ADMIN', 'ORGANIZER'] },
+    { to: '/discord-settings', icon: <MessageSquare size={20} />, label: 'Discord', roles: ['ADMIN', 'ORGANIZER'] },
     { to: '/settings', icon: <Settings size={20} />, label: 'Beállítások' },
 ];
 

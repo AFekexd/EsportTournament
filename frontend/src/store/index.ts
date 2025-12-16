@@ -5,6 +5,7 @@ import tournamentsReducer from './slices/tournamentsSlice';
 import gamesReducer from './slices/gamesSlice';
 import uiReducer from './slices/uiSlice';
 import statsReducer from './slices/statsSlice';
+import notificationsReducer from './slices/notificationsSlice';
 
 export const store = configureStore({
     reducer: {
@@ -14,14 +15,8 @@ export const store = configureStore({
         games: gamesReducer,
         ui: uiReducer,
         stats: statsReducer,
+        notifications: notificationsReducer,
     },
-    middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-            serializableCheck: {
-                ignoredActions: ['auth/setKeycloak'],
-                ignoredPaths: ['auth.keycloak'],
-            },
-        }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

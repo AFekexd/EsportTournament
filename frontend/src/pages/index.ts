@@ -10,3 +10,6 @@ export { TeamCreatePage } from './TeamCreate';
 export { TeamDetailPage } from './TeamDetail';
 export { GameDetailPage } from './GameDetail';
 export { TournamentDetailPage } from './TournamentDetail';
+export { LeaderboardsPage } from './Leaderboards';
+export { NotificationsPage } from './Notifications';
+export { DiscordAdminPage } from './DiscordSettings';

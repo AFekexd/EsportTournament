@@ -169,6 +169,9 @@ tournamentsRouter.patch(
             startDate,
             endDate,
             registrationDeadline,
+            notifyUsers,
+            notifyDiscord,
+            discordChannelId,
         } = req.body;
 
         const updated = await prisma.tournament.update({
@@ -181,6 +184,9 @@ tournamentsRouter.patch(
                 ...(startDate && { startDate: new Date(startDate) }),
                 ...(endDate !== undefined && { endDate: endDate ? new Date(endDate) : null }),
                 ...(registrationDeadline && { registrationDeadline: new Date(registrationDeadline) }),
+                ...(notifyUsers !== undefined && { notifyUsers }),
+                ...(notifyDiscord !== undefined && { notifyDiscord }),
+                ...(discordChannelId !== undefined && { discordChannelId }),
             },
             include: { game: true },
         });
@@ -511,10 +517,73 @@ tournamentsRouter.post(
             include: {
                 homeTeam: { select: { id: true, name: true, logoUrl: true } },
                 awayTeam: { select: { id: true, name: true, logoUrl: true } },
+                homeUser: { select: { id: true, username: true, displayName: true } },
+                awayUser: { select: { id: true, username: true, displayName: true } },
             },
             orderBy: [{ bracketType: 'asc' }, { round: 'asc' }, { position: 'asc' }],
         });
 
-        res.json({ success: true, data: createdMatches });
+        // Auto-advance byes (matches with only one participant)
+        console.log('🔄 Processing automatic byes...');
+        for (const match of createdMatches) {
+            const isSoloMatch = !!(match.homeUserId || match.awayUserId);
+            const hasHome = isSoloMatch ? !!match.homeUserId : !!match.homeTeamId;
+            const hasAway = isSoloMatch ? !!match.awayUserId : !!match.awayTeamId;
+
+            // If only one participant, auto-advance them
+            if ((hasHome && !hasAway) || (!hasHome && hasAway)) {
+                const winnerId = hasHome ? (isSoloMatch ? match.homeUserId : match.homeTeamId) : (isSoloMatch ? match.awayUserId : match.awayTeamId);
+
+                console.log(`✅ Auto-advancing bye in match ${match.id}, round ${match.round}, position ${match.position}`);
+
+                // Mark match as completed with winner
+                await prisma.match.update({
+                    where: { id: match.id },
+                    data: {
+                        status: 'COMPLETED',
+                        ...(isSoloMatch ? { winnerUserId: winnerId } : { winnerId }),
+                        playedAt: new Date(),
+                    },
+                });
+
+                // Advance to next round
+                const nextRound = match.round + 1;
+                const nextPosition = Math.ceil(match.position / 2);
+                const isHomeSlot = match.position % 2 === 1;
+
+                const nextMatch = await prisma.match.findFirst({
+                    where: {
+                        tournamentId: tournament.id,
+                        round: nextRound,
+                        position: nextPosition,
+                        bracketType: match.bracketType || 'UPPER',
+                    },
+                });
+
+                if (nextMatch) {
+                    console.log(`  ➡️ Advancing to round ${nextRound}, position ${nextPosition}, slot: ${isHomeSlot ? 'home' : 'away'}`);
+                    await prisma.match.update({
+                        where: { id: nextMatch.id },
+                        data: isSoloMatch
+                            ? (isHomeSlot ? { homeUserId: winnerId } : { awayUserId: winnerId })
+                            : (isHomeSlot ? { homeTeamId: winnerId } : { awayTeamId: winnerId }),
+                    });
+                }
+            }
+        }
+
+        // Fetch final state after bye processing
+        const finalMatches = await prisma.match.findMany({
+            where: { tournamentId: tournament.id },
+            include: {
+                homeTeam: { select: { id: true, name: true, logoUrl: true } },
+                awayTeam: { select: { id: true, name: true, logoUrl: true } },
+                homeUser: { select: { id: true, username: true, displayName: true } },
+                awayUser: { select: { id: true, username: true, displayName: true } },
+            },
+            orderBy: [{ bracketType: 'asc' }, { round: 'asc' }, { position: 'asc' }],
+        });
+
+        res.json({ success: true, data: finalMatches });
     })
 );

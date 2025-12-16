@@ -51,7 +51,9 @@ export function MatchEditModal({ match, onClose, onSave, isLoading }: MatchEditM
         if (awayScore !== '') {
             data.awayScore = parseInt(awayScore, 10);
         }
-        if (winnerId) {
+
+        // Send winnerId if it has a value (user selected or pre-existing)
+        if (winnerId && winnerId !== '') {
             // For solo matches, use winnerUserId; for team matches, use winnerId
             if (solo) {
                 data.winnerUserId = winnerId;
@@ -59,6 +61,7 @@ export function MatchEditModal({ match, onClose, onSave, isLoading }: MatchEditM
                 data.winnerId = winnerId;
             }
         }
+        // If winnerId is empty, backend will determine automatically from scores
 
         onSave(data);
     };

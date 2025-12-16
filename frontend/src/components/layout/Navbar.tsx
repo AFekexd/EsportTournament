@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import { Menu, Bell, LogIn, LogOut, Search, Shield, Crown, Star } from 'lucide-react';
+import { Bell, LogIn, LogOut, Shield, Crown, Star } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-import { useAppDispatch } from '../../hooks/useRedux';
-import { toggleMobileMenu } from '../../store/slices/uiSlice';
-import { Input } from '../ui/input';
+import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
+import { fetchUnreadCount } from '../../store/slices/notificationsSlice';
+import { useEffect } from 'react';
 
 const getRoleIcon = (role: string) => {
     switch (role) {
@@ -35,14 +35,26 @@ const getRoleColor = (role: string) => {
 export function Navbar() {
     const dispatch = useAppDispatch();
     const { user, isAuthenticated, isLoading, login, logout } = useAuth();
+    const { unreadCount } = useAppSelector((state) => state.notifications);
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            dispatch(fetchUnreadCount());
+            // Refresh every 30 seconds
+            const interval = setInterval(() => {
+                dispatch(fetchUnreadCount());
+            }, 30000);
+            return () => clearInterval(interval);
+        }
+    }, [isAuthenticated, dispatch]);
 
     return (
         <header className="sticky top-0 z-40 w-full">
             <div className="relative flex h-16 items-center justify-between border-b border-white/5 bg-background/60 px-6 backdrop-blur-xl supports-[backdrop-filter]:bg-background/20">
                 <div className="flex items-center gap-4">
-          
 
-           
+
+
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -50,12 +62,14 @@ export function Navbar() {
                         <div className="h-9 w-24 animate-pulse rounded-full bg-white/5" />
                     ) : isAuthenticated && user ? (
                         <>
-                            <button className="group relative flex h-9 w-9 items-center justify-center rounded-full border border-white/5 bg-white/5 transition-all hover:border-primary/50 hover:bg-primary/10 hover:text-primary" aria-label="Notifications">
+                            <Link to="/notifications" className="group relative flex h-9 w-9 items-center justify-center rounded-full border border-white/5 bg-white/5 transition-all hover:border-primary/50 hover:bg-primary/10 hover:text-primary" aria-label="Notifications">
                                 <Bell size={18} className="text-muted-foreground transition-colors group-hover:text-primary" />
-                                <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-[0_0_10px_rgba(139,92,246,0.5)]">
-                                    3
-                                </span>
-                            </button>
+                                {unreadCount > 0 && (
+                                    <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-[0_0_10px_rgba(139,92,246,0.5)]">
+                                        {unreadCount > 9 ? '9+' : unreadCount}
+                                    </span>
+                                )}
+                            </Link>
 
                             <div className="flex items-center gap-4">
                                 <Link to="/profile" className="flex items-center gap-3 transition-opacity hover:opacity-80">

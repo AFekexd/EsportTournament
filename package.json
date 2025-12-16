@@ -1,0 +1,24 @@
+{
+    "name": "esport-tournament",
+    "version": "1.0.0",
+    "description": "Esport Tournament Platform - Full Stack Application",
+    "private": true,
+    "scripts": {
+        "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" --names \"BACKEND,FRONTEND\" --prefix-colors \"cyan,magenta\"",
+        "dev:backend": "cd backend && npm run dev",
+        "dev:frontend": "cd frontend && npm run dev",
+        "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+        "init": "npm run install:all && cd backend && npm run db:migrate && npm run db:seed"
+    },
+    "devDependencies": {
+        "concurrently": "^9.1.2"
+    },
+    "keywords": [
+        "esport",
+        "tournament",
+        "gaming",
+        "fullstack"
+    ],
+    "author": "",
+    "license": "ISC"
+}

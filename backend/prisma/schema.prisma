@@ -84,6 +84,7 @@ model User {
   notifications     Notification[]
   gameStats         GameStats[]
   tournamentEntries TournamentEntry[]  // For solo tournament registration
+  discordSettings   DiscordSettings?
   // Match relations for solo tournaments
   homeMatches       Match[]            @relation("HomeUser")
   awayMatches       Match[]            @relation("AwayUser")
@@ -152,6 +153,11 @@ model Tournament {
   registrationDeadline DateTime
   createdAt            DateTime         @default(now())
   updatedAt            DateTime         @updatedAt
+
+  // Notification settings
+  notifyUsers      Boolean @default(false) // Send in-app notifications
+  notifyDiscord    Boolean @default(false) // Post to Discord
+  discordChannelId String? @default("matches") // Which Discord channel to use
 
   entries TournamentEntry[]
   matches Match[]
@@ -242,4 +248,22 @@ model Event {
   location    String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+}
+
+// Discord notification settings
+model DiscordSettings {
+  id                       String   @id @default(uuid())
+  userId                   String   @unique
+  enabled                  Boolean  @default(false)
+  webhookUrl               String?
+  notifyOnTournamentStart  Boolean  @default(true)
+  notifyOnMatchScheduled   Boolean  @default(true)
+  notifyOnMatchResult      Boolean  @default(true)
+  notifyOnTeamInvite       Boolean  @default(true)
+  notifyOnRoundComplete    Boolean  @default(true)
+  mentionRole              String?  // Discord role to mention (e.g., @everyone, role ID)
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
