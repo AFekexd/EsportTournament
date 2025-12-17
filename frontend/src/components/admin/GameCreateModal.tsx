@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { X, Gamepad2 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { createGame } from '../../store/slices/gamesSlice';
-import './AdminModals.css';
 
 interface GameCreateModalProps {
     onClose: () => void;

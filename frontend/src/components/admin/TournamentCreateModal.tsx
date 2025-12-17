@@ -3,7 +3,7 @@ import { X, Trophy } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { createTournament } from '../../store/slices/tournamentsSlice';
 import { fetchGames } from '../../store/slices/gamesSlice';
-import './AdminModals.css';
+
 
 interface TournamentCreateModalProps {
     onClose: () => void;
@@ -79,7 +79,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content modal-large" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-content max-w-[800px]" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                     <h2 className="modal-title">Új verseny létrehozása</h2>
                     <button className="modal-close" onClick={onClose}>

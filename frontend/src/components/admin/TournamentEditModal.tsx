@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { updateTournament } from '../../store/slices/tournamentsSlice';
 import { fetchGames } from '../../store/slices/gamesSlice';
 import type { Tournament } from '../../types';
-import './AdminModals.css';
+
 
 interface TournamentEditModalProps {
     tournament: Tournament;
@@ -98,7 +98,7 @@ export function TournamentEditModal({ tournament, onClose }: TournamentEditModal
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content modal-large" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-content max-w-[800px]" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                     <h2 className="modal-title">Verseny szerkesztése</h2>
                     <button className="modal-close" onClick={onClose}>
