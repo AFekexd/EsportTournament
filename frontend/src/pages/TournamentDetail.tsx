@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Trophy, Calendar, Users, Award, UserPlus, Maximize, Minimize } from 'lucide-react';
+import { ArrowLeft, Trophy, Calendar, Users, Award, UserPlus, Maximize, Minimize, Shield, Clock } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import { useAuth } from '../hooks/useAuth';
 import {
@@ -14,14 +14,13 @@ import { fetchTeams } from '../store/slices/teamsSlice';
 import { TournamentStatusModal } from '../components/admin';
 import { TournamentBracket, MatchEditModal } from '../components/tournament';
 import type { Match } from '../types';
-import './TournamentDetail.css';
 
-const statusLabels: Record<string, { label: string; class: string }> = {
-    DRAFT: { label: 'Tervezet', class: 'badge' },
-    REGISTRATION: { label: 'Regisztráció nyitva', class: 'badge badge-success' },
-    IN_PROGRESS: { label: 'Folyamatban', class: 'badge badge-warning' },
-    COMPLETED: { label: 'Befejezett', class: 'badge badge-primary' },
-    CANCELLED: { label: 'Törölve', class: 'badge badge-error' },
+const statusLabels: Record<string, { label: string; class: string; icon: any }> = {
+    DRAFT: { label: 'Tervezet', class: 'bg-gray-500/20 text-gray-400 border-gray-500/50', icon: Clock },
+    REGISTRATION: { label: 'Regisztráció nyitva', class: 'bg-green-500/20 text-green-400 border-green-500/50', icon: UserPlus },
+    IN_PROGRESS: { label: 'Folyamatban', class: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/50', icon: Clock },
+    COMPLETED: { label: 'Befejezett', class: 'bg-blue-500/20 text-blue-400 border-blue-500/50', icon: Trophy },
+    CANCELLED: { label: 'Törölve', class: 'bg-red-500/20 text-red-400 border-red-500/50', icon: Shield },
 };
 
 export function TournamentDetailPage() {
@@ -67,7 +66,6 @@ export function TournamentDetailPage() {
             })).unwrap();
 
             setShowRegisterModal(false);
-            // Refresh tournament data
             dispatch(fetchTournament(currentTournament.id));
         } catch (err) {
             console.error('Failed to register:', err);
@@ -79,7 +77,6 @@ export function TournamentDetailPage() {
 
         try {
             await dispatch(generateBracket(currentTournament.id)).unwrap();
-            // Refresh tournament to get matches
             dispatch(fetchTournament(currentTournament.id));
         } catch (err) {
             console.error('Failed to generate bracket:', err);
@@ -87,7 +84,6 @@ export function TournamentDetailPage() {
     };
 
     const handleMatchClick = (match: Match) => {
-        console.log('Match clicked:', match.id, 'User role:', user?.role);
         if (user?.role === 'ADMIN' || user?.role === 'ORGANIZER') {
             setSelectedMatch(match);
             setShowMatchModal(true);
@@ -101,7 +97,6 @@ export function TournamentDetailPage() {
             await dispatch(updateMatch({ matchId: selectedMatch.id, data })).unwrap();
             setShowMatchModal(false);
             setSelectedMatch(null);
-            // Refresh tournament
             if (currentTournament) {
                 dispatch(fetchTournament(currentTournament.id));
             }
@@ -112,9 +107,9 @@ export function TournamentDetailPage() {
 
     if (isLoading || !currentTournament) {
         return (
-            <div className="loading-container">
-                <div className="spinner-large" />
-                <p>Betöltés...</p>
+            <div className="flex flex-col items-center justify-center min-h-[60vh]">
+                <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
+                <p className="text-gray-400 animate-pulse">Betöltés...</p>
             </div>
         );
     }
@@ -123,315 +118,282 @@ export function TournamentDetailPage() {
     const regDeadline = new Date(currentTournament.registrationDeadline);
     const isRegistrationOpen = currentTournament.status === 'REGISTRATION' && new Date() < regDeadline;
     const userTeamIds = myTeams.map(t => t.id);
-    const isAlreadyRegistered = currentTournament.entries?.some(e => userTeamIds.includes(e.teamId));
+    const isAlreadyRegistered = currentTournament.entries?.some(e => e.teamId && userTeamIds.includes(e.teamId));
+    const StatusIcon = statusLabels[currentTournament.status]?.icon || Shield;
 
     return (
-        <div className="tournament-detail-page">
-            {/* Header */}
-            <div className="page-header">
-                <button className="btn btn-ghost" onClick={() => navigate('/tournaments')}>
-                    <ArrowLeft size={18} />
-                    Vissza
-                </button>
-            </div>
-
-            {/* Tournament Header */}
-            <div className="tournament-header card">
-                <div className="tournament-header-content">
-                    <div className="tournament-info">
-                        <div className="tournament-game-badge">
-                            {currentTournament.game?.imageUrl && (
-                                <img src={currentTournament.game.imageUrl} alt={currentTournament.game.name} />
-                            )}
-                            <span>{currentTournament.game?.name}</span>
-                        </div>
-                        <h1 className="tournament-name">{currentTournament.name}</h1>
-                        {currentTournament.description && (
-                            <p className="tournament-description">{currentTournament.description}</p>
-                        )}
-                        <div className="tournament-meta">
-                            <span className="meta-item">
-                                <Calendar size={16} />
-                                {startDate.toLocaleDateString('hu-HU', { year: 'numeric', month: 'long', day: 'numeric' })}
-                            </span>
-                            <span className="meta-item">
-                                <Users size={16} />
-                                {currentTournament._count?.entries || 0} / {currentTournament.maxTeams} csapat
-                            </span>
-                            <span className={statusLabels[currentTournament.status]?.class}>
-                                {statusLabels[currentTournament.status]?.label}
-                            </span>
-                        </div>
-                    </div>
-
-                    {isRegistrationOpen && isAuthenticated && !isAlreadyRegistered && (
-                        <button
-                            className="btn btn-primary"
-                            onClick={() => setShowRegisterModal(true)}
-                        >
-                            <UserPlus size={18} />
-                            Regisztráció
-                        </button>
+        <div className="min-h-screen pb-12">
+            {/* Hero Section */}
+            <div className="relative h-[400px] w-full mb-8 group">
+                <div className="absolute inset-0 overflow-hidden">
+                    {currentTournament.game?.imageUrl ? (
+                        <img
+                            src={currentTournament.game.imageUrl}
+                            alt={currentTournament.game.name}
+                            className="w-full h-full object-cover filter brightness-[0.3] group-hover:brightness-[0.4] transition-all duration-700"
+                        />
+                    ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-gray-900 to-black" />
                     )}
-
-                    {user?.role === 'ADMIN' && (
-                        <button
-                            className="btn btn-secondary"
-                            onClick={() => setShowStatusModal(true)}
-                        >
-                            Státusz módosítása
-                        </button>
-                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0f1016] via-[#0f1016]/80 to-transparent" />
                 </div>
-            </div>
 
-            {/* Stats Grid */}
-            <div className="stats-grid">
-                <div className="stat-card card">
-                    <div className="stat-icon">
-                        <Trophy />
-                    </div>
-                    <div className="stat-info">
-                        <span className="stat-label">Formátum</span>
-                        <span className="stat-value">
-                            {currentTournament.format === 'SINGLE_ELIMINATION' ? 'Egyenes kieséses' :
-                                currentTournament.format === 'DOUBLE_ELIMINATION' ? 'Dupla kieséses' :
-                                    currentTournament.format === 'ROUND_ROBIN' ? 'Körmérkőzés' : currentTournament.format}
-                        </span>
-                    </div>
-                </div>
-                <div className="stat-card card">
-                    <div className="stat-icon">
-                        <Calendar />
-                    </div>
-                    <div className="stat-info">
-                        <span className="stat-label">Regisztráció határideje</span>
-                        <span className="stat-value">{regDeadline.toLocaleDateString('hu-HU')}</span>
-                    </div>
-                </div>
-                {(currentTournament as any).prizePool && (
-                    <div className="stat-card card">
-                        <div className="stat-icon">
-                            <Award />
-                        </div>
-                        <div className="stat-info">
-                            <span className="stat-label">Díjazás</span>
-                            <span className="stat-value">{(currentTournament as any).prizePool}</span>
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {/* Tabs */}
-            <div className="tabs-container">
-                <div className="tabs">
+                <div className="container mx-auto px-4 h-full relative flex flex-col justify-end pb-12">
                     <button
-                        className={`tab ${activeTab === 'info' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('info')}
+                        className="absolute top-8 left-4 flex items-center gap-2 text-gray-400 hover:text-white transition-colors bg-black/30 hover:bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full border border-white/5"
+                        onClick={() => navigate('/tournaments')}
                     >
-                        Információk
+                        <ArrowLeft size={18} />
+                        Vissza
                     </button>
-                    <button
-                        className={`tab ${activeTab === 'bracket' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('bracket')}
-                    >
-                        Bracket
-                    </button>
-                </div>
-            </div>
 
-            {/* Tab Content */}
-            {activeTab === 'info' && (
-                <>
-                    {/* Registered Participants */}
-                    <div className="tournament-section card">
-                        <h2 className="section-title">
-                            {currentTournament.game?.teamSize === 1 ? 'Regisztrált játékosok' : 'Regisztrált csapatok'}
-                        </h2>
-
-                        {currentTournament.entries && currentTournament.entries.length > 0 ? (
-                            <div className="teams-grid">
-                                {currentTournament.entries.map((entry) => {
-                                    // Solo entry (player without team)
-                                    if (entry.user && !entry.team) {
-                                        return (
-                                            <div key={entry.id} className="team-entry card">
-                                                <div className="team-entry-content">
-                                                    {entry.user.avatarUrl ? (
-                                                        <div className="team-logo">
-                                                            <img src={entry.user.avatarUrl} alt={entry.user.displayName || entry.user.username} />
-                                                        </div>
-                                                    ) : (
-                                                        <div className="team-logo player-avatar">
-                                                            {(entry.user.displayName || entry.user.username).charAt(0).toUpperCase()}
-                                                        </div>
-                                                    )}
-                                                    <div className="team-info">
-                                                        <h3>{entry.user.displayName || entry.user.username}</h3>
-                                                        <p className="team-elo">{entry.user.elo || 1000} ELO</p>
-                                                    </div>
-                                                </div>
-                                                <span className="team-seed">#{entry.seed}</span>
-                                            </div>
-                                        );
-                                    }
-
-                                    // Team entry
-                                    if (entry.team) {
-                                        return (
-                                            <Link
-                                                key={entry.id}
-                                                to={`/teams/${entry.team.id}`}
-                                                className="team-entry card"
-                                            >
-                                                <div className="team-entry-content">
-                                                    {entry.team.logoUrl && (
-                                                        <div className="team-logo">
-                                                            <img src={entry.team.logoUrl} alt={entry.team.name} />
-                                                        </div>
-                                                    )}
-                                                    <div className="team-info">
-                                                        <h3>{entry.team.name}</h3>
-                                                        <p className="team-elo">{entry.team.elo} ELO</p>
-                                                    </div>
-                                                </div>
-                                                <span className="team-seed">#{entry.seed}</span>
-                                            </Link>
-                                        );
-                                    }
-
-                                    return null;
-                                })}
-                            </div>
-                        ) : (
-                            <div className="empty-state">
-                                <Users size={48} />
-                                <p>Még nincsenek regisztrált {currentTournament.game?.teamSize === 1 ? 'játékosok' : 'csapatok'}</p>
-                            </div>
-                        )}
-                    </div>
-                </>
-            )}
-
-            {activeTab === 'bracket' && (
-                <div className={`tournament-section card ${isFullscreen ? 'fullscreen-bracket' : ''}`}>
-                    <div className="section-header">
-                        <h2 className="section-title">Bracket</h2>
-                        <div className="section-actions">
-                            {(user?.role === 'ADMIN' || user?.role === 'ORGANIZER') && (
-                                <>
-                                    {!currentTournament.matches?.length ? (
-                                        <button className="btn btn-primary" onClick={handleGenerateBracket}>
-                                            Bracket generálása
-                                        </button>
-                                    ) : (
-                                        <button
-                                            className="btn btn-warning"
-                                            onClick={() => {
-                                                if (window.confirm('Biztosan újra akarod generálni a bracketet? Ez törli az összes jelenlegi meccset és eredményt!')) {
-                                                    handleGenerateBracket();
-                                                }
-                                            }}
-                                        >
-                                            Bracket újragenerálása
-                                        </button>
-                                    )}
-                                </>
-                            )}
-                            <button
-                                className="btn btn-secondary"
-                                onClick={toggleFullscreen}
-                                title={isFullscreen ? 'Kilépés a teljes képernyőből' : 'Teljes képernyő'}
-                            >
-                                {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
-                                {isFullscreen ? 'Kilépés' : 'Teljes képernyő'}
-                            </button>
-                        </div>
-                    </div>
-                    <TournamentBracket
-                        tournament={currentTournament}
-                        onMatchClick={handleMatchClick}
-                    />
-                </div>
-            )}
-
-            {/* Registered Teams */}
-            <div className="tournament-section card">
-                <h2 className="section-title">Regisztrált csapatok</h2>
-
-                {currentTournament.entries && currentTournament.entries.length > 0 ? (
-                    <div className="teams-grid">
-                        {currentTournament.entries.map((entry) => entry.team && (
-                            <Link
-                                key={entry.id}
-                                to={`/teams/${entry.team.id}`}
-                                className="team-entry card"
-                            >
-                                <div className="team-entry-content">
-                                    {entry.team.logoUrl && (
-                                        <div className="team-logo">
-                                            <img src={entry.team.logoUrl} alt={entry.team.name} />
-                                        </div>
-                                    )}
-                                    <div className="team-info">
-                                        <h3>{entry.team.name}</h3>
-                                        <p className="team-elo">{entry.team.elo} ELO</p>
-                                    </div>
-                                </div>
-                                <span className="team-seed">#{entry.seed}</span>
-                            </Link>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="empty-state">
-                        <Users size={48} />
-                        <p>Még nincsenek regisztrált csapatok</p>
-                    </div>
-                )}
-            </div>
-
-            {/* Matches/Bracket */}
-            {currentTournament.matches && currentTournament.matches.length > 0 && (
-                <div className="tournament-section card">
-                    <h2 className="section-title">Mérkőzések</h2>
-                    <div className="matches-list">
-                        {currentTournament.matches.map((match) => (
-                            <div key={match.id} className="match-card">
-                                <span className="match-round">Kör {match.round}</span>
-                                <div className="match-teams">
-                                    <div className="match-team">
-                                        <span>{match.homeTeam?.name || 'Nincs meghatározva'}</span>
-                                        {match.homeScore !== null && <span className="score">{match.homeScore}</span>}
-                                    </div>
-                                    <span className="vs">vs</span>
-                                    <div className="match-team">
-                                        <span>{match.awayTeam?.name || 'Nincs meghatározva'}</span>
-                                        {match.awayScore !== null && <span className="score">{match.awayScore}</span>}
-                                    </div>
-                                </div>
-                                {match.winner && (
-                                    <span className="match-winner">Győztes: {match.winner.name}</span>
+                    <div className="flex flex-col md:flex-row md:items-end gap-8">
+                        <div className="flex-grow space-y-4">
+                            <div className="flex flex-wrap items-center gap-3">
+                                <span className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${statusLabels[currentTournament.status]?.class || 'bg-gray-500/20 text-gray-400 border-gray-500/50'}`}>
+                                    <StatusIcon size={14} />
+                                    {statusLabels[currentTournament.status]?.label || currentTournament.status}
+                                </span>
+                                {currentTournament.game && (
+                                    <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-white border border-white/10 backdrop-blur-md">
+                                        {currentTournament.game.name}
+                                    </span>
                                 )}
                             </div>
-                        ))}
+
+                            <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+                                {currentTournament.name}
+                            </h1>
+
+                            {currentTournament.description && (
+                                <p className="text-lg text-gray-300 max-w-2xl leading-relaxed">
+                                    {currentTournament.description}
+                                </p>
+                            )}
+
+                            <div className="flex flex-wrap gap-6 text-sm text-gray-300 pt-2">
+                                <div className="flex items-center gap-2">
+                                    <Calendar size={18} className="text-primary" />
+                                    <span>{startDate.toLocaleDateString('hu-HU', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Users size={18} className="text-primary" />
+                                    <span>{currentTournament._count?.entries || 0} / {currentTournament.maxTeams} csapat</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-3 min-w-[200px]">
+                            {isRegistrationOpen && isAuthenticated && !isAlreadyRegistered && (
+                                <button
+                                    className="btn btn-primary w-full shadow-lg shadow-primary/20"
+                                    onClick={() => setShowRegisterModal(true)}
+                                >
+                                    <UserPlus size={18} />
+                                    Regisztráció
+                                </button>
+                            )}
+
+                            {user?.role === 'ADMIN' && (
+                                <button
+                                    className="btn btn-secondary w-full bg-white/10 hover:bg-white/20 border-white/10"
+                                    onClick={() => setShowStatusModal(true)}
+                                >
+                                    Státusz módosítása
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
-            )}
+            </div>
+
+            <div className="container mx-auto px-4">
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    <div className="bg-[#1a1b26] p-6 rounded-xl border border-white/5 shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group">
+                        <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
+                            <Trophy size={24} />
+                        </div>
+                        <div>
+                            <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">Formátum</p>
+                            <p className="text-lg font-bold text-white">
+                                {currentTournament.format === 'SINGLE_ELIMINATION' ? 'Egyenes kieséses' :
+                                    currentTournament.format === 'DOUBLE_ELIMINATION' ? 'Dupla kieséses' :
+                                        currentTournament.format === 'ROUND_ROBIN' ? 'Körmérkőzés' : currentTournament.format}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="bg-[#1a1b26] p-6 rounded-xl border border-white/5 shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group">
+                        <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
+                            <Clock size={24} />
+                        </div>
+                        <div>
+                            <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">Jelentkezési határidő</p>
+                            <p className="text-lg font-bold text-white">
+                                {regDeadline.toLocaleDateString('hu-HU', { year: 'numeric', month: 'long', day: 'numeric' })}
+                            </p>
+                        </div>
+                    </div>
+
+                    {(currentTournament as any).prizePool && (
+                        <div className="bg-[#1a1b26] p-6 rounded-xl border border-white/5 shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group">
+                            <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
+                                <Award size={24} />
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">Díjazás</p>
+                                <p className="text-lg font-bold text-white">{(currentTournament as any).prizePool}</p>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Tabs */}
+                <div className="flex justify-center mb-8">
+                    <div className="bg-[#1a1b26] p-1 rounded-full border border-white/5 inline-flex">
+                        <button
+                            className={`px-8 py-2 rounded-full text-sm font-bold transition-all ${activeTab === 'info' ? 'bg-primary text-black shadow-lg' : 'text-gray-400 hover:text-white'}`}
+                            onClick={() => setActiveTab('info')}
+                        >
+                            Információk
+                        </button>
+                        <button
+                            className={`px-8 py-2 rounded-full text-sm font-bold transition-all ${activeTab === 'bracket' ? 'bg-primary text-black shadow-lg' : 'text-gray-400 hover:text-white'}`}
+                            onClick={() => setActiveTab('bracket')}
+                        >
+                            Bracket
+                        </button>
+                    </div>
+                </div>
+
+                {/* Content */}
+                {activeTab === 'info' ? (
+                    <div className="space-y-8">
+                        {/* Participants Section */}
+                        <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden">
+                            <div className="p-6 border-b border-white/5 flex justify-between items-center">
+                                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                                    <Users size={20} className="text-primary" />
+                                    {currentTournament.game?.teamSize === 1 ? 'Regisztrált játékosok' : 'Regisztrált csapatok'}
+                                </h2>
+                                <span className="bg-white/5 text-gray-400 text-xs px-2 py-1 rounded">
+                                    {currentTournament.entries?.length || 0} résztvevő
+                                </span>
+                            </div>
+
+                            <div className="p-6">
+                                {currentTournament.entries && currentTournament.entries.length > 0 ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        {currentTournament.entries.map((entry) => {
+                                            if (entry.user && !entry.team) {
+                                                // Solo Player Card
+                                                return (
+                                                    <div key={entry.id} className="flex items-center gap-4 bg-black/20 p-4 rounded-lg border border-white/5 hover:border-primary/30 transition-colors">
+                                                        <div className="w-10 h-10 rounded bg-primary/20 flex items-center justify-center text-primary font-bold border border-white/10 overflow-hidden">
+                                                            {entry.user.avatarUrl ? (
+                                                                <img src={entry.user.avatarUrl} alt={entry.user.displayName} className="w-full h-full object-cover" />
+                                                            ) : (
+                                                                (entry.user.displayName || entry.user.username).charAt(0).toUpperCase()
+                                                            )}
+                                                        </div>
+                                                        <div className="flex-grow">
+                                                            <h3 className="font-bold text-white">{entry.user.displayName || entry.user.username}</h3>
+                                                            <p className="text-xs text-gray-400">{entry.user.elo || 1000} ELO</p>
+                                                        </div>
+                                                        <span className="text-xs font-mono text-gray-500 bg-white/5 px-2 py-1 rounded">#{entry.seed}</span>
+                                                    </div>
+                                                );
+                                            } else if (entry.team) {
+                                                // Team Card
+                                                return (
+                                                    <Link key={entry.id} to={`/teams/${entry.team.id}`} className="flex items-center gap-4 bg-black/20 p-4 rounded-lg border border-white/5 hover:border-primary/50 transition-colors group">
+                                                        <div className="w-12 h-12 rounded-lg bg-gray-800 flex items-center justify-center border border-white/10 overflow-hidden">
+                                                            {entry.team.logoUrl ? (
+                                                                <img src={entry.team.logoUrl} alt={entry.team.name} className="w-full h-full object-cover" />
+                                                            ) : (
+                                                                <Users size={20} className="text-gray-500 group-hover:text-primary transition-colors" />
+                                                            )}
+                                                        </div>
+                                                        <div className="flex-grow">
+                                                            <h3 className="font-bold text-white group-hover:text-primary transition-colors">{entry.team.name}</h3>
+                                                            <p className="text-xs text-gray-400">{entry.team.elo} ELO</p>
+                                                        </div>
+                                                        <span className="text-xs font-mono text-gray-500 bg-white/5 px-2 py-1 rounded">#{entry.seed}</span>
+                                                    </Link>
+                                                );
+                                            }
+                                            return null;
+                                        })}
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+                                        <Users size={48} className="mb-4 opacity-50" />
+                                        <p>Még nincsenek regisztrált résztvevők</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <div className={`bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden shadow-2xl ${isFullscreen ? 'fixed inset-0 z-50 rounded-none' : 'relative'}`}>
+                        <div className="p-4 border-b border-white/5 flex justify-between items-center bg-black/20">
+                            <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                                <Trophy size={18} className="text-primary" />
+                                Bracket
+                            </h2>
+                            <div className="flex gap-2">
+                                {(user?.role === 'ADMIN' || user?.role === 'ORGANIZER') && (
+                                    <>
+                                        {!currentTournament.matches?.length ? (
+                                            <button className="btn btn-primary btn-sm" onClick={handleGenerateBracket}>
+                                                Bracket generálása
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className="btn btn-warning btn-sm"
+                                                onClick={() => {
+                                                    if (window.confirm('Biztosan újra akarod generálni a bracketet? Ez törli az összes jelenlegi meccset és eredményt!')) {
+                                                        handleGenerateBracket();
+                                                    }
+                                                }}
+                                            >
+                                                Újragenerálás
+                                            </button>
+                                        )}
+                                    </>
+                                )}
+                                <button
+                                    className="btn btn-ghost btn-sm text-gray-400 hover:text-white"
+                                    onClick={toggleFullscreen}
+                                    title={isFullscreen ? 'Kilépés' : 'Teljes képernyő'}
+                                >
+                                    {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
+                                </button>
+                            </div>
+                        </div>
+                        <div className={`overflow-auto ${isFullscreen ? 'h-[calc(100vh-60px)]' : 'min-h-[600px] max-h-[800px]'}`}>
+                            <TournamentBracket
+                                tournament={currentTournament}
+                                onMatchClick={handleMatchClick}
+                            />
+                        </div>
+                    </div>
+                )}
+            </div>
 
             {/* Registration Modal */}
             {showRegisterModal && (
-                <div className="modal-overlay" onClick={() => setShowRegisterModal(false)}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h2 className="modal-title">Csapat regisztrálása</h2>
-                            <button className="modal-close" onClick={() => setShowRegisterModal(false)}>
-                                ×
-                            </button>
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setShowRegisterModal(false)}>
+                    <div className="bg-[#1a1b26] rounded-xl border border-white/10 shadow-2xl w-full max-w-md overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                        <div className="p-6 border-b border-white/10 flex justify-between items-center">
+                            <h2 className="text-xl font-bold text-white">Csapat regisztrálása</h2>
+                            <button className="text-gray-400 hover:text-white" onClick={() => setShowRegisterModal(false)}>×</button>
                         </div>
-                        <div className="modal-body">
-                            <p>Válaszd ki a csapatot, amellyel regisztrálni szeretnél:</p>
+                        <div className="p-6">
+                            <p className="text-gray-300 mb-4">Válaszd ki a csapatot, amellyel regisztrálni szeretnél:</p>
                             <select
-                                className="input"
+                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary/50 transition-colors"
                                 value={selectedTeamId}
                                 onChange={(e) => setSelectedTeamId(e.target.value)}
                             >
@@ -445,7 +407,7 @@ export function TournamentDetailPage() {
                                     ))}
                             </select>
                         </div>
-                        <div className="modal-footer">
+                        <div className="p-6 border-t border-white/10 flex justify-end gap-3 bg-black/20">
                             <button className="btn btn-secondary" onClick={() => setShowRegisterModal(false)}>
                                 Mégse
                             </button>

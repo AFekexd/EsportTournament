@@ -43,8 +43,7 @@ export class BookingNotificationService {
                             gte: now,
                             lte: reminderThreshold
                         },
-                        reminderSent: false,
-                        status: 'CONFIRMED'
+                        reminderSent: false
                     },
                     include: {
                         computer: true,

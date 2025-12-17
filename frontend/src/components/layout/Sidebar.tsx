@@ -33,12 +33,13 @@ const navItems: NavItem[] = [
     { to: '/booking', icon: <Monitor size={20} />, label: 'Gépfoglalás' },
     { to: '/calendar', icon: <Calendar size={20} />, label: 'Naptár' },
     { to: '/leaderboards', icon: <TrendingUp size={20} />, label: 'Ranglisták' },
+    { to: '/settings', icon: <Settings size={20} />, label: 'Beállítások' },
 ];
 
 const adminItems: NavItem[] = [
     { to: '/admin', icon: <Shield size={20} />, label: 'Admin', roles: ['ADMIN', 'ORGANIZER'] },
     { to: '/discord-settings', icon: <MessageSquare size={20} />, label: 'Discord', roles: ['ADMIN', 'ORGANIZER'] },
-    { to: '/settings', icon: <Settings size={20} />, label: 'Beállítások' },
+
 ];
 
 export function Sidebar() {
@@ -136,27 +137,7 @@ export function Sidebar() {
                     )}
                 </nav>
 
-                {isOpen && user && (
-                    <div className="border-t border-white/5 p-4">
-                        <div className="group flex cursor-pointer items-center gap-3 rounded-xl border border-white/5 bg-white/5 p-3 transition-colors hover:bg-white/10 hover:border-primary/30 hover:shadow-[0_0_15px_rgba(139,92,246,0.1)]">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-primary to-[hsl(var(--neon-pink))] text-white shadow-lg">
-                                {user.avatarUrl ? (
-                                    <img
-                                        src={user.avatarUrl}
-                                        alt={user.displayName || user.username}
-                                        className="h-full w-full rounded-full object-cover"
-                                    />
-                                ) : (
-                                    (user.displayName || user.username).charAt(0).toUpperCase()
-                                )}
-                            </div>
-                            <div className="overflow-hidden">
-                                <p className="truncate text-sm font-medium text-white group-hover:text-primary transition-colors">{user.displayName || user.username}</p>
-                                <p className="truncate text-xs text-muted-foreground">{user.elo} ELO</p>
-                            </div>
-                        </div>
-                    </div>
-                )}
+
             </aside>
         </>
     );

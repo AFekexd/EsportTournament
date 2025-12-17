@@ -1,65 +1,75 @@
 import { useState, useEffect } from 'react';
-import { Users, Trophy, Gamepad2, BarChart3, Shield, AlertCircle, Edit2, Monitor, Plus, Trash2, Clock } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
+import {
+    Users, Trophy, Calendar, Gamepad2, Settings, Plus,
+    Shield, Edit2, Trash2, ArrowUpRight
+} from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
+import { useAuth } from '../hooks/useAuth';
+import { fetchGames, deleteGame } from '../store/slices/gamesSlice';
 import { fetchTournaments } from '../store/slices/tournamentsSlice';
-import { fetchGames } from '../store/slices/gamesSlice';
-import { fetchSchedules, createSchedule, deleteSchedule, fetchComputers, seedComputers, checkInByCode } from '../store/slices/bookingsSlice';
-import { GameCreateModal, TournamentCreateModal, TournamentEditModal } from '../components/admin';
-import { AdminBookingStats } from '../components/booking';
-import type { Tournament } from '../types';
+import { fetchTeams } from '../store/slices/teamsSlice';
+import { fetchSchedules, fetchComputers } from '../store/slices/bookingsSlice';
+import { GameCreateModal } from '../components/admin/GameCreateModal';
+import { GameEditModal } from '../components/admin/GameEditModal';
+import { GameRankModal } from '../components/admin/GameRankModal';
+import { TournamentCreateModal } from '../components/admin/TournamentCreateModal';
+import { TournamentEditModal } from '../components/admin/TournamentEditModal';
+import { TournamentStatusModal } from '../components/admin/TournamentStatusModal';
+import { BookingManagement } from '../components/booking/BookingManagement';
+import { Link } from 'react-router-dom';
 import './Admin.css';
+import type { Game, Tournament } from '../types';
 
 export function AdminPage() {
-    const { isAdmin } = useAuth();
     const dispatch = useAppDispatch();
-    const { tournaments, isLoading: tournamentsLoading } = useAppSelector((state) => state.tournaments);
+    const { user } = useAuth();
     const { games } = useAppSelector((state) => state.games);
-    const { schedules, computers } = useAppSelector((state) => state.bookings);
-    const [newSchedule, setNewSchedule] = useState({ dayOfWeek: 5, startHour: 14, endHour: 18 });
+    const { tournaments } = useAppSelector((state) => state.tournaments);
+    const { pagination } = useAppSelector((state) => state.teams);
 
-    const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'tournaments' | 'games' | 'booking'>('overview');
+    const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'tournaments' | 'games' | 'bookings'>('overview');
     const [showGameModal, setShowGameModal] = useState(false);
+    const [editingGame, setEditingGame] = useState<Game | null>(null);
     const [showTournamentModal, setShowTournamentModal] = useState(false);
     const [editingTournament, setEditingTournament] = useState<Tournament | null>(null);
-    const [bookingSubTab, setBookingSubTab] = useState<'management' | 'stats'>('stats');
-    const [checkInCode, setCheckInCode] = useState('');
+    const [statusTournament, setStatusTournament] = useState<Tournament | null>(null);
+    const [editingGameRanks, setEditingGameRanks] = useState<Game | null>(null);
 
-    const handleCheckIn = async () => {
-        if (!checkInCode.trim()) return;
-        try {
-            await dispatch(checkInByCode(checkInCode)).unwrap();
-            alert('Sikeres bejelentkezés!');
-            setCheckInCode('');
-        } catch (error) {
-            alert('Sikertelen bejelentkezés: Érvénytelen kód vagy a foglalás nem most esedékes.');
+    useEffect(() => {
+        dispatch(fetchGames());
+        dispatch(fetchTournaments({}));
+        dispatch(fetchTeams({ page: 1 }));
+        dispatch(fetchSchedules());
+        dispatch(fetchComputers());
+    }, [dispatch]);
+
+
+
+    const handleDeleteGame = async (gameId: string) => {
+        if (confirm('Biztosan törölni szeretnéd ezt a játékot? Ez a művelet nem visszavonható!')) {
+            try {
+                await dispatch(deleteGame(gameId)).unwrap();
+            } catch (error) {
+                console.error('Failed to delete game:', error);
+                alert('Nem sikerült törölni a játékot. Ellenőrizd, hogy nincsenek-e hozzárendelt versenyek.');
+            }
         }
     };
 
-    useEffect(() => {
-        if (isAdmin) {
-            dispatch(fetchTournaments({ page: 1 }));
-            dispatch(fetchGames());
-            dispatch(fetchSchedules());
-            dispatch(fetchComputers());
-        }
-    }, [dispatch, isAdmin]);
-
-    if (!isAdmin) {
+    if (!user || (user.role !== 'ADMIN' && user.role !== 'ORGANIZER')) {
         return (
-            <div className="admin-page">
-                <div className="empty-state">
-                    <Shield size={48} className="empty-icon" />
-                    <h3>Hozzáférés megtagadva</h3>
-                    <p>Nincs jogosultságod az admin felület megtekintéséhez.</p>
+            <div className="container py-5">
+                <div className="alert alert-error">
+                    Nincs jogosultságod az admin felület megtekintéséhez.
                 </div>
             </div>
         );
     }
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('hu-HU');
-    };
+    const totalUsers = pagination?.total || 0;
+    const totalTournaments = tournaments.length;
+    const activeTournaments = tournaments.filter(t => t.status === 'IN_PROGRESS').length;
+    const totalTeams = pagination?.total || 0;
 
     const getStatusBadge = (status: string) => {
         const statusConfig: Record<string, { class: string; label: string }> = {
@@ -76,46 +86,41 @@ export function AdminPage() {
     return (
         <div className="admin-page">
             <div className="page-header">
-                <div className="page-title-section">
-                    <h1 className="page-title">Admin Panel</h1>
-                    <p className="page-subtitle">Rendszer kezelés és statisztikák</p>
-                </div>
+                <h1 className="page-title">Admin Dashboard</h1>
+                <p className="page-subtitle">Rendszer kezelés és statisztikák</p>
             </div>
 
             <div className="admin-stats">
-                <div className="stat-card card card-glow">
+                <div className="stat-card card">
                     <div className="stat-icon">
-                        <Users size={24} />
+                        <Users />
                     </div>
                     <div className="stat-content">
-                        <span className="stat-value">-</span>
+                        <span className="stat-value">{totalUsers}</span>
                         <span className="stat-label">Felhasználók</span>
                     </div>
                 </div>
-
-                <div className="stat-card card card-glow">
+                <div className="stat-card card">
                     <div className="stat-icon">
-                        <Trophy size={24} />
+                        <Trophy />
                     </div>
                     <div className="stat-content">
-                        <span className="stat-value">{tournaments.length}</span>
+                        <span className="stat-value">{totalTournaments}</span>
                         <span className="stat-label">Versenyek</span>
                     </div>
                 </div>
-
-                <div className="stat-card card card-glow">
+                <div className="stat-card card">
                     <div className="stat-icon">
-                        <Users size={24} />
+                        <Users />
                     </div>
                     <div className="stat-content">
-                        <span className="stat-value">-</span>
+                        <span className="stat-value">{totalTeams}</span>
                         <span className="stat-label">Csapatok</span>
                     </div>
                 </div>
-
-                <div className="stat-card card card-glow">
+                <div className="stat-card card">
                     <div className="stat-icon">
-                        <Gamepad2 size={24} />
+                        <Gamepad2 />
                     </div>
                     <div className="stat-content">
                         <span className="stat-value">{games.length}</span>
@@ -125,12 +130,12 @@ export function AdminPage() {
             </div>
 
             <div className="admin-container">
-                <div className="admin-sidebar">
+                <div className="admin-sidebar card h-fit">
                     <button
                         className={`admin-tab ${activeTab === 'overview' ? 'active' : ''}`}
                         onClick={() => setActiveTab('overview')}
                     >
-                        <BarChart3 size={18} />
+                        <Settings size={18} />
                         Áttekintés
                     </button>
                     <button
@@ -155,131 +160,222 @@ export function AdminPage() {
                         Játékok
                     </button>
                     <button
-                        className={`admin-tab ${activeTab === 'booking' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('booking')}
+                        className={`admin-tab ${activeTab === 'bookings' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('bookings')}
                     >
-                        <Monitor size={18} />
+                        <Calendar size={18} />
                         Gépfoglalás
                     </button>
                 </div>
 
-                <div className="admin-content card">
+                <div className="admin-content card min-h-[500px]">
                     {activeTab === 'overview' && (
                         <div className="admin-section">
-                            <h2 className="section-title">Rendszer áttekintés</h2>
-
-                            <div className="alert alert-info">
-                                <AlertCircle size={20} />
-                                <div>
-                                    <h3>Rendszer státusz: Működik</h3>
-                                    <p>Minden szolgáltatás normálisan működik</p>
+                            <h2 className="section-title">Áttekintés</h2>
+                            <div className="grid grid-2 gap-4">
+                                <div className="card bg-tertiary">
+                                    <h3>Legutóbbi regisztrációk</h3>
+                                    <div className="empty-state py-8">
+                                        <p className="text-muted">Hamarosan...</p>
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div className="chart-placeholder card">
-                                <h3>Felhasználói aktivitás (30 nap)</h3>
-                                <div className="chart-content">
-                                    <BarChart3 size={48} className="chart-icon" />
-                                    <p>Grafikon hamarosan elérhető</p>
-                                </div>
-                            </div>
-
-                            <div className="chart-placeholder card">
-                                <h3>Verseny statisztikák</h3>
-                                <div className="chart-content">
-                                    <Trophy size={48} className="chart-icon" />
-                                    <p>Grafikon hamarosan elérhető</p>
+                                <div className="card bg-tertiary">
+                                    <h3>Aktív versenyek</h3>
+                                    {activeTournaments > 0 ? (
+                                        <ul className="list-none p-0 m-0">
+                                            {tournaments
+                                                .filter(t => t.status === 'IN_PROGRESS')
+                                                .map(t => (
+                                                    <li key={t.id} className="py-2 border-b border-white/10 flex justify-between items-center">
+                                                        <span>{t.name}</span>
+                                                        <Link to={`/tournaments/${t.id}`} className="text-primary hover:text-primary-hover">
+                                                            <ArrowUpRight size={16} />
+                                                        </Link>
+                                                    </li>
+                                                ))}
+                                        </ul>
+                                    ) : (
+                                        <p className="text-muted py-4">Nincs aktív verseny</p>
+                                    )}
                                 </div>
                             </div>
                         </div>
                     )}
 
+                    {activeTab === 'games' && (
+                        <div className="admin-section">
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="section-title mb-0">Játék kezelés</h2>
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => setShowGameModal(true)}
+                                >
+                                    <Plus size={18} />
+                                    Új játék hozzáadása
+                                </button>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                {games.length === 0 ? (
+                                    <div className="col-span-full flex flex-col items-center justify-center py-16 bg-white/5 rounded-xl border border-white/10 border-dashed">
+                                        <Gamepad2 size={48} className="text-gray-500 mb-4" />
+                                        <p className="text-muted text-lg">Még nincs játék létrehozva</p>
+                                        <button
+                                            className="btn btn-primary mt-4"
+                                            onClick={() => setShowGameModal(true)}
+                                        >
+                                            <Plus size={18} />
+                                            Játék létrehozása
+                                        </button>
+                                    </div>
+                                ) : (
+                                    games.map((game) => (
+                                        <div key={game.id} className="group flex flex-col bg-[#1a1b26] rounded-xl overflow-hidden border border-white/5 shadow-md hover:shadow-xl hover:border-primary/50 transition-all duration-300">
+                                            {/* Image & Overlay */}
+                                            <div className="relative w-full aspect-video overflow-hidden bg-gray-900 border-b border-white/5">
+                                                {game.imageUrl ? (
+                                                    <img
+                                                        src={game.imageUrl}
+                                                        alt={game.name}
+                                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center">
+                                                        <Gamepad2 size={40} className="text-gray-600" />
+                                                    </div>
+                                                )}
+
+                                                {/* Team Size Badge */}
+                                                <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold text-white border border-white/10">
+                                                    {game.teamSize}v{game.teamSize}
+                                                </div>
+                                            </div>
+
+                                            {/* Content */}
+                                            <div className="p-4 flex flex-col flex-grow">
+                                                <h3 className="text-lg font-bold text-white mb-1 truncate">{game.name}</h3>
+                                                <p className="text-sm text-gray-400 mb-4 line-clamp-2 min-h-[2.5em]">
+                                                    {game.description || 'Nincs leírás'}
+                                                </p>
+
+                                                <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
+                                                    <span className="flex items-center gap-1">
+                                                        <Trophy size={12} className="text-yellow-500" />
+                                                        {game._count?.tournaments || 0} verseny
+                                                    </span>
+                                                    <span className="flex items-center gap-1">
+                                                        <Users size={12} className="text-blue-400" />
+                                                        {game.teamSize} fős csapatok
+                                                    </span>
+                                                </div>
+
+                                                {/* Action Buttons */}
+                                                <div className="grid grid-cols-3 gap-2 mt-auto pt-4 border-t border-white/10">
+                                                    <button
+                                                        className="flex flex-col items-center justify-center p-2 rounded hover:bg-white/5 text-gray-400 hover:text-white transition-colors gap-1"
+                                                        onClick={() => setEditingGameRanks(game)}
+                                                        title="Rangok kezelése"
+                                                    >
+                                                        <Shield size={16} />
+                                                        <span className="text-[10px]">Rangok</span>
+                                                    </button>
+                                                    <button
+                                                        className="flex flex-col items-center justify-center p-2 rounded hover:bg-white/5 text-gray-400 hover:text-primary transition-colors gap-1"
+                                                        onClick={() => setEditingGame(game)}
+                                                        title="Szerkesztés"
+                                                    >
+                                                        <Edit2 size={16} />
+                                                        <span className="text-[10px]">Módosít</span>
+                                                    </button>
+                                                    <button
+                                                        className="flex flex-col items-center justify-center p-2 rounded hover:bg-red-500/10 text-gray-400 hover:text-red-400 transition-colors gap-1"
+                                                        onClick={() => handleDeleteGame(game.id)}
+                                                        title="Törlés"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                        <span className="text-[10px]">Törlés</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'bookings' && (
+                        <BookingManagement />
+                    )}
+
                     {activeTab === 'users' && (
                         <div className="admin-section">
-                            <h2 className="section-title">Felhasználó kezelés</h2>
-
-                            <div className="admin-table">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Név</th>
-                                            <th>Email</th>
-                                            <th>Szerepkör</th>
-                                            <th>Regisztráció</th>
-                                            <th>Műveletek</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td colSpan={5} className="text-center text-muted">
-                                                Felhasználók betöltése hamarosan...
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <h2 className="section-title">Felhasználók</h2>
+                            <p className="text-muted">Ez a funkció fejlesztés alatt áll.</p>
                         </div>
                     )}
 
                     {activeTab === 'tournaments' && (
                         <div className="admin-section">
-                            <h2 className="section-title">Verseny kezelés</h2>
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="section-title mb-0">Verseny kezelés</h2>
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => setShowTournamentModal(true)}
+                                >
+                                    <Plus size={18} />
+                                    Új verseny
+                                </button>
+                            </div>
 
-                            <button
-                                className="btn btn-primary mb-2"
-                                onClick={() => setShowTournamentModal(true)}
-                            >
-                                <Trophy size={18} />
-                                Új verseny létrehozása
-                            </button>
-
-                            <div className="admin-table">
-                                <table>
+                            <div className="admin-table-container overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
                                     <thead>
-                                        <tr>
-                                            <th>Név</th>
-                                            <th>Játék</th>
-                                            <th>Formátum</th>
-                                            <th>Státusz</th>
-                                            <th>Csapatok</th>
-                                            <th>Kezdés</th>
-                                            <th>Műveletek</th>
+                                        <tr className="border-b border-white/10 text-muted text-sm uppercase">
+                                            <th className="p-3">Név</th>
+                                            <th className="p-3">Játék</th>
+                                            <th className="p-3">Formátum</th>
+                                            <th className="p-3">Státusz</th>
+                                            <th className="p-3">Létszám</th>
+                                            <th className="p-3">Kezdés</th>
+                                            <th className="p-3 text-right">Műveletek</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {tournamentsLoading ? (
+                                        {tournaments.length === 0 ? (
                                             <tr>
-                                                <td colSpan={7} className="text-center">
-                                                    <div className="spinner" /> Betöltés...
-                                                </td>
-                                            </tr>
-                                        ) : tournaments.length === 0 ? (
-                                            <tr>
-                                                <td colSpan={7} className="text-center text-muted">
+                                                <td colSpan={7} className="text-center p-8 text-muted">
                                                     Még nincs verseny létrehozva
                                                 </td>
                                             </tr>
                                         ) : (
                                             tournaments.map((tournament) => (
-                                                <tr key={tournament.id}>
-                                                    <td>{tournament.name}</td>
-                                                    <td>{tournament.game?.name || '-'}</td>
-                                                    <td>
+                                                <tr key={tournament.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                                    <td className="p-3 font-medium">{tournament.name}</td>
+                                                    <td className="p-3 text-muted">{tournament.game?.name || '-'}</td>
+                                                    <td className="p-3 text-sm">
                                                         {tournament.format === 'SINGLE_ELIMINATION' && 'Egyenes'}
                                                         {tournament.format === 'DOUBLE_ELIMINATION' && 'Dupla'}
                                                         {tournament.format === 'ROUND_ROBIN' && 'Körmérkőzés'}
                                                         {tournament.format === 'SWISS' && 'Svájci'}
                                                     </td>
-                                                    <td>{getStatusBadge(tournament.status)}</td>
-                                                    <td>{tournament._count?.entries || 0}/{tournament.maxTeams}</td>
-                                                    <td>{formatDate(tournament.startDate)}</td>
-                                                    <td>
+                                                    <td className="p-3">{getStatusBadge(tournament.status)}</td>
+                                                    <td className="p-3 text-sm text-center">{tournament._count?.entries || 0}/{tournament.maxTeams}</td>
+                                                    <td className="p-3 text-sm text-muted">{new Date(tournament.startDate).toLocaleDateString('hu-HU')}</td>
+                                                    <td className="p-3 text-right flex gap-2 justify-end">
                                                         <button
-                                                            className="btn-small btn-secondary"
-                                                            onClick={() => setEditingTournament(tournament)}
+                                                            className="btn-icon hover:bg-white/10"
+                                                            onClick={() => setStatusTournament(tournament)}
+                                                            title="Státusz módosítása"
                                                         >
-                                                            <Edit2 size={14} />
-                                                            Szerkeszt
+                                                            <Settings size={16} />
+                                                        </button>
+                                                        <button
+                                                            className="btn-icon hover:bg-white/10"
+                                                            onClick={() => setEditingTournament(tournament)}
+                                                            title="Szerkesztés"
+                                                        >
+                                                            <Edit2 size={16} />
                                                         </button>
                                                     </td>
                                                 </tr>
@@ -290,200 +386,6 @@ export function AdminPage() {
                             </div>
                         </div>
                     )}
-
-                    {activeTab === 'games' && (
-                        <div className="admin-section">
-                            <h2 className="section-title">Játék kezelés</h2>
-
-                            <button
-                                className="btn btn-primary mb-2"
-                                onClick={() => setShowGameModal(true)}
-                            >
-                                <Gamepad2 size={18} />
-                                Új játék hozzáadása
-                            </button>
-
-                            <div className="games-grid">
-                                {games.length === 0 ? (
-                                    <p className="text-muted">Még nincs játék létrehozva</p>
-                                ) : (
-                                    games.map((game) => (
-                                        <div key={game.id} className="game-admin-card card">
-                                            <h3>{game.name}</h3>
-                                            <p>{game.description || 'Nincs leírás'}</p>
-                                            <div className="game-stats">
-                                                <span>{game._count?.tournaments || 0} verseny</span>
-                                                <span>Csapatméret: {game.teamSize}</span>
-                                            </div>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
-                        </div>
-                    )}
-
-                    {activeTab === 'booking' && (
-                        <div className="admin-section">
-                            <div className="section-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                                <h2 className="section-title" style={{ marginBottom: 0 }}>Gépfoglalás</h2>
-                                <div className="view-toggle" style={{ display: 'flex', gap: '0.5rem' }}>
-                                    <button
-                                        className={`btn btn-small ${bookingSubTab === 'stats' ? 'btn-primary' : 'btn-secondary'}`}
-                                        onClick={() => setBookingSubTab('stats')}
-                                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-                                    >
-                                        <BarChart3 size={16} />
-                                        Statisztika
-                                    </button>
-                                    <button
-                                        className={`btn btn-small ${bookingSubTab === 'management' ? 'btn-primary' : 'btn-secondary'}`}
-                                        onClick={() => setBookingSubTab('management')}
-                                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-                                    >
-                                        <Edit2 size={16} />
-                                        Kezelés
-                                    </button>
-                                </div>
-                            </div>
-
-                            {bookingSubTab === 'stats' ? (
-                                <AdminBookingStats />
-                            ) : (
-                                <div>
-                                    {/* Check-in Section */}
-                                    <div className="card mb-4 p-3" style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)' }}>
-                                        <h3 className="section-subtitle mt-0 mb-3" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                            <Shield size={18} />
-                                            Kódos Check-in
-                                        </h3>
-                                        <div style={{ display: 'flex', gap: '1rem' }}>
-                                            <input
-                                                type="text"
-                                                className="input"
-                                                placeholder="Írd be a foglalási kódot..."
-                                                value={checkInCode}
-                                                onChange={(e) => setCheckInCode(e.target.value)}
-                                                style={{ flex: 1 }}
-                                            />
-                                            <button
-                                                className="btn btn-primary"
-                                                onClick={handleCheckIn}
-                                                disabled={!checkInCode}
-                                            >
-                                                Bejelentkezés
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    {/* Seed Computers Button */}
-                                    {computers.length === 0 && (
-                                        <div className="alert alert-warning mb-2">
-                                            <AlertCircle size={20} />
-                                            <div>
-                                                <h4>Nincs gép létrehozva</h4>
-                                                <p>Kattints a gombra a 10 gép (2x5 rács) létrehozásához.</p>
-                                            </div>
-                                            <button
-                                                className="btn btn-primary"
-                                                onClick={() => dispatch(seedComputers())}
-                                            >
-                                                <Plus size={18} />
-                                                Gépek létrehozása
-                                            </button>
-                                        </div>
-                                    )}
-
-                                    {computers.length > 0 && (
-                                        <div className="alert alert-success mb-2">
-                                            <Monitor size={20} />
-                                            <span>{computers.length} gép elérhető</span>
-                                        </div>
-                                    )}
-
-                                    <h3 className="section-subtitle">
-                                        <Clock size={18} />
-                                        Nyitvatartási idők
-                                    </h3>
-                                    <p className="text-muted mb-1">Add meg, hogy melyik napokon és mikor érhető el a gaming szoba.</p>
-
-                                    {/* Add New Schedule Form */}
-                                    <div className="schedule-form card mb-2">
-                                        <div className="form-row">
-                                            <div className="form-group">
-                                                <label>Nap</label>
-                                                <select
-                                                    value={newSchedule.dayOfWeek}
-                                                    onChange={(e) => setNewSchedule({ ...newSchedule, dayOfWeek: parseInt(e.target.value) })}
-                                                >
-                                                    <option value={1}>Hétfő</option>
-                                                    <option value={2}>Kedd</option>
-                                                    <option value={3}>Szerda</option>
-                                                    <option value={4}>Csütörtök</option>
-                                                    <option value={5}>Péntek</option>
-                                                    <option value={6}>Szombat</option>
-                                                    <option value={0}>Vasárnap</option>
-                                                </select>
-                                            </div>
-                                            <div className="form-group">
-                                                <label>Kezdés</label>
-                                                <input
-                                                    type="number"
-                                                    min={0}
-                                                    max={23}
-                                                    value={newSchedule.startHour}
-                                                    onChange={(e) => setNewSchedule({ ...newSchedule, startHour: parseInt(e.target.value) })}
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>Vége</label>
-                                                <input
-                                                    type="number"
-                                                    min={0}
-                                                    max={23}
-                                                    value={newSchedule.endHour}
-                                                    onChange={(e) => setNewSchedule({ ...newSchedule, endHour: parseInt(e.target.value) })}
-                                                />
-                                            </div>
-                                            <button
-                                                className="btn btn-primary"
-                                                onClick={() => {
-                                                    dispatch(createSchedule(newSchedule));
-                                                }}
-                                            >
-                                                <Plus size={18} />
-                                                Hozzáadás
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    {/* Schedule List */}
-                                    <div className="schedule-list">
-                                        {schedules.length === 0 ? (
-                                            <p className="text-muted">Még nincs nyitvatartás beállítva.</p>
-                                        ) : (
-                                            schedules.map((schedule) => {
-                                                const dayNames = ['Vasárnap', 'Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat'];
-                                                return (
-                                                    <div key={schedule.id} className="schedule-item card">
-                                                        <div className="schedule-info">
-                                                            <strong>{dayNames[schedule.dayOfWeek]}</strong>
-                                                            <span>{schedule.startHour}:00 - {schedule.endHour}:00</span>
-                                                        </div>
-                                                        <button
-                                                            className="btn-small btn-danger"
-                                                            onClick={() => dispatch(deleteSchedule(schedule.id))}
-                                                        >
-                                                            <Trash2 size={14} />
-                                                        </button>
-                                                    </div>
-                                                );
-                                            })
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    )}
                 </div>
             </div>
 
@@ -491,19 +393,40 @@ export function AdminPage() {
             {showGameModal && (
                 <GameCreateModal onClose={() => setShowGameModal(false)} />
             )}
-            {showTournamentModal && (
-                <TournamentCreateModal onClose={() => {
-                    setShowTournamentModal(false);
-                    dispatch(fetchTournaments({ page: 1 }));
-                }} />
+
+            {editingGame && (
+                <GameEditModal
+                    game={editingGame}
+                    onClose={() => setEditingGame(null)}
+                />
             )}
+
+            {editingGameRanks && (
+                <GameRankModal
+                    game={editingGameRanks}
+                    onClose={() => setEditingGameRanks(null)}
+                />
+            )}
+
+            {showTournamentModal && (
+                <TournamentCreateModal onClose={() => setShowTournamentModal(false)} />
+            )}
+
             {editingTournament && (
                 <TournamentEditModal
                     tournament={editingTournament}
-                    onClose={() => {
-                        setEditingTournament(null);
-                        dispatch(fetchTournaments({ page: 1 }));
-                    }}
+                    onClose={() => setEditingTournament(null)}
+                />
+            )}
+
+            {statusTournament && (
+                <TournamentStatusModal
+                    tournamentId={statusTournament.id}
+                    currentStatus={statusTournament.status}
+                    currentNotifyUsers={statusTournament.notifyUsers}
+                    currentNotifyDiscord={statusTournament.notifyDiscord}
+                    currentDiscordChannel={statusTournament.discordChannelId}
+                    onClose={() => setStatusTournament(null)}
                 />
             )}
         </div>

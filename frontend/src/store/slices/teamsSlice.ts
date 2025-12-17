@@ -30,7 +30,7 @@ const initialState: TeamsState = {
     pagination: null,
 };
 
-const getToken = (state: RootState) => state.auth.keycloak?.token;
+const getToken = (state: RootState) => state.auth.token;
 
 export const fetchTeams = createAsyncThunk(
     'teams/fetchTeams',

@@ -142,3 +142,70 @@ gamesRouter.delete(
         res.json({ success: true, message: 'Game deleted' });
     })
 );
+
+// Get ranks for a game
+gamesRouter.get(
+    '/:id/ranks',
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const ranks = await prisma.rank.findMany({
+            where: { gameId: req.params.id },
+            orderBy: { order: 'asc' },
+        });
+
+        res.json({ success: true, data: ranks });
+    })
+);
+
+// Add rank to game (admin only)
+gamesRouter.post(
+    '/:id/ranks',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user || user.role !== 'ADMIN') {
+            throw new ApiError('Admin access required', 403, 'FORBIDDEN');
+        }
+
+        const { name, value, image, order } = req.body;
+
+        if (!name || value === undefined) {
+            throw new ApiError('Name and value are required', 400, 'MISSING_FIELDS');
+        }
+
+        const rank = await prisma.rank.create({
+            data: {
+                gameId: req.params.id,
+                name,
+                value: Number(value),
+                image,
+                order: order ? Number(order) : 0,
+            },
+        });
+
+        res.status(201).json({ success: true, data: rank });
+    })
+);
+
+// Delete rank (admin only)
+gamesRouter.delete(
+    '/ranks/:rankId',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user || user.role !== 'ADMIN') {
+            throw new ApiError('Admin access required', 403, 'FORBIDDEN');
+        }
+
+        await prisma.rank.delete({
+            where: { id: req.params.rankId },
+        });
+
+        res.json({ success: true, message: 'Rank deleted' });
+    })
+);

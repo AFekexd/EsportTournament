@@ -1,19 +1,21 @@
 .admin-page {
-    padding: 2rem;
+
     max-width: 1600px;
     margin: 0 auto;
 }
 
 .page-header {
     margin-bottom: 2rem;
+
 }
 
 .page-title {
     font-size: 2.5rem;
     font-weight: 700;
     background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+
     background-clip: text;
     margin-bottom: 0.5rem;
 }

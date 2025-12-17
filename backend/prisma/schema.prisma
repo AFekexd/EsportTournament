@@ -95,6 +95,8 @@ model User {
   homeMatches       Match[]            @relation("HomeUser")
   awayMatches       Match[]            @relation("AwayUser")
   wonMatches        Match[]            @relation("WinnerUser")
+
+  ranks             UserRank[]
 }
 
 // Csapat
@@ -142,6 +144,9 @@ model Game {
 
   tournaments Tournament[]
   gameStats   GameStats[]
+
+  ranks       Rank[]
+  userRanks   UserRank[]
 }
 
 // Verseny
@@ -230,6 +235,35 @@ model GameStats {
   updatedAt DateTime @updatedAt
 
   @@unique([userId, gameId])
+}
+
+
+// Rangok
+model Rank {
+  id        String   @id @default(uuid())
+  gameId    String
+  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  name      String
+  value     Int      // P-ELO érték
+  image     String?
+  order     Int      @default(0)
+  users     UserRank[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Felhasználói rangok
+model UserRank {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rankId     String
+  rank       Rank     @relation(fields: [rankId], references: [id], onDelete: Cascade)
+  gameId     String   // Redundáns, de egyszerűsíti a query-t (User game rank-ja)
+  game       Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  assignedAt DateTime @default(now())
+  
+  @@unique([userId, gameId]) // Egy usernek egy játékban csak egy rangja lehet egyszerre
 }
 
 // Értesítések

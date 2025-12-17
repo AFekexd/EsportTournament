@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Trophy, Users, Calendar } from 'lucide-react';
+import { ArrowLeft, Trophy, Users, Calendar, Gamepad2 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import { fetchGame, clearCurrentGame } from '../store/slices/gamesSlice';
 import './GameDetail.css';
@@ -41,27 +41,56 @@ export function GameDetailPage() {
             </div>
 
             {/* Game Header */}
-            <div className="game-header card">
-                <div className="game-header-content">
-                    {currentGame.imageUrl && (
-                        <div className="game-image">
-                            <img src={currentGame.imageUrl} alt={currentGame.name} />
+            {/* Game Header */}
+            <div className="grid md:grid-cols-2 gap-8 mb-8">
+                <div className="relative group">
+                    {currentGame.imageUrl ? (
+                        <div className="w-full aspect-video rounded-xl overflow-hidden shadow-2xl border border-white/10 relative">
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
+                            <img
+                                src={currentGame.imageUrl}
+                                alt={currentGame.name}
+                                className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
+                            />
+                        </div>
+                    ) : (
+                        <div className="w-full aspect-video rounded-xl bg-gray-800 flex items-center justify-center border border-white/10">
+                            <Gamepad2 size={64} className="text-gray-600" />
                         </div>
                     )}
-                    <div className="game-info">
-                        <h1 className="game-name">{currentGame.name}</h1>
+                </div>
+
+                <div className="flex flex-col justify-center space-y-6">
+                    <div>
+                        <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent mb-4">
+                            {currentGame.name}
+                        </h1>
                         {currentGame.description && (
-                            <p className="game-description">{currentGame.description}</p>
+                            <p className="text-lg text-gray-300 leading-relaxed max-w-2xl">
+                                {currentGame.description}
+                            </p>
                         )}
-                        <div className="game-meta">
-                            <span className="game-team-size">
-                                <Users size={16} />
-                                {currentGame.teamSize}v{currentGame.teamSize}
-                            </span>
-                            <span className="game-tournaments">
-                                <Trophy size={16} />
-                                {currentGame._count?.tournaments || 0} verseny
-                            </span>
+                    </div>
+
+                    <div className="flex flex-wrap gap-4">
+                        <div className="flex items-center gap-3 bg-white/5 px-4 py-3 rounded-lg border border-white/10 backdrop-blur-sm">
+                            <div className="p-2 bg-primary/20 rounded-md">
+                                <Users size={20} className="text-primary" />
+                            </div>
+                            <div>
+                                <span className="block text-xs text-uppercase text-muted font-semibold tracking-wider">Formátum</span>
+                                <span className="font-bold text-white">{currentGame.teamSize}v{currentGame.teamSize}</span>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-3 bg-white/5 px-4 py-3 rounded-lg border border-white/10 backdrop-blur-sm">
+                            <div className="p-2 bg-accent/20 rounded-md">
+                                <Trophy size={20} className="text-accent" />
+                            </div>
+                            <div>
+                                <span className="block text-xs text-uppercase text-muted font-semibold tracking-wider">Versenyek</span>
+                                <span className="font-bold text-white">{currentGame._count?.tournaments || 0} darab</span>
+                            </div>
                         </div>
                     </div>
                 </div>

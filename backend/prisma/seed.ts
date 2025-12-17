@@ -63,7 +63,7 @@ async function main() {
             data: {
                 name: 'League of Legends',
                 description: '5v5 MOBA játék a Riot Games-től',
-                imageUrl: 'https://images.contentstack.io/v3/assets/blt731acb42bb3d1659/blt0e6372c232eb56f7/65f7d2c5f5e5a05e6e8e5e5e/lol-logo.png',
+                imageUrl: 'https://cdn1.epicgames.com/offer/24b9b5e323bc40eea252a10cdd3b2f10/EGS_LeagueofLegends_RiotGames_S1_2560x1440-47eb328eac5ddd63ebd096ded7d0d5ab',
                 rules: 'Summoner\'s Rift, Draft Pick, Best of 3',
                 teamSize: 5,
             },
