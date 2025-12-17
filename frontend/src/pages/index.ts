@@ -13,3 +13,4 @@ export { TournamentDetailPage } from './TournamentDetail';
 export { LeaderboardsPage } from './Leaderboards';
 export { NotificationsPage } from './Notifications';
 export { DiscordAdminPage } from './DiscordSettings';
+export { BookingPage } from './Booking';

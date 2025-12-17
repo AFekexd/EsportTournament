@@ -287,6 +287,120 @@
     color: var(--text-muted);
 }
 
+/* Booking Schedule Management */
+.section-subtitle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.mb-1 {
+    margin-bottom: 0.5rem;
+}
+
+.alert-warning {
+    background: rgba(234, 179, 8, 0.1);
+    border-color: var(--warning);
+    color: var(--text-primary);
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.alert-warning h4 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.alert-success {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: var(--success);
+    color: var(--text-primary);
+    align-items: center;
+}
+
+.schedule-form {
+    padding: 1.5rem;
+}
+
+.form-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.form-group select,
+.form-group input[type="number"] {
+    padding: 0.75rem 1rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 1rem;
+    min-width: 120px;
+}
+
+.form-group select:focus,
+.form-group input[type="number"]:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+}
+
+.schedule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.schedule-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+}
+
+.schedule-info {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.schedule-info strong {
+    color: var(--text-primary);
+    min-width: 100px;
+}
+
+.schedule-info span {
+    color: var(--text-muted);
+}
+
+.btn-danger {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: var(--error);
+}
+
+.btn-danger:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: var(--error);
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
     .admin-container {
@@ -314,5 +428,19 @@
 
     .games-grid {
         grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-group {
+        width: 100%;
+    }
+
+    .form-group select,
+    .form-group input[type="number"] {
+        width: 100%;
     }
 }

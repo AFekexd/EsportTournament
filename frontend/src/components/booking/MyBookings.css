@@ -1,0 +1,223 @@
+.my-bookings {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.my-bookings-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.my-bookings-title svg {
+    color: var(--accent-primary);
+}
+
+.my-bookings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.my-bookings-empty,
+.my-bookings-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: var(--text-muted);
+    text-align: center;
+    gap: 0.75rem;
+}
+
+.my-bookings-empty svg,
+.my-bookings-loading svg {
+    opacity: 0.5;
+}
+
+/* Booking Card */
+.booking-card {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.booking-card:hover {
+    border-color: var(--accent-primary);
+}
+
+.booking-card.active {
+    border-color: var(--success);
+    background: linear-gradient(145deg, rgba(34, 197, 94, 0.1), transparent);
+}
+
+.booking-card.checked-in {
+    border-color: var(--accent-primary);
+    background: linear-gradient(145deg, rgba(139, 92, 246, 0.1), transparent);
+}
+
+.booking-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.booking-computer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.booking-computer svg {
+    color: var(--accent-primary);
+}
+
+.booking-status {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+}
+
+.status-upcoming {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+}
+
+.status-active {
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--success);
+}
+
+.status-checked-in {
+    background: rgba(139, 92, 246, 0.15);
+    color: var(--accent-primary);
+}
+
+.booking-card-body {
+    margin-bottom: 0.75rem;
+}
+
+.booking-datetime {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.booking-date,
+.booking-time {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.booking-date svg,
+.booking-time svg {
+    color: var(--text-muted);
+}
+
+.booking-card-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-qr {
+    background: rgba(139, 92, 246, 0.15);
+    color: var(--accent-primary);
+}
+
+.btn-qr:hover {
+    background: rgba(139, 92, 246, 0.25);
+}
+
+.btn-edit {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+}
+
+.btn-edit:hover {
+    background: rgba(59, 130, 246, 0.25);
+}
+
+.btn-delete {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--error);
+}
+
+.btn-delete:hover {
+    background: rgba(239, 68, 68, 0.25);
+}
+
+/* QR Code Panel */
+.qr-code-panel {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.qr-code-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    color: var(--accent-primary);
+}
+
+.qr-code-value {
+    margin-top: 0.75rem;
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.qr-hint {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .booking-datetime {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .booking-card-actions {
+        justify-content: center;
+    }
+}

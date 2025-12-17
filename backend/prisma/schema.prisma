@@ -60,6 +60,10 @@ enum NotificationType {
   MATCH_SCHEDULED
   MATCH_RESULT
   SYSTEM
+  BOOKING_CONFIRMED
+  BOOKING_REMINDER
+  BOOKING_CANCELLED
+  WAITLIST_AVAILABLE
 }
 
 // ============================================
@@ -85,6 +89,8 @@ model User {
   gameStats         GameStats[]
   tournamentEntries TournamentEntry[]  // For solo tournament registration
   discordSettings   DiscordSettings?
+  bookings          Booking[]          // Computer bookings
+  waitlistEntries   Waitlist[]         // Waitlist entries
   // Match relations for solo tournaments
   homeMatches       Match[]            @relation("HomeUser")
   awayMatches       Match[]            @relation("AwayUser")
@@ -266,4 +272,84 @@ model DiscordSettings {
   updatedAt                DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ============================================
+// BOOKING SYSTEM
+// ============================================
+
+enum ComputerStatus {
+  AVAILABLE
+  MAINTENANCE
+  OUT_OF_ORDER
+}
+
+// Számítógép a teremben
+model Computer {
+  id              String          @id @default(uuid())
+  name            String          // "PC-1", "PC-2", stb.
+  row             Int             // 0 vagy 1 (2 sor)
+  position        Int             // 0-4 (5 pozíció soronként)
+  isActive        Boolean         @default(true)
+  status          ComputerStatus  @default(AVAILABLE)
+  specs           Json?           // { cpu, gpu, ram, monitor, storage }
+  installedGames  String[]        // Telepített játékok listája
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  bookings        Booking[]
+  waitlistEntries Waitlist[]
+
+  @@unique([row, position])
+}
+
+// Foglalás
+model Booking {
+  id            String    @id @default(uuid())
+  computerId    String
+  computer      Computer  @relation(fields: [computerId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date          DateTime  @db.Date  // A foglalás napja
+  startTime     DateTime  // Kezdési időpont
+  endTime       DateTime  // Befejezési időpont (max 2 óra a startTime után)
+  // QR kód bejelentkezés
+  checkInCode   String?   @unique  // QR kód tartalom
+  checkedInAt   DateTime?          // Bejelentkezés időpontja
+  reminderSent  Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  @@index([computerId, date])
+  @@index([userId])
+  @@index([date])
+}
+
+// Várólistás rendszer
+model Waitlist {
+  id          String    @id @default(uuid())
+  computerId  String
+  computer    Computer  @relation(fields: [computerId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date        DateTime  @db.Date
+  startHour   Int       // 0-23
+  endHour     Int       // 0-23
+  notified    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  
+  @@unique([computerId, userId, date, startHour])
+  @@index([computerId, date])
+  @@index([userId])
+}
+
+// Admin preset az elérhető időpontokhoz
+model BookingSchedule {
+  id          String    @id @default(uuid())
+  dayOfWeek   Int       // 0=Vasárnap, 1=Hétfő, ... 5=Péntek, 6=Szombat
+  startHour   Int       // 0-23
+  endHour     Int       // 0-23
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }

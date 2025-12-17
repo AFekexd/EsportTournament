@@ -15,10 +15,15 @@ import { statsRouter } from './routes/stats.js';
 import { notificationsRouter } from './routes/notifications.js';
 import { leaderboardsRouter } from './routes/leaderboards.js';
 import { discordRouter } from './routes/discordSettings.js';
+import { bookingsRouter } from './routes/bookings.js';
+import { BookingNotificationService } from './services/BookingNotificationService.js';
 
 dotenv.config();
 
 const app = express();
+// Start background jobs
+BookingNotificationService.startReminderJob();
+
 const PORT = process.env.PORT || 3000;
 
 // Middleware
@@ -46,6 +51,7 @@ app.use('/api/stats', statsRouter);
 app.use('/api/notifications', notificationsRouter);
 app.use('/api/leaderboards', leaderboardsRouter);
 app.use('/api/discord', discordRouter);
+app.use('/api/bookings', bookingsRouter);
 
 // Error handler
 app.use(errorHandler);

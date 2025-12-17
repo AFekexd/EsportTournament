@@ -1,0 +1,229 @@
+.weekly-calendar {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    overflow-x: auto;
+}
+
+.weekly-calendar-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: white;
+}
+
+.week-range {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 160px;
+    text-align: center;
+}
+
+.weekly-calendar-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: var(--text-muted);
+    gap: 1rem;
+}
+
+/* Grid Layout */
+.weekly-calendar-grid {
+    min-width: 600px;
+}
+
+.grid-header {
+    display: grid;
+    grid-template-columns: 60px repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 0.5rem;
+}
+
+.grid-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+    font-size: 0.8rem;
+    border-radius: var(--radius-sm);
+}
+
+.header-cell {
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.time-cell {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.day-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0.5rem;
+}
+
+.day-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.day-date {
+    font-size: 0.7rem;
+}
+
+/* Computer Section */
+.computer-section {
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.5rem;
+}
+
+.computer-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--accent-primary);
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 0.5rem;
+}
+
+.time-row {
+    display: grid;
+    grid-template-columns: 60px repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 2px;
+}
+
+/* Slot Cells */
+.slot-cell {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.slot-cell.available {
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.slot-cell.available:hover {
+    background: rgba(34, 197, 94, 0.25);
+    border-color: var(--success);
+}
+
+.slot-cell.booked {
+    background: rgba(239, 68, 68, 0.15);
+    cursor: default;
+}
+
+.slot-cell.own-booking {
+    background: rgba(139, 92, 246, 0.2);
+    cursor: pointer;
+}
+
+.slot-cell.own-booking:hover {
+    background: rgba(139, 92, 246, 0.3);
+    border-color: var(--accent-primary);
+}
+
+.slot-cell.inactive {
+    background: var(--bg-secondary);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.booking-indicator {
+    font-size: 0.7rem;
+}
+
+.slot-cell.booked .booking-indicator {
+    color: var(--error);
+}
+
+.slot-cell.own-booking .booking-indicator {
+    color: var(--accent-primary);
+}
+
+/* Legend */
+.weekly-legend {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.legend-dot.available {
+    background: var(--success);
+}
+
+.legend-dot.booked {
+    background: var(--error);
+}
+
+.legend-dot.own {
+    background: var(--accent-primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .weekly-calendar {
+        padding: 1rem;
+    }
+
+    .computer-section {
+        padding: 0.25rem;
+    }
+
+    .grid-cell {
+        min-height: 28px;
+        font-size: 0.7rem;
+    }
+}

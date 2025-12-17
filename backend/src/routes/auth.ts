@@ -12,37 +12,44 @@ authRouter.post(
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
         const { sub: keycloakId, email, preferred_username, name } = req.user!;
 
-        if (!keycloakId || !email || !preferred_username) {
+        if (!keycloakId) {
             return res.status(400).json({
                 success: false,
-                error: { message: 'Missing required user info from token' },
+                error: { message: 'Missing keycloak ID from token' },
             });
         }
 
+        // Use fallback values if email or username is missing from token
+        // This can happen when Keycloak client scopes are not properly configured
+        const userEmail = email || `${keycloakId}@keycloak.local`;
+        const username = preferred_username || keycloakId;
+
         // Get the role from Keycloak token
         const role = getHighestRole(req.user!);
-        
-        console.log('Syncing user:', { 
-            keycloakId, 
-            email, 
-            username: preferred_username, 
+
+        console.log('Syncing user:', {
+            keycloakId,
+            email: userEmail,
+            username,
             role,
-            realmRoles: req.user!.realm_access?.roles 
+            originalEmail: email,
+            originalUsername: preferred_username,
+            realmRoles: req.user!.realm_access?.roles
         });
 
         const user = await prisma.user.upsert({
             where: { keycloakId },
             update: {
-                email,
-                username: preferred_username,
-                displayName: name || preferred_username,
+                email: userEmail,
+                username,
+                displayName: name || username,
                 role, // Update role from Keycloak
             },
             create: {
                 keycloakId,
-                email,
-                username: preferred_username,
-                displayName: name || preferred_username,
+                email: userEmail,
+                username,
+                displayName: name || username,
                 role, // Set role from Keycloak
             },
         });

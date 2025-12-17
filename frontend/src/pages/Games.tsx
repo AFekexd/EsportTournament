@@ -16,7 +16,7 @@ const teamSizeLabels: Record<number, string> = {
 function GameCard({ game }: { game: Game }) {
     return (
         <Link to={`/games/${game.id}`} className="game-card card card-glow">
-            <div className="game-image">
+            <div className="w-full">
                 {game.imageUrl ? (
                     <img src={game.imageUrl} alt={game.name} />
                 ) : (

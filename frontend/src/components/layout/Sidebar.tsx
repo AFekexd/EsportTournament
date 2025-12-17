@@ -11,6 +11,7 @@ import {
     ChevronRight,
     TrendingUp,
     MessageSquare,
+    Monitor,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useAppSelector, useAppDispatch } from '../../hooks/useRedux';
@@ -29,6 +30,7 @@ const navItems: NavItem[] = [
     { to: '/tournaments', icon: <Trophy size={20} />, label: 'Versenyek' },
     { to: '/teams', icon: <Users size={20} />, label: 'Csapatok' },
     { to: '/games', icon: <Gamepad2 size={20} />, label: 'Játékok' },
+    { to: '/booking', icon: <Monitor size={20} />, label: 'Gépfoglalás' },
     { to: '/calendar', icon: <Calendar size={20} />, label: 'Naptár' },
     { to: '/leaderboards', icon: <TrendingUp size={20} />, label: 'Ranglisták' },
 ];
