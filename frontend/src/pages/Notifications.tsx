@@ -4,7 +4,6 @@ import { Bell, Check, ExternalLink } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import { fetchNotifications, markAsRead, markAllAsRead } from '../store/slices/notificationsSlice';
 import type { Notification } from '../store/slices/notificationsSlice';
-import './Notifications.css';
 
 const getNotificationIcon = (type: Notification['type']) => {
     switch (type) {
@@ -53,8 +52,8 @@ export function NotificationsPage() {
     };
 
     return (
-        <div className="notifications-page">
-            <div className="page-header">
+        <div className="pb-12">
+            <div className="flex justify-between items-center mb-8 max-md:flex-col max-md:items-start max-md:gap-4">
                 <div className="page-title-section">
                     <h1 className="page-title">Értesítések</h1>
                     <p className="page-subtitle">Legfrissebb hírek és értesítések</p>
@@ -79,19 +78,19 @@ export function NotificationsPage() {
                     <p>Jelenleg nincsenek értesítéseid.</p>
                 </div>
             ) : (
-                <div className="notifications-list">
+                <div className="flex flex-col gap-4">
                     {notifications.map((notification) => (
                         <div
                             key={notification.id}
-                            className={`notification-card card ${!notification.read ? 'unread' : ''}`}
+                            className={`flex items-start gap-6 p-6 transition-all duration-150 relative hover:translate-x-1 hover:shadow-[0_4px_12px_rgba(0,0,0,0.2)] max-md:flex-col max-md:gap-4 card ${!notification.read ? 'bg-gradient-to-r from-primary/10 to-transparent border-l-[3px] border-l-primary' : ''}`}
                         >
-                            <div className="notification-icon">{getNotificationIcon(notification.type)}</div>
-                            <div className="notification-content">
-                                <h3 className="notification-title">{notification.title}</h3>
-                                <p className="notification-message">{notification.message}</p>
-                                <span className="notification-time">{formatDate(notification.createdAt)}</span>
+                            <div className="text-2xl shrink-0 w-12 h-12 flex items-center justify-center bg-secondary rounded-lg">{getNotificationIcon(notification.type)}</div>
+                            <div className="flex-1 min-w-0">
+                                <h3 className={`text-base font-semibold mb-2 ${!notification.read ? 'text-primary' : 'text-foreground'}`}>{notification.title}</h3>
+                                <p className="text-sm text-secondary-foreground mb-2 leading-relaxed">{notification.message}</p>
+                                <span className="text-xs text-muted-foreground">{formatDate(notification.createdAt)}</span>
                             </div>
-                            <div className="notification-actions">
+                            <div className="flex gap-2 shrink-0 max-md:w-full max-md:justify-end">
                                 {notification.link && (
                                     <Link to={notification.link} className="btn btn-ghost btn-sm">
                                         <ExternalLink size={16} />
