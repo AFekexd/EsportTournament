@@ -1,25 +1,52 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { User, Trophy, Users, Calendar, Edit, Settings as SettingsIcon, Award, TrendingUp } from 'lucide-react';
+import { User, Trophy, Users, Calendar, Edit, Settings as SettingsIcon, Award, TrendingUp, Shield } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
+import { fetchGames, fetchUserRanks, setUserRank, fetchRanks } from '../store/slices/gamesSlice';
 import { fetchTeams } from '../store/slices/teamsSlice';
 import { fetchTournaments } from '../store/slices/tournamentsSlice';
-import type { Team, Tournament } from '../types';
+import type { Team, Tournament, Game, UserRank } from '../types';
 import './Profile.css';
 
 export function ProfilePage() {
     const { user, isAuthenticated } = useAuth();
     const dispatch = useAppDispatch();
+
     const { teams } = useAppSelector((state) => state.teams);
     const { tournaments } = useAppSelector((state) => state.tournaments);
+    const { games, gameRanks, userRanks } = useAppSelector((state) => state.games);
 
     useEffect(() => {
         if (isAuthenticated) {
             dispatch(fetchTeams({ page: 1 }));
             dispatch(fetchTournaments({ page: 1 }));
+            dispatch(fetchGames());
+            dispatch(fetchUserRanks());
         }
     }, [dispatch, isAuthenticated]);
+
+    useEffect(() => {
+        if (games.length > 0) {
+            games.forEach(game => {
+                // Fetch ranks if not already loaded (simple cache via redux state check)
+                // Note: gameRanks is a Record object, checking key existance
+                if (!gameRanks[game.id]) {
+                    dispatch(fetchRanks(game.id));
+                }
+            });
+        }
+    }, [dispatch, games]);
+
+    const handleRankChange = async (gameId: string, rankId: string) => {
+        if (!rankId) return;
+        try {
+            await dispatch(setUserRank({ gameId, rankId })).unwrap();
+        } catch (error) {
+            console.error('Failed to update rank', error);
+            alert('Hiba történt a rang frissítésekor');
+        }
+    };
 
     if (!isAuthenticated || !user) {
         return (
@@ -116,6 +143,71 @@ export function ProfilePage() {
             </div>
 
             <div className="profile-content">
+
+
+                {/* Skill Levels Section */}
+                <div className="profile-section">
+                    <div className="section-header">
+                        <h2 className="section-title">
+                            <Shield size={20} />
+                            Skill Szintek
+                        </h2>
+                    </div>
+
+                    {games.length === 0 ? (
+                        <div className="empty-section card">
+                            <p>Még nincsenek játékok a rendszerben.</p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {games.map((game: Game) => {
+                                const ranks = gameRanks[game.id] || [];
+                                const userRank = userRanks.find((ur: UserRank) => ur.gameId === game.id);
+                                const currentRankId = userRank?.rankId || '';
+
+                                return (
+                                    <div key={game.id} className="card p-4 flex items-center justify-between card-glow" style={{ background: 'var(--bg-secondary)' }}>
+                                        <div className="flex items-center gap-3">
+                                            {game.imageUrl ? (
+                                                <img src={game.imageUrl} alt={game.name} className="w-10 h-10 object-cover rounded" />
+                                            ) : (
+                                                <div className="w-10 h-10 bg-black/30 rounded flex items-center justify-center">
+                                                    {(game.name).charAt(0)}
+                                                </div>
+                                            )}
+                                            <div>
+                                                <h3 className="font-bold text-sm mb-0">{game.name}</h3>
+                                                <div className="text-xs text-muted">
+                                                    {userRank?.rank ? `Jelenlegi: ${userRank.rank.name} (${userRank.rank.value} P-ELO)` : 'Nincs rang kiválasztva'}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center">
+                                            {ranks.length > 0 ? (
+                                                <select
+                                                    className="input input-sm"
+                                                    style={{ width: '150px' }}
+                                                    value={currentRankId}
+                                                    onChange={(e) => handleRankChange(game.id, e.target.value)}
+                                                >
+                                                    <option value="">Válassz rangot...</option>
+                                                    {ranks.map(rank => (
+                                                        <option key={rank.id} value={rank.id}>
+                                                            {rank.name}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            ) : (
+                                                <span className="text-xs text-muted">A játékhoz nincsenek rangok</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
                 <div className="profile-section">
                     <div className="section-header">
                         <h2 className="section-title">
@@ -197,6 +289,6 @@ export function ProfilePage() {
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

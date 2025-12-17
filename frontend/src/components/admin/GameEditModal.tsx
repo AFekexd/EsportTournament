@@ -1,16 +1,18 @@
-import { useState } from 'react';
-import { X, Gamepad2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { X, Save } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
-import { createGame } from '../../store/slices/gamesSlice';
+import { updateGame } from '../../store/slices/gamesSlice';
+import type { Game } from '../../types';
 import { ImageUpload } from '../common/ImageUpload';
 
-interface GameCreateModalProps {
+interface GameEditModalProps {
+    game: Game;
     onClose: () => void;
 }
 
-export function GameCreateModal({ onClose }: GameCreateModalProps) {
+export function GameEditModal({ game, onClose }: GameEditModalProps) {
     const dispatch = useAppDispatch();
-    const { createLoading } = useAppSelector((state) => state.games);
+    const { updateLoading } = useAppSelector((state) => state.games);
 
     const [formData, setFormData] = useState({
         name: '',
@@ -21,6 +23,18 @@ export function GameCreateModal({ onClose }: GameCreateModalProps) {
     });
 
     const [errors, setErrors] = useState<{ name?: string; teamSize?: string }>({});
+
+    useEffect(() => {
+        if (game) {
+            setFormData({
+                name: game.name,
+                description: game.description || '',
+                imageUrl: game.imageUrl || '',
+                rules: game.rules || '',
+                teamSize: game.teamSize,
+            });
+        }
+    }, [game]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -40,17 +54,20 @@ export function GameCreateModal({ onClose }: GameCreateModalProps) {
         }
 
         try {
-            await dispatch(createGame({
-                name: formData.name,
-                description: formData.description || undefined,
-                imageUrl: formData.imageUrl || undefined,
-                rules: formData.rules || undefined,
-                teamSize: formData.teamSize,
+            await dispatch(updateGame({
+                id: game.id,
+                data: {
+                    name: formData.name,
+                    description: formData.description || undefined,
+                    imageUrl: formData.imageUrl || undefined,
+                    rules: formData.rules || undefined,
+                    teamSize: formData.teamSize,
+                }
             })).unwrap();
 
             onClose();
         } catch (err) {
-            console.error('Failed to create game:', err);
+            console.error('Failed to update game:', err);
         }
     };
 
@@ -59,7 +76,7 @@ export function GameCreateModal({ onClose }: GameCreateModalProps) {
             <div className="bg-[#1a1b26] rounded-2xl w-full max-w-2xl border border-white/10 shadow-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                 {/* Header */}
                 <div className="sticky top-0 bg-[#1a1b26] border-b border-white/10 p-6 flex items-center justify-between z-10">
-                    <h2 className="text-2xl font-bold text-white">Új játék hozzáadása</h2>
+                    <h2 className="text-2xl font-bold text-white">Játék szerkesztése</h2>
                     <button
                         onClick={onClose}
                         className="p-2 hover:bg-white/10 rounded-lg transition-colors"
@@ -155,17 +172,17 @@ export function GameCreateModal({ onClose }: GameCreateModalProps) {
                         <button
                             type="submit"
                             className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
-                            disabled={createLoading}
+                            disabled={updateLoading}
                         >
-                            {createLoading ? (
+                            {updateLoading ? (
                                 <>
                                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                    Létrehozás...
+                                    Mentés...
                                 </>
                             ) : (
                                 <>
-                                    <Gamepad2 size={18} />
-                                    Játék létrehozása
+                                    <Save size={18} />
+                                    Módosítások mentése
                                 </>
                             )}
                         </button>

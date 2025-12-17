@@ -3,6 +3,7 @@ import { randomBytes } from 'crypto';
 import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest, optionalAuth } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
+import { processImage, isBase64DataUrl, validateImageSize } from '../utils/imageProcessor.js';
 
 export const teamsRouter = Router();
 
@@ -77,11 +78,20 @@ teamsRouter.post(
             throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
         }
 
+        // Process logo image if base64
+        let processedLogoUrl = logoUrl;
+        if (logoUrl && isBase64DataUrl(logoUrl)) {
+            if (!validateImageSize(logoUrl, 150)) {
+                throw new ApiError('Logo too large (max 150MB)', 400, 'IMAGE_TOO_LARGE');
+            }
+            processedLogoUrl = await processImage(logoUrl);
+        }
+
         const team = await prisma.team.create({
             data: {
                 name,
                 description,
-                logoUrl,
+                logoUrl: processedLogoUrl,
                 joinCode: generateJoinCode(),
                 ownerId: user.id,
                 members: {
@@ -156,12 +166,21 @@ teamsRouter.patch(
 
         const { name, description, logoUrl } = req.body;
 
+        // Process logo image if base64
+        let processedLogoUrl = logoUrl;
+        if (logoUrl && isBase64DataUrl(logoUrl)) {
+            if (!validateImageSize(logoUrl, 150)) {
+                throw new ApiError('Logo too large (max 150MB)', 400, 'IMAGE_TOO_LARGE');
+            }
+            processedLogoUrl = await processImage(logoUrl);
+        }
+
         const updatedTeam = await prisma.team.update({
             where: { id: req.params.id },
             data: {
                 ...(name && { name }),
                 ...(description !== undefined && { description }),
-                ...(logoUrl !== undefined && { logoUrl }),
+                ...(processedLogoUrl !== undefined && { logoUrl: processedLogoUrl }),
             },
         });
 

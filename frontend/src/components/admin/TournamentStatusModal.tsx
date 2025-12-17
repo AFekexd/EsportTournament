@@ -68,11 +68,11 @@ export function TournamentStatusModal({
                 <form onSubmit={handleSubmit} className="modal-body">
                     <div className="form-section">
                         <h3 className="section-title">Státusz</h3>
-                        <div className="status-options">
+                        <div className="flex flex-col gap-3">
                             {statusOptions.map((option) => (
                                 <label
                                     key={option.value}
-                                    className={`status-option ${selectedStatus === option.value ? 'selected' : ''}`}
+                                    className={`flex items-start gap-4 p-4 border-2 border-border rounded-lg cursor-pointer transition-all duration-200 hover:border-primary/50 hover:bg-muted/30 ${selectedStatus === option.value ? 'border-primary bg-primary/10' : ''}`}
                                 >
                                     <input
                                         type="radio"
@@ -80,10 +80,11 @@ export function TournamentStatusModal({
                                         value={option.value}
                                         checked={selectedStatus === option.value}
                                         onChange={(e) => setSelectedStatus(e.target.value)}
+                                        className="mt-1 cursor-pointer"
                                     />
-                                    <div className="status-option-content">
-                                        <span className="status-option-label">{option.label}</span>
-                                        <span className="status-option-description">{option.description}</span>
+                                    <div className="flex flex-col gap-1">
+                                        <span className="font-semibold text-foreground">{option.label}</span>
+                                        <span className="text-sm text-muted-foreground">{option.description}</span>
                                     </div>
                                 </label>
                             ))}

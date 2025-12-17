@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest, requireRole } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
+import { processImage, isBase64DataUrl, validateImageSize } from '../utils/imageProcessor.js';
 
 export const usersRouter = Router();
 
@@ -67,11 +68,20 @@ usersRouter.patch(
 
         const { displayName, avatarUrl } = req.body;
 
+        // Process avatar image if base64
+        let processedAvatarUrl = avatarUrl;
+        if (avatarUrl && isBase64DataUrl(avatarUrl)) {
+            if (!validateImageSize(avatarUrl, 150)) {
+                throw new ApiError('Avatar too large (max 150MB)', 400, 'IMAGE_TOO_LARGE');
+            }
+            processedAvatarUrl = await processImage(avatarUrl);
+        }
+
         const updatedUser = await prisma.user.update({
             where: { id: req.params.id },
             data: {
                 ...(displayName && { displayName }),
-                ...(avatarUrl && { avatarUrl }),
+                ...(processedAvatarUrl !== undefined && { avatarUrl: processedAvatarUrl }),
             },
         });
 
@@ -136,5 +146,59 @@ usersRouter.put(
         });
 
         res.json({ success: true, data: gameStats });
+    })
+);
+
+// Set user game rank
+usersRouter.post(
+    '/me/ranks',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const { gameId, rankId } = req.body;
+        const dbUser = await prisma.user.findUnique({ where: { keycloakId: req.user!.sub }, select: { id: true } });
+        const userId = dbUser?.id;
+
+        if (!userId) throw new ApiError('User not found', 404, 'NOT_FOUND');
+        if (!gameId || !rankId) throw new ApiError('Missing fields', 400, 'BAD_REQUEST');
+
+        // Check if rank belongs to game
+        const rank = await prisma.rank.findFirst({
+            where: { id: rankId, gameId }
+        });
+        if (!rank) throw new ApiError('Invalid rank for this game', 400, 'INVALID_RANK');
+
+        const userRank = await prisma.userRank.upsert({
+            where: {
+                userId_gameId: { userId, gameId }
+            },
+            update: {
+                rankId
+            },
+            create: {
+                userId,
+                gameId,
+                rankId
+            }
+        });
+
+        res.json({ success: true, data: userRank });
+    })
+);
+
+// Get my ranks
+usersRouter.get(
+    '/me/ranks',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const dbUser = await prisma.user.findUnique({ where: { keycloakId: req.user!.sub }, select: { id: true } });
+        const userId = dbUser?.id;
+        if (!userId) throw new ApiError('User not found', 404, 'NOT_FOUND');
+
+        const userRanks = await prisma.userRank.findMany({
+            where: { userId },
+            include: { rank: true, game: true }
+        });
+
+        res.json({ success: true, data: userRanks });
     })
 );

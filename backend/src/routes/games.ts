@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest, requireRole } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
+import { processImage, isBase64DataUrl, validateImageSize } from '../utils/imageProcessor.js';
 
 export const gamesRouter = Router();
 
@@ -43,11 +44,20 @@ gamesRouter.post(
             throw new ApiError('Team size must be 1, 2, 3, or 5', 400, 'INVALID_TEAM_SIZE');
         }
 
+        // Process image if base64
+        let processedImageUrl = imageUrl;
+        if (imageUrl && isBase64DataUrl(imageUrl)) {
+            if (!validateImageSize(imageUrl, 10)) {
+                throw new ApiError('Image too large (max 10MB)', 400, 'IMAGE_TOO_LARGE');
+            }
+            processedImageUrl = await processImage(imageUrl);
+        }
+
         const game = await prisma.game.create({
             data: {
                 name,
                 description,
-                imageUrl,
+                imageUrl: processedImageUrl,
                 rules,
                 teamSize,
             },
@@ -100,12 +110,21 @@ gamesRouter.patch(
             throw new ApiError('Team size must be 1, 2, 3, or 5', 400, 'INVALID_TEAM_SIZE');
         }
 
+        // Process image if base64
+        let processedImageUrl = imageUrl;
+        if (imageUrl && isBase64DataUrl(imageUrl)) {
+            if (!validateImageSize(imageUrl, 10)) {
+                throw new ApiError('Image too large (max 10MB)', 400, 'IMAGE_TOO_LARGE');
+            }
+            processedImageUrl = await processImage(imageUrl);
+        }
+
         const game = await prisma.game.update({
             where: { id: req.params.id },
             data: {
                 ...(name && { name }),
                 ...(description !== undefined && { description }),
-                ...(imageUrl !== undefined && { imageUrl }),
+                ...(processedImageUrl !== undefined && { imageUrl: processedImageUrl }),
                 ...(rules !== undefined && { rules }),
                 ...(teamSize && { teamSize }),
             },
@@ -140,5 +159,72 @@ gamesRouter.delete(
         await prisma.game.delete({ where: { id: req.params.id } });
 
         res.json({ success: true, message: 'Game deleted' });
+    })
+);
+
+// Get ranks for a game
+gamesRouter.get(
+    '/:id/ranks',
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const ranks = await prisma.rank.findMany({
+            where: { gameId: req.params.id },
+            orderBy: { order: 'asc' },
+        });
+
+        res.json({ success: true, data: ranks });
+    })
+);
+
+// Add rank to game (admin only)
+gamesRouter.post(
+    '/:id/ranks',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user || user.role !== 'ADMIN') {
+            throw new ApiError('Admin access required', 403, 'FORBIDDEN');
+        }
+
+        const { name, value, image, order } = req.body;
+
+        if (!name || value === undefined) {
+            throw new ApiError('Name and value are required', 400, 'MISSING_FIELDS');
+        }
+
+        const rank = await prisma.rank.create({
+            data: {
+                gameId: req.params.id,
+                name,
+                value: Number(value),
+                image,
+                order: order ? Number(order) : 0,
+            },
+        });
+
+        res.status(201).json({ success: true, data: rank });
+    })
+);
+
+// Delete rank (admin only)
+gamesRouter.delete(
+    '/ranks/:rankId',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user || user.role !== 'ADMIN') {
+            throw new ApiError('Admin access required', 403, 'FORBIDDEN');
+        }
+
+        await prisma.rank.delete({
+            where: { id: req.params.rankId },
+        });
+
+        res.json({ success: true, message: 'Rank deleted' });
     })
 );

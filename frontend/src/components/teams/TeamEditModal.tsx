@@ -3,7 +3,6 @@ import { X, Save } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { updateTeam } from '../../store/slices/teamsSlice';
 import type { Team } from '../../types';
-import './TeamEditModal.css';
 
 interface TeamEditModalProps {
     team: Team;
@@ -48,16 +47,16 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header">
-                    <h2 className="modal-title">Csapat szerkesztése</h2>
-                    <button className="modal-close" onClick={onClose}>
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[1000] p-4" onClick={onClose}>
+            <div className="bg-card border border-border rounded-2xl max-w-[600px] w-full max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.5)] max-md:max-h-[95vh]" onClick={(e) => e.stopPropagation()}>
+                <div className="flex justify-between items-center p-6 border-b border-border max-md:p-4">
+                    <h2 className="text-2xl font-bold text-foreground">Csapat szerkesztése</h2>
+                    <button className="w-8 h-8 rounded-lg bg-transparent border-none text-muted-foreground cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-muted hover:text-foreground" onClick={onClose}>
                         <X size={20} />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="modal-body">
+                <form onSubmit={handleSubmit} className="p-6 max-md:p-4">
                     <div className="form-group">
                         <label htmlFor="edit-name" className="form-label">
                             Csapat neve <span className="required">*</span>
@@ -100,7 +99,7 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
                         />
                     </div>
 
-                    <div className="modal-footer">
+                    <div className="flex justify-end gap-3 pt-6 border-t border-border">
                         <button type="button" className="btn btn-secondary" onClick={onClose}>
                             Mégse
                         </button>

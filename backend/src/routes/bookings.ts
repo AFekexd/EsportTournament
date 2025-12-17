@@ -20,6 +20,61 @@ bookingsRouter.get(
     })
 );
 
+// Create a new computer (admin only)
+bookingsRouter.post(
+    '/computers',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user || user.role !== 'ADMIN') {
+            throw new ApiError('Admin access required', 403, 'FORBIDDEN');
+        }
+
+        const { name, row, position, specs, status, isActive } = req.body;
+
+        if (!name || row === undefined || position === undefined) {
+            throw new ApiError('name, row, and position are required', 400, 'MISSING_FIELDS');
+        }
+
+        const computer = await prisma.computer.create({
+            data: {
+                name,
+                row,
+                position,
+                specs: specs || null,
+                status: status || null,
+                isActive: isActive !== undefined ? isActive : true,
+            },
+        });
+
+        res.status(201).json({ success: true, data: computer });
+    })
+);
+
+// Delete computer (admin only)
+bookingsRouter.delete(
+    '/computers/:id',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user || user.role !== 'ADMIN') {
+            throw new ApiError('Admin access required', 403, 'FORBIDDEN');
+        }
+
+        await prisma.computer.delete({
+            where: { id: req.params.id },
+        });
+
+        res.json({ success: true, message: 'Computer deleted' });
+    })
+);
+
 // Seed computers (admin only) - creates 10 computers in 2x5 grid
 bookingsRouter.post(
     '/computers/seed',

@@ -133,8 +133,7 @@ export const createTournament = createAsyncThunk(
             endDate?: string;
             registrationDeadline: string;
             prizePool?: string;
-        },
-        { getState }
+        }
     ) => {
         const token = getToken();
 
@@ -175,8 +174,7 @@ export const updateTournament = createAsyncThunk(
                 notifyDiscord?: boolean;
                 discordChannelId?: string;
             }
-        },
-        { getState }
+        }
     ) => {
         const token = getToken();
 

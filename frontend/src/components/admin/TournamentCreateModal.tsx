@@ -3,7 +3,7 @@ import { X, Trophy } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { createTournament } from '../../store/slices/tournamentsSlice';
 import { fetchGames } from '../../store/slices/gamesSlice';
-import './AdminModals.css';
+import { ImageUpload } from '../common/ImageUpload';
 
 interface TournamentCreateModalProps {
     onClose: () => void;
@@ -17,13 +17,13 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
     const [formData, setFormData] = useState({
         name: '',
         description: '',
+        imageUrl: '',
         gameId: '',
         format: 'SINGLE_ELIMINATION',
         maxTeams: 16,
         startDate: '',
         endDate: '',
         registrationDeadline: '',
-        prizePool: '',
     });
 
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -62,13 +62,13 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
             await dispatch(createTournament({
                 name: formData.name,
                 description: formData.description || undefined,
+                imageUrl: formData.imageUrl || undefined,
                 gameId: formData.gameId,
                 format: formData.format,
                 maxTeams: formData.maxTeams,
                 startDate: formData.startDate,
                 endDate: formData.endDate || undefined,
                 registrationDeadline: formData.registrationDeadline,
-                prizePool: formData.prizePool || undefined,
             })).unwrap();
 
             onClose();
@@ -78,40 +78,46 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content modal-large" onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header">
-                    <h2 className="modal-title">Új verseny létrehozása</h2>
-                    <button className="modal-close" onClick={onClose}>
-                        <X size={20} />
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
+            <div className="bg-[#1a1b26] rounded-2xl w-full max-w-3xl border border-white/10 shadow-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                {/* Header */}
+                <div className="sticky top-0 bg-[#1a1b26] border-b border-white/10 p-6 flex items-center justify-between z-10">
+                    <h2 className="text-2xl font-bold text-white">Új verseny létrehozása</h2>
+                    <button
+                        onClick={onClose}
+                        className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                    >
+                        <X size={20} className="text-gray-400" />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="modal-body">
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label htmlFor="tournament-name" className="form-label">
-                                Verseny neve <span className="required">*</span>
+                {/* Form */}
+                <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                    {/* Name & Game */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label htmlFor="tournament-name" className="block text-sm font-medium text-gray-300 mb-2">
+                                Verseny neve <span className="text-red-400">*</span>
                             </label>
                             <input
                                 id="tournament-name"
                                 type="text"
-                                className={`input ${errors.name ? 'input-error' : ''}`}
+                                className={`w-full px-4 py-3 bg-[#0f1015] border ${errors.name ? 'border-red-500' : 'border-white/10'} rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors`}
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                placeholder="Pl: Tavaszi Bajnokság 2024"
+                                placeholder="Pl: Tavaszi CS2 Kupa"
                                 maxLength={100}
                             />
-                            {errors.name && <span className="error-message">{errors.name}</span>}
+                            {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name}</p>}
                         </div>
 
-                        <div className="form-group">
-                            <label htmlFor="tournament-game" className="form-label">
-                                Játék <span className="required">*</span>
+                        <div>
+                            <label htmlFor="tournament-game" className="block text-sm font-medium text-gray-300 mb-2">
+                                Játék <span className="text-red-400">*</span>
                             </label>
                             <select
                                 id="tournament-game"
-                                className={`input ${errors.gameId ? 'input-error' : ''}`}
+                                className={`w-full px-4 py-3 bg-[#0f1015] border ${errors.gameId ? 'border-red-500' : 'border-white/10'} rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
                                 value={formData.gameId}
                                 onChange={(e) => setFormData({ ...formData, gameId: e.target.value })}
                             >
@@ -122,17 +128,18 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                                     </option>
                                 ))}
                             </select>
-                            {errors.gameId && <span className="error-message">{errors.gameId}</span>}
+                            {errors.gameId && <p className="text-red-400 text-sm mt-1">{errors.gameId}</p>}
                         </div>
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="tournament-description" className="form-label">
+                    {/* Description */}
+                    <div>
+                        <label htmlFor="tournament-description" className="block text-sm font-medium text-gray-300 mb-2">
                             Leírás
                         </label>
                         <textarea
                             id="tournament-description"
-                            className="input textarea"
+                            className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors resize-none"
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                             placeholder="Rövid leírás a versenyről..."
@@ -141,107 +148,113 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                         />
                     </div>
 
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label htmlFor="tournament-format" className="form-label">
+                    {/* Image Upload */}
+                    <ImageUpload
+                        value={formData.imageUrl}
+                        onChange={(value) => setFormData({ ...formData, imageUrl: value })}
+                        label="Verseny képe"
+                        placeholder="https://example.com/image.jpg"
+                        maxSizeMB={15}
+                    />
+
+                    {/* Format & Max Teams */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label htmlFor="tournament-format" className="block text-sm font-medium text-gray-300 mb-2">
                                 Formátum
                             </label>
                             <select
                                 id="tournament-format"
-                                className="input"
+                                className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors"
                                 value={formData.format}
                                 onChange={(e) => setFormData({ ...formData, format: e.target.value })}
                             >
                                 <option value="SINGLE_ELIMINATION">Egyenes kieséses</option>
                                 <option value="DOUBLE_ELIMINATION">Dupla kieséses</option>
                                 <option value="ROUND_ROBIN">Körmérkőzés</option>
+                                <option value="SWISS">Svájci</option>
                             </select>
                         </div>
 
-                        <div className="form-group">
-                            <label htmlFor="tournament-maxTeams" className="form-label">
-                                Max csapatok <span className="required">*</span>
+                        <div>
+                            <label htmlFor="tournament-maxTeams" className="block text-sm font-medium text-gray-300 mb-2">
+                                Max csapatok <span className="text-red-400">*</span>
                             </label>
                             <input
                                 id="tournament-maxTeams"
                                 type="number"
-                                className={`input ${errors.maxTeams ? 'input-error' : ''}`}
+                                className={`w-full px-4 py-3 bg-[#0f1015] border ${errors.maxTeams ? 'border-red-500' : 'border-white/10'} rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
                                 value={formData.maxTeams}
                                 onChange={(e) => setFormData({ ...formData, maxTeams: parseInt(e.target.value) })}
                                 min={2}
                                 max={128}
                             />
-                            {errors.maxTeams && <span className="error-message">{errors.maxTeams}</span>}
+                            {errors.maxTeams && <p className="text-red-400 text-sm mt-1">{errors.maxTeams}</p>}
                         </div>
                     </div>
 
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label htmlFor="tournament-regDeadline" className="form-label">
-                                Jelentkezési határidő <span className="required">*</span>
+                    {/* Registration Deadline & Start Date */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label htmlFor="tournament-regDeadline" className="block text-sm font-medium text-gray-300 mb-2">
+                                Jelentkezési határidő <span className="text-red-400">*</span>
                             </label>
                             <input
                                 id="tournament-regDeadline"
                                 type="datetime-local"
-                                className={`input ${errors.registrationDeadline ? 'input-error' : ''}`}
+                                className={`w-full px-4 py-3 bg-[#0f1015] border ${errors.registrationDeadline ? 'border-red-500' : 'border-white/10'} rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
                                 value={formData.registrationDeadline}
                                 onChange={(e) => setFormData({ ...formData, registrationDeadline: e.target.value })}
                             />
-                            {errors.registrationDeadline && <span className="error-message">{errors.registrationDeadline}</span>}
+                            {errors.registrationDeadline && <p className="text-red-400 text-sm mt-1">{errors.registrationDeadline}</p>}
                         </div>
 
-                        <div className="form-group">
-                            <label htmlFor="tournament-startDate" className="form-label">
-                                Kezdési dátum <span className="required">*</span>
+                        <div>
+                            <label htmlFor="tournament-startDate" className="block text-sm font-medium text-gray-300 mb-2">
+                                Kezdési dátum <span className="text-red-400">*</span>
                             </label>
                             <input
                                 id="tournament-startDate"
                                 type="datetime-local"
-                                className={`input ${errors.startDate ? 'input-error' : ''}`}
+                                className={`w-full px-4 py-3 bg-[#0f1015] border ${errors.startDate ? 'border-red-500' : 'border-white/10'} rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
                                 value={formData.startDate}
                                 onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
                             />
-                            {errors.startDate && <span className="error-message">{errors.startDate}</span>}
+                            {errors.startDate && <p className="text-red-400 text-sm mt-1">{errors.startDate}</p>}
                         </div>
                     </div>
 
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label htmlFor="tournament-endDate" className="form-label">
-                                Befejezési dátum
-                            </label>
-                            <input
-                                id="tournament-endDate"
-                                type="datetime-local"
-                                className="input"
-                                value={formData.endDate}
-                                onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="tournament-prizePool" className="form-label">
-                                Díjazás
-                            </label>
-                            <input
-                                id="tournament-prizePool"
-                                type="text"
-                                className="input"
-                                value={formData.prizePool}
-                                onChange={(e) => setFormData({ ...formData, prizePool: e.target.value })}
-                                placeholder="Pl: 100,000 Ft"
-                            />
-                        </div>
+                    {/* End Date */}
+                    <div>
+                        <label htmlFor="tournament-endDate" className="block text-sm font-medium text-gray-300 mb-2">
+                            Befejezési dátum (opcionális)
+                        </label>
+                        <input
+                            id="tournament-endDate"
+                            type="datetime-local"
+                            className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors"
+                            value={formData.endDate}
+                            onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                        />
                     </div>
 
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" onClick={onClose}>
+                    {/* Footer */}
+                    <div className="flex gap-4 pt-6 border-t border-white/10">
+                        <button
+                            type="button"
+                            className="flex-1 px-6 py-3 bg-[#0f1015] hover:bg-[#1a1b26] border border-white/10 text-white rounded-xl font-semibold transition-all"
+                            onClick={onClose}
+                        >
                             Mégse
                         </button>
-                        <button type="submit" className="btn btn-primary" disabled={createLoading}>
+                        <button
+                            type="submit"
+                            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={createLoading}
+                        >
                             {createLoading ? (
                                 <>
-                                    <div className="spinner" />
+                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                                     Létrehozás...
                                 </>
                             ) : (
