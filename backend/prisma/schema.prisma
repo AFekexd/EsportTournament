@@ -154,6 +154,7 @@ model Tournament {
   id                   String           @id @default(uuid())
   name                 String
   description          String?
+  imageUrl             String?          // Custom tournament image
   gameId               String
   game                 Game             @relation(fields: [gameId], references: [id])
   format               TournamentFormat @default(SINGLE_ELIMINATION)

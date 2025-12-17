@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { X, Gamepad2 } from 'lucide-react';
+import { X, Save } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { updateGame } from '../../store/slices/gamesSlice';
 import type { Game } from '../../types';
+import { ImageUpload } from '../common/ImageUpload';
 
 interface GameEditModalProps {
     game: Game;
@@ -11,7 +12,7 @@ interface GameEditModalProps {
 
 export function GameEditModal({ game, onClose }: GameEditModalProps) {
     const dispatch = useAppDispatch();
-    const { createLoading } = useAppSelector((state) => state.games);
+    const { updateLoading } = useAppSelector((state) => state.games);
 
     const [formData, setFormData] = useState({
         name: '',
@@ -71,39 +72,44 @@ export function GameEditModal({ game, onClose }: GameEditModalProps) {
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header">
-                    <h2 className="modal-title">Játék Szerkesztése</h2>
-                    <button className="modal-close" onClick={onClose}>
-                        <X size={20} />
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
+            <div className="bg-[#1a1b26] rounded-2xl w-full max-w-2xl border border-white/10 shadow-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                {/* Header */}
+                <div className="sticky top-0 bg-[#1a1b26] border-b border-white/10 p-6 flex items-center justify-between z-10">
+                    <h2 className="text-2xl font-bold text-white">Játék szerkesztése</h2>
+                    <button
+                        onClick={onClose}
+                        className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                    >
+                        <X size={20} className="text-gray-400" />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="modal-body">
-                    <div className="form-group">
-                        <label htmlFor="game-name" className="form-label">
-                            Játék neve <span className="required">*</span>
+                {/* Form */}
+                <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                    <div>
+                        <label htmlFor="game-name" className="block text-sm font-medium text-gray-300 mb-2">
+                            Játék neve <span className="text-red-400">*</span>
                         </label>
                         <input
                             id="game-name"
                             type="text"
-                            className={`input ${errors.name ? 'input-error' : ''}`}
+                            className={`w-full px-4 py-3 bg-[#0f1015] border ${errors.name ? 'border-red-500' : 'border-white/10'} rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors`}
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             placeholder="Pl: League of Legends"
                             maxLength={100}
                         />
-                        {errors.name && <span className="error-message">{errors.name}</span>}
+                        {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name}</p>}
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="game-description" className="form-label">
+                    <div>
+                        <label htmlFor="game-description" className="block text-sm font-medium text-gray-300 mb-2">
                             Leírás
                         </label>
                         <textarea
                             id="game-description"
-                            className="input textarea"
+                            className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors resize-none"
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                             placeholder="Rövid leírás a játékról..."
@@ -112,27 +118,22 @@ export function GameEditModal({ game, onClose }: GameEditModalProps) {
                         />
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="game-imageUrl" className="form-label">
-                            Kép URL
-                        </label>
-                        <input
-                            id="game-imageUrl"
-                            type="url"
-                            className="input"
-                            value={formData.imageUrl}
-                            onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                            placeholder="https://example.com/image.png"
-                        />
-                    </div>
+                    {/* Image Upload */}
+                    <ImageUpload
+                        value={formData.imageUrl}
+                        onChange={(value) => setFormData({ ...formData, imageUrl: value })}
+                        label="Játék képe"
+                        placeholder="https://example.com/image.jpg"
+                        maxSizeMB={15}
+                    />
 
-                    <div className="form-group">
-                        <label htmlFor="game-teamSize" className="form-label">
-                            Csapatméret <span className="required">*</span>
+                    <div>
+                        <label htmlFor="game-teamSize" className="block text-sm font-medium text-gray-300 mb-2">
+                            Csapatméret <span className="text-red-400">*</span>
                         </label>
                         <select
                             id="game-teamSize"
-                            className={`input ${errors.teamSize ? 'input-error' : ''}`}
+                            className={`w-full px-4 py-3 bg-[#0f1015] border ${errors.teamSize ? 'border-red-500' : 'border-white/10'} rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
                             value={formData.teamSize}
                             onChange={(e) => setFormData({ ...formData, teamSize: parseInt(e.target.value) })}
                         >
@@ -141,16 +142,16 @@ export function GameEditModal({ game, onClose }: GameEditModalProps) {
                             <option value={3}>3v3</option>
                             <option value={5}>5v5</option>
                         </select>
-                        {errors.teamSize && <span className="error-message">{errors.teamSize}</span>}
+                        {errors.teamSize && <p className="text-red-400 text-sm mt-1">{errors.teamSize}</p>}
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="game-rules" className="form-label">
+                    <div>
+                        <label htmlFor="game-rules" className="block text-sm font-medium text-gray-300 mb-2">
                             Szabályok
                         </label>
                         <textarea
                             id="game-rules"
-                            className="input textarea"
+                            className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors resize-none"
                             value={formData.rules}
                             onChange={(e) => setFormData({ ...formData, rules: e.target.value })}
                             placeholder="Játék szabályok..."
@@ -159,19 +160,28 @@ export function GameEditModal({ game, onClose }: GameEditModalProps) {
                         />
                     </div>
 
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" onClick={onClose}>
+                    {/* Footer */}
+                    <div className="flex gap-4 pt-6 border-t border-white/10">
+                        <button
+                            type="button"
+                            className="flex-1 px-6 py-3 bg-[#0f1015] hover:bg-[#1a1b26] border border-white/10 text-white rounded-xl font-semibold transition-all"
+                            onClick={onClose}
+                        >
                             Mégse
                         </button>
-                        <button type="submit" className="btn btn-primary" disabled={createLoading}>
-                            {createLoading ? (
+                        <button
+                            type="submit"
+                            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={updateLoading}
+                        >
+                            {updateLoading ? (
                                 <>
-                                    <div className="spinner" />
+                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                                     Mentés...
                                 </>
                             ) : (
                                 <>
-                                    <Gamepad2 size={18} />
+                                    <Save size={18} />
                                     Módosítások mentése
                                 </>
                             )}

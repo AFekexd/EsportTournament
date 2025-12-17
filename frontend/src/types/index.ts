@@ -81,6 +81,7 @@ export interface Tournament {
     id: string;
     name: string;
     description?: string;
+    imageUrl?: string;  // Custom tournament image
     gameId: string;
     game?: Game;
     format: 'SINGLE_ELIMINATION' | 'DOUBLE_ELIMINATION' | 'ROUND_ROBIN' | 'SWISS';

@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest, requireRole } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
+import { processImage, isBase64DataUrl, validateImageSize } from '../utils/imageProcessor.js';
 
 export const gamesRouter = Router();
 
@@ -43,11 +44,20 @@ gamesRouter.post(
             throw new ApiError('Team size must be 1, 2, 3, or 5', 400, 'INVALID_TEAM_SIZE');
         }
 
+        // Process image if base64
+        let processedImageUrl = imageUrl;
+        if (imageUrl && isBase64DataUrl(imageUrl)) {
+            if (!validateImageSize(imageUrl, 10)) {
+                throw new ApiError('Image too large (max 10MB)', 400, 'IMAGE_TOO_LARGE');
+            }
+            processedImageUrl = await processImage(imageUrl);
+        }
+
         const game = await prisma.game.create({
             data: {
                 name,
                 description,
-                imageUrl,
+                imageUrl: processedImageUrl,
                 rules,
                 teamSize,
             },
@@ -100,12 +110,21 @@ gamesRouter.patch(
             throw new ApiError('Team size must be 1, 2, 3, or 5', 400, 'INVALID_TEAM_SIZE');
         }
 
+        // Process image if base64
+        let processedImageUrl = imageUrl;
+        if (imageUrl && isBase64DataUrl(imageUrl)) {
+            if (!validateImageSize(imageUrl, 10)) {
+                throw new ApiError('Image too large (max 10MB)', 400, 'IMAGE_TOO_LARGE');
+            }
+            processedImageUrl = await processImage(imageUrl);
+        }
+
         const game = await prisma.game.update({
             where: { id: req.params.id },
             data: {
                 ...(name && { name }),
                 ...(description !== undefined && { description }),
-                ...(imageUrl !== undefined && { imageUrl }),
+                ...(processedImageUrl !== undefined && { imageUrl: processedImageUrl }),
                 ...(rules !== undefined && { rules }),
                 ...(teamSize && { teamSize }),
             },

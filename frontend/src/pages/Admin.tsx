@@ -16,6 +16,7 @@ import { TournamentCreateModal } from '../components/admin/TournamentCreateModal
 import { TournamentEditModal } from '../components/admin/TournamentEditModal';
 import { TournamentStatusModal } from '../components/admin/TournamentStatusModal';
 import { BookingManagement } from '../components/booking/BookingManagement';
+import { UserManagement } from '../components/admin/UserManagement';
 import { Link } from 'react-router-dom';
 import './Admin.css';
 import type { Game, Tournament } from '../types';
@@ -309,10 +310,7 @@ export function AdminPage() {
                     )}
 
                     {activeTab === 'users' && (
-                        <div className="admin-section">
-                            <h2 className="section-title">Felhasználók</h2>
-                            <p className="text-muted">Ez a funkció fejlesztés alatt áll.</p>
-                        </div>
+                        <UserManagement />
                     )}
 
                     {activeTab === 'tournaments' && (

@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest, requireRole, optionalAuth } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
+import { processImage, isBase64DataUrl, validateImageSize } from '../utils/imageProcessor.js';
 
 export const tournamentsRouter = Router();
 
@@ -58,6 +59,7 @@ tournamentsRouter.post(
         const {
             name,
             description,
+            imageUrl,
             gameId,
             format,
             maxTeams,
@@ -76,10 +78,20 @@ tournamentsRouter.post(
             throw new ApiError('Game not found', 404, 'GAME_NOT_FOUND');
         }
 
+        // Process image if base64
+        let processedImageUrl = imageUrl;
+        if (imageUrl && isBase64DataUrl(imageUrl)) {
+            if (!validateImageSize(imageUrl, 150)) {
+                throw new ApiError('Image too large (max 150KB)', 400, 'IMAGE_TOO_LARGE');
+            }
+            processedImageUrl = await processImage(imageUrl);
+        }
+
         const tournament = await prisma.tournament.create({
             data: {
                 name,
                 description,
+                imageUrl: processedImageUrl,
                 gameId,
                 format: format || 'SINGLE_ELIMINATION',
                 maxTeams,
@@ -164,8 +176,10 @@ tournamentsRouter.patch(
         const {
             name,
             description,
+            imageUrl,
             status,
             format,
+            maxTeams,
             startDate,
             endDate,
             registrationDeadline,
@@ -174,13 +188,24 @@ tournamentsRouter.patch(
             discordChannelId,
         } = req.body;
 
+        // Process image if base64
+        let processedImageUrl = imageUrl;
+        if (imageUrl && isBase64DataUrl(imageUrl)) {
+            if (!validateImageSize(imageUrl, 150)) {
+                throw new ApiError('Image too large (max 10MB)', 400, 'IMAGE_TOO_LARGE');
+            }
+            processedImageUrl = await processImage(imageUrl);
+        }
+
         const updated = await prisma.tournament.update({
             where: { id: req.params.id },
             data: {
                 ...(name && { name }),
                 ...(description !== undefined && { description }),
+                ...(processedImageUrl !== undefined && { imageUrl: processedImageUrl }),
                 ...(status && { status }),
                 ...(format && { format }),
+                ...(maxTeams && { maxTeams }),
                 ...(startDate && { startDate: new Date(startDate) }),
                 ...(endDate !== undefined && { endDate: endDate ? new Date(endDate) : null }),
                 ...(registrationDeadline && { registrationDeadline: new Date(registrationDeadline) }),

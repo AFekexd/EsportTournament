@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest, requireRole } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
+import { processImage, isBase64DataUrl, validateImageSize } from '../utils/imageProcessor.js';
 
 export const usersRouter = Router();
 
@@ -67,11 +68,20 @@ usersRouter.patch(
 
         const { displayName, avatarUrl } = req.body;
 
+        // Process avatar image if base64
+        let processedAvatarUrl = avatarUrl;
+        if (avatarUrl && isBase64DataUrl(avatarUrl)) {
+            if (!validateImageSize(avatarUrl, 150)) {
+                throw new ApiError('Avatar too large (max 150MB)', 400, 'IMAGE_TOO_LARGE');
+            }
+            processedAvatarUrl = await processImage(avatarUrl);
+        }
+
         const updatedUser = await prisma.user.update({
             where: { id: req.params.id },
             data: {
                 ...(displayName && { displayName }),
-                ...(avatarUrl && { avatarUrl }),
+                ...(processedAvatarUrl !== undefined && { avatarUrl: processedAvatarUrl }),
             },
         });
 
