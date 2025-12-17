@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from './hooks/useRedux';
 import { initKeycloak } from './store/slices/authSlice';
 import { Layout } from './components/layout';
 import { HomePage, TournamentsPage, TeamsPage, GamesPage, CalendarPage, ProfilePage, SettingsPage, AdminPage, TeamCreatePage, TeamDetailPage, GameDetailPage, TournamentDetailPage, LeaderboardsPage, NotificationsPage, DiscordAdminPage, BookingPage } from './pages';
-import './App.css';
 import { PuffLoader } from 'react-spinners';
 
 function AppContent() {
@@ -37,8 +36,8 @@ function AppContent() {
 
   if (isLoading) {
     return (
-      <div className="loading-screen">
-        <div className="loading-content">
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-6">
           <PuffLoader color="#8b5cf6" size={60} />
           <span className="font-bold uppercase tracking-widest text-muted-foreground group-hover:text-white transition-colors text-lg">Betöltés...</span>
         </div>
