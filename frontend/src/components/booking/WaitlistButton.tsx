@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Bell, BellOff, Loader2 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { addToWaitlist, removeFromWaitlist } from '../../store/slices/bookingsSlice';
-import './WaitlistButton.css';
 
 interface WaitlistButtonProps {
     computerId: string;
@@ -49,12 +48,12 @@ export function WaitlistButton({ computerId, date, startHour, endHour }: Waitlis
     if (existingEntry) {
         return (
             <button
-                className="waitlist-btn active"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-primary bg-primary/15 text-primary text-sm font-medium cursor-pointer transition-all duration-200 hover:bg-destructive/15 hover:border-destructive hover:text-destructive disabled:opacity-60 disabled:cursor-not-allowed"
                 onClick={handleToggleWaitlist}
                 disabled={isLoading}
                 title="Leiratkozás az értesítésről"
             >
-                {isLoading ? <Loader2 size={16} className="spinner-spin" /> : <BellOff size={16} />}
+                {isLoading ? <Loader2 size={16} className="animate-spin" /> : <BellOff size={16} />}
                 <span>Értesítés törlése</span>
             </button>
         );
@@ -62,12 +61,12 @@ export function WaitlistButton({ computerId, date, startHour, endHour }: Waitlis
 
     return (
         <button
-            className="waitlist-btn"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-primary bg-transparent text-primary text-sm font-medium cursor-pointer transition-all duration-200 hover:bg-primary/10 disabled:opacity-60 disabled:cursor-not-allowed"
             onClick={handleToggleWaitlist}
             disabled={isLoading}
             title="Értesítés kérése üresedés esetén"
         >
-            {isLoading ? <Loader2 size={16} className="spinner-spin" /> : <Bell size={16} />}
+            {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Bell size={16} />}
             <span>Értesítés</span>
         </button>
     );

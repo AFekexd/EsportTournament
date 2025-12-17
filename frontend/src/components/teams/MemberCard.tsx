@@ -1,6 +1,5 @@
 import { UserMinus, Crown } from 'lucide-react';
 import type { TeamMember } from '../../types';
-import './MemberCard.css';
 
 interface MemberCardProps {
     member: TeamMember;
@@ -14,36 +13,40 @@ export function MemberCard({ member, isOwner, currentUserId, onRemove }: MemberC
     const isCurrentUser = member.userId === currentUserId;
 
     return (
-        <div className="member-card card">
-            <div className="member-avatar">
+        <div className="flex items-center gap-4 p-5 bg-card/60 backdrop-blur-xl border border-border transition-all duration-300 hover:border-primary/50 hover:shadow-[0_0_20px_hsla(var(--primary),0.2)]">
+            <div className="relative w-14 h-14 rounded-full bg-gradient-to-br from-primary to-[hsl(320,100%,65%)] flex items-center justify-center text-white font-bold text-xl shrink-0 overflow-hidden">
                 {member.user?.avatarUrl ? (
-                    <img src={member.user.avatarUrl} alt={member.user.displayName || member.user.username} />
+                    <img src={member.user.avatarUrl} alt={member.user.displayName || member.user.username} className="w-full h-full object-cover" />
                 ) : (
                     <span>{(member.user?.displayName || member.user?.username || 'U').charAt(0).toUpperCase()}</span>
                 )}
                 {isCaptain && (
-                    <div className="captain-badge" title="Csapatvezető">
+                    <div className="absolute -bottom-0.5 -right-0.5 w-6 h-6 rounded-full bg-gradient-to-br from-accent to-primary flex items-center justify-center text-white border-2 border-card" title="Csapatvezető">
                         <Crown size={14} />
                     </div>
                 )}
             </div>
 
-            <div className="member-info">
-                <h3 className="member-name">{member.user?.displayName || member.user?.username}</h3>
-                <p className="member-username">@{member.user?.username}</p>
+            <div className="flex-1 min-w-0">
+                <h3 className="text-base font-semibold text-foreground mb-1 whitespace-nowrap overflow-hidden text-ellipsis">{member.user?.displayName || member.user?.username}</h3>
+                <p className="text-sm text-muted-foreground mb-1">@{member.user?.username}</p>
                 {member.user?.elo !== undefined && (
-                    <p className="member-elo">{member.user.elo} ELO</p>
+                    <p className="text-xs text-primary font-semibold">{member.user.elo} ELO</p>
                 )}
             </div>
 
-            <div className="member-actions">
-                <span className={`badge badge-${member.role.toLowerCase()}`}>
+            <div className="flex items-center gap-2">
+                <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${
+                    member.role === 'CAPTAIN' 
+                        ? 'bg-gradient-to-br from-accent/20 to-primary/20 text-primary border border-primary/30' 
+                        : 'bg-muted/50 text-muted-foreground'
+                }`}>
                     {member.role === 'CAPTAIN' ? 'Vezető' : 'Tag'}
                 </span>
 
                 {isOwner && !isCaptain && !isCurrentUser && (
                     <button
-                        className="btn btn-sm btn-ghost remove-btn"
+                        className="inline-flex items-center justify-center gap-2 px-2 py-2 text-sm font-medium rounded-md transition-colors hover:bg-destructive/10 text-destructive"
                         onClick={onRemove}
                         title="Eltávolítás"
                     >
