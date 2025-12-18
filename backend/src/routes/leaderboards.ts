@@ -52,7 +52,7 @@ leaderboardsRouter.get(
         ]);
 
         // Add rank to each player
-        const rankedPlayers = players.map((player, index) => ({
+        const rankedPlayers = players.map((player: any, index: number) => ({
             ...player,
             rank: skip + index + 1,
             matchesPlayed: player._count.homeMatches + player._count.awayMatches,
@@ -134,7 +134,7 @@ leaderboardsRouter.get(
         ]);
 
         // Add rank to each team
-        const rankedTeams = teams.map((team, index) => ({
+        const rankedTeams = teams.map((team: any, index: number) => ({
             ...team,
             rank: skip + index + 1,
             matchesPlayed: team._count.homeMatches + team._count.awayMatches,
@@ -196,7 +196,7 @@ leaderboardsRouter.get(
             take: 3,
         });
 
-        const rankedPlayers = topPlayers.map((player, index) => ({
+        const rankedPlayers = topPlayers.map((player: any, index: number) => ({
             ...player,
             rank: index + 1,
             matchesPlayed: player._count.homeMatches + player._count.awayMatches,

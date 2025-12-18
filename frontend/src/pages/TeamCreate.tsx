@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Check, Users, FileText, Image as ImageIcon, Sparkles, Shield } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, FileText, Image as ImageIcon, Sparkles, Shield } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import { createTeam } from '../store/slices/teamsSlice';
 

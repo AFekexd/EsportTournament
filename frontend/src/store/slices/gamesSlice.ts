@@ -10,6 +10,7 @@ interface GamesState {
     userRanks: UserRank[];
     isLoading: boolean;
     createLoading: boolean;
+    updateLoading: boolean;
     error: string | null;
 }
 
@@ -20,6 +21,7 @@ const initialState: GamesState = {
     userRanks: [],
     isLoading: false,
     createLoading: false,
+    updateLoading: false,
     error: null,
 };
 
@@ -238,7 +240,12 @@ const gamesSlice = createSlice({
                 state.error = action.error.message || 'Failed to create game';
             })
             // Update game
+            .addCase(updateGame.pending, (state) => {
+                state.updateLoading = true;
+                state.error = null;
+            })
             .addCase(updateGame.fulfilled, (state, action) => {
+                state.updateLoading = false;
                 const index = state.games.findIndex(g => g.id === action.payload.id);
                 if (index !== -1) {
                     state.games[index] = action.payload;
@@ -246,6 +253,10 @@ const gamesSlice = createSlice({
                 if (state.currentGame?.id === action.payload.id) {
                     state.currentGame = action.payload;
                 }
+            })
+            .addCase(updateGame.rejected, (state, action) => {
+                state.updateLoading = false;
+                state.error = action.error.message || 'Failed to update game';
             })
             // Delete game
             .addCase(deleteGame.fulfilled, (state, action) => {

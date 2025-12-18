@@ -133,12 +133,11 @@ export const createTournament = createAsyncThunk(
             endDate?: string;
             registrationDeadline: string;
             prizePool?: string;
+            imageUrl?: string;
         }
     ) => {
         const token = getToken();
-
         if (!token) throw new Error('Not authenticated');
-
         const response = await fetch(`${API_URL}/tournaments`, {
             method: 'POST',
             headers: {
@@ -147,13 +146,10 @@ export const createTournament = createAsyncThunk(
             },
             body: JSON.stringify(tournamentData),
         });
-
         const data: ApiResponse<Tournament> = await response.json();
-
         if (!data.success) {
             throw new Error(data.error?.message || 'Failed to create tournament');
         }
-
         return data.data!;
     }
 );
@@ -173,8 +169,11 @@ export const updateTournament = createAsyncThunk(
                 notifyUsers?: boolean;
                 notifyDiscord?: boolean;
                 discordChannelId?: string;
+                imageUrl?: string;
+                maxTeams?: number;
             }
         }
+
     ) => {
         const token = getToken();
 

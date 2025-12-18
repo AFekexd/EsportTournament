@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Bell, LogIn, LogOut, Shield, Crown, Star, ChevronLeft, ChevronRight, HamburgerIcon, XIcon, MenuIcon } from 'lucide-react';
+import { Bell, LogIn, LogOut, Shield, Crown, Star, MenuIcon } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { fetchUnreadCount } from '../../store/slices/notificationsSlice';

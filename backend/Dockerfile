@@ -8,7 +8,10 @@ RUN apk add --no-cache openssl
 COPY package*.json ./
 COPY prisma ./prisma/
 
+# Avoid EINTEGRITY errors by regenerating lockfile inside container
+RUN rm -rf package-lock.json
 RUN npm install
+
 
 # Generate Prisma Client
 RUN npx prisma generate

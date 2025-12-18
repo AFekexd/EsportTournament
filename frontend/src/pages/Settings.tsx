@@ -12,7 +12,7 @@ export function SettingsPage() {
     // Settings state
     const [displayName, setDisplayName] = useState(user?.displayName || '');
     const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || '');
-    const [email, setEmail] = useState(user?.email || '');
+    const [email] = useState(user?.email || '');
     const [notifications, setNotifications] = useState({
         tournaments: true,
         teams: true,

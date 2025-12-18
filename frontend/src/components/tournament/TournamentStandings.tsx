@@ -97,7 +97,7 @@ export function TournamentStandings({ tournament, onMatchClick }: TournamentStan
         });
     }, [tournament.matches, tournament.entries]);
 
-    const getParticipantDisplay = (id?: string, type: 'home' | 'away' = 'home', match?: Match) => {
+    const getParticipantDisplay = (type: 'home' | 'away' = 'home', match?: Match) => {
         if (!match) return 'TBD';
 
         if (match.homeTeamId) {
@@ -143,8 +143,8 @@ export function TournamentStandings({ tournament, onMatchClick }: TournamentStan
                     <button
                         onClick={() => setActiveTab('standings')}
                         className={`flex items-center justify-center py-2 text-sm font-medium rounded-md transition-all ${activeTab === 'standings'
-                                ? 'bg-primary text-black shadow-sm'
-                                : 'text-gray-400 hover:text-white hover:bg-white/5'
+                            ? 'bg-primary text-black shadow-sm'
+                            : 'text-gray-400 hover:text-white hover:bg-white/5'
                             }`}
                     >
                         <Trophy className="mr-2 h-4 w-4" />
@@ -153,8 +153,8 @@ export function TournamentStandings({ tournament, onMatchClick }: TournamentStan
                     <button
                         onClick={() => setActiveTab('matches')}
                         className={`flex items-center justify-center py-2 text-sm font-medium rounded-md transition-all ${activeTab === 'matches'
-                                ? 'bg-primary text-black shadow-sm'
-                                : 'text-gray-400 hover:text-white hover:bg-white/5'
+                            ? 'bg-primary text-black shadow-sm'
+                            : 'text-gray-400 hover:text-white hover:bg-white/5'
                             }`}
                     >
                         <Swords className="mr-2 h-4 w-4" />
@@ -241,7 +241,7 @@ export function TournamentStandings({ tournament, onMatchClick }: TournamentStan
                                             >
                                                 <div className="flex items-center gap-4 flex-1 justify-end text-right">
                                                     <span className={`text-white font-medium ${match.winnerId === match.homeTeamId || match.winnerUserId === match.homeUserId ? 'text-green-400' : ''}`}>
-                                                        {getParticipantDisplay(match.homeTeamId || match.homeUserId, 'home', match)}
+                                                        {getParticipantDisplay('home', match)}
                                                     </span>
                                                 </div>
 
@@ -256,7 +256,7 @@ export function TournamentStandings({ tournament, onMatchClick }: TournamentStan
 
                                                 <div className="flex items-center gap-4 flex-1 justify-start">
                                                     <span className={`text-white font-medium ${match.winnerId === match.awayTeamId || match.winnerUserId === match.awayUserId ? 'text-green-400' : ''}`}>
-                                                        {getParticipantDisplay(match.awayTeamId || match.awayUserId, 'away', match)}
+                                                        {getParticipantDisplay('away', match)}
                                                     </span>
                                                 </div>
                                             </div>
