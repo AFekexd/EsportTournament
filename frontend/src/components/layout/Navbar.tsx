@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
-import { Bell, LogIn, LogOut, Shield, Crown, Star } from 'lucide-react';
+import { Bell, LogIn, LogOut, Shield, Crown, Star, ChevronLeft, ChevronRight, HamburgerIcon, XIcon, MenuIcon } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { fetchUnreadCount } from '../../store/slices/notificationsSlice';
 import { useEffect } from 'react';
+import { toggleSidebar } from '@/store/slices/uiSlice';
 
 const getRoleIcon = (role: string) => {
     switch (role) {
@@ -36,6 +37,7 @@ export function Navbar() {
     const dispatch = useAppDispatch();
     const { user, isAuthenticated, isLoading, login, logout } = useAuth();
     const { unreadCount } = useAppSelector((state) => state.notifications);
+    const isOpen = useAppSelector((state) => state.ui.sidebarOpen);
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -52,7 +54,14 @@ export function Navbar() {
         <header className="sticky top-0 z-40 w-full">
             <div className="relative flex h-16 items-center justify-between border-b border-white/5 bg-background/60 px-6 backdrop-blur-xl supports-[backdrop-filter]:bg-background/20">
                 <div className="flex items-center gap-4">
-
+                    <button
+                        className={`ml-auto flex md:invisible  h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-white/10 hover:text-white ${!isOpen && 'mx-auto'
+                            }`}
+                        onClick={() => dispatch(toggleSidebar())}
+                        aria-label={isOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+                    >
+                        {!isOpen ? <MenuIcon /> : null}
+                    </button>
 
 
                 </div>

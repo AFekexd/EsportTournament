@@ -12,7 +12,7 @@ import {
 } from '../store/slices/tournamentsSlice';
 import { fetchTeams } from '../store/slices/teamsSlice';
 import { TournamentStatusModal } from '../components/admin';
-import { TournamentBracket, MatchEditModal } from '../components/tournament';
+import { TournamentBracket, MatchEditModal, TournamentStandings } from '../components/tournament';
 import type { Match } from '../types';
 
 const statusLabels: Record<string, { label: string; class: string; icon: any }> = {
@@ -178,12 +178,12 @@ export function TournamentDetailPage() {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Users size={18} className="text-primary" />
-                                    <span>{currentTournament._count?.entries || 0} / {currentTournament.maxTeams} csapat</span>
+                                    <span>{currentTournament._count?.entries || 0} / {currentTournament.maxTeams} résztvevő</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex flex-col gap-3 min-w-[200px]">
+                        <div className="flex flex-col gap-3 min-w-[200px] mb-5">
                             {isRegistrationOpen && isAuthenticated && !isAlreadyRegistered && (
                                 <button
                                     className="btn btn-primary w-full shadow-lg shadow-primary/20"
@@ -275,7 +275,7 @@ export function TournamentDetailPage() {
                             <div className="p-6 border-b border-white/5 flex justify-between items-center">
                                 <h2 className="text-xl font-bold text-white flex items-center gap-2">
                                     <Users size={20} className="text-primary" />
-                                    {currentTournament.game?.teamSize === 1 ? 'Regisztrált játékosok' : 'Regisztrált csapatok'}
+                                    {currentTournament.game?.teamSize === 1 ? 'Regisztrált játékosok' : 'Regisztrált résztvevők'}
                                 </h2>
                                 <span className="bg-white/5 text-gray-400 text-xs px-2 py-1 rounded">
                                     {currentTournament.entries?.length || 0} résztvevő
@@ -336,49 +336,78 @@ export function TournamentDetailPage() {
                         </div>
                     </div>
                 ) : (
-                    <div className={`bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden shadow-2xl ${isFullscreen ? 'fixed inset-0 z-50 rounded-none' : 'relative'}`}>
-                        <div className="p-4 border-b border-white/5 flex justify-between items-center bg-black/20">
-                            <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                                <Trophy size={18} className="text-primary" />
-                                Bracket
-                            </h2>
-                            <div className="flex gap-2">
-                                {(user?.role === 'ADMIN' || user?.role === 'ORGANIZER') && (
-                                    <>
-                                        {!currentTournament.matches?.length ? (
-                                            <button className="btn btn-primary btn-sm" onClick={handleGenerateBracket}>
-                                                Bracket generálása
-                                            </button>
-                                        ) : (
-                                            <button
-                                                className="btn btn-warning btn-sm"
-                                                onClick={() => {
-                                                    if (window.confirm('Biztosan újra akarod generálni a bracketet? Ez törli az összes jelenlegi meccset és eredményt!')) {
-                                                        handleGenerateBracket();
-                                                    }
-                                                }}
-                                            >
-                                                Újragenerálás
-                                            </button>
-                                        )}
-                                    </>
-                                )}
-                                <button
-                                    className="btn btn-ghost btn-sm text-gray-400 hover:text-white"
-                                    onClick={toggleFullscreen}
-                                    title={isFullscreen ? 'Kilépés' : 'Teljes képernyő'}
-                                >
-                                    {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
-                                </button>
-                            </div>
-                        </div>
-                        <div className={`overflow-auto ${isFullscreen ? 'h-[calc(100vh-60px)]' : 'min-h-[600px] max-h-[800px]'}`}>
-                            <TournamentBracket
+                    currentTournament.format === 'ROUND_ROBIN' ? (
+                        <div className="space-y-4">
+                            {(user?.role === 'ADMIN' || user?.role === 'ORGANIZER') && (
+                                <div className="flex justify-end gap-2">
+                                    {!currentTournament.matches?.length ? (
+                                        <button className="btn btn-primary btn-sm" onClick={handleGenerateBracket}>
+                                            Sorsolás generálása
+                                        </button>
+                                    ) : (
+                                        <button
+                                            className="btn btn-warning btn-sm"
+                                            onClick={() => {
+                                                if (window.confirm('Biztosan újra akarod generálni a sorsolást? Ez törli az összes jelenlegi meccset és eredményt!')) {
+                                                    handleGenerateBracket();
+                                                }
+                                            }}
+                                        >
+                                            Újrasorsolás
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+                            <TournamentStandings
                                 tournament={currentTournament}
                                 onMatchClick={handleMatchClick}
                             />
                         </div>
-                    </div>
+                    ) : (
+                        <div className={`bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden shadow-2xl ${isFullscreen ? 'fixed inset-0 z-50 rounded-none' : 'relative'}`}>
+                            <div className="p-4 border-b border-white/5 flex justify-between items-center bg-black/20">
+                                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                                    <Trophy size={18} className="text-primary" />
+                                    Bracket
+                                </h2>
+                                <div className="flex gap-2">
+                                    {(user?.role === 'ADMIN' || user?.role === 'ORGANIZER') && (
+                                        <>
+                                            {!currentTournament.matches?.length ? (
+                                                <button className="btn btn-primary btn-sm" onClick={handleGenerateBracket}>
+                                                    Bracket generálása
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    className="btn btn-warning btn-sm"
+                                                    onClick={() => {
+                                                        if (window.confirm('Biztosan újra akarod generálni a bracketet? Ez törli az összes jelenlegi meccset és eredményt!')) {
+                                                            handleGenerateBracket();
+                                                        }
+                                                    }}
+                                                >
+                                                    Újragenerálás
+                                                </button>
+                                            )}
+                                        </>
+                                    )}
+                                    <button
+                                        className="btn btn-ghost btn-sm text-gray-400 hover:text-white"
+                                        onClick={toggleFullscreen}
+                                        title={isFullscreen ? 'Kilépés' : 'Teljes képernyő'}
+                                    >
+                                        {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
+                                    </button>
+                                </div>
+                            </div>
+                            <div className={`overflow-auto ${isFullscreen ? 'h-[calc(100vh-60px)]' : 'min-h-[600px] max-h-[800px]'}`}>
+                                <TournamentBracket
+                                    tournament={currentTournament}
+                                    onMatchClick={handleMatchClick}
+                                />
+                            </div>
+                        </div>
+                    )
                 )}
             </div>
 

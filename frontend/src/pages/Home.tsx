@@ -46,7 +46,7 @@ export function HomePage() {
     // Fetch stats on component mount and refresh every 30 seconds
     useEffect(() => {
         dispatch(fetchStats());
-        
+
         const interval = setInterval(() => {
             dispatch(fetchStats());
         }, 30000); // 30 seconds
@@ -198,31 +198,52 @@ export function HomePage() {
 
             {/* CTA Section */}
             <section className="pb-8">
-                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary via-[hsl(var(--neon-pink))] to-accent p-1 md:p-1">
-                    <div className="absolute inset-0 bg-white/10 blur-xl animate-pulse"></div>
-                    <div className="relative rounded-[22px] bg-background/90 p-10 md:p-16 overflow-hidden">
-                        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150"></div>
-                        <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/20 blur-3xl"></div>
+                <div className="relative overflow-hidden rounded-[40px] border border-white/10 bg-background/50 p-1 md:p-1">
+                    {/* Outer Glow */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-purple-500/20 to-pink-500/20 blur-3xl" />
 
-                        <div className="relative flex flex-col items-center justify-between gap-10 md:flex-row">
-                            <div className="text-center md:text-left">
-                                <h2 className="mb-4 text-4xl font-black text-white md:text-5xl text-glow">Készen állsz?</h2>
-                                <p className="max-w-md text-lg text-white/80">
-                                    Csatlakozz több száz játékoshoz és kezd el építeni az esport karriered még ma!
-                                </p>
+                    <div className="relative overflow-hidden rounded-[36px] bg-[#0A0A0B] px-6 py-16 text-center shadow-2xl md:px-16 md:py-24">
+                        {/* Background Effects */}
+                        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+                        <div className="absolute left-0 top-0 -z-10 h-full w-full bg-[radial-gradient(circle_800px_at_100%_200px,#3b0764,transparent)]" />
+                        <div className="absolute right-0 top-0 -z-10 h-full w-full bg-[radial-gradient(circle_800px_at_0%_-200px,#1e1b4b,transparent)]" />
+
+                        <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-8">
+                            <div className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
+                                <span className="mr-2 flex h-2 w-2 items-center justify-center">
+                                    <span className="absolute h-2 w-2 animate-ping rounded-full bg-primary opacity-75"></span>
+                                    <span className="relative h-1.5 w-1.5 rounded-full bg-primary"></span>
+                                </span>
+                                Csatlakozz a jövő bajnokaihoz
                             </div>
 
-                            <div className="shrink-0">
+                            <h2 className="text-4xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">
+                                Készen állsz az <br />
+                                <span className="bg-gradient-to-r from-primary via-purple-400 to-pink-500 bg-clip-text text-transparent">
+                                    igazi kihívásra?
+                                </span>
+                            </h2>
+
+                            <p className="max-w-2xl text-lg text-muted-foreground sm:text-xl">
+                                Lépj be a versenyek világába, építsd fel a saját csapatodat, és mutasd meg mindenkinek, hogy mire vagy képes. A dicsőség csak egy kattintásra van.
+                            </p>
+
+                            <div className="mt-4 flex flex-wrap justify-center gap-4">
                                 {isAuthenticated ? (
-                                    <Button asChild size="lg" className="h-16 rounded-full bg-gradient-to-r from-primary to-accent px-10 text-xl font-bold text-white hover:scale-105 hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] transition-all shadow-lg">
-                                        <Link to="/teams/create" className="gap-2">
+                                    <Button asChild size="lg" className="h-14 min-w-[200px] rounded-full bg-white text-base font-bold text-black hover:bg-gray-200 hover:scale-105 transition-all duration-300">
+                                        <Link to="/teams/create">
                                             Csapat létrehozása
                                         </Link>
                                     </Button>
                                 ) : (
-                                    <Button size="lg" onClick={login} className="h-16 rounded-full bg-gradient-to-r from-primary to-accent px-10 text-xl font-bold text-white hover:scale-105 hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] transition-all shadow-lg">
-                                        Kezdjük el!
-                                    </Button>
+                                    <>
+                                        <Button size="lg" onClick={login} className="h-14 min-w-[200px] rounded-full bg-white text-base font-bold text-black hover:bg-gray-200 hover:scale-105 transition-all duration-300 shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)]">
+                                            Bejelentkezés
+                                        </Button>
+                                        <Button asChild size="lg" variant="outline" className="h-14 min-w-[200px] rounded-full border-white/10 bg-white/5 text-base font-bold text-white hover:bg-white/10 backdrop-blur-sm transition-all duration-300">
+                                            <Link to="/tournaments">Versenyek</Link>
+                                        </Button>
+                                    </>
                                 )}
                             </div>
                         </div>

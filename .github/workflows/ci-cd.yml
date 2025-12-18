@@ -1,0 +1,62 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: esport_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Backend Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./backend
+        push: false
+        tags: esport-backend:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Build Frontend Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./frontend
+        push: false
+        tags: esport-frontend:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Run Tests (Optional - Backend)
+      # Assuming you have a test script in backend package.json
+      # checking if "test" script exists before running to avoid failure
+      run: |
+        if grep -q '"test":' backend/package.json; then
+          cd backend
+          npm install
+          npm test
+        else
+          echo "No test script found in backend, skipping tests."
+        fi
