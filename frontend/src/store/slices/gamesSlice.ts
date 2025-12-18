@@ -10,6 +10,7 @@ interface GamesState {
     userRanks: UserRank[];
     isLoading: boolean;
     createLoading: boolean;
+    updateLoading: boolean;
     error: string | null;
 }
 
@@ -20,6 +21,7 @@ const initialState: GamesState = {
     userRanks: [],
     isLoading: false,
     createLoading: false,
+    updateLoading: false,
     error: null,
 };
 

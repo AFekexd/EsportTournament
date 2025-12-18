@@ -84,7 +84,7 @@ export function MatchEditModal({ match, onClose, onSave, isLoading }: MatchEditM
                     <div className="match-info">
                         <div className="match-teams-display">
                             <span className="team-display">{homeName}</span>
-                            <span className="vs-display">vs</span>
+                            <span className="vs-display"> vs </span>
                             <span className="team-display">{awayName}</span>
                         </div>
                     </div>

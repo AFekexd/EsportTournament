@@ -93,6 +93,9 @@ export interface Tournament {
     notifyUsers?: boolean;
     notifyDiscord?: boolean;
     discordChannelId?: string;
+    hasQualifier?: boolean;
+    qualifierMatches?: number;
+    qualifierMinPoints?: number;
     createdAt: string;
     updatedAt: string;
     entries?: TournamentEntry[];
@@ -118,6 +121,8 @@ export interface TournamentEntry {
         elo?: number;
     };
     seed?: number;
+    matchesPlayed?: number;
+    qualifierPoints?: number;
     registeredAt: string;
 }
 

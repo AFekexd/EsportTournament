@@ -171,6 +171,11 @@ model Tournament {
   notifyDiscord    Boolean @default(false) // Post to Discord
   discordChannelId String? @default("matches") // Which Discord channel to use
 
+  // Qualifier settings
+  hasQualifier       Boolean @default(false)
+  qualifierMatches   Int     @default(0)
+  qualifierMinPoints Int     @default(0)
+
   entries TournamentEntry[]
   matches Match[]
 }
@@ -185,6 +190,8 @@ model TournamentEntry {
   userId       String?    // For solo tournaments (1v1)
   user         User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
   seed         Int?
+  matchesPlayed Int      @default(0)
+  qualifierPoints Int    @default(0)
   registeredAt DateTime   @default(now())
 
   @@unique([tournamentId, teamId])

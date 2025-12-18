@@ -411,6 +411,39 @@ async function main() {
     }
     console.log(`✅ Created ${notifCount} notifications`);
 
+    // Create Running Solo Double Elim Tournament with Qualifier (User Request)
+    console.log('🔥 Creating running solo double elim tournament with qualifier...');
+    const soloRunningTournament = await prisma.tournament.create({
+        data: {
+            name: 'Pro FIFA 24 Qualifier Cup',
+            description: 'Futó verseny, csak játékosok, double elim, selejtezővel',
+            gameId: games.find(g => g.name === 'FIFA 24')!.id,
+            format: TournamentFormat.DOUBLE_ELIMINATION,
+            status: TournamentStatus.IN_PROGRESS,
+            maxTeams: 16,
+            startDate: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000), // Started 2 days ago
+            endDate: new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000),
+            registrationDeadline: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000),
+            hasQualifier: true,
+            qualifierMatches: 5,
+            qualifierMinPoints: 10,
+        },
+    });
+
+    // Register players with some stats
+    for (let i = 0; i < 16; i++) {
+        await prisma.tournamentEntry.create({
+            data: {
+                tournamentId: soloRunningTournament.id,
+                userId: users[i].id,
+                seed: i + 1,
+                matchesPlayed: Math.floor(Math.random() * 6), // Some have played all 5, some less
+                qualifierPoints: Math.floor(Math.random() * 20), // Random points
+            },
+        });
+    }
+    console.log('✅ Created running solo tournament with qualifiers');
+
     console.log('✨ Seed completed successfully!');
     console.log(`
 📊 Summary:

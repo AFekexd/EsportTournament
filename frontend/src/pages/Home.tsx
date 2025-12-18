@@ -46,7 +46,7 @@ export function HomePage() {
     // Fetch stats on component mount and refresh every 30 seconds
     useEffect(() => {
         dispatch(fetchStats());
-        
+
         const interval = setInterval(() => {
             dispatch(fetchStats());
         }, 30000); // 30 seconds
@@ -90,7 +90,7 @@ export function HomePage() {
                     <div className="mt-4 flex flex-wrap gap-4">
                         {isAuthenticated ? (
                             <>
-                                <Button asChild size="lg" className="rounded-full bg-gradient-to-r from-primary to-[hsl(var(--neon-pink))] text-base font-bold text-white shadow-[0_0_20px_rgba(139,92,246,0.5)] transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(139,92,246,0.7)] border-none">
+                                <Button asChild variant="outline" size="lg" className="rounded-full border-primary/50 bg-black/20 text-base hover:bg-primary/10 hover:text-white hover:border-primary backdrop-blur-sm">
                                     <Link to="/tournaments" className="gap-2">
                                         Versenyek
                                         <ArrowRight className="h-5 w-5" />

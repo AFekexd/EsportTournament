@@ -76,7 +76,7 @@ export function Sidebar() {
                 <div className="flex h-16 items-center border-b border-white/5 px-4">
                     {isOpen && (
                         <Link to="/" className="flex items-center gap-2 font-bold text-primary transition-opacity hover:opacity-80">
-                            <Gamepad2 size={24} className="text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)] animate-pulse" />
+                            <img src="../public/Pixelated.png" className="w-8 h-8" />
                             <span className="text-xl tracking-tight text-white font-black tracking-tighter drop-shadow-[0_0_10px_rgba(139,92,246,0.3)]">EsportHub</span>
                         </Link>
                     )}
@@ -115,23 +115,25 @@ export function Sidebar() {
 
                     {isAuthenticated && (
                         <div className="border-t border-white/5 pt-5">
-                            <div className="space-y-1">
-                                {adminItems.filter(canView).map((item) => (
-                                    <Link
-                                        key={item.to}
-                                        to={item.to}
-                                        className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive(item.to)
-                                            ? 'bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30'
-                                            : 'text-muted-foreground hover:bg-white/5 hover:text-white'
-                                            } ${!isOpen && 'justify-center px-0'}`}
-                                        title={!isOpen ? item.label : undefined}
-                                    >
-                                        <span className={`transition-transform duration-200 group-hover:scale-110 ${isActive(item.to) ? 'text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]' : ''}`}>
-                                            {item.icon}
-                                        </span>
-                                        {isOpen && <span>{item.label}</span>}
-                                    </Link>
-                                ))}
+                            <div className="mb-8 px-3">
+                                <div className="space-y-1">
+                                    {adminItems.filter(canView).map((item) => (
+                                        <Link
+                                            key={item.to}
+                                            to={item.to}
+                                            className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive(item.to)
+                                                ? 'bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30'
+                                                : 'text-muted-foreground hover:bg-white/5 hover:text-white'
+                                                } ${!isOpen && 'justify-center px-0'}`}
+                                            title={!isOpen ? item.label : undefined}
+                                        >
+                                            <span className={`transition-transform duration-200 group-hover:scale-110 ${isActive(item.to) ? 'text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]' : ''}`}>
+                                                {item.icon}
+                                            </span>
+                                            {isOpen && <span>{item.label}</span>}
+                                        </Link>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     )}

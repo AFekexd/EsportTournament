@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import type { Tournament, ApiResponse } from '../../types';
+import type { Tournament, TournamentEntry, ApiResponse } from '../../types';
 import { API_URL } from '../../config';
 import { authService } from '../../lib/auth-service';
 
@@ -126,6 +126,7 @@ export const createTournament = createAsyncThunk(
         tournamentData: {
             name: string;
             description?: string;
+            imageUrl?: string;
             gameId: string;
             format?: string;
             maxTeams: number;
@@ -133,6 +134,9 @@ export const createTournament = createAsyncThunk(
             endDate?: string;
             registrationDeadline: string;
             prizePool?: string;
+            hasQualifier?: boolean;
+            qualifierMatches?: number;
+            qualifierMinPoints?: number;
         }
     ) => {
         const token = getToken();
@@ -166,6 +170,7 @@ export const updateTournament = createAsyncThunk(
                 status?: string;
                 name?: string;
                 description?: string;
+                imageUrl?: string;
                 format?: string;
                 startDate?: string;
                 endDate?: string;
@@ -173,6 +178,10 @@ export const updateTournament = createAsyncThunk(
                 notifyUsers?: boolean;
                 notifyDiscord?: boolean;
                 discordChannelId?: string;
+                hasQualifier?: boolean;
+                qualifierMatches?: number;
+                qualifierMinPoints?: number;
+                maxTeams?: number;
             }
         }
     ) => {
@@ -246,6 +255,32 @@ export const updateMatch = createAsyncThunk(
         }
 
         return result.data;
+    }
+);
+
+export const updateEntryStats = createAsyncThunk(
+    'tournaments/updateEntryStats',
+    async ({ tournamentId, entryId, data }: { tournamentId: string; entryId: string; data: { matchesPlayed?: number; qualifierPoints?: number } }) => {
+        const token = getToken();
+
+        if (!token) throw new Error('Not authenticated');
+
+        const response = await fetch(`${API_URL}/tournaments/${tournamentId}/entries/${entryId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+        });
+
+        const result: ApiResponse<TournamentEntry> = await response.json();
+
+        if (!result.success) {
+            throw new Error(result.error?.message || 'Failed to update entry stats');
+        }
+
+        return result.data!;
     }
 );
 
@@ -358,6 +393,15 @@ const tournamentsSlice = createSlice({
             .addCase(updateMatch.rejected, (state, action) => {
                 state.updateLoading = false;
                 state.error = action.error.message || 'Failed to update match';
+            })
+            // Update entry stats
+            .addCase(updateEntryStats.fulfilled, (state, action) => {
+                if (state.currentTournament?.entries) {
+                    const index = state.currentTournament.entries.findIndex(e => e.id === action.payload.id);
+                    if (index !== -1) {
+                        state.currentTournament.entries[index] = action.payload;
+                    }
+                }
             });
     },
 });

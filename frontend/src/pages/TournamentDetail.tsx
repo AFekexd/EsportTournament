@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Trophy, Calendar, Users, Award, UserPlus, Maximize, Minimize, Shield, Clock } from 'lucide-react';
+import { ArrowLeft, Trophy, Calendar, Users, Award, UserPlus, Maximize, Minimize, Shield, Clock, Edit2, Check } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import { useAuth } from '../hooks/useAuth';
 import {
@@ -9,6 +9,7 @@ import {
     registerForTournament,
     generateBracket,
     updateMatch,
+    updateEntryStats,
 } from '../store/slices/tournamentsSlice';
 import { fetchTeams } from '../store/slices/teamsSlice';
 import { TournamentStatusModal } from '../components/admin';
@@ -36,11 +37,40 @@ export function TournamentDetailPage() {
     const [showMatchModal, setShowMatchModal] = useState(false);
     const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
     const [selectedTeamId, setSelectedTeamId] = useState('');
-    const [activeTab, setActiveTab] = useState<'info' | 'bracket'>('info');
+    const [activeTab, setActiveTab] = useState<'info' | 'bracket' | 'qualifier'>('info');
     const [isFullscreen, setIsFullscreen] = useState(false);
+
+
+
+    // Qualifier editing state
+    const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
+    const [editForm, setEditForm] = useState({ matches: 0, points: 0 });
 
     const toggleFullscreen = () => {
         setIsFullscreen(!isFullscreen);
+    };
+
+    const handleEditEntry = (entry: any) => {
+        setEditingEntryId(entry.id);
+        setEditForm({
+            matches: entry.matchesPlayed || 0,
+            points: entry.qualifierPoints || 0
+        });
+    };
+
+    const saveEntryStats = async () => {
+        if (!editingEntryId || !currentTournament) return;
+        try {
+            await dispatch(updateEntryStats({
+                tournamentId: currentTournament.id,
+                entryId: editingEntryId,
+                data: { matchesPlayed: editForm.matches, qualifierPoints: editForm.points }
+            })).unwrap();
+            setEditingEntryId(null);
+        } catch (err) {
+            console.error(err);
+            alert('Hiba történt a mentés során');
+        }
     };
 
     useEffect(() => {
@@ -97,9 +127,6 @@ export function TournamentDetailPage() {
             await dispatch(updateMatch({ matchId: selectedMatch.id, data })).unwrap();
             setShowMatchModal(false);
             setSelectedMatch(null);
-            if (currentTournament) {
-                dispatch(fetchTournament(currentTournament.id));
-            }
         } catch (err) {
             console.error('Failed to update match:', err);
         }
@@ -258,6 +285,14 @@ export function TournamentDetailPage() {
                         >
                             Információk
                         </button>
+                        {currentTournament.hasQualifier && (
+                            <button
+                                className={`px-8 py-2 rounded-full text-sm font-bold transition-all ${activeTab === 'qualifier' ? 'bg-primary text-black shadow-lg' : 'text-gray-400 hover:text-white'}`}
+                                onClick={() => setActiveTab('qualifier')}
+                            >
+                                Selejtező
+                            </button>
+                        )}
                         <button
                             className={`px-8 py-2 rounded-full text-sm font-bold transition-all ${activeTab === 'bracket' ? 'bg-primary text-black shadow-lg' : 'text-gray-400 hover:text-white'}`}
                             onClick={() => setActiveTab('bracket')}
@@ -268,7 +303,7 @@ export function TournamentDetailPage() {
                 </div>
 
                 {/* Content */}
-                {activeTab === 'info' ? (
+                {activeTab === 'info' && (
                     <div className="space-y-8">
                         {/* Participants Section */}
                         <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden">
@@ -289,37 +324,69 @@ export function TournamentDetailPage() {
                                             if (entry.user && !entry.team) {
                                                 // Solo Player Card
                                                 return (
-                                                    <div key={entry.id} className="flex items-center gap-4 bg-black/20 p-4 rounded-lg border border-white/5 hover:border-primary/30 transition-colors">
-                                                        <div className="w-10 h-10 rounded bg-primary/20 flex items-center justify-center text-primary font-bold border border-white/10 overflow-hidden">
-                                                            {entry.user.avatarUrl ? (
-                                                                <img src={entry.user.avatarUrl} alt={entry.user.displayName} className="w-full h-full object-cover" />
-                                                            ) : (
-                                                                (entry.user.displayName || entry.user.username).charAt(0).toUpperCase()
-                                                            )}
+                                                    <div key={entry.id} className="relative group overflow-hidden rounded-xl border border-white/10 bg-[#252632] hover:border-primary/50 transition-all duration-300">
+                                                        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                                                        <div className="relative p-4 flex items-center gap-4">
+                                                            <div className="w-12 h-12 rounded-lg bg-black/30 flex items-center justify-center border border-white/5 overflow-hidden text-primary">
+                                                                {entry.user.avatarUrl ? (
+                                                                    <img src={entry.user.avatarUrl} alt={entry.user.displayName} className="w-full h-full object-cover" />
+                                                                ) : (
+                                                                    <span className="text-xl font-bold">
+                                                                        {(entry.user.displayName || entry.user.username).charAt(0).toUpperCase()}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+
+                                                            <div className="flex-grow">
+                                                                <h3 className="font-bold text-white text-lg group-hover:text-primary transition-colors">
+                                                                    {entry.user.displayName || entry.user.username}
+                                                                </h3>
+                                                                <div className="flex items-center gap-2 text-sm">
+                                                                    <span className="text-gray-400">ELO: <span className="text-white">{entry.user.elo || 1000}</span></span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="flex flex-col items-end">
+                                                                <span className="text-xs text-gray-500 uppercase tracking-wider mb-1">Kiemelés</span>
+                                                                <span className="font-mono text-xl font-bold text-white/20 group-hover:text-primary/50 transition-colors">
+                                                                    #{entry.seed}
+                                                                </span>
+                                                            </div>
                                                         </div>
-                                                        <div className="flex-grow">
-                                                            <h3 className="font-bold text-white">{entry.user.displayName || entry.user.username}</h3>
-                                                            <p className="text-xs text-gray-400">{entry.user.elo || 1000} ELO</p>
-                                                        </div>
-                                                        <span className="text-xs font-mono text-gray-500 bg-white/5 px-2 py-1 rounded">#{entry.seed}</span>
                                                     </div>
                                                 );
                                             } else if (entry.team) {
                                                 // Team Card
                                                 return (
-                                                    <Link key={entry.id} to={`/teams/${entry.team.id}`} className="flex items-center gap-4 bg-black/20 p-4 rounded-lg border border-white/5 hover:border-primary/50 transition-colors group">
-                                                        <div className="w-12 h-12 rounded-lg bg-gray-800 flex items-center justify-center border border-white/10 overflow-hidden">
-                                                            {entry.team.logoUrl ? (
-                                                                <img src={entry.team.logoUrl} alt={entry.team.name} className="w-full h-full object-cover" />
-                                                            ) : (
-                                                                <Users size={20} className="text-gray-500 group-hover:text-primary transition-colors" />
-                                                            )}
+                                                    <Link key={entry.id} to={`/teams/${entry.team.id}`} className="relative group overflow-hidden rounded-xl border border-white/10 bg-[#252632] hover:border-primary/50 transition-all duration-300 block">
+                                                        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                                                        <div className="relative p-4 flex items-center gap-4">
+                                                            <div className="w-12 h-12 rounded-lg bg-black/30 flex items-center justify-center border border-white/5 overflow-hidden text-primary">
+                                                                {entry.team.logoUrl ? (
+                                                                    <img src={entry.team.logoUrl} alt={entry.team.name} className="w-full h-full object-cover" />
+                                                                ) : (
+                                                                    <Users size={24} />
+                                                                )}
+                                                            </div>
+
+                                                            <div className="flex-grow">
+                                                                <h3 className="font-bold text-white text-lg group-hover:text-primary transition-colors">
+                                                                    {entry.team.name}
+                                                                </h3>
+                                                                <div className="flex items-center gap-2 text-sm">
+                                                                    <span className="text-gray-400">ELO: <span className="text-white">{entry.team.elo}</span></span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="flex flex-col items-end">
+                                                                <span className="text-xs text-gray-500 uppercase tracking-wider mb-1">Kiemelés</span>
+                                                                <span className="font-mono text-xl font-bold text-white/20 group-hover:text-primary/50 transition-colors">
+                                                                    #{entry.seed}
+                                                                </span>
+                                                            </div>
                                                         </div>
-                                                        <div className="flex-grow">
-                                                            <h3 className="font-bold text-white group-hover:text-primary transition-colors">{entry.team.name}</h3>
-                                                            <p className="text-xs text-gray-400">{entry.team.elo} ELO</p>
-                                                        </div>
-                                                        <span className="text-xs font-mono text-gray-500 bg-white/5 px-2 py-1 rounded">#{entry.seed}</span>
                                                     </Link>
                                                 );
                                             }
@@ -335,7 +402,141 @@ export function TournamentDetailPage() {
                             </div>
                         </div>
                     </div>
-                ) : (
+                )}
+
+                {activeTab === 'qualifier' && currentTournament.hasQualifier && (
+                    <div className="space-y-8">
+                        {/* Qualifier Settings */}
+                        <div className="bg-[#1a1b26] p-6 rounded-xl border border-white/5 shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group">
+                            <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
+                                <Shield size={24} />
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">Selejtező</p>
+                                <p className="text-lg font-bold text-white">
+                                    {currentTournament.qualifierMatches} meccs / min. {currentTournament.qualifierMinPoints} pont
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Qualifier Results */}
+                        <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden">
+                            <div className="p-6 border-b border-white/5 flex justify-between items-center">
+                                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                                    <Award size={20} className="text-primary" />
+                                    Eredmények
+                                </h2>
+                            </div>
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="border-b border-white/10 text-xs text-gray-400 uppercase tracking-wider">
+                                            <th className="px-6 py-4 font-medium">Kiemelés</th>
+                                            <th className="px-6 py-4 font-medium">Résztvevő</th>
+                                            <th className="px-6 py-4 font-medium">Mérkőzések</th>
+                                            <th className="px-6 py-4 font-medium">Pontszám</th>
+                                            <th className="px-6 py-4 font-medium text-right">Kezelés</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-white/5">
+                                        {[...(currentTournament.entries || [])]
+                                            .sort((a, b) => (b.qualifierPoints || 0) - (a.qualifierPoints || 0))
+                                            .map((entry) => {
+                                                const isEditing = editingEntryId === entry.id;
+                                                const targetMatches = currentTournament.qualifierMatches || 0;
+                                                const targetPoints = currentTournament.qualifierMinPoints || 0;
+                                                const currentMatches = entry.matchesPlayed || 0;
+                                                const currentPoints = entry.qualifierPoints || 0;
+
+                                                const isQualified = currentMatches >= targetMatches && currentPoints >= targetPoints;
+                                                const isFailed = currentMatches >= targetMatches && currentPoints < targetPoints;
+
+                                                const name = entry.user ? (entry.user.displayName || entry.user.username) : entry.team?.name;
+                                                const avatar = entry.user?.avatarUrl || entry.team?.logoUrl;
+
+                                                let rowClass = 'hover:bg-white/5';
+                                                if (isQualified) rowClass = 'bg-green-500/10 hover:bg-green-500/20 border-l-2 border-l-green-500';
+                                                if (isFailed) rowClass = 'bg-red-500/10 hover:bg-red-500/20 border-l-2 border-l-red-500';
+
+                                                return (
+                                                    <tr key={entry.id} className={`group transition-colors ${rowClass}`}>
+                                                        <td className="px-6 py-4">
+                                                            <span className="font-mono text-gray-500 bg-white/5 px-2 py-1 rounded">#{entry.seed}</span>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="w-8 h-8 rounded bg-gray-800 flex items-center justify-center border border-white/10 overflow-hidden text-xs font-bold text-gray-400">
+                                                                    {avatar ? (
+                                                                        <img src={avatar} alt={name} className="w-full h-full object-cover" />
+                                                                    ) : (
+                                                                        name?.charAt(0).toUpperCase()
+                                                                    )}
+                                                                </div>
+                                                                <span className="font-medium text-white">{name}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            {isEditing ? (
+                                                                <input
+                                                                    type="number"
+                                                                    value={editForm.matches}
+                                                                    onChange={e => setEditForm({ ...editForm, matches: parseInt(e.target.value) })}
+                                                                    className="bg-black/50 border border-white/20 rounded px-3 py-1 text-white text-sm w-20 focus:outline-none focus:border-primary"
+                                                                    onClick={e => e.stopPropagation()}
+                                                                />
+                                                            ) : (
+                                                                <span className={currentMatches >= targetMatches ? "text-green-400 font-bold" : "text-gray-400"}>
+                                                                    {currentMatches} <span className="text-gray-600 text-xs font-normal">/ {targetMatches}</span>
+                                                                </span>
+                                                            )}
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            {isEditing ? (
+                                                                <input
+                                                                    type="number"
+                                                                    value={editForm.points}
+                                                                    onChange={e => setEditForm({ ...editForm, points: parseInt(e.target.value) })}
+                                                                    className="bg-black/50 border border-white/20 rounded px-3 py-1 text-white text-sm w-20 focus:outline-none focus:border-primary"
+                                                                    onClick={e => e.stopPropagation()}
+                                                                />
+                                                            ) : (
+                                                                <span className={isQualified ? "text-green-400 font-bold" : (isFailed ? "text-red-400 font-bold" : "text-gray-400")}>
+                                                                    {currentPoints} <span className="text-gray-600 text-xs font-normal">/ {targetPoints}</span>
+                                                                </span>
+                                                            )}
+                                                        </td>
+                                                        <td className="px-6 py-4 text-right">
+                                                            {(user?.role === 'ADMIN' || user?.role === 'ORGANIZER') && (
+                                                                isEditing ? (
+                                                                    <button
+                                                                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); saveEntryStats(); }}
+                                                                        className="p-2 bg-primary text-black rounded hover:bg-primary/90 transition-colors inline-flex"
+                                                                        title="Mentés"
+                                                                    >
+                                                                        <Check size={16} />
+                                                                    </button>
+                                                                ) : (
+                                                                    <button
+                                                                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleEditEntry(entry); }}
+                                                                        className="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded transition-colors inline-flex opacity-0 group-hover:opacity-100"
+                                                                        title="Szerkesztés"
+                                                                    >
+                                                                        <Edit2 size={16} />
+                                                                    </button>
+                                                                )
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'bracket' && (
                     <div className={`bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden shadow-2xl ${isFullscreen ? 'fixed inset-0 z-50 rounded-none' : 'relative'}`}>
                         <div className="p-4 border-b border-white/5 flex justify-between items-center bg-black/20">
                             <h2 className="text-lg font-bold text-white flex items-center gap-2">
