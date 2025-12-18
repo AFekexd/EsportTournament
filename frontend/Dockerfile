@@ -1,6 +1,9 @@
 # Build Stage
 FROM node:20-alpine as build
 
+ARG VITE_API_URL
+ARG VITE_ENCRYPTION_KEY
+
 WORKDIR /app
 
 COPY package*.json ./
