@@ -277,8 +277,18 @@ export function TeamDetailPage() {
                                                 {entry.tournament?.game?.name}
                                             </p>
                                         </div>
-                                        <span className={`badge badge-${entry.tournament?.status?.toLowerCase()}`}>
-                                            {entry.tournament?.status}
+                                        <span className={`badge ${entry.tournament?.status === 'REGISTRATION' ? 'badge-success' :
+                                                entry.tournament?.status === 'IN_PROGRESS' ? 'badge-warning' :
+                                                    entry.tournament?.status === 'COMPLETED' ? 'badge-primary' :
+                                                        entry.tournament?.status === 'CANCELLED' ? 'badge-error' :
+                                                            'badge-secondary'
+                                            }`}>
+                                            {entry.tournament?.status === 'REGISTRATION' ? 'Regisztráció' :
+                                                entry.tournament?.status === 'IN_PROGRESS' ? 'Folyamatban' :
+                                                    entry.tournament?.status === 'COMPLETED' ? 'Befejezett' :
+                                                        entry.tournament?.status === 'CANCELLED' ? 'Törölve' :
+                                                            entry.tournament?.status === 'DRAFT' ? 'Piszkozat' :
+                                                                entry.tournament?.status}
                                         </span>
                                     </Link>
                                 ))}

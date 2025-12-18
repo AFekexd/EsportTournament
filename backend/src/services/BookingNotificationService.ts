@@ -1,5 +1,6 @@
 import prisma from '../lib/prisma.js';
 import nodemailer from 'nodemailer';
+import { NotificationType } from '../generated/prisma/client.js';
 
 
 export class BookingNotificationService {
@@ -12,6 +13,7 @@ export class BookingNotificationService {
                 data: {
                     userId,
                     type,
+                    title: type.toString(), // Default title from type
                     message,
                 },
             });

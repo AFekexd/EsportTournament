@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { BarChart3, Edit2, AlertCircle, Plus, Monitor, Clock, Trash2 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
-import { createSchedule, deleteSchedule, checkInByCode, fetchComputers } from '../../store/slices/bookingsSlice';
+import { createSchedule, deleteSchedule, fetchComputers } from '../../store/slices/bookingsSlice';
 import { AdminBookingStats } from './AdminBookingStats';
 import { ComputerModal } from '../admin/ComputerModal';
 import { authService } from '../../lib/auth-service';
@@ -12,21 +12,10 @@ export function BookingManagement() {
     const { schedules, computers } = useAppSelector((state) => state.bookings);
 
     const [bookingSubTab, setBookingSubTab] = useState<'management' | 'stats'>('stats');
-    const [checkInCode, setCheckInCode] = useState('');
     const [newSchedule, setNewSchedule] = useState({ dayOfWeek: 5, startHour: 14, endHour: 18 });
     const [showComputerModal, setShowComputerModal] = useState(false);
     const [editingComputer, setEditingComputer] = useState<any>(null);
 
-    const handleCheckIn = async () => {
-        if (!checkInCode.trim()) return;
-        try {
-            await dispatch(checkInByCode(checkInCode)).unwrap();
-            alert('Sikeres bejelentkezés!');
-            setCheckInCode('');
-        } catch (error) {
-            alert('Sikertelen bejelentkezés: Érvénytelen kód vagy a foglalás nem most esedékes.');
-        }
-    };
 
     const handleDeleteComputer = async (computerId: string) => {
         if (!confirm('Biztosan törölni szeretnéd ezt a gépet?')) return;
