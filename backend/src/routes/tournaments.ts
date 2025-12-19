@@ -695,6 +695,17 @@ tournamentsRouter.patch(
 
         const { matchesPlayed, qualifierPoints } = req.body;
 
+        // Ensure the entry belongs to the specified tournament before updating
+        const existingEntry = await prisma.tournamentEntry.findFirst({
+            where: {
+                id: req.params.entryId,
+                tournamentId: req.params.id,
+            },
+        });
+
+        if (!existingEntry) {
+            throw new ApiError('Entry not found for this tournament', 404, 'NOT_FOUND');
+        }
         const updatedEntry = await prisma.tournamentEntry.update({
             where: { id: req.params.entryId },
             data: {
