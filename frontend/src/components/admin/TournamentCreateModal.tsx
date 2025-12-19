@@ -24,6 +24,9 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
         startDate: '',
         endDate: '',
         registrationDeadline: '',
+        hasQualifier: false,
+        qualifierMatches: 10,
+        qualifierMinPoints: 50,
     });
 
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -69,6 +72,9 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                 startDate: formData.startDate,
                 endDate: formData.endDate || undefined,
                 registrationDeadline: formData.registrationDeadline,
+                hasQualifier: formData.hasQualifier,
+                qualifierMatches: formData.hasQualifier ? formData.qualifierMatches : 0,
+                qualifierMinPoints: formData.hasQualifier ? formData.qualifierMinPoints : 0,
             })).unwrap();
 
             onClose();
@@ -224,6 +230,54 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                         </div>
                     </div>
 
+
+                    {/* Qualifier Settings */}
+                    <div className="bg-[#0f1015] rounded-xl p-4 border border-white/10">
+                        <div className="flex items-center gap-3 mb-4">
+                            <input
+                                id="has-qualifier"
+                                type="checkbox"
+                                className="w-5 h-5 rounded border-white/20 bg-[#1a1b26] text-primary focus:ring-primary"
+                                checked={formData.hasQualifier}
+                                onChange={(e) => setFormData({ ...formData, hasQualifier: e.target.checked })}
+                            />
+                            <label htmlFor="has-qualifier" className="text-white font-medium cursor-pointer select-none">
+                                Selejtező kör engedélyezése
+                            </label>
+                        </div>
+
+                        {formData.hasQualifier && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-8 border-l-2 border-primary/20">
+                                <div>
+                                    <label htmlFor="qualifier-matches" className="block text-sm font-medium text-gray-300 mb-2">
+                                        Kötelező meccsek száma
+                                    </label>
+                                    <input
+                                        id="qualifier-matches"
+                                        type="number"
+                                        className="w-full px-4 py-2 bg-[#1a1b26] border border-white/10 rounded-lg text-white focus:outline-none focus:border-primary/50"
+                                        value={formData.qualifierMatches}
+                                        onChange={(e) => setFormData({ ...formData, qualifierMatches: parseInt(e.target.value) })}
+                                        min={1}
+                                    />
+                                </div>
+                                <div>
+                                    <label htmlFor="qualifier-points" className="block text-sm font-medium text-gray-300 mb-2">
+                                        Minimum pontszám
+                                    </label>
+                                    <input
+                                        id="qualifier-points"
+                                        type="number"
+                                        className="w-full px-4 py-2 bg-[#1a1b26] border border-white/10 rounded-lg text-white focus:outline-none focus:border-primary/50"
+                                        value={formData.qualifierMinPoints}
+                                        onChange={(e) => setFormData({ ...formData, qualifierMinPoints: parseInt(e.target.value) })}
+                                        min={0}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
                     {/* End Date */}
                     <div>
                         <label htmlFor="tournament-endDate" className="block text-sm font-medium text-gray-300 mb-2">
@@ -266,7 +320,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                         </button>
                     </div>
                 </form>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }

@@ -66,6 +66,9 @@ tournamentsRouter.post(
             startDate,
             endDate,
             registrationDeadline,
+            hasQualifier,
+            qualifierMatches,
+            qualifierMinPoints,
         } = req.body;
 
         if (!name || !gameId || !maxTeams || !startDate || !registrationDeadline) {
@@ -98,6 +101,9 @@ tournamentsRouter.post(
                 startDate: new Date(startDate),
                 endDate: endDate ? new Date(endDate) : null,
                 registrationDeadline: new Date(registrationDeadline),
+                hasQualifier: hasQualifier || false,
+                qualifierMatches: qualifierMatches ? parseInt(qualifierMatches) : 0,
+                qualifierMinPoints: qualifierMinPoints ? parseInt(qualifierMinPoints) : 0,
                 status: 'DRAFT',
             },
             include: { game: true },
@@ -141,6 +147,7 @@ tournamentsRouter.get(
                     },
                     orderBy: [{ round: 'asc' }, { position: 'asc' }],
                 },
+                _count: { select: { entries: true } },
             },
         });
 
@@ -186,6 +193,9 @@ tournamentsRouter.patch(
             notifyUsers,
             notifyDiscord,
             discordChannelId,
+            hasQualifier,
+            qualifierMatches,
+            qualifierMinPoints,
         } = req.body;
 
         // Process image if base64
@@ -212,8 +222,14 @@ tournamentsRouter.patch(
                 ...(notifyUsers !== undefined && { notifyUsers }),
                 ...(notifyDiscord !== undefined && { notifyDiscord }),
                 ...(discordChannelId !== undefined && { discordChannelId }),
+                ...(hasQualifier !== undefined && { hasQualifier }),
+                ...(qualifierMatches !== undefined && { qualifierMatches: parseInt(qualifierMatches) }),
+                ...(qualifierMinPoints !== undefined && { qualifierMinPoints: parseInt(qualifierMinPoints) }),
             },
-            include: { game: true },
+            include: {
+                game: true,
+                _count: { select: { entries: true } },
+            },
         });
 
         res.json({ success: true, data: updated });
@@ -661,5 +677,55 @@ tournamentsRouter.post(
         });
 
         res.json({ success: true, data: finalMatches });
+    })
+);
+
+// Update tournament entry stats (qualifier points, matches played)
+tournamentsRouter.patch(
+    '/:id/entries/:entryId',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user || !['ADMIN', 'ORGANIZER'].includes(user.role)) {
+            throw new ApiError('Only organizers can update entry stats', 403, 'FORBIDDEN');
+        }
+
+        const { matchesPlayed, qualifierPoints } = req.body;
+
+        // Ensure the entry belongs to the specified tournament before updating
+        const existingEntry = await prisma.tournamentEntry.findFirst({
+            where: {
+                id: req.params.entryId,
+                tournamentId: req.params.id,
+            },
+        });
+
+        if (!existingEntry) {
+            throw new ApiError('Entry not found for this tournament', 404, 'NOT_FOUND');
+        }
+        const updatedEntry = await prisma.tournamentEntry.update({
+            where: { id: req.params.entryId },
+            data: {
+                ...(matchesPlayed !== undefined && { matchesPlayed: parseInt(matchesPlayed) }),
+                ...(qualifierPoints !== undefined && { qualifierPoints: parseInt(qualifierPoints) }),
+            },
+            include: {
+                team: {
+                    include: {
+                        members: {
+                            include: {
+                                user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
+                            },
+                        },
+                    },
+                },
+                user: { select: { id: true, username: true, displayName: true, avatarUrl: true, elo: true } },
+            },
+        });
+
+        res.json({ success: true, data: updatedEntry });
     })
 );

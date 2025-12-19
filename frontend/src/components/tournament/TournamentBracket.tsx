@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { LayoutTemplate } from 'lucide-react';
 import type { Match, Tournament } from '../../types';
 import './TournamentBracket.css';
 
@@ -172,69 +173,137 @@ export function TournamentBracket({ tournament, onMatchClick }: TournamentBracke
             const content = contentRef.current;
             if (!content) return;
 
-            // Get all upper bracket matches only for lines
-            const upperMatches = tournament.matches?.filter(m =>
-                m.bracketType === 'UPPER' || !m.bracketType
-            ) || [];
-
-            // Group matches by round
-            const matchesByRound: Record<number, Match[]> = {};
-            upperMatches.forEach(match => {
-                if (!matchesByRound[match.round]) {
-                    matchesByRound[match.round] = [];
-                }
-                matchesByRound[match.round].push(match);
-            });
-
-            // Sort each round by position
-            Object.values(matchesByRound).forEach(matches => {
-                matches.sort((a, b) => a.position - b.position);
-            });
-
-            const rounds = Object.keys(matchesByRound).map(Number).sort((a, b) => a - b);
-
-            // Connect matches between consecutive rounds
-            for (let i = 0; i < rounds.length - 1; i++) {
-                const currentRound = rounds[i];
-                const nextRound = rounds[i + 1];
-                const currentMatches = matchesByRound[currentRound];
-                const nextMatches = matchesByRound[nextRound];
-
-                currentMatches.forEach((match, idx) => {
-                    const matchEl = matchRefs.current.get(match.id);
-                    const nextMatchIdx = Math.floor(idx / 2);
-                    const nextMatch = nextMatches?.[nextMatchIdx];
-                    if (!nextMatch) return;
-
-                    const nextMatchEl = matchRefs.current.get(nextMatch.id);
-
-                    if (matchEl && nextMatchEl) {
-                        // Use offset positions relative to content
-                        const getOffsetPosition = (el: HTMLElement) => {
-                            let left = 0;
-                            let top = 0;
-                            let current: HTMLElement | null = el;
-
-                            while (current && current !== content) {
-                                left += current.offsetLeft;
-                                top += current.offsetTop;
-                                current = current.offsetParent as HTMLElement;
-                            }
-
-                            return { left, top, width: el.offsetWidth, height: el.offsetHeight };
-                        };
-
-                        const matchPos = getOffsetPosition(matchEl);
-                        const nextMatchPos = getOffsetPosition(nextMatchEl);
-
-                        newLines.push({
-                            x1: matchPos.left + matchPos.width,
-                            y1: matchPos.top + matchPos.height / 2,
-                            x2: nextMatchPos.left,
-                            y2: nextMatchPos.top + nextMatchPos.height / 2,
-                        });
+            const calculateSubsetLines = (matches: Match[]) => {
+                const subsetLines: { x1: number; y1: number; x2: number; y2: number }[] = [];
+                // Group matches by round
+                const matchesByRound: Record<number, Match[]> = {};
+                matches.forEach(match => {
+                    if (!matchesByRound[match.round]) {
+                        matchesByRound[match.round] = [];
                     }
+                    matchesByRound[match.round].push(match);
                 });
+
+                // Sort each round by position
+                Object.values(matchesByRound).forEach(matches => {
+                    matches.sort((a, b) => a.position - b.position);
+                });
+
+                const rounds = Object.keys(matchesByRound).map(Number).sort((a, b) => a - b);
+
+                // Connect matches between consecutive rounds
+                for (let i = 0; i < rounds.length - 1; i++) {
+                    const currentRound = rounds[i];
+                    const nextRound = rounds[i + 1];
+                    const currentMatches = matchesByRound[currentRound];
+                    const nextMatches = matchesByRound[nextRound];
+
+                    currentMatches.forEach((match, idx) => {
+                        const matchEl = matchRefs.current.get(match.id);
+                        // In double elimination lower bracket, logic might differ, but assuming standard tree for visualization
+                        // Often 2 matches feed into 1.
+                        const nextMatchIdx = Math.floor(idx / 2);
+                        const nextMatch = nextMatches?.[nextMatchIdx];
+                        if (!nextMatch) return;
+
+                        const nextMatchEl = matchRefs.current.get(nextMatch.id);
+
+                        if (matchEl && nextMatchEl) {
+                            // Use offset positions relative to content
+                            const getOffsetPosition = (el: HTMLElement) => {
+                                let left = 0;
+                                let top = 0;
+                                let current: HTMLElement | null = el;
+
+                                while (current && current !== content) {
+                                    left += current.offsetLeft;
+                                    top += current.offsetTop;
+                                    current = current.offsetParent as HTMLElement;
+                                }
+
+                                return { left, top, width: el.offsetWidth, height: el.offsetHeight };
+                            };
+
+                            const matchPos = getOffsetPosition(matchEl);
+                            const nextMatchPos = getOffsetPosition(nextMatchEl);
+
+                            subsetLines.push({
+                                x1: matchPos.left + matchPos.width,
+                                y1: matchPos.top + matchPos.height / 2,
+                                x2: nextMatchPos.left,
+                                y2: nextMatchPos.top + nextMatchPos.height / 2,
+                            });
+                        }
+                    });
+                }
+                return subsetLines;
+            };
+
+            const upperMatches = tournament.matches?.filter(m => m.bracketType === 'UPPER' || !m.bracketType) || [];
+            const lowerMatches = tournament.matches?.filter(m => m.bracketType === 'LOWER') || [];
+            const grandFinalMatches = tournament.matches?.filter(m => m.bracketType === 'GRAND_FINAL') || [];
+
+            newLines.push(...calculateSubsetLines(upperMatches));
+            newLines.push(...calculateSubsetLines(lowerMatches));
+
+            // Connect Finals to Grand Final
+            if (grandFinalMatches.length > 0) {
+                const grandFinal = grandFinalMatches[0];
+                const grandFinalEl = matchRefs.current.get(grandFinal.id);
+
+                if (grandFinalEl) {
+                    const getOffsetPosition = (el: HTMLElement) => {
+                        let left = 0;
+                        let top = 0;
+                        let current: HTMLElement | null = el;
+
+                        while (current && current !== content) {
+                            left += current.offsetLeft;
+                            top += current.offsetTop;
+                            current = current.offsetParent as HTMLElement;
+                        }
+                        return { left, top, width: el.offsetWidth, height: el.offsetHeight };
+                    };
+
+                    const gfPos = getOffsetPosition(grandFinalEl);
+
+                    // Connect Upper Bracket Winner -> Grand Final (Top/Home)
+                    // Assumption: Last match of upper bracket feeds into Grand Final
+                    const maxUpperRound = Math.max(...upperMatches.map(m => m.round));
+                    const upperFinal = upperMatches.find(m => m.round === maxUpperRound); // Assuming single final match
+
+                    if (upperFinal) {
+                        const upperFinalEl = matchRefs.current.get(upperFinal.id);
+                        if (upperFinalEl) {
+                            const upPos = getOffsetPosition(upperFinalEl);
+                            newLines.push({
+                                x1: upPos.left + upPos.width,
+                                y1: upPos.top + upPos.height / 2,
+                                x2: gfPos.left,
+                                y2: gfPos.top + gfPos.height / 3, // Connect to top half
+                            });
+                        }
+                    }
+
+                    // Connect Lower Bracket Winner -> Grand Final (Bottom/Away)
+                    if (lowerMatches.length > 0) {
+                        const maxLowerRound = Math.max(...lowerMatches.map(m => m.round));
+                        const lowerFinal = lowerMatches.find(m => m.round === maxLowerRound);
+
+                        if (lowerFinal) {
+                            const lowerFinalEl = matchRefs.current.get(lowerFinal.id);
+                            if (lowerFinalEl) {
+                                const lowPos = getOffsetPosition(lowerFinalEl);
+                                newLines.push({
+                                    x1: lowPos.left + lowPos.width,
+                                    y1: lowPos.top + lowPos.height / 2,
+                                    x2: gfPos.left,
+                                    y2: gfPos.top + (gfPos.height / 3) * 2, // Connect to bottom half
+                                });
+                            }
+                        }
+                    }
+                }
             }
 
             setLines(newLines);
@@ -248,7 +317,12 @@ export function TournamentBracket({ tournament, onMatchClick }: TournamentBracke
     if (!tournament.matches || tournament.matches.length === 0) {
         return (
             <div className="bracket-empty">
-                <p>Még nincs bracket generálva ehhez a versenyhez.</p>
+                <LayoutTemplate size={48} className="opacity-20 mb-4" />
+                <h3 className="text-xl font-bold text-white mb-2">A sorsolás még nem készült el</h3>
+                <p className="max-w-md mx-auto">
+                    Kattints a "Bracket generálása" gombra a sorsolás elkészítéséhez.
+                    A rendszer automatikusan párosítja a versenyzőket az erősorrend (seed) alapján.
+                </p>
             </div>
         );
     }
@@ -330,37 +404,63 @@ export function TournamentBracket({ tournament, onMatchClick }: TournamentBracke
                             />
                         ))}
                     </svg>
-                    <div className="bracket-section upper-bracket">
-                        {isDoubleElimination && <h3 className="bracket-section-title">🏆 Felső ág</h3>}
-                        <div className="bracket-rounds">
-                            {rounds.map(round => (
-                                <div key={`upper-${round}`} className="bracket-round">
-                                    <div className="round-title">{getRoundName(round, rounds.length)}</div>
-                                    <div className="round-matches">
-                                        {upperByRound[round]?.map(match => (
-                                            <MatchCard
-                                                key={match.id}
-                                                match={match}
-                                                onMatchClick={onMatchClick}
-                                                matchRef={registerMatchRef(match.id)}
-                                            />
+                    {/* Main Layout: Tree (Upper+Lower) + Grand Final */}
+                    <div className="flex items-center gap-16">
+                        <div className="flex flex-col gap-12">
+                            <div className="bracket-section upper-bracket">
+                                {isDoubleElimination && <h3 className="bracket-section-title">🏆 Felső ág</h3>}
+                                <div className="bracket-rounds">
+                                    {rounds.map(round => (
+                                        <div key={`upper-${round}`} className="bracket-round">
+                                            <div className="round-title">{getRoundName(round, rounds.length)}</div>
+                                            <div className="round-matches">
+                                                {upperByRound[round]?.map(match => (
+                                                    <MatchCard
+                                                        key={match.id}
+                                                        match={match}
+                                                        onMatchClick={onMatchClick}
+                                                        matchRef={registerMatchRef(match.id)}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Lower Bracket */}
+                            {isDoubleElimination && lowerMatches.length > 0 && (
+                                <div className="bracket-section lower-bracket">
+                                    <h3 className="bracket-section-title">🔄 Alsó ág</h3>
+                                    <div className="bracket-rounds">
+                                        {lowerRounds.map(round => (
+                                            <div key={`lower-${round}`} className="bracket-round">
+                                                <div className="round-title">{getRoundName(round, lowerRounds.length, true)}</div>
+                                                <div className="round-matches">
+                                                    {lowerByRound[round]?.map(match => (
+                                                        <MatchCard
+                                                            key={match.id}
+                                                            match={match}
+                                                            onMatchClick={onMatchClick}
+                                                            matchRef={registerMatchRef(match.id)}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </div>
                                         ))}
                                     </div>
                                 </div>
-                            ))}
+                            )}
                         </div>
-                    </div>
 
-                    {/* Lower Bracket */}
-                    {isDoubleElimination && lowerMatches.length > 0 && (
-                        <div className="bracket-section lower-bracket">
-                            <h3 className="bracket-section-title">🔄 Alsó ág</h3>
-                            <div className="bracket-rounds">
-                                {lowerRounds.map(round => (
-                                    <div key={`lower-${round}`} className="bracket-round">
-                                        <div className="round-title">{getRoundName(round, lowerRounds.length, true)}</div>
+                        {/* Grand Final */}
+                        {grandFinalMatches.length > 0 && (
+                            <div className="bracket-section grand-final self-center">
+                                <h3 className="bracket-section-title">⭐ Nagydöntő</h3>
+                                <div className="bracket-rounds">
+                                    <div className="bracket-round">
                                         <div className="round-matches">
-                                            {lowerByRound[round]?.map(match => (
+                                            {grandFinalMatches.map(match => (
                                                 <MatchCard
                                                     key={match.id}
                                                     match={match}
@@ -370,31 +470,10 @@ export function TournamentBracket({ tournament, onMatchClick }: TournamentBracke
                                             ))}
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Grand Final */}
-                    {grandFinalMatches.length > 0 && (
-                        <div className="bracket-section grand-final">
-                            <h3 className="bracket-section-title">⭐ Nagydöntő</h3>
-                            <div className="bracket-rounds">
-                                <div className="bracket-round">
-                                    <div className="round-matches">
-                                        {grandFinalMatches.map(match => (
-                                            <MatchCard
-                                                key={match.id}
-                                                match={match}
-                                                onMatchClick={onMatchClick}
-                                                matchRef={registerMatchRef(match.id)}
-                                            />
-                                        ))}
-                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

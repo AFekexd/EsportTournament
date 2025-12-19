@@ -76,7 +76,7 @@ export function Sidebar() {
                 <div className="flex h-16 items-center border-b border-white/5 px-4">
                     {isOpen && (
                         <Link to="/" className="flex items-center gap-2 font-bold text-primary transition-opacity hover:opacity-80">
-                            <Gamepad2 size={24} className="text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)] animate-pulse" />
+                            <img src="/Pixelated.png" className="w-8 h-8" />
                             <span className="text-xl tracking-tight text-white font-black tracking-tighter drop-shadow-[0_0_10px_rgba(139,92,246,0.3)]">EsportHub</span>
                         </Link>
                     )}
@@ -116,7 +116,6 @@ export function Sidebar() {
                     {isAuthenticated && (
                         <div className="border-t border-white/5 pt-5">
                             <div className="mb-8 px-3">
-
                                 <div className="space-y-1">
                                     {adminItems.filter(canView).map((item) => (
                                         <Link
