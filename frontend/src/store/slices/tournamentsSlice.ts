@@ -176,7 +176,6 @@ export const updateTournament = createAsyncThunk(
                 hasQualifier?: boolean;
                 qualifierMatches?: number;
                 qualifierMinPoints?: number;
-                imageUrl?: string;
                 maxTeams?: number;
             }
         }
