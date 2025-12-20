@@ -260,9 +260,9 @@ tournamentsRouter.post(
             throw new ApiError('Tournament is not accepting registrations', 400, 'REGISTRATION_CLOSED');
         }
 
-        if (new Date() > tournament.registrationDeadline) {
-            throw new ApiError('Registration deadline has passed', 400, 'DEADLINE_PASSED');
-        }
+        // if (new Date() > tournament.registrationDeadline) {
+        //     throw new ApiError('Registration deadline has passed', 400, 'DEADLINE_PASSED');
+        // }
 
         if (tournament._count.entries >= tournament.maxTeams) {
             throw new ApiError('Tournament is full', 400, 'TOURNAMENT_FULL');

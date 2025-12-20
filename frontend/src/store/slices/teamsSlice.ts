@@ -55,6 +55,28 @@ export const fetchTeams = createAsyncThunk(
     }
 );
 
+export const fetchMyTeams = createAsyncThunk(
+    'teams/fetchMyTeams',
+    async (_, { getState }) => {
+        const state = getState() as RootState;
+        const token = getToken(state);
+
+        if (!token) throw new Error('Not authenticated');
+
+        const response = await fetch(`${API_URL}/teams?my=true`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const data: ApiResponse<Team[]> = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.error?.message || 'Failed to fetch my teams');
+        }
+
+        return data.data!;
+    }
+);
+
 export const fetchTeam = createAsyncThunk(
     'teams/fetchTeam',
     async (id: string, { getState }) => {
@@ -277,6 +299,19 @@ const teamsSlice = createSlice({
             .addCase(fetchTeams.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.error.message || 'Failed to fetch teams';
+            })
+            // Fetch my teams
+            .addCase(fetchMyTeams.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(fetchMyTeams.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.myTeams = action.payload;
+            })
+            .addCase(fetchMyTeams.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.error.message || 'Failed to fetch my teams';
             })
             // Fetch single team
             .addCase(fetchTeam.pending, (state) => {

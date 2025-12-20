@@ -75,317 +75,359 @@ export function AdminPage() {
 
     const getStatusBadge = (status: string) => {
         const statusConfig: Record<string, { class: string; label: string }> = {
-            DRAFT: { class: 'badge-warning', label: 'Piszkozat' },
-            REGISTRATION: { class: 'badge-success', label: 'Regisztráció' },
-            IN_PROGRESS: { class: 'badge-info', label: 'Folyamatban' },
-            COMPLETED: { class: 'badge-primary', label: 'Befejezett' },
-            CANCELLED: { class: 'badge-error', label: 'Törölve' },
+            DRAFT: { class: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20', label: 'Piszkozat' },
+            REGISTRATION: { class: 'bg-green-500/10 text-green-500 border-green-500/20', label: 'Regisztráció' },
+            IN_PROGRESS: { class: 'bg-blue-500/10 text-blue-500 border-blue-500/20', label: 'Folyamatban' },
+            COMPLETED: { class: 'bg-purple-500/10 text-purple-500 border-purple-500/20', label: 'Befejezett' },
+            CANCELLED: { class: 'bg-red-500/10 text-red-500 border-red-500/20', label: 'Törölve' },
         };
-        const config = statusConfig[status] || { class: 'badge-secondary', label: status };
-        return <span className={`badge ${config.class}`}>{config.label}</span>;
+        const config = statusConfig[status] || { class: 'bg-gray-500/10 text-gray-500 border-gray-500/20', label: status };
+        return <span className={`px-2 py-1 rounded-full text-xs font-medium border ${config.class}`}>{config.label}</span>;
     };
 
+    const tabs = [
+        { id: 'overview', label: 'Áttekintés', icon: Settings },
+        { id: 'users', label: 'Felhasználók', icon: Users },
+        { id: 'tournaments', label: 'Versenyek', icon: Trophy },
+        { id: 'games', label: 'Játékok', icon: Gamepad2 },
+        { id: 'bookings', label: 'Gépfoglalás', icon: Calendar },
+        { id: 'kiosk', label: 'Gépterem', icon: Monitor },
+    ];
+
     return (
-        <div className="admin-page">
-            <div className="page-header">
-                <h1 className="page-title">Menedzsment Dashboard</h1>
-                <p className="page-subtitle">Rendszer kezelés és statisztikák</p>
+        <div className="min-h-screen animate-fade-in pb-20">
+            {/* Header Section */}
+            <div className="mb-0">
+                <h1 className="text-3xl font-black bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent mb-2">
+                    Menedzsment Dashboard
+                </h1>
+                <p className="text-muted-foreground">
+                    Rendszer kezelés és statisztikák áttekintése
+                </p>
             </div>
 
-            <div className="admin-stats">
-                <div className="stat-card card">
-                    <div className="stat-icon">
-                        <Users />
-                    </div>
-                    <div className="stat-content">
-                        <span className="stat-value">{totalUsers}</span>
-                        <span className="stat-label">Felhasználók</span>
-                    </div>
-                </div>
-                <div className="stat-card card">
-                    <div className="stat-icon">
-                        <Trophy />
-                    </div>
-                    <div className="stat-content">
-                        <span className="stat-value">{totalTournaments}</span>
-                        <span className="stat-label">Versenyek</span>
-                    </div>
-                </div>
-                <div className="stat-card card">
-                    <div className="stat-icon">
-                        <Users />
-                    </div>
-                    <div className="stat-content">
-                        <span className="stat-value">{totalTeams}</span>
-                        <span className="stat-label">Csapatok</span>
-                    </div>
-                </div>
-                <div className="stat-card card">
-                    <div className="stat-icon">
-                        <Gamepad2 />
-                    </div>
-                    <div className="stat-content">
-                        <span className="stat-value">{games.length}</span>
-                        <span className="stat-label">Játékok</span>
-                    </div>
-                </div>
-            </div>
-
-            <div className="admin-container">
-                <div className="admin-sidebar card h-fit">
-                    <button
-                        className={`admin-tab ${activeTab === 'overview' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('overview')}
-                    >
-                        <Settings size={18} />
-                        Áttekintés
-                    </button>
-                    <button
-                        className={`admin-tab ${activeTab === 'users' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('users')}
-                    >
-                        <Users size={18} />
-                        Felhasználók
-                    </button>
-                    <button
-                        className={`admin-tab ${activeTab === 'tournaments' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('tournaments')}
-                    >
-                        <Trophy size={18} />
-                        Versenyek
-                    </button>
-                    <button
-                        className={`admin-tab ${activeTab === 'games' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('games')}
-                    >
-                        <Gamepad2 size={18} />
-                        Játékok
-                    </button>
-                    <button
-                        className={`admin-tab ${activeTab === 'bookings' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('bookings')}
-                    >
-                        <Calendar size={18} />
-                        Gépfoglalás
-                    </button>
-                    <button
-                        className={`admin-tab ${activeTab === 'kiosk' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('kiosk')}
-                    >
-                        <Monitor size={18} />
-                        Gépterem
-                    </button>
-                </div>
-
-                <div className="admin-content card min-h-[500px]">
-                    {activeTab === 'overview' && (
-                        <div className="admin-section">
-                            <h2 className="section-title">Áttekintés</h2>
-                            <div className="grid grid-2 gap-4">
-                                <div className="card bg-tertiary">
-                                    <h3>Legutóbbi regisztrációk</h3>
-                                    <div className="empty-state py-8">
-                                        <p className="text-muted">Hamarosan...</p>
-                                    </div>
-                                </div>
-                                <div className="card bg-tertiary">
-                                    <h3>Aktív versenyek</h3>
-                                    {activeTournaments > 0 ? (
-                                        <ul className="list-none p-0 m-0">
-                                            {tournaments
-                                                .filter(t => t.status === 'IN_PROGRESS')
-                                                .map(t => (
-                                                    <li key={t.id} className="py-2 border-b border-white/10 flex justify-between items-center">
-                                                        <span>{t.name}</span>
-                                                        <Link to={`/tournaments/${t.id}`} className="text-primary hover:text-primary-hover">
-                                                            <ArrowUpRight size={16} />
-                                                        </Link>
-                                                    </li>
-                                                ))}
-                                        </ul>
-                                    ) : (
-                                        <p className="text-muted py-4">Nincs aktív verseny</p>
-                                    )}
-                                </div>
-                            </div>
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 my-8">
+                <div className="relative group overflow-hidden rounded-2xl bg-[#0f1016] border border-white/5 p-6 hover:border-primary/50 transition-all duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="relative flex justify-between items-start">
+                        <div>
+                            <p className="text-muted-foreground text-sm font-medium mb-1">Felhasználók</p>
+                            <h3 className="text-3xl font-bold text-white">{totalUsers}</h3>
                         </div>
-                    )}
+                        <div className="p-3 rounded-xl bg-violet-500/10 text-violet-400">
+                            <Users size={24} />
+                        </div>
+                    </div>
+                </div>
 
-                    {activeTab === 'games' && (
-                        <div className="admin-section">
-                            <div className="flex justify-between items-center mb-6">
-                                <h2 className="section-title mb-0">Játék kezelés</h2>
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={() => setShowGameModal(true)}
-                                >
-                                    <Plus size={18} />
-                                    Új játék hozzáadása
-                                </button>
+                <div className="relative group overflow-hidden rounded-2xl bg-[#0f1016] border border-white/5 p-6 hover:border-blue-500/50 transition-all duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="relative flex justify-between items-start">
+                        <div>
+                            <p className="text-muted-foreground text-sm font-medium mb-1">Versenyek</p>
+                            <h3 className="text-3xl font-bold text-white">{totalTournaments}</h3>
+                        </div>
+                        <div className="p-3 rounded-xl bg-blue-500/10 text-blue-400">
+                            <Trophy size={24} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="relative group overflow-hidden rounded-2xl bg-[#0f1016] border border-white/5 p-6 hover:border-emerald-500/50 transition-all duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="relative flex justify-between items-start">
+                        <div>
+                            <p className="text-muted-foreground text-sm font-medium mb-1">Csapatok</p>
+                            <h3 className="text-3xl font-bold text-white">{totalTeams}</h3>
+                        </div>
+                        <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
+                            <Users size={24} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="relative group overflow-hidden rounded-2xl bg-[#0f1016] border border-white/5 p-6 hover:border-pink-500/50 transition-all duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="relative flex justify-between items-start">
+                        <div>
+                            <p className="text-muted-foreground text-sm font-medium mb-1">Játékok</p>
+                            <h3 className="text-3xl font-bold text-white">{games.length}</h3>
+                        </div>
+                        <div className="p-3 rounded-xl bg-pink-500/10 text-pink-400">
+                            <Gamepad2 size={24} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Horizontal Tabs Navigation */}
+            <div className="flex overflow-x-auto pb-4 mb-6 gap-2 no-scrollbar">
+                {tabs.map((tab) => {
+                    const Icon = tab.icon;
+                    const isActive = activeTab === tab.id;
+                    return (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id as any)}
+                            className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap
+                                ${isActive
+                                    ? 'bg-primary text-white shadow-[0_0_20px_rgba(139,92,246,0.3)]'
+                                    : 'bg-[#0f1016] border border-white/5 text-muted-foreground hover:text-white hover:bg-white/5'
+                                }`}
+                        >
+                            <Icon size={18} />
+                            {tab.label}
+                        </button>
+                    );
+                })}
+            </div>
+
+            {/* Main Content Area */}
+            <div className="bg-[#0f1016] border border-white/5 rounded-2xl p-6 min-h-[500px]">
+                {activeTab === 'overview' && (
+                    <div className="animate-fade-in">
+                        <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                            <Settings className="text-primary" size={24} />
+                            Áttekintés
+                        </h2>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="rounded-xl border border-white/5 bg-black/20 p-6">
+                                <h3 className="text-lg font-semibold text-white mb-4">Legutóbbi regisztrációk</h3>
+                                <div className="flex flex-col items-center justify-center py-12 text-muted-foreground bg-white/5 rounded-lg border border-white/5 border-dashed">
+                                    <Users size={32} className="mb-2 opacity-50" />
+                                    <p>Hamarosan...</p>
+                                </div>
                             </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                {games.length === 0 ? (
-                                    <div className="col-span-full flex flex-col items-center justify-center py-16 bg-white/5 rounded-xl border border-white/10 border-dashed">
-                                        <Gamepad2 size={48} className="text-gray-500 mb-4" />
-                                        <p className="text-muted text-lg">Még nincs játék létrehozva</p>
-                                        <button
-                                            className="btn btn-primary mt-4"
-                                            onClick={() => setShowGameModal(true)}
-                                        >
-                                            <Plus size={18} />
-                                            Játék létrehozása
-                                        </button>
+                            <div className="rounded-xl border border-white/5 bg-black/20 p-6">
+                                <h3 className="text-lg font-semibold text-white mb-4">Aktív versenyek</h3>
+                                {activeTournaments > 0 ? (
+                                    <div className="space-y-3">
+                                        {tournaments
+                                            .filter(t => t.status === 'IN_PROGRESS')
+                                            .map(t => (
+                                                <div key={t.id} className="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/5 hover:border-primary/50 transition-colors">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                                        <span className="font-medium text-white">{t.name}</span>
+                                                    </div>
+                                                    <Link
+                                                        to={`/tournaments/${t.id}`}
+                                                        className="p-2 rounded-lg hover:bg-white/10 text-primary transition-colors"
+                                                    >
+                                                        <ArrowUpRight size={18} />
+                                                    </Link>
+                                                </div>
+                                            ))}
                                     </div>
                                 ) : (
-                                    games.map((game) => (
-                                        <div key={game.id} className="group flex flex-col bg-[#1a1b26] rounded-xl overflow-hidden border border-white/5 shadow-md hover:shadow-xl hover:border-primary/50 transition-all duration-300">
-                                            {/* Image & Overlay */}
-                                            <div className="relative w-full aspect-video overflow-hidden bg-gray-900 border-b border-white/5">
-                                                {game.imageUrl ? (
-                                                    <img
-                                                        src={game.imageUrl}
-                                                        alt={game.name}
-                                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                                    />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center">
-                                                        <Gamepad2 size={40} className="text-gray-600" />
-                                                    </div>
-                                                )}
-
-                                                {/* Team Size Badge */}
-                                                <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold text-white border border-white/10">
-                                                    {game.teamSize}v{game.teamSize}
-                                                </div>
-                                            </div>
-
-                                            {/* Content */}
-                                            <div className="p-4 flex flex-col flex-grow">
-                                                <h3 className="text-lg font-bold text-white mb-1 truncate">{game.name}</h3>
-                                                <p className="text-sm text-gray-400 mb-4 line-clamp-2 min-h-[2.5em]">
-                                                    {game.description || 'Nincs leírás'}
-                                                </p>
-
-                                                <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
-                                                    <span className="flex items-center gap-1">
-                                                        <Trophy size={12} className="text-yellow-500" />
-                                                        {game._count?.tournaments || 0} verseny
-                                                    </span>
-                                                    <span className="flex items-center gap-1">
-                                                        <Users size={12} className="text-blue-400" />
-                                                        {game.teamSize} fős csapatok
-                                                    </span>
-                                                </div>
-
-                                                {/* Action Buttons */}
-                                                <div className="grid grid-cols-3 gap-2 mt-auto pt-4 border-t border-white/10">
-                                                    <button
-                                                        className="flex flex-col items-center justify-center p-2 rounded hover:bg-white/5 text-gray-400 hover:text-white transition-colors gap-1"
-                                                        onClick={() => setEditingGameRanks(game)}
-                                                        title="Rangok kezelése"
-                                                    >
-                                                        <Shield size={16} />
-                                                        <span className="text-[10px]">Rangok</span>
-                                                    </button>
-                                                    <button
-                                                        className="flex flex-col items-center justify-center p-2 rounded hover:bg-white/5 text-gray-400 hover:text-primary transition-colors gap-1"
-                                                        onClick={() => setEditingGame(game)}
-                                                        title="Szerkesztés"
-                                                    >
-                                                        <Edit2 size={16} />
-                                                        <span className="text-[10px]">Módosít</span>
-                                                    </button>
-                                                    <button
-                                                        className="flex flex-col items-center justify-center p-2 rounded hover:bg-red-500/10 text-gray-400 hover:text-red-400 transition-colors gap-1"
-                                                        onClick={() => handleDeleteGame(game.id)}
-                                                        title="Törlés"
-                                                    >
-                                                        <Trash2 size={16} />
-                                                        <span className="text-[10px]">Törlés</span>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))
+                                    <div className="flex flex-col items-center justify-center py-12 text-muted-foreground bg-white/5 rounded-lg border border-white/5 border-dashed">
+                                        <Trophy size={32} className="mb-2 opacity-50" />
+                                        <p>Nincs aktív verseny</p>
+                                    </div>
                                 )}
                             </div>
                         </div>
-                    )}
+                    </div>
+                )}
 
-                    {activeTab === 'bookings' && (
-                        <BookingManagement />
-                    )}
-
-                    {activeTab === 'kiosk' && (
-                        <KioskManager />
-                    )}
-
-                    {activeTab === 'users' && (
-                        <UserManagement />
-                    )}
-
-                    {activeTab === 'tournaments' && (
-                        <div className="admin-section">
-                            <div className="flex justify-between items-center mb-6">
-                                <h2 className="section-title mb-0">Verseny kezelés</h2>
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={() => setShowTournamentModal(true)}
-                                >
-                                    <Plus size={18} />
-                                    Új verseny
-                                </button>
+                {activeTab === 'games' && (
+                    <div className="animate-fade-in">
+                        <div className="flex flex-wrap justify-between items-center mb-8 gap-4">
+                            <div>
+                                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                                    <Gamepad2 className="text-pink-500" size={24} />
+                                    Játék kezelés
+                                </h2>
+                                <p className="text-sm text-muted-foreground mt-1">Játékok és rangok kezelése</p>
                             </div>
+                            <button
+                                className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors shadow-lg shadow-primary/20"
+                                onClick={() => setShowGameModal(true)}
+                            >
+                                <Plus size={18} />
+                                <span>Új játék hozzáadása</span>
+                            </button>
+                        </div>
 
-                            <div className="admin-table-container overflow-x-auto">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {games.length === 0 ? (
+                                <div className="col-span-full flex flex-col items-center justify-center py-20 bg-white/5 rounded-xl border border-white/10 border-dashed">
+                                    <Gamepad2 size={48} className="text-gray-500 mb-4" />
+                                    <p className="text-muted-foreground text-lg mb-6">Még nincs játék létrehozva</p>
+                                    <button
+                                        className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
+                                        onClick={() => setShowGameModal(true)}
+                                    >
+                                        Játék létrehozása
+                                    </button>
+                                </div>
+                            ) : (
+                                games.map((game) => (
+                                    <div key={game.id} className="group flex flex-col bg-[#161722] rounded-2xl overflow-hidden border border-white/5 hover:border-primary/50 hover:shadow-[0_0_20px_rgba(139,92,246,0.1)] transition-all duration-300">
+                                        {/* Image & Overlay */}
+                                        <div className="relative w-full aspect-video overflow-hidden bg-gray-900">
+                                            {game.imageUrl ? (
+                                                <img
+                                                    src={game.imageUrl}
+                                                    alt={game.name}
+                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center bg-gray-800">
+                                                    <Gamepad2 size={40} className="text-gray-600" />
+                                                </div>
+                                            )}
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
+
+                                            {/* Team Size Badge */}
+                                            <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-white border border-white/10">
+                                                {game.teamSize} vs {game.teamSize}
+                                            </div>
+                                        </div>
+
+                                        {/* Content */}
+                                        <div className="p-5 flex flex-col flex-grow">
+                                            <h3 className="text-lg font-bold text-white mb-2 truncate">{game.name}</h3>
+                                            <p className="text-sm text-gray-400 mb-4 line-clamp-2 min-h-[2.5em]">
+                                                {game.description || 'Nincs leírás megadva a játékhoz.'}
+                                            </p>
+
+                                            <div className="flex items-center gap-4 text-xs text-gray-500 mb-6 mt-auto">
+                                                <span className="flex items-center gap-1.5 px-2 py-1 rounded bg-white/5">
+                                                    <Trophy size={12} className="text-yellow-500" />
+                                                    {game._count?.tournaments || 0} verseny
+                                                </span>
+                                            </div>
+
+                                            {/* Action Buttons */}
+                                            <div className="grid grid-cols-3 gap-2 mt-auto">
+                                                <button
+                                                    className="flex flex-col items-center justify-center p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all gap-1 border border-transparent hover:border-white/10"
+                                                    onClick={() => setEditingGameRanks(game)}
+                                                    title="Rangok kezelése"
+                                                >
+                                                    <Shield size={16} />
+                                                    <span className="text-[10px] font-medium">Rangok</span>
+                                                </button>
+                                                <button
+                                                    className="flex flex-col items-center justify-center p-2 rounded-lg bg-white/5 hover:bg-primary/10 text-gray-400 hover:text-primary transition-all gap-1 border border-transparent hover:border-primary/20"
+                                                    onClick={() => setEditingGame(game)}
+                                                    title="Szerkesztés"
+                                                >
+                                                    <Edit2 size={16} />
+                                                    <span className="text-[10px] font-medium">Szerk.</span>
+                                                </button>
+                                                <button
+                                                    className="flex flex-col items-center justify-center p-2 rounded-lg bg-white/5 hover:bg-red-500/10 text-gray-400 hover:text-red-400 transition-all gap-1 border border-transparent hover:border-red-500/20"
+                                                    onClick={() => handleDeleteGame(game.id)}
+                                                    title="Törlés"
+                                                >
+                                                    <Trash2 size={16} />
+                                                    <span className="text-[10px] font-medium">Törlés</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'bookings' && (
+                    <div className="animate-fade-in">
+                        <BookingManagement />
+                    </div>
+                )}
+
+                {activeTab === 'kiosk' && (
+                    <div className="animate-fade-in">
+                        <KioskManager />
+                    </div>
+                )}
+
+                {activeTab === 'users' && (
+                    <div className="animate-fade-in">
+                        <UserManagement />
+                    </div>
+                )}
+
+                {activeTab === 'tournaments' && (
+                    <div className="animate-fade-in">
+                        <div className="flex flex-wrap justify-between items-center mb-8 gap-4">
+                            <div>
+                                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                                    <Trophy className="text-yellow-500" size={24} />
+                                    Verseny kezelés
+                                </h2>
+                                <p className="text-sm text-muted-foreground mt-1">Versenyek létrehozása és szerkesztése</p>
+                            </div>
+                            <button
+                                className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors shadow-lg shadow-primary/20"
+                                onClick={() => setShowTournamentModal(true)}
+                            >
+                                <Plus size={18} />
+                                <span>Új verseny</span>
+                            </button>
+                        </div>
+
+                        <div className="rounded-xl border border-white/10 overflow-hidden bg-[#161722]/50">
+                            <div className="overflow-x-auto">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
-                                        <tr className="border-b border-white/10 text-muted text-sm uppercase">
-                                            <th className="p-3">Név</th>
-                                            <th className="p-3">Játék</th>
-                                            <th className="p-3">Formátum</th>
-                                            <th className="p-3">Státusz</th>
-                                            <th className="p-3">Létszám</th>
-                                            <th className="p-3">Kezdés</th>
-                                            <th className="p-3 text-right">Műveletek</th>
+                                        <tr className="bg-white/5 border-b border-white/10 text-muted-foreground text-xs uppercase tracking-wider">
+                                            <th className="p-4 font-semibold">Név</th>
+                                            <th className="p-4 font-semibold">Játék</th>
+                                            <th className="p-4 font-semibold">Formátum</th>
+                                            <th className="p-4 font-semibold">Státusz</th>
+                                            <th className="p-4 font-semibold text-center">Létszám</th>
+                                            <th className="p-4 font-semibold">Kezdés</th>
+                                            <th className="p-4 font-semibold text-right">Műveletek</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody className="divide-y divide-white/5">
                                         {tournaments.length === 0 ? (
                                             <tr>
-                                                <td colSpan={7} className="text-center p-8 text-muted">
+                                                <td colSpan={7} className="text-center p-12 text-muted-foreground">
+                                                    <Trophy size={32} className="mx-auto mb-3 opacity-20" />
                                                     Még nincs verseny létrehozva
                                                 </td>
                                             </tr>
                                         ) : (
                                             tournaments.map((tournament) => (
-                                                <tr key={tournament.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                                                    <td className="p-3 font-medium">{tournament.name}</td>
-                                                    <td className="p-3 text-muted">{tournament.game?.name || '-'}</td>
-                                                    <td className="p-3 text-sm">
-                                                        {tournament.format === 'SINGLE_ELIMINATION' && 'Egyenes'}
-                                                        {tournament.format === 'DOUBLE_ELIMINATION' && 'Dupla'}
+                                                <tr key={tournament.id} className="group hover:bg-white/5 transition-colors">
+                                                    <td className="p-4 font-medium text-white group-hover:text-primary transition-colors">{tournament.name}</td>
+                                                    <td className="p-4 text-gray-300">{tournament.game?.name || '-'}</td>
+                                                    <td className="p-4 text-sm text-gray-400">
+                                                        {tournament.format === 'SINGLE_ELIMINATION' && 'Egyenes kiesés'}
+                                                        {tournament.format === 'DOUBLE_ELIMINATION' && 'Dupla ágrajz'}
                                                         {tournament.format === 'ROUND_ROBIN' && 'Körmérkőzés'}
-                                                        {tournament.format === 'SWISS' && 'Svájci'}
+                                                        {tournament.format === 'SWISS' && 'Svájci rendszer'}
                                                     </td>
-                                                    <td className="p-3">{getStatusBadge(tournament.status)}</td>
-                                                    <td className="p-3 text-sm text-center">{tournament._count?.entries || 0}/{tournament.maxTeams}</td>
-                                                    <td className="p-3 text-sm text-muted">{new Date(tournament.startDate).toLocaleDateString('hu-HU')}</td>
-                                                    <td className="p-3 text-right flex gap-2 justify-end">
+                                                    <td className="p-4">{getStatusBadge(tournament.status)}</td>
+                                                    <td className="p-4 text-sm text-center font-mono bg-black/20 rounded">
+                                                        {tournament._count?.entries || 0} / {tournament.maxTeams}
+                                                    </td>
+                                                    <td className="p-4 text-sm text-gray-400 font-mono">
+                                                        {new Date(tournament.startDate).toLocaleDateString('hu-HU', {
+                                                            month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                                                        })}
+                                                    </td>
+                                                    <td className="p-4 text-right flex gap-2 justify-end">
                                                         <button
-                                                            className="btn-icon hover:bg-white/10"
+                                                            className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
                                                             onClick={() => setStatusTournament(tournament)}
                                                             title="Státusz módosítása"
                                                         >
-                                                            <Settings size={16} />
+                                                            <Settings size={18} />
                                                         </button>
                                                         <button
-                                                            className="btn-icon hover:bg-white/10"
+                                                            className="p-2 rounded-lg bg-white/5 hover:bg-primary/10 text-gray-400 hover:text-primary transition-colors"
                                                             onClick={() => setEditingTournament(tournament)}
                                                             title="Szerkesztés"
                                                         >
-                                                            <Edit2 size={16} />
+                                                            <Edit2 size={18} />
                                                         </button>
                                                     </td>
                                                 </tr>
@@ -395,8 +437,8 @@ export function AdminPage() {
                                 </table>
                             </div>
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
 
             {/* Modals */}

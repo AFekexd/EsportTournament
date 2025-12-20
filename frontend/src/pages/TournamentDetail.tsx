@@ -11,7 +11,7 @@ import {
     updateMatch,
     updateEntryStats,
 } from '../store/slices/tournamentsSlice';
-import { fetchTeams } from '../store/slices/teamsSlice';
+import { fetchMyTeams } from '../store/slices/teamsSlice';
 import { TournamentStatusModal } from '../components/admin';
 import { TournamentBracket, MatchEditModal } from '../components/tournament';
 import type { Match } from '../types';
@@ -78,8 +78,9 @@ export function TournamentDetailPage() {
             dispatch(fetchTournament(id));
         }
         if (isAuthenticated) {
-            dispatch(fetchTeams({ page: 1 }));
+            dispatch(fetchMyTeams());
         }
+
 
         return () => {
             dispatch(clearCurrentTournament());
@@ -143,7 +144,7 @@ export function TournamentDetailPage() {
 
     const startDate = new Date(currentTournament.startDate);
     const regDeadline = new Date(currentTournament.registrationDeadline);
-    const isRegistrationOpen = currentTournament.status === 'REGISTRATION' && new Date() < regDeadline;
+    const isRegistrationOpen = currentTournament.status === 'REGISTRATION'; // && new Date() < regDeadline;
     const userTeamIds = myTeams.map(t => t.id);
     const isAlreadyRegistered = currentTournament.entries?.some(e => e.teamId && userTeamIds.includes(e.teamId));
     const StatusIcon = statusLabels[currentTournament.status]?.icon || Shield;

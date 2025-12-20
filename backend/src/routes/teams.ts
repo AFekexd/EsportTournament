@@ -13,11 +13,59 @@ function generateJoinCode(): string {
 }
 
 // Get all teams
+// Get all teams
 teamsRouter.get(
     '/',
     optionalAuth,
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-        const { search, page = '1', limit = '10' } = req.query;
+        const { search, page = '1', limit = '10', my } = req.query;
+
+        // If 'my' param is present, user must be authenticated
+        if (my === 'true') {
+            if (!req.user) {
+                throw new ApiError('Authentication required to fetch your teams', 401, 'UNAUTHORIZED');
+            }
+
+            const user = await prisma.user.findUnique({
+                where: { keycloakId: req.user.sub },
+            });
+
+            if (!user) {
+                throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+            }
+
+            const myTeams = await prisma.team.findMany({
+                where: {
+                    members: {
+                        some: { userId: user.id }
+                    }
+                },
+                include: {
+                    owner: { select: { id: true, username: true, displayName: true } },
+                    members: {
+                        include: {
+                            user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
+                        },
+                    },
+                    _count: { select: { tournamentEntries: true } },
+                },
+                orderBy: { createdAt: 'desc' }, // Show newest teams first for 'my teams'
+            });
+
+            // For 'my teams', we typically don't need pagination as much, or handle it differently
+            // Returning all for now to ensure dropdowns work correctly
+            res.json({
+                success: true,
+                data: myTeams,
+                pagination: {
+                    page: 1,
+                    limit: myTeams.length,
+                    total: myTeams.length,
+                    pages: 1,
+                },
+            });
+            return;
+        }
 
         const where = search
             ? {
