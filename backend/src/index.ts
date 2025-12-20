@@ -31,8 +31,14 @@ const app = express();
 const httpServer = createServer(app); // Create HTTP server for Socket.IO
 const io = new Server(httpServer, {
   cors: {
-    origin: '*',
-    methods: ["GET", "POST"]
+    origin: [
+      'http://localhost:5173',
+      'http://localhost:4173',
+      'https://esport.afeke.com',
+      'http://esport.afeke.com'
+    ],
+    methods: ["GET", "POST"],
+    credentials: true
   }
 });
 setIo(io);
@@ -45,7 +51,12 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(helmet());
 app.use(cors({
-  origin: '*',
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:4173',
+    'https://esport.afeke.com',
+    'http://esport.afeke.com'
+  ],
   credentials: true,
 }));
 app.use(morgan('dev'));
