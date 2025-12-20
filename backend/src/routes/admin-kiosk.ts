@@ -121,7 +121,7 @@ adminKioskRouter.get('/logs', async (req, res) => {
 // Checking old backend... it used admin-cli to get token and fetch Keycloak API. 
 // I will implement a basic version that TRIES to update Keycloak if env vars are present.
 
-import { getToken } from '../utils/keycloak-admin.js'; // We might need to create this helper or inline it.
+
 
 adminKioskRouter.post('/users/:id/reset-password', authenticate, requireRole('ADMIN'), async (req, res) => {
     const { id } = req.params;
