@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { fetchMachines, toggleLock, toggleCompetitionMode } from '../../store/slices/kioskSlice';
-import { Monitor, Lock, Unlock, Zap, Power, Clock } from 'lucide-react';
+import { Monitor, Lock, Unlock } from 'lucide-react';
 import type { Computer } from '../../types';
 
 export const KioskManager: React.FC = () => {

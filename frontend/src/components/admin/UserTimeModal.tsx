@@ -16,18 +16,15 @@ interface UserTimeModalProps {
 }
 
 export const UserTimeModal: React.FC<UserTimeModalProps> = ({ user, onClose, onSuccess }) => {
-    const { user: currentUser } = useAuth();
+    const { getToken } = useAuth();
     const [amount, setAmount] = useState<number>(60); // Default 60 minutes
     const [mode, setMode] = useState<'ADD' | 'REMOVE'>('ADD');
     const [isLoading, setIsLoading] = useState(false);
-    const [reason, setReason] = useState(''); // Optional reason logging/notes if we want later
 
     const handleSave = async () => {
         setIsLoading(true);
         try {
-            const token = currentUser?.token; // Assuming useAuth provides token, strictly speaking we might need authService.keycloak.token if useAuth doesn't expose it directly yet
-            // Actually let's use authService direct access if unsure about hook
-            const validToken = token || (await import('../../lib/auth-service')).authService.keycloak?.token;
+            const validToken = await getToken();
 
             if (!validToken) return;
 

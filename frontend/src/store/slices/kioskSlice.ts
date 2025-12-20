@@ -110,9 +110,7 @@ const kioskSlice = createSlice({
                 state.machines[index] = { ...state.machines[index], ...changes };
             }
         },
-        updateSession: (state, action) => {
-            // Handle live session updates if needed
-        }
+
     },
     extraReducers: (builder) => {
         builder
@@ -141,5 +139,5 @@ const kioskSlice = createSlice({
     },
 });
 
-export const { updateMachineStatus, updateSession } = kioskSlice.actions;
+export const { updateMachineStatus } = kioskSlice.actions;
 export default kioskSlice.reducer;

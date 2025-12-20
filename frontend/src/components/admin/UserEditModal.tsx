@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { X, Edit2, Key, ImageOff } from 'lucide-react';
-import { useAuth } from '../../hooks/useAuth';
+
 import { API_URL } from '../../config';
 
 interface UserEditModalProps {
@@ -16,7 +16,7 @@ interface UserEditModalProps {
 }
 
 export const UserEditModal: React.FC<UserEditModalProps> = ({ user, onClose, onSuccess }) => {
-    const { user: currentUser } = useAuth();
+
     const [displayName, setDisplayName] = useState(user.displayName || '');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
