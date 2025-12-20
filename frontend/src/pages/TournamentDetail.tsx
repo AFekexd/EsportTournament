@@ -13,7 +13,7 @@ import {
 } from '../store/slices/tournamentsSlice';
 import { fetchTeams } from '../store/slices/teamsSlice';
 import { TournamentStatusModal } from '../components/admin';
-import { TournamentBracket, MatchEditModal, TournamentStandings } from '../components/tournament';
+import { TournamentBracket, MatchEditModal } from '../components/tournament';
 import type { Match } from '../types';
 
 const statusLabels: Record<string, { label: string; class: string; icon: any }> = {
@@ -579,8 +579,8 @@ export function TournamentDetailPage() {
                                 onMatchClick={handleMatchClick}
                             />
                         </div>
-                    </div>
 
+                    </div>
                 )}
             </div>
             {
