@@ -24,7 +24,6 @@ authRouter.post(
         const userEmail = email || `${keycloakId}@keycloak.local`;
         const username = preferred_username || keycloakId;
 
-        // Get the role from Keycloak token
         const role = getHighestRole(req.user!);
 
         console.log('Syncing user:', {
@@ -37,20 +36,24 @@ authRouter.post(
             realmRoles: req.user!.realm_access?.roles
         });
 
+        // Only update role from Keycloak if it's a privileged role
+        // This prevents overwriting manually assigned roles in the database with 'STUDENT'
+        const roleUpdate = role !== 'STUDENT' ? { role } : {};
+
         const user = await prisma.user.upsert({
             where: { keycloakId },
             update: {
                 email: userEmail,
                 username,
                 displayName: name || username,
-                role, // Update role from Keycloak
+                ...roleUpdate,
             },
             create: {
                 keycloakId,
                 email: userEmail,
                 username,
                 displayName: name || username,
-                role, // Set role from Keycloak
+                role, // Set role from Keycloak on creation
             },
         });
 

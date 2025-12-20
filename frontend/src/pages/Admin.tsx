@@ -88,7 +88,7 @@ export function AdminPage() {
     return (
         <div className="admin-page">
             <div className="page-header">
-                <h1 className="page-title">Admin Dashboard</h1>
+                <h1 className="page-title">Menedzsment Dashboard</h1>
                 <p className="page-subtitle">Rendszer kezelés és statisztikák</p>
             </div>
 

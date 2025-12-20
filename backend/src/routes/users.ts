@@ -3,6 +3,7 @@ import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest, requireRole } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { processImage, isBase64DataUrl, validateImageSize } from '../utils/imageProcessor.js';
+import { syncUserRole } from '../utils/keycloak-admin.js';
 
 export const usersRouter = Router();
 
@@ -77,6 +78,14 @@ usersRouter.patch(
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
         const user = await prisma.user.findUnique({
             where: { id: req.params.id },
+            include: {
+                teamMemberships: {
+                    include: { team: true },
+                },
+                gameStats: {
+                    include: { game: true },
+                },
+            },
         });
 
         if (!user) {
@@ -132,6 +141,13 @@ usersRouter.patch(
             where: { id: req.params.id },
             data: { role },
         });
+
+        // Sync role change to Keycloak
+        if (user.keycloakId) {
+            // Run in background or await? Await to ensure it works before response?
+            // Since we catch errors inside syncUserRole, awaiting is fine and safer.
+            await syncUserRole(user.keycloakId, role);
+        }
 
         res.json({ success: true, data: user });
     })
