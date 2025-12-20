@@ -115,6 +115,16 @@ export type Computer = Prisma.ComputerModel
  */
 export type Booking = Prisma.BookingModel
 /**
+ * Model Session
+ * 
+ */
+export type Session = Prisma.SessionModel
+/**
+ * Model Log
+ * 
+ */
+export type Log = Prisma.LogModel
+/**
  * Model Waitlist
  * 
  */

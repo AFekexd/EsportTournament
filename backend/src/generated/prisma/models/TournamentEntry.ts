@@ -28,10 +28,14 @@ export type AggregateTournamentEntry = {
 
 export type TournamentEntryAvgAggregateOutputType = {
   seed: number | null
+  matchesPlayed: number | null
+  qualifierPoints: number | null
 }
 
 export type TournamentEntrySumAggregateOutputType = {
   seed: number | null
+  matchesPlayed: number | null
+  qualifierPoints: number | null
 }
 
 export type TournamentEntryMinAggregateOutputType = {
@@ -40,6 +44,8 @@ export type TournamentEntryMinAggregateOutputType = {
   teamId: string | null
   userId: string | null
   seed: number | null
+  matchesPlayed: number | null
+  qualifierPoints: number | null
   registeredAt: Date | null
 }
 
@@ -49,6 +55,8 @@ export type TournamentEntryMaxAggregateOutputType = {
   teamId: string | null
   userId: string | null
   seed: number | null
+  matchesPlayed: number | null
+  qualifierPoints: number | null
   registeredAt: Date | null
 }
 
@@ -58,6 +66,8 @@ export type TournamentEntryCountAggregateOutputType = {
   teamId: number
   userId: number
   seed: number
+  matchesPlayed: number
+  qualifierPoints: number
   registeredAt: number
   _all: number
 }
@@ -65,10 +75,14 @@ export type TournamentEntryCountAggregateOutputType = {
 
 export type TournamentEntryAvgAggregateInputType = {
   seed?: true
+  matchesPlayed?: true
+  qualifierPoints?: true
 }
 
 export type TournamentEntrySumAggregateInputType = {
   seed?: true
+  matchesPlayed?: true
+  qualifierPoints?: true
 }
 
 export type TournamentEntryMinAggregateInputType = {
@@ -77,6 +91,8 @@ export type TournamentEntryMinAggregateInputType = {
   teamId?: true
   userId?: true
   seed?: true
+  matchesPlayed?: true
+  qualifierPoints?: true
   registeredAt?: true
 }
 
@@ -86,6 +102,8 @@ export type TournamentEntryMaxAggregateInputType = {
   teamId?: true
   userId?: true
   seed?: true
+  matchesPlayed?: true
+  qualifierPoints?: true
   registeredAt?: true
 }
 
@@ -95,6 +113,8 @@ export type TournamentEntryCountAggregateInputType = {
   teamId?: true
   userId?: true
   seed?: true
+  matchesPlayed?: true
+  qualifierPoints?: true
   registeredAt?: true
   _all?: true
 }
@@ -191,6 +211,8 @@ export type TournamentEntryGroupByOutputType = {
   teamId: string | null
   userId: string | null
   seed: number | null
+  matchesPlayed: number
+  qualifierPoints: number
   registeredAt: Date
   _count: TournamentEntryCountAggregateOutputType | null
   _avg: TournamentEntryAvgAggregateOutputType | null
@@ -223,6 +245,8 @@ export type TournamentEntryWhereInput = {
   teamId?: Prisma.StringNullableFilter<"TournamentEntry"> | string | null
   userId?: Prisma.StringNullableFilter<"TournamentEntry"> | string | null
   seed?: Prisma.IntNullableFilter<"TournamentEntry"> | number | null
+  matchesPlayed?: Prisma.IntFilter<"TournamentEntry"> | number
+  qualifierPoints?: Prisma.IntFilter<"TournamentEntry"> | number
   registeredAt?: Prisma.DateTimeFilter<"TournamentEntry"> | Date | string
   tournament?: Prisma.XOR<Prisma.TournamentScalarRelationFilter, Prisma.TournamentWhereInput>
   team?: Prisma.XOR<Prisma.TeamNullableScalarRelationFilter, Prisma.TeamWhereInput> | null
@@ -235,6 +259,8 @@ export type TournamentEntryOrderByWithRelationInput = {
   teamId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   seed?: Prisma.SortOrderInput | Prisma.SortOrder
+  matchesPlayed?: Prisma.SortOrder
+  qualifierPoints?: Prisma.SortOrder
   registeredAt?: Prisma.SortOrder
   tournament?: Prisma.TournamentOrderByWithRelationInput
   team?: Prisma.TeamOrderByWithRelationInput
@@ -252,6 +278,8 @@ export type TournamentEntryWhereUniqueInput = Prisma.AtLeast<{
   teamId?: Prisma.StringNullableFilter<"TournamentEntry"> | string | null
   userId?: Prisma.StringNullableFilter<"TournamentEntry"> | string | null
   seed?: Prisma.IntNullableFilter<"TournamentEntry"> | number | null
+  matchesPlayed?: Prisma.IntFilter<"TournamentEntry"> | number
+  qualifierPoints?: Prisma.IntFilter<"TournamentEntry"> | number
   registeredAt?: Prisma.DateTimeFilter<"TournamentEntry"> | Date | string
   tournament?: Prisma.XOR<Prisma.TournamentScalarRelationFilter, Prisma.TournamentWhereInput>
   team?: Prisma.XOR<Prisma.TeamNullableScalarRelationFilter, Prisma.TeamWhereInput> | null
@@ -264,6 +292,8 @@ export type TournamentEntryOrderByWithAggregationInput = {
   teamId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   seed?: Prisma.SortOrderInput | Prisma.SortOrder
+  matchesPlayed?: Prisma.SortOrder
+  qualifierPoints?: Prisma.SortOrder
   registeredAt?: Prisma.SortOrder
   _count?: Prisma.TournamentEntryCountOrderByAggregateInput
   _avg?: Prisma.TournamentEntryAvgOrderByAggregateInput
@@ -281,12 +311,16 @@ export type TournamentEntryScalarWhereWithAggregatesInput = {
   teamId?: Prisma.StringNullableWithAggregatesFilter<"TournamentEntry"> | string | null
   userId?: Prisma.StringNullableWithAggregatesFilter<"TournamentEntry"> | string | null
   seed?: Prisma.IntNullableWithAggregatesFilter<"TournamentEntry"> | number | null
+  matchesPlayed?: Prisma.IntWithAggregatesFilter<"TournamentEntry"> | number
+  qualifierPoints?: Prisma.IntWithAggregatesFilter<"TournamentEntry"> | number
   registeredAt?: Prisma.DateTimeWithAggregatesFilter<"TournamentEntry"> | Date | string
 }
 
 export type TournamentEntryCreateInput = {
   id?: string
   seed?: number | null
+  matchesPlayed?: number
+  qualifierPoints?: number
   registeredAt?: Date | string
   tournament: Prisma.TournamentCreateNestedOneWithoutEntriesInput
   team?: Prisma.TeamCreateNestedOneWithoutTournamentEntriesInput
@@ -299,12 +333,16 @@ export type TournamentEntryUncheckedCreateInput = {
   teamId?: string | null
   userId?: string | null
   seed?: number | null
+  matchesPlayed?: number
+  qualifierPoints?: number
   registeredAt?: Date | string
 }
 
 export type TournamentEntryUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   seed?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  qualifierPoints?: Prisma.IntFieldUpdateOperationsInput | number
   registeredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournament?: Prisma.TournamentUpdateOneRequiredWithoutEntriesNestedInput
   team?: Prisma.TeamUpdateOneWithoutTournamentEntriesNestedInput
@@ -317,6 +355,8 @@ export type TournamentEntryUncheckedUpdateInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   seed?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  qualifierPoints?: Prisma.IntFieldUpdateOperationsInput | number
   registeredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -326,12 +366,16 @@ export type TournamentEntryCreateManyInput = {
   teamId?: string | null
   userId?: string | null
   seed?: number | null
+  matchesPlayed?: number
+  qualifierPoints?: number
   registeredAt?: Date | string
 }
 
 export type TournamentEntryUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   seed?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  qualifierPoints?: Prisma.IntFieldUpdateOperationsInput | number
   registeredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -341,6 +385,8 @@ export type TournamentEntryUncheckedUpdateManyInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   seed?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  qualifierPoints?: Prisma.IntFieldUpdateOperationsInput | number
   registeredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -370,11 +416,15 @@ export type TournamentEntryCountOrderByAggregateInput = {
   teamId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   seed?: Prisma.SortOrder
+  matchesPlayed?: Prisma.SortOrder
+  qualifierPoints?: Prisma.SortOrder
   registeredAt?: Prisma.SortOrder
 }
 
 export type TournamentEntryAvgOrderByAggregateInput = {
   seed?: Prisma.SortOrder
+  matchesPlayed?: Prisma.SortOrder
+  qualifierPoints?: Prisma.SortOrder
 }
 
 export type TournamentEntryMaxOrderByAggregateInput = {
@@ -383,6 +433,8 @@ export type TournamentEntryMaxOrderByAggregateInput = {
   teamId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   seed?: Prisma.SortOrder
+  matchesPlayed?: Prisma.SortOrder
+  qualifierPoints?: Prisma.SortOrder
   registeredAt?: Prisma.SortOrder
 }
 
@@ -392,11 +444,15 @@ export type TournamentEntryMinOrderByAggregateInput = {
   teamId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   seed?: Prisma.SortOrder
+  matchesPlayed?: Prisma.SortOrder
+  qualifierPoints?: Prisma.SortOrder
   registeredAt?: Prisma.SortOrder
 }
 
 export type TournamentEntrySumOrderByAggregateInput = {
   seed?: Prisma.SortOrder
+  matchesPlayed?: Prisma.SortOrder
+  qualifierPoints?: Prisma.SortOrder
 }
 
 export type TournamentEntryCreateNestedManyWithoutUserInput = {
@@ -536,6 +592,8 @@ export type NullableIntFieldUpdateOperationsInput = {
 export type TournamentEntryCreateWithoutUserInput = {
   id?: string
   seed?: number | null
+  matchesPlayed?: number
+  qualifierPoints?: number
   registeredAt?: Date | string
   tournament: Prisma.TournamentCreateNestedOneWithoutEntriesInput
   team?: Prisma.TeamCreateNestedOneWithoutTournamentEntriesInput
@@ -546,6 +604,8 @@ export type TournamentEntryUncheckedCreateWithoutUserInput = {
   tournamentId: string
   teamId?: string | null
   seed?: number | null
+  matchesPlayed?: number
+  qualifierPoints?: number
   registeredAt?: Date | string
 }
 
@@ -584,12 +644,16 @@ export type TournamentEntryScalarWhereInput = {
   teamId?: Prisma.StringNullableFilter<"TournamentEntry"> | string | null
   userId?: Prisma.StringNullableFilter<"TournamentEntry"> | string | null
   seed?: Prisma.IntNullableFilter<"TournamentEntry"> | number | null
+  matchesPlayed?: Prisma.IntFilter<"TournamentEntry"> | number
+  qualifierPoints?: Prisma.IntFilter<"TournamentEntry"> | number
   registeredAt?: Prisma.DateTimeFilter<"TournamentEntry"> | Date | string
 }
 
 export type TournamentEntryCreateWithoutTeamInput = {
   id?: string
   seed?: number | null
+  matchesPlayed?: number
+  qualifierPoints?: number
   registeredAt?: Date | string
   tournament: Prisma.TournamentCreateNestedOneWithoutEntriesInput
   user?: Prisma.UserCreateNestedOneWithoutTournamentEntriesInput
@@ -600,6 +664,8 @@ export type TournamentEntryUncheckedCreateWithoutTeamInput = {
   tournamentId: string
   userId?: string | null
   seed?: number | null
+  matchesPlayed?: number
+  qualifierPoints?: number
   registeredAt?: Date | string
 }
 
@@ -632,6 +698,8 @@ export type TournamentEntryUpdateManyWithWhereWithoutTeamInput = {
 export type TournamentEntryCreateWithoutTournamentInput = {
   id?: string
   seed?: number | null
+  matchesPlayed?: number
+  qualifierPoints?: number
   registeredAt?: Date | string
   team?: Prisma.TeamCreateNestedOneWithoutTournamentEntriesInput
   user?: Prisma.UserCreateNestedOneWithoutTournamentEntriesInput
@@ -642,6 +710,8 @@ export type TournamentEntryUncheckedCreateWithoutTournamentInput = {
   teamId?: string | null
   userId?: string | null
   seed?: number | null
+  matchesPlayed?: number
+  qualifierPoints?: number
   registeredAt?: Date | string
 }
 
@@ -676,12 +746,16 @@ export type TournamentEntryCreateManyUserInput = {
   tournamentId: string
   teamId?: string | null
   seed?: number | null
+  matchesPlayed?: number
+  qualifierPoints?: number
   registeredAt?: Date | string
 }
 
 export type TournamentEntryUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   seed?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  qualifierPoints?: Prisma.IntFieldUpdateOperationsInput | number
   registeredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournament?: Prisma.TournamentUpdateOneRequiredWithoutEntriesNestedInput
   team?: Prisma.TeamUpdateOneWithoutTournamentEntriesNestedInput
@@ -692,6 +766,8 @@ export type TournamentEntryUncheckedUpdateWithoutUserInput = {
   tournamentId?: Prisma.StringFieldUpdateOperationsInput | string
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   seed?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  qualifierPoints?: Prisma.IntFieldUpdateOperationsInput | number
   registeredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -700,6 +776,8 @@ export type TournamentEntryUncheckedUpdateManyWithoutUserInput = {
   tournamentId?: Prisma.StringFieldUpdateOperationsInput | string
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   seed?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  qualifierPoints?: Prisma.IntFieldUpdateOperationsInput | number
   registeredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -708,12 +786,16 @@ export type TournamentEntryCreateManyTeamInput = {
   tournamentId: string
   userId?: string | null
   seed?: number | null
+  matchesPlayed?: number
+  qualifierPoints?: number
   registeredAt?: Date | string
 }
 
 export type TournamentEntryUpdateWithoutTeamInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   seed?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  qualifierPoints?: Prisma.IntFieldUpdateOperationsInput | number
   registeredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournament?: Prisma.TournamentUpdateOneRequiredWithoutEntriesNestedInput
   user?: Prisma.UserUpdateOneWithoutTournamentEntriesNestedInput
@@ -724,6 +806,8 @@ export type TournamentEntryUncheckedUpdateWithoutTeamInput = {
   tournamentId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   seed?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  qualifierPoints?: Prisma.IntFieldUpdateOperationsInput | number
   registeredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -732,6 +816,8 @@ export type TournamentEntryUncheckedUpdateManyWithoutTeamInput = {
   tournamentId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   seed?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  qualifierPoints?: Prisma.IntFieldUpdateOperationsInput | number
   registeredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -740,12 +826,16 @@ export type TournamentEntryCreateManyTournamentInput = {
   teamId?: string | null
   userId?: string | null
   seed?: number | null
+  matchesPlayed?: number
+  qualifierPoints?: number
   registeredAt?: Date | string
 }
 
 export type TournamentEntryUpdateWithoutTournamentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   seed?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  qualifierPoints?: Prisma.IntFieldUpdateOperationsInput | number
   registeredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   team?: Prisma.TeamUpdateOneWithoutTournamentEntriesNestedInput
   user?: Prisma.UserUpdateOneWithoutTournamentEntriesNestedInput
@@ -756,6 +846,8 @@ export type TournamentEntryUncheckedUpdateWithoutTournamentInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   seed?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  qualifierPoints?: Prisma.IntFieldUpdateOperationsInput | number
   registeredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -764,6 +856,8 @@ export type TournamentEntryUncheckedUpdateManyWithoutTournamentInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   seed?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  qualifierPoints?: Prisma.IntFieldUpdateOperationsInput | number
   registeredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -775,6 +869,8 @@ export type TournamentEntrySelect<ExtArgs extends runtime.Types.Extensions.Inter
   teamId?: boolean
   userId?: boolean
   seed?: boolean
+  matchesPlayed?: boolean
+  qualifierPoints?: boolean
   registeredAt?: boolean
   tournament?: boolean | Prisma.TournamentDefaultArgs<ExtArgs>
   team?: boolean | Prisma.TournamentEntry$teamArgs<ExtArgs>
@@ -787,6 +883,8 @@ export type TournamentEntrySelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   teamId?: boolean
   userId?: boolean
   seed?: boolean
+  matchesPlayed?: boolean
+  qualifierPoints?: boolean
   registeredAt?: boolean
   tournament?: boolean | Prisma.TournamentDefaultArgs<ExtArgs>
   team?: boolean | Prisma.TournamentEntry$teamArgs<ExtArgs>
@@ -799,6 +897,8 @@ export type TournamentEntrySelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   teamId?: boolean
   userId?: boolean
   seed?: boolean
+  matchesPlayed?: boolean
+  qualifierPoints?: boolean
   registeredAt?: boolean
   tournament?: boolean | Prisma.TournamentDefaultArgs<ExtArgs>
   team?: boolean | Prisma.TournamentEntry$teamArgs<ExtArgs>
@@ -811,10 +911,12 @@ export type TournamentEntrySelectScalar = {
   teamId?: boolean
   userId?: boolean
   seed?: boolean
+  matchesPlayed?: boolean
+  qualifierPoints?: boolean
   registeredAt?: boolean
 }
 
-export type TournamentEntryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tournamentId" | "teamId" | "userId" | "seed" | "registeredAt", ExtArgs["result"]["tournamentEntry"]>
+export type TournamentEntryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tournamentId" | "teamId" | "userId" | "seed" | "matchesPlayed" | "qualifierPoints" | "registeredAt", ExtArgs["result"]["tournamentEntry"]>
 export type TournamentEntryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tournament?: boolean | Prisma.TournamentDefaultArgs<ExtArgs>
   team?: boolean | Prisma.TournamentEntry$teamArgs<ExtArgs>
@@ -844,6 +946,8 @@ export type $TournamentEntryPayload<ExtArgs extends runtime.Types.Extensions.Int
     teamId: string | null
     userId: string | null
     seed: number | null
+    matchesPlayed: number
+    qualifierPoints: number
     registeredAt: Date
   }, ExtArgs["result"]["tournamentEntry"]>
   composites: {}
@@ -1276,6 +1380,8 @@ export interface TournamentEntryFieldRefs {
   readonly teamId: Prisma.FieldRef<"TournamentEntry", 'String'>
   readonly userId: Prisma.FieldRef<"TournamentEntry", 'String'>
   readonly seed: Prisma.FieldRef<"TournamentEntry", 'Int'>
+  readonly matchesPlayed: Prisma.FieldRef<"TournamentEntry", 'Int'>
+  readonly qualifierPoints: Prisma.FieldRef<"TournamentEntry", 'Int'>
   readonly registeredAt: Prisma.FieldRef<"TournamentEntry", 'DateTime'>
 }
     

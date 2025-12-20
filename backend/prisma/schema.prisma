@@ -18,6 +18,7 @@ enum Role {
   ADMIN
   ORGANIZER
   MODERATOR
+  TEACHER
   STUDENT
 }
 
@@ -80,6 +81,7 @@ model User {
   avatarUrl     String?
   role          Role     @default(STUDENT)
   elo           Int      @default(1000)
+  timeBalanceSeconds Int @default(0) // Kiosk time balance
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -95,6 +97,10 @@ model User {
   homeMatches       Match[]            @relation("HomeUser")
   awayMatches       Match[]            @relation("AwayUser")
   wonMatches        Match[]            @relation("WinnerUser")
+  
+  // Kiosk relations
+  sessions          Session[]
+  logs              Log[]
 
   ranks             UserRank[]
 }
@@ -317,7 +323,7 @@ model DiscordSettings {
 }
 
 // ============================================
-// BOOKING SYSTEM
+// BOOKING & KIOSK SYSTEM
 // ============================================
 
 enum ComputerStatus {
@@ -330,9 +336,15 @@ enum ComputerStatus {
 model Computer {
   id              String          @id @default(uuid())
   name            String          // "PC-1", "PC-2", stb.
+  hostname        String?         @unique // Network hostname for Kiosk Client
   row             Int             // 0 vagy 1 (2 sor)
   position        Int             // 0-4 (5 pozíció soronként)
-  isActive        Boolean         @default(true)
+  isActive        Boolean         @default(true) // Physically available
+  
+  // Kiosk-specific fields
+  isLocked        Boolean         @default(false)
+  isCompetitionMode Boolean       @default(false)
+
   status          ComputerStatus  @default(AVAILABLE)
   specs           Json?           // { cpu, gpu, ram, monitor, storage }
   installedGames  String[]        // Telepített játékok listája
@@ -341,6 +353,8 @@ model Computer {
   
   bookings        Booking[]
   waitlistEntries Waitlist[]
+  sessions        Session[]
+  logs            Log[]
 
   @@unique([row, position])
 }
@@ -365,6 +379,31 @@ model Booking {
   @@index([computerId, date])
   @@index([userId])
   @@index([date])
+}
+
+// Active Kiosk Session
+model Session {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  computerId String
+  computer  Computer   @relation(fields: [computerId], references: [id])
+  startTime DateTime  @default(now())
+  endTime   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+// Audit Logs for Kiosk/Admin actions
+model Log {
+  id        String   @id @default(uuid())
+  type      String   // LOGIN, LOGOUT, ADD_TIME, LOCK, UNLOCK
+  message   String?
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  computerId String?
+  computer   Computer? @relation(fields: [computerId], references: [id])
+  createdAt DateTime @default(now())
 }
 
 // Várólistás rendszer

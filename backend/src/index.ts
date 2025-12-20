@@ -3,6 +3,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import { createServer } from 'http';
+import { Server } from 'socket.io'; // Socket.IO
 
 import { errorHandler } from './middleware/errorHandler.js';
 import { authRouter } from './routes/auth.js';
@@ -17,10 +19,24 @@ import { leaderboardsRouter } from './routes/leaderboards.js';
 import { discordRouter } from './routes/discordSettings.js';
 import { bookingsRouter } from './routes/bookings.js';
 import { BookingNotificationService } from './services/BookingNotificationService.js';
+import { setIo } from './services/socket.js';
+
+// Kiosk Routes
+import { kioskRouter } from './routes/kiosk.js';
+import { adminKioskRouter } from './routes/admin-kiosk.js';
 
 dotenv.config();
 
 const app = express();
+const httpServer = createServer(app); // Create HTTP server for Socket.IO
+const io = new Server(httpServer, {
+  cors: {
+    origin: '*',
+    methods: ["GET", "POST"]
+  }
+});
+setIo(io);
+
 // Start background jobs
 BookingNotificationService.startReminderJob();
 
@@ -35,6 +51,9 @@ app.use(cors({
 app.use(morgan('dev'));
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ limit: '20mb', extended: true }));
+
+// Make io available to routes
+app.set('io', io);
 
 // Health check
 app.get('/health', (req, res) => {
@@ -54,11 +73,44 @@ app.use('/api/leaderboards', leaderboardsRouter);
 app.use('/api/discord', discordRouter);
 app.use('/api/bookings', bookingsRouter);
 
+// Kiosk & Admin Kiosk Routes
+app.use('/api/kiosk', kioskRouter);
+app.use('/api/admin/kiosk', adminKioskRouter);
+
 // Error handler
 app.use(errorHandler);
 
-app.listen(PORT, () => {
+// WebSocket connection handling
+io.on('connection', (socket) => {
+  console.log('[SOCKET] Client connected:', socket.id);
+
+  // Subscribe to machine status updates
+  socket.on('subscribe:machine', (machineId: string) => {
+    socket.join(`machine:${machineId}`);
+    console.log(`[SOCKET] Client ${socket.id} subscribed to machine:${machineId}`);
+  });
+
+  // Subscribe to user updates
+  socket.on('subscribe:user', (userId: string) => {
+    socket.join(`user:${userId}`);
+    console.log(`[SOCKET] Client ${socket.id} subscribed to user:${userId}`);
+  });
+
+  // Subscribe to all sessions (admin dashboard)
+  socket.on('subscribe:all-sessions', () => {
+    socket.join('all-sessions');
+    console.log(`[SOCKET] Client ${socket.id} subscribed to all-sessions`);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('[SOCKET] Client disconnected:', socket.id);
+  });
+});
+
+// Start Server via httpServer
+httpServer.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🔌 WebSocket server ready`);
 });
 
 export default app;

@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Users, Shield, Search, Edit2, Trash2 } from 'lucide-react';
+import { Users, Shield, Search, Edit2, Trash2, Clock } from 'lucide-react';
 import { authService } from '../../lib/auth-service';
+import { RoleChangeModal } from './RoleChangeModal';
+import { UserTimeModal } from './UserTimeModal';
+import { UserEditModal } from './UserEditModal';
 import { API_URL } from '../../config';
 
 interface User {
@@ -9,8 +12,9 @@ interface User {
     email: string;
     displayName: string | null;
     avatarUrl: string | null;
-    role: 'ADMIN' | 'ORGANIZER' | 'MODERATOR' | 'STUDENT';
+    role: 'ADMIN' | 'ORGANIZER' | 'MODERATOR' | 'TEACHER' | 'STUDENT';
     elo: number;
+    timeBalanceSeconds: number;
     createdAt: string;
 }
 
@@ -19,6 +23,10 @@ export function UserManagement() {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedRole, setSelectedRole] = useState<string>('ALL');
+
+    const [roleModalUser, setRoleModalUser] = useState<User | null>(null);
+    const [timeModalUser, setTimeModalUser] = useState<User | null>(null);
+    const [editModalUser, setEditModalUser] = useState<User | null>(null);
 
     useEffect(() => {
         fetchUsers();
@@ -50,6 +58,7 @@ export function UserManagement() {
         const roleConfig: Record<string, { class: string; label: string }> = {
             ADMIN: { class: 'bg-red-500/20 text-red-400 border-red-500/30', label: 'Admin' },
             ORGANIZER: { class: 'bg-purple-500/20 text-purple-400 border-purple-500/30', label: 'Szervező' },
+            TEACHER: { class: 'bg-green-500/20 text-green-400 border-green-500/30', label: 'Tanár' },
             MODERATOR: { class: 'bg-blue-500/20 text-blue-400 border-blue-500/30', label: 'Moderátor' },
             STUDENT: { class: 'bg-gray-500/20 text-gray-400 border-gray-500/30', label: 'Diák' },
         };
@@ -59,6 +68,23 @@ export function UserManagement() {
                 {config.label}
             </span>
         );
+    };
+
+    const formatTime = (seconds: number) => {
+        if (!seconds && seconds !== 0) return '-';
+
+        const isNegative = seconds < 0;
+        const absSeconds = Math.abs(seconds);
+
+        const hours = Math.floor(absSeconds / 3600);
+        const mins = Math.floor((absSeconds % 3600) / 60);
+
+        const sign = isNegative ? '-' : '';
+
+        if (hours > 0) {
+            return `${sign}${hours}ó ${mins}p`;
+        }
+        return `${sign}${mins}p`;
     };
 
     const filteredUsers = users.filter(user => {
@@ -72,6 +98,57 @@ export function UserManagement() {
         return matchesSearch && matchesRole;
     });
 
+    const handleDeleteUser = async (userId: string) => {
+        if (!window.confirm('Biztosan törölni szeretnéd ezt a felhasználót?')) return;
+
+        try {
+            const token = authService.keycloak?.token;
+            if (!token) return;
+
+            const response = await fetch(`${API_URL}/users/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (response.ok) {
+                setUsers(prev => prev.filter(u => u.id !== userId));
+            } else {
+                const data = await response.json();
+                alert(`Hiba: ${data.message || 'Sikertelen törlés'}`);
+            }
+        } catch (error) {
+            console.error('Failed to delete user:', error);
+            alert('Hiba történt a törlés során');
+        }
+    };
+
+    const handleRoleUpdate = async (userId: string, newRole: string) => {
+        try {
+            const token = authService.keycloak?.token;
+            if (!token) return;
+
+            const response = await fetch(`${API_URL}/users/${userId}/role`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ role: newRole }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: data.data.role } : u));
+            } else {
+                alert('Sikertelen szerep módosítás');
+            }
+        } catch (error) {
+            console.error('Failed to update role:', error);
+        }
+    };
+
     if (loading) {
         return (
             <div className="flex items-center justify-center py-12">
@@ -79,7 +156,6 @@ export function UserManagement() {
             </div>
         );
     }
-
 
     return (
         <div className="admin-section">
@@ -111,6 +187,7 @@ export function UserManagement() {
                             <option value="ALL">Minden szerep</option>
                             <option value="ADMIN">Admin</option>
                             <option value="ORGANIZER">Szervező</option>
+                            <option value="TEACHER">Tanár</option>
                             <option value="MODERATOR">Moderátor</option>
                             <option value="STUDENT">Diák</option>
                         </select>
@@ -134,8 +211,8 @@ export function UserManagement() {
                     <div className="text-sm text-gray-400">Admin</div>
                 </div>
                 <div className="bg-[#0f1015] rounded-xl border border-white/5 p-4">
-                    <div className="text-2xl font-bold text-purple-400">{users.filter(u => u.role === 'ORGANIZER').length}</div>
-                    <div className="text-sm text-gray-400">Szervező</div>
+                    <div className="text-2xl font-bold text-green-400">{users.filter(u => u.role === 'TEACHER').length}</div>
+                    <div className="text-sm text-gray-400">Tanár</div>
                 </div>
                 <div className="bg-[#0f1015] rounded-xl border border-white/5 p-4">
                     <div className="text-2xl font-bold text-blue-400">{users.filter(u => u.role === 'MODERATOR').length}</div>
@@ -151,6 +228,7 @@ export function UserManagement() {
                             <th className="p-3">Felhasználó</th>
                             <th className="p-3">Email</th>
                             <th className="p-3">Szerep</th>
+                            <th className="p-3 text-center">Időkeret</th>
                             <th className="p-3 text-center">ELO</th>
                             <th className="p-3">Regisztráció</th>
                             <th className="p-3 text-right">Műveletek</th>
@@ -159,7 +237,7 @@ export function UserManagement() {
                     <tbody>
                         {filteredUsers.length === 0 ? (
                             <tr>
-                                <td colSpan={6} className="text-center p-8 text-muted">
+                                <td colSpan={7} className="text-center p-8 text-muted">
                                     {searchTerm || selectedRole !== 'ALL'
                                         ? 'Nincs találat a szűrési feltételeknek megfelelően'
                                         : 'Még nincs felhasználó'}
@@ -191,6 +269,9 @@ export function UserManagement() {
                                     </td>
                                     <td className="p-3 text-muted">{user.email}</td>
                                     <td className="p-3">{getRoleBadge(user.role)}</td>
+                                    <td className={`p-3 text-center font-mono text-sm ${user.timeBalanceSeconds < 0 ? 'text-red-400' : 'text-green-400'}`}>
+                                        {['ADMIN', 'TEACHER'].includes(user.role) ? '∞' : formatTime(user.timeBalanceSeconds || 0)}
+                                    </td>
                                     <td className="p-3 text-center font-mono text-sm text-primary">{user.elo}</td>
                                     <td className="p-3 text-sm text-muted">
                                         {new Date(user.createdAt).toLocaleDateString('hu-HU')}
@@ -199,19 +280,29 @@ export function UserManagement() {
                                         <div className="flex gap-2 justify-end">
                                             <button
                                                 className="btn-icon hover:bg-white/10"
+                                                title="Időkeret kezelése"
+                                                onClick={() => setTimeModalUser(user)}
+                                            >
+                                                <Clock size={16} />
+                                            </button>
+                                            <button
+                                                className="btn-icon hover:bg-white/10"
                                                 title="Szerep módosítása"
+                                                onClick={() => setRoleModalUser(user)}
                                             >
                                                 <Shield size={16} />
                                             </button>
                                             <button
                                                 className="btn-icon hover:bg-white/10"
                                                 title="Szerkesztés"
+                                                onClick={() => setEditModalUser(user)}
                                             >
                                                 <Edit2 size={16} />
                                             </button>
                                             <button
                                                 className="btn-icon hover:bg-red-500/10 text-red-400"
                                                 title="Törlés"
+                                                onClick={() => handleDeleteUser(user.id)}
                                             >
                                                 <Trash2 size={16} />
                                             </button>
@@ -223,6 +314,34 @@ export function UserManagement() {
                     </tbody>
                 </table>
             </div>
+
+            {roleModalUser && (
+                <RoleChangeModal
+                    user={roleModalUser}
+                    onClose={() => setRoleModalUser(null)}
+                    onSave={handleRoleUpdate}
+                />
+            )}
+
+            {timeModalUser && (
+                <UserTimeModal
+                    user={timeModalUser}
+                    onClose={() => setTimeModalUser(null)}
+                    onSuccess={() => {
+                        fetchUsers(); // Refresh to show new balance
+                    }}
+                />
+            )}
+
+            {editModalUser && (
+                <UserEditModal
+                    user={editModalUser}
+                    onClose={() => setEditModalUser(null)}
+                    onSuccess={() => {
+                        fetchUsers(); // Refresh to show new name/avatar
+                    }}
+                />
+            )}
         </div>
     );
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import {
     Users, Trophy, Calendar, Gamepad2, Settings, Plus,
-    Shield, Edit2, Trash2, ArrowUpRight
+    Shield, Edit2, Trash2, ArrowUpRight, Monitor
 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import { useAuth } from '../hooks/useAuth';
@@ -17,6 +17,7 @@ import { TournamentEditModal } from '../components/admin/TournamentEditModal';
 import { TournamentStatusModal } from '../components/admin/TournamentStatusModal';
 import { BookingManagement } from '../components/booking/BookingManagement';
 import { UserManagement } from '../components/admin/UserManagement';
+import { KioskManager } from '../components/admin/KioskManager';
 import { Link } from 'react-router-dom';
 import './Admin.css';
 import type { Game, Tournament } from '../types';
@@ -28,7 +29,7 @@ export function AdminPage() {
     const { tournaments } = useAppSelector((state) => state.tournaments);
     const { pagination } = useAppSelector((state) => state.teams);
 
-    const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'tournaments' | 'games' | 'bookings'>('overview');
+    const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'tournaments' | 'games' | 'bookings' | 'kiosk'>('overview');
     const [showGameModal, setShowGameModal] = useState(false);
     const [editingGame, setEditingGame] = useState<Game | null>(null);
     const [showTournamentModal, setShowTournamentModal] = useState(false);
@@ -166,6 +167,13 @@ export function AdminPage() {
                     >
                         <Calendar size={18} />
                         Gépfoglalás
+                    </button>
+                    <button
+                        className={`admin-tab ${activeTab === 'kiosk' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('kiosk')}
+                    >
+                        <Monitor size={18} />
+                        Gépterem
                     </button>
                 </div>
 
@@ -307,6 +315,10 @@ export function AdminPage() {
 
                     {activeTab === 'bookings' && (
                         <BookingManagement />
+                    )}
+
+                    {activeTab === 'kiosk' && (
+                        <KioskManager />
                     )}
 
                     {activeTab === 'users' && (

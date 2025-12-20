@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Trophy, Calendar, Users, Award, UserPlus, Maximize, Minimize, Shield, Clock, Edit2, Check } from 'lucide-react';
+import { ArrowLeft, Trophy, Calendar, Users, Award, UserPlus, Maximize, Minimize, Shield, Clock, Edit2, Check, X } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import { useAuth } from '../hooks/useAuth';
 import {
@@ -579,119 +579,83 @@ export function TournamentDetailPage() {
                                 onMatchClick={handleMatchClick}
                             />
                         </div>
-                    ) : (
-                        <div className={`bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden shadow-2xl ${isFullscreen ? 'fixed inset-0 z-50 rounded-none' : 'relative'}`}>
-                            <div className="p-4 border-b border-white/5 flex justify-between items-center bg-black/20">
-                                <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                                    <Trophy size={18} className="text-primary" />
-                                    Bracket
-                                </h2>
-                                <div className="flex gap-2">
-                                    {(user?.role === 'ADMIN' || user?.role === 'ORGANIZER') && (
-                                        <>
-                                            {!currentTournament.matches?.length ? (
-                                                <button className="btn btn-primary btn-sm" onClick={handleGenerateBracket}>
-                                                    Bracket generálása
-                                                </button>
-                                            ) : (
-                                                <button
-                                                    className="btn btn-warning btn-sm"
-                                                    onClick={() => {
-                                                        if (window.confirm('Biztosan újra akarod generálni a bracketet? Ez törli az összes jelenlegi meccset és eredményt!')) {
-                                                            handleGenerateBracket();
-                                                        }
-                                                    }}
-                                                >
-                                                    Újragenerálás
-                                                </button>
-                                            )}
-                                        </>
-                                    )}
-                                    <button
-                                        className="btn btn-ghost btn-sm text-gray-400 hover:text-white"
-                                        onClick={toggleFullscreen}
-                                        title={isFullscreen ? 'Kilépés' : 'Teljes képernyő'}
-                                    >
-                                        {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
-                                    </button>
-                                </div>
-                            </div>
-                            <div className={`overflow-auto ${isFullscreen ? 'h-[calc(100vh-60px)]' : 'min-h-[600px] max-h-[800px]'}`}>
-                                <TournamentBracket
-                                    tournament={currentTournament}
-                                    onMatchClick={handleMatchClick}
-                                />
-                            </div>
-                        </div>
-                    )
+                    </div>
+
                 )}
             </div>
-
-            {/* Registration Modal */}
-            {showRegisterModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setShowRegisterModal(false)}>
-                    <div className="bg-[#1a1b26] rounded-xl border border-white/10 shadow-2xl w-full max-w-md overflow-hidden" onClick={(e) => e.stopPropagation()}>
-                        <div className="p-6 border-b border-white/10 flex justify-between items-center">
-                            <h2 className="text-xl font-bold text-white">Csapat regisztrálása</h2>
-                            <button className="text-gray-400 hover:text-white" onClick={() => setShowRegisterModal(false)}>×</button>
-                        </div>
-                        <div className="p-6">
-                            <p className="text-gray-300 mb-4">Válaszd ki a csapatot, amellyel regisztrálni szeretnél:</p>
-                            <select
-                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary/50 transition-colors"
-                                value={selectedTeamId}
-                                onChange={(e) => setSelectedTeamId(e.target.value)}
-                            >
-                                <option value="">Válassz csapatot...</option>
-                                {myTeams
-                                    .filter(team => team.ownerId === user?.id)
-                                    .map((team) => (
-                                        <option key={team.id} value={team.id}>
-                                            {team.name} ({team.elo} ELO)
-                                        </option>
-                                    ))}
-                            </select>
-                        </div>
-                        <div className="p-6 border-t border-white/10 flex justify-end gap-3 bg-black/20">
-                            <button className="btn btn-secondary" onClick={() => setShowRegisterModal(false)}>
-                                Mégse
-                            </button>
-                            <button
-                                className="btn btn-primary"
-                                onClick={handleRegister}
-                                disabled={!selectedTeamId}
-                            >
-                                Regisztráció
-                            </button>
+            {
+                showRegisterModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setShowRegisterModal(false)}>
+                        <div className="bg-[#1a1b26] rounded-xl border border-white/10 shadow-2xl w-full max-w-md overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                            <div className="p-6 border-b border-white/10 flex justify-between items-center">
+                                <h2 className="text-xl font-bold text-white">Csapat regisztrálása</h2>
+                                <button className="text-gray-400 hover:text-white" onClick={() => setShowRegisterModal(false)}>
+                                    <X size={24} />
+                                </button>
+                            </div>
+                            <div className="p-6">
+                                <p className="text-gray-300 mb-4">Válaszd ki a csapatot, amellyel regisztrálni szeretnél:</p>
+                                <select
+                                    className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary/50 transition-colors"
+                                    value={selectedTeamId}
+                                    onChange={(e) => setSelectedTeamId(e.target.value)}
+                                >
+                                    <option value="">Válassz csapatot...</option>
+                                    {myTeams
+                                        .filter(team => team.ownerId === user?.id)
+                                        .map((team) => (
+                                            <option key={team.id} value={team.id}>
+                                                {team.name} ({team.elo} ELO)
+                                            </option>
+                                        ))}
+                                </select>
+                            </div>
+                            <div className="p-6 border-t border-white/10 flex justify-end gap-3 bg-black/20">
+                                <button className="btn btn-secondary" onClick={() => setShowRegisterModal(false)}>
+                                    Mégse
+                                </button>
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={handleRegister}
+                                    disabled={!selectedTeamId}
+                                >
+                                    Regisztráció
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )
+            }
 
-            {/* Status Modal */}
-            {showStatusModal && currentTournament && (
-                <TournamentStatusModal
-                    tournamentId={currentTournament.id}
-                    currentStatus={currentTournament.status}
-                    currentNotifyUsers={currentTournament.notifyUsers}
-                    currentNotifyDiscord={currentTournament.notifyDiscord}
-                    currentDiscordChannel={currentTournament.discordChannelId}
-                    onClose={() => setShowStatusModal(false)}
-                />
-            )}
+
+            {
+                showStatusModal && currentTournament && (
+                    <TournamentStatusModal
+                        tournamentId={currentTournament.id}
+                        currentStatus={currentTournament.status}
+                        currentNotifyUsers={currentTournament.notifyUsers}
+                        currentNotifyDiscord={currentTournament.notifyDiscord}
+                        currentDiscordChannel={currentTournament.discordChannelId}
+                        onClose={() => setShowStatusModal(false)}
+                    />
+                )
+            }
 
             {/* Match Edit Modal */}
-            {showMatchModal && selectedMatch && (
-                <MatchEditModal
-                    match={selectedMatch}
-                    onClose={() => {
-                        setShowMatchModal(false);
-                        setSelectedMatch(null);
-                    }}
-                    onSave={handleMatchUpdate}
-                    isLoading={isLoading}
-                />
-            )}
-        </div>
+            {
+                showMatchModal && selectedMatch && (
+                    <MatchEditModal
+                        match={selectedMatch}
+                        onClose={() => {
+                            setShowMatchModal(false);
+                            setSelectedMatch(null);
+                        }}
+                        onSave={handleMatchUpdate}
+                        isLoading={isLoading}
+                    />
+                )
+            }
+        </div >
     );
 }
+

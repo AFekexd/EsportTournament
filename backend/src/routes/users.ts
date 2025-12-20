@@ -19,6 +19,33 @@ usersRouter.get(
     })
 );
 
+// Delete user (admin only)
+usersRouter.delete(
+    '/:id',
+    authenticate,
+    requireRole('ADMIN'),
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        // Prevent deleting self
+        const user = await prisma.user.findUnique({
+            where: { id: req.params.id },
+        });
+
+        if (!user) {
+            throw new ApiError('User not found', 404, 'NOT_FOUND');
+        }
+
+        if (user.keycloakId === req.user!.sub) {
+            throw new ApiError('Cannot delete yourself', 400, 'BAD_REQUEST');
+        }
+
+        await prisma.user.delete({
+            where: { id: req.params.id },
+        });
+
+        res.json({ success: true, message: 'User deleted successfully' });
+    })
+);
+
 // Get user by ID
 usersRouter.get(
     '/:id',
@@ -97,7 +124,7 @@ usersRouter.patch(
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
         const { role } = req.body;
 
-        if (!['ADMIN', 'ORGANIZER', 'MODERATOR', 'STUDENT'].includes(role)) {
+        if (!['ADMIN', 'ORGANIZER', 'MODERATOR', 'TEACHER', 'STUDENT'].includes(role)) {
             throw new ApiError('Invalid role', 400, 'INVALID_ROLE');
         }
 

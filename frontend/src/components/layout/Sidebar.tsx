@@ -38,8 +38,8 @@ const navItems: NavItem[] = [
 
 const adminItems: NavItem[] = [
     { to: '/admin', icon: <Shield size={20} />, label: 'Admin', roles: ['ADMIN', 'ORGANIZER'] },
+    { to: '/teacher/time', icon: <Monitor size={20} />, label: 'Időkeret', roles: ['ADMIN', 'TEACHER'] },
     { to: '/discord-settings', icon: <MessageSquare size={20} />, label: 'Discord', roles: ['ADMIN', 'ORGANIZER'] },
-
 ];
 
 export function Sidebar() {
