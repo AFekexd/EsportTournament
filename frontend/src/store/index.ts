@@ -7,6 +7,7 @@ import uiReducer from './slices/uiSlice';
 import statsReducer from './slices/statsSlice';
 import notificationsReducer from './slices/notificationsSlice';
 import bookingsReducer from './slices/bookingsSlice';
+import kioskReducer from './slices/kioskSlice';
 
 export const store = configureStore({
     reducer: {
@@ -18,6 +19,7 @@ export const store = configureStore({
         stats: statsReducer,
         notifications: notificationsReducer,
         bookings: bookingsReducer,
+        kiosk: kioskReducer,
     },
 });
 

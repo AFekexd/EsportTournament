@@ -66,6 +66,8 @@ export const ModelName = {
   DiscordSettings: 'DiscordSettings',
   Computer: 'Computer',
   Booking: 'Booking',
+  Session: 'Session',
+  Log: 'Log',
   Waitlist: 'Waitlist',
   BookingSchedule: 'BookingSchedule'
 } as const
@@ -95,6 +97,7 @@ export const UserScalarFieldEnum = {
   avatarUrl: 'avatarUrl',
   role: 'role',
   elo: 'elo',
+  timeBalanceSeconds: 'timeBalanceSeconds',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -157,7 +160,10 @@ export const TournamentScalarFieldEnum = {
   updatedAt: 'updatedAt',
   notifyUsers: 'notifyUsers',
   notifyDiscord: 'notifyDiscord',
-  discordChannelId: 'discordChannelId'
+  discordChannelId: 'discordChannelId',
+  hasQualifier: 'hasQualifier',
+  qualifierMatches: 'qualifierMatches',
+  qualifierMinPoints: 'qualifierMinPoints'
 } as const
 
 export type TournamentScalarFieldEnum = (typeof TournamentScalarFieldEnum)[keyof typeof TournamentScalarFieldEnum]
@@ -169,6 +175,8 @@ export const TournamentEntryScalarFieldEnum = {
   teamId: 'teamId',
   userId: 'userId',
   seed: 'seed',
+  matchesPlayed: 'matchesPlayed',
+  qualifierPoints: 'qualifierPoints',
   registeredAt: 'registeredAt'
 } as const
 
@@ -285,9 +293,12 @@ export type DiscordSettingsScalarFieldEnum = (typeof DiscordSettingsScalarFieldE
 export const ComputerScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  hostname: 'hostname',
   row: 'row',
   position: 'position',
   isActive: 'isActive',
+  isLocked: 'isLocked',
+  isCompetitionMode: 'isCompetitionMode',
   status: 'status',
   specs: 'specs',
   installedGames: 'installedGames',
@@ -313,6 +324,31 @@ export const BookingScalarFieldEnum = {
 } as const
 
 export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+
+
+export const SessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  computerId: 'computerId',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
+
+
+export const LogScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  message: 'message',
+  userId: 'userId',
+  computerId: 'computerId',
+  createdAt: 'createdAt'
+} as const
+
+export type LogScalarFieldEnum = (typeof LogScalarFieldEnum)[keyof typeof LogScalarFieldEnum]
 
 
 export const WaitlistScalarFieldEnum = {

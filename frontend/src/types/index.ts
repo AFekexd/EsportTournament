@@ -5,8 +5,9 @@ export interface User {
     username: string;
     displayName?: string;
     avatarUrl?: string;
-    role: 'ADMIN' | 'ORGANIZER' | 'MODERATOR' | 'STUDENT';
+    role: 'ADMIN' | 'ORGANIZER' | 'MODERATOR' | 'TEACHER' | 'STUDENT';
     elo: number;
+    timeBalanceSeconds: number;
     createdAt: string;
     updatedAt: string;
     teamMemberships?: TeamMember[];
@@ -197,4 +198,49 @@ export interface ApiResponse<T> {
         total: number;
         pages: number;
     };
+}
+
+export interface Computer {
+    id: string;
+    name: string;
+    hostname?: string;
+    row: number;
+    position: number;
+    isActive: boolean;
+    isLocked: boolean;
+    isCompetitionMode: boolean;
+    status: 'AVAILABLE' | 'MAINTENANCE' | 'OUT_OF_ORDER';
+    specs?: {
+        cpu?: string;
+        gpu?: string;
+        ram?: string;
+        monitor?: string;
+        storage?: string;
+    };
+    installedGames: string[];
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface Session {
+    id: string;
+    userId: string;
+    user?: User;
+    computerId: string;
+    computer?: Computer;
+    startTime: string;
+    endTime?: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface Log {
+    id: string;
+    type: string;
+    message?: string;
+    userId?: string;
+    user?: User;
+    computerId?: string;
+    computer?: Computer;
+    createdAt: string;
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Trophy, Calendar, Users, Award, UserPlus, Maximize, Minimize, Shield, Clock, Edit2, Check } from 'lucide-react';
+import { ArrowLeft, Trophy, Calendar, Users, Award, UserPlus, Maximize, Minimize, Shield, Clock, Edit2, Check, X } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import { useAuth } from '../hooks/useAuth';
 import {
@@ -583,72 +583,79 @@ export function TournamentDetailPage() {
                     </div>
                 )}
             </div>
-
-            {/* Registration Modal */}
-            {showRegisterModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setShowRegisterModal(false)}>
-                    <div className="bg-[#1a1b26] rounded-xl border border-white/10 shadow-2xl w-full max-w-md overflow-hidden" onClick={(e) => e.stopPropagation()}>
-                        <div className="p-6 border-b border-white/10 flex justify-between items-center">
-                            <h2 className="text-xl font-bold text-white">Csapat regisztrálása</h2>
-                            <button className="text-gray-400 hover:text-white" onClick={() => setShowRegisterModal(false)}>×</button>
-                        </div>
-                        <div className="p-6">
-                            <p className="text-gray-300 mb-4">Válaszd ki a csapatot, amellyel regisztrálni szeretnél:</p>
-                            <select
-                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary/50 transition-colors"
-                                value={selectedTeamId}
-                                onChange={(e) => setSelectedTeamId(e.target.value)}
-                            >
-                                <option value="">Válassz csapatot...</option>
-                                {myTeams
-                                    .filter(team => team.ownerId === user?.id)
-                                    .map((team) => (
-                                        <option key={team.id} value={team.id}>
-                                            {team.name} ({team.elo} ELO)
-                                        </option>
-                                    ))}
-                            </select>
-                        </div>
-                        <div className="p-6 border-t border-white/10 flex justify-end gap-3 bg-black/20">
-                            <button className="btn btn-secondary" onClick={() => setShowRegisterModal(false)}>
-                                Mégse
-                            </button>
-                            <button
-                                className="btn btn-primary"
-                                onClick={handleRegister}
-                                disabled={!selectedTeamId}
-                            >
-                                Regisztráció
-                            </button>
+            {
+                showRegisterModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setShowRegisterModal(false)}>
+                        <div className="bg-[#1a1b26] rounded-xl border border-white/10 shadow-2xl w-full max-w-md overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                            <div className="p-6 border-b border-white/10 flex justify-between items-center">
+                                <h2 className="text-xl font-bold text-white">Csapat regisztrálása</h2>
+                                <button className="text-gray-400 hover:text-white" onClick={() => setShowRegisterModal(false)}>
+                                    <X size={24} />
+                                </button>
+                            </div>
+                            <div className="p-6">
+                                <p className="text-gray-300 mb-4">Válaszd ki a csapatot, amellyel regisztrálni szeretnél:</p>
+                                <select
+                                    className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary/50 transition-colors"
+                                    value={selectedTeamId}
+                                    onChange={(e) => setSelectedTeamId(e.target.value)}
+                                >
+                                    <option value="">Válassz csapatot...</option>
+                                    {myTeams
+                                        .filter(team => team.ownerId === user?.id)
+                                        .map((team) => (
+                                            <option key={team.id} value={team.id}>
+                                                {team.name} ({team.elo} ELO)
+                                            </option>
+                                        ))}
+                                </select>
+                            </div>
+                            <div className="p-6 border-t border-white/10 flex justify-end gap-3 bg-black/20">
+                                <button className="btn btn-secondary" onClick={() => setShowRegisterModal(false)}>
+                                    Mégse
+                                </button>
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={handleRegister}
+                                    disabled={!selectedTeamId}
+                                >
+                                    Regisztráció
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )
+            }
 
-            {/* Status Modal */}
-            {showStatusModal && currentTournament && (
-                <TournamentStatusModal
-                    tournamentId={currentTournament.id}
-                    currentStatus={currentTournament.status}
-                    currentNotifyUsers={currentTournament.notifyUsers}
-                    currentNotifyDiscord={currentTournament.notifyDiscord}
-                    currentDiscordChannel={currentTournament.discordChannelId}
-                    onClose={() => setShowStatusModal(false)}
-                />
-            )}
+
+            {
+                showStatusModal && currentTournament && (
+                    <TournamentStatusModal
+                        tournamentId={currentTournament.id}
+                        currentStatus={currentTournament.status}
+                        currentNotifyUsers={currentTournament.notifyUsers}
+                        currentNotifyDiscord={currentTournament.notifyDiscord}
+                        currentDiscordChannel={currentTournament.discordChannelId}
+                        onClose={() => setShowStatusModal(false)}
+                    />
+                )
+            }
 
             {/* Match Edit Modal */}
-            {showMatchModal && selectedMatch && (
-                <MatchEditModal
-                    match={selectedMatch}
-                    onClose={() => {
-                        setShowMatchModal(false);
-                        setSelectedMatch(null);
-                    }}
-                    onSave={handleMatchUpdate}
-                    isLoading={isLoading}
-                />
-            )}
-        </div>
+            {
+                showMatchModal && selectedMatch && (
+                    <MatchEditModal
+                        match={selectedMatch}
+                        onClose={() => {
+                            setShowMatchModal(false);
+                            setSelectedMatch(null);
+                        }}
+                        onSave={handleMatchUpdate}
+                        isLoading={isLoading}
+                    />
+                )
+            }
+        </div >
     );
 }
+

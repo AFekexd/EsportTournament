@@ -5,7 +5,7 @@ import { store } from './store';
 import { useAppDispatch, useAppSelector } from './hooks/useRedux';
 import { initKeycloak } from './store/slices/authSlice';
 import { Layout } from './components/layout';
-import { HomePage, TournamentsPage, TeamsPage, GamesPage, CalendarPage, ProfilePage, SettingsPage, AdminPage, TeamCreatePage, TeamDetailPage, GameDetailPage, TournamentDetailPage, LeaderboardsPage, NotificationsPage, DiscordAdminPage, BookingPage } from './pages';
+import { HomePage, TournamentsPage, TeamsPage, GamesPage, CalendarPage, ProfilePage, SettingsPage, AdminPage, TeamCreatePage, TeamDetailPage, GameDetailPage, TournamentDetailPage, LeaderboardsPage, NotificationsPage, DiscordAdminPage, BookingPage, TeacherTimePage } from './pages';
 import { PuffLoader } from 'react-spinners';
 
 function AppContent() {
@@ -64,6 +64,7 @@ function AppContent() {
           <Route path="profile" element={<ProfilePage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="admin" element={<AdminPage />} />
+          <Route path="teacher/time" element={<TeacherTimePage />} />
           <Route path="booking" element={<BookingPage />} />
         </Route>
       </Routes>
