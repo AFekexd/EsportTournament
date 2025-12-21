@@ -124,6 +124,26 @@ class EmailService {
             html,
         });
     }
+
+    async sendNewTournamentNotification(to: string, tournamentName: string, tournamentId: string) {
+        const html = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #8b5cf6;">Új verseny elérhető!</h2>
+                <p>Nézd meg a legújabb versenyt: <strong>${tournamentName}</strong></p>
+                <p>
+                    <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/tournaments/${tournamentId}" 
+                       style="display: inline-block; padding: 12px 24px; background: #8b5cf6; color: white; text-decoration: none; border-radius: 8px;">
+                        Verseny megtekintése
+                    </a>
+                </p>
+            </div>
+        `;
+        return this.sendEmail({
+            to,
+            subject: `Új verseny: ${tournamentName}`,
+            html,
+        });
+    }
 }
 
 export const emailService = new EmailService();

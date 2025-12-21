@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { Bell, BellOff, Loader2 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { addToWaitlist, removeFromWaitlist } from '../../store/slices/bookingsSlice';
@@ -39,7 +40,7 @@ export function WaitlistButton({ computerId, date, startHour, endHour }: Waitlis
             }
         } catch (error) {
             console.error('Waitlist action failed:', error);
-            alert('Hiba történt a várólista művelet során.');
+            toast.error('Hiba történt a várólista művelet során.');
         } finally {
             setIsLoading(false);
         }

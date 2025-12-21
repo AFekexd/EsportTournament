@@ -172,6 +172,21 @@ body {
 html {
   font-size: 16px;
   scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+/* Ensure date picker icon is visible in dark mode */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
 }
 
 body {

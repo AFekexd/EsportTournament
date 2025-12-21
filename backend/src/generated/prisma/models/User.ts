@@ -46,6 +46,7 @@ export type UserMinAggregateOutputType = {
   role: $Enums.Role | null
   elo: number | null
   timeBalanceSeconds: number | null
+  emailNotifications: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,6 +61,7 @@ export type UserMaxAggregateOutputType = {
   role: $Enums.Role | null
   elo: number | null
   timeBalanceSeconds: number | null
+  emailNotifications: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -74,6 +76,7 @@ export type UserCountAggregateOutputType = {
   role: number
   elo: number
   timeBalanceSeconds: number
+  emailNotifications: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -100,6 +103,7 @@ export type UserMinAggregateInputType = {
   role?: true
   elo?: true
   timeBalanceSeconds?: true
+  emailNotifications?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -114,6 +118,7 @@ export type UserMaxAggregateInputType = {
   role?: true
   elo?: true
   timeBalanceSeconds?: true
+  emailNotifications?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -128,6 +133,7 @@ export type UserCountAggregateInputType = {
   role?: true
   elo?: true
   timeBalanceSeconds?: true
+  emailNotifications?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -229,6 +235,7 @@ export type UserGroupByOutputType = {
   role: $Enums.Role
   elo: number
   timeBalanceSeconds: number
+  emailNotifications: boolean
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -266,6 +273,7 @@ export type UserWhereInput = {
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   elo?: Prisma.IntFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntFilter<"User"> | number
+  emailNotifications?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   teamMemberships?: Prisma.TeamMemberListRelationFilter
@@ -294,6 +302,7 @@ export type UserOrderByWithRelationInput = {
   role?: Prisma.SortOrder
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
+  emailNotifications?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   teamMemberships?: Prisma.TeamMemberOrderByRelationAggregateInput
@@ -325,6 +334,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   elo?: Prisma.IntFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntFilter<"User"> | number
+  emailNotifications?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   teamMemberships?: Prisma.TeamMemberListRelationFilter
@@ -353,6 +363,7 @@ export type UserOrderByWithAggregationInput = {
   role?: Prisma.SortOrder
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
+  emailNotifications?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -375,6 +386,7 @@ export type UserScalarWhereWithAggregatesInput = {
   role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
   elo?: Prisma.IntWithAggregatesFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntWithAggregatesFilter<"User"> | number
+  emailNotifications?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -389,6 +401,7 @@ export type UserCreateInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -417,6 +430,7 @@ export type UserUncheckedCreateInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -445,6 +459,7 @@ export type UserUpdateInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -473,6 +488,7 @@ export type UserUncheckedUpdateInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -501,6 +517,7 @@ export type UserCreateManyInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -515,6 +532,7 @@ export type UserUpdateManyMutationInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -529,6 +547,7 @@ export type UserUncheckedUpdateManyInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -543,6 +562,7 @@ export type UserCountOrderByAggregateInput = {
   role?: Prisma.SortOrder
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
+  emailNotifications?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -562,6 +582,7 @@ export type UserMaxOrderByAggregateInput = {
   role?: Prisma.SortOrder
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
+  emailNotifications?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -576,6 +597,7 @@ export type UserMinOrderByAggregateInput = {
   role?: Prisma.SortOrder
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
+  emailNotifications?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -613,6 +635,10 @@ export type IntFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -835,6 +861,7 @@ export type UserCreateWithoutOwnedTeamsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -862,6 +889,7 @@ export type UserUncheckedCreateWithoutOwnedTeamsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -905,6 +933,7 @@ export type UserUpdateWithoutOwnedTeamsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -932,6 +961,7 @@ export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -959,6 +989,7 @@ export type UserCreateWithoutTeamMembershipsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
@@ -986,6 +1017,7 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
@@ -1029,6 +1061,7 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
@@ -1056,6 +1089,7 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1083,6 +1117,7 @@ export type UserCreateWithoutTournamentEntriesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -1110,6 +1145,7 @@ export type UserUncheckedCreateWithoutTournamentEntriesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1153,6 +1189,7 @@ export type UserUpdateWithoutTournamentEntriesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -1180,6 +1217,7 @@ export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1207,6 +1245,7 @@ export type UserCreateWithoutHomeMatchesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -1234,6 +1273,7 @@ export type UserUncheckedCreateWithoutHomeMatchesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1266,6 +1306,7 @@ export type UserCreateWithoutAwayMatchesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -1293,6 +1334,7 @@ export type UserUncheckedCreateWithoutAwayMatchesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1325,6 +1367,7 @@ export type UserCreateWithoutWonMatchesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -1352,6 +1395,7 @@ export type UserUncheckedCreateWithoutWonMatchesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1395,6 +1439,7 @@ export type UserUpdateWithoutHomeMatchesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -1422,6 +1467,7 @@ export type UserUncheckedUpdateWithoutHomeMatchesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1460,6 +1506,7 @@ export type UserUpdateWithoutAwayMatchesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -1487,6 +1534,7 @@ export type UserUncheckedUpdateWithoutAwayMatchesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1525,6 +1573,7 @@ export type UserUpdateWithoutWonMatchesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -1552,6 +1601,7 @@ export type UserUncheckedUpdateWithoutWonMatchesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1579,6 +1629,7 @@ export type UserCreateWithoutGameStatsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -1606,6 +1657,7 @@ export type UserUncheckedCreateWithoutGameStatsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1649,6 +1701,7 @@ export type UserUpdateWithoutGameStatsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -1676,6 +1729,7 @@ export type UserUncheckedUpdateWithoutGameStatsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1703,6 +1757,7 @@ export type UserCreateWithoutRanksInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -1730,6 +1785,7 @@ export type UserUncheckedCreateWithoutRanksInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1773,6 +1829,7 @@ export type UserUpdateWithoutRanksInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -1800,6 +1857,7 @@ export type UserUncheckedUpdateWithoutRanksInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1827,6 +1885,7 @@ export type UserCreateWithoutNotificationsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -1854,6 +1913,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1897,6 +1957,7 @@ export type UserUpdateWithoutNotificationsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -1924,6 +1985,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1951,6 +2013,7 @@ export type UserCreateWithoutDiscordSettingsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -1978,6 +2041,7 @@ export type UserUncheckedCreateWithoutDiscordSettingsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2021,6 +2085,7 @@ export type UserUpdateWithoutDiscordSettingsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -2048,6 +2113,7 @@ export type UserUncheckedUpdateWithoutDiscordSettingsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2075,6 +2141,7 @@ export type UserCreateWithoutBookingsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -2102,6 +2169,7 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2145,6 +2213,7 @@ export type UserUpdateWithoutBookingsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -2172,6 +2241,7 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2199,6 +2269,7 @@ export type UserCreateWithoutSessionsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -2226,6 +2297,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2269,6 +2341,7 @@ export type UserUpdateWithoutSessionsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -2296,6 +2369,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2323,6 +2397,7 @@ export type UserCreateWithoutLogsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -2350,6 +2425,7 @@ export type UserUncheckedCreateWithoutLogsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2393,6 +2469,7 @@ export type UserUpdateWithoutLogsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -2420,6 +2497,7 @@ export type UserUncheckedUpdateWithoutLogsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2447,6 +2525,7 @@ export type UserCreateWithoutWaitlistEntriesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -2474,6 +2553,7 @@ export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2517,6 +2597,7 @@ export type UserUpdateWithoutWaitlistEntriesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -2544,6 +2625,7 @@ export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2710,6 +2792,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   role?: boolean
   elo?: boolean
   timeBalanceSeconds?: boolean
+  emailNotifications?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
@@ -2739,6 +2822,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   role?: boolean
   elo?: boolean
   timeBalanceSeconds?: boolean
+  emailNotifications?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -2753,6 +2837,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   role?: boolean
   elo?: boolean
   timeBalanceSeconds?: boolean
+  emailNotifications?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -2767,11 +2852,12 @@ export type UserSelectScalar = {
   role?: boolean
   elo?: boolean
   timeBalanceSeconds?: boolean
+  emailNotifications?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "keycloakId" | "email" | "username" | "displayName" | "avatarUrl" | "role" | "elo" | "timeBalanceSeconds" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "keycloakId" | "email" | "username" | "displayName" | "avatarUrl" | "role" | "elo" | "timeBalanceSeconds" | "emailNotifications" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
   ownedTeams?: boolean | Prisma.User$ownedTeamsArgs<ExtArgs>
@@ -2820,6 +2906,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     role: $Enums.Role
     elo: number
     timeBalanceSeconds: number
+    emailNotifications: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -3268,6 +3355,7 @@ export interface UserFieldRefs {
   readonly role: Prisma.FieldRef<"User", 'Role'>
   readonly elo: Prisma.FieldRef<"User", 'Int'>
   readonly timeBalanceSeconds: Prisma.FieldRef<"User", 'Int'>
+  readonly emailNotifications: Prisma.FieldRef<"User", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

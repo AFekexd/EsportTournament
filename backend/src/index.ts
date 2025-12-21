@@ -18,7 +18,9 @@ import { notificationsRouter } from './routes/notifications.js';
 import { leaderboardsRouter } from './routes/leaderboards.js';
 import { discordRouter } from './routes/discordSettings.js';
 import { bookingsRouter } from './routes/bookings.js';
+import { shareRouter } from './routes/share.js';
 import { BookingNotificationService } from './services/BookingNotificationService.js';
+import { TournamentSchedulerService } from './services/TournamentSchedulerService.js';
 import { setIo } from './services/socket.js';
 
 // Kiosk Routes
@@ -45,6 +47,7 @@ setIo(io);
 
 // Start background jobs
 BookingNotificationService.startReminderJob();
+TournamentSchedulerService.startScheduler();
 
 const PORT = process.env.PORT || 3000;
 
@@ -83,6 +86,7 @@ app.use('/api/notifications', notificationsRouter);
 app.use('/api/leaderboards', leaderboardsRouter);
 app.use('/api/discord', discordRouter);
 app.use('/api/bookings', bookingsRouter);
+app.use('/share', shareRouter);
 
 // Kiosk & Admin Kiosk Routes
 app.use('/api/kiosk', kioskRouter);

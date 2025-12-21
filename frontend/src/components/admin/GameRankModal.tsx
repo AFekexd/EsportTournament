@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { X, Plus, Trash2, Shield, GripVertical } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { fetchRanks, addRank, deleteRank } from '../../store/slices/gamesSlice';
@@ -43,7 +44,7 @@ export function GameRankModal({ game, onClose }: GameRankModalProps) {
             });
         } catch (error) {
             console.error('Failed to add rank:', error);
-            alert('Hiba történt a rang hozzáadásakor');
+            toast.error('Hiba történt a rang hozzáadásakor');
         }
     };
 
@@ -53,7 +54,7 @@ export function GameRankModal({ game, onClose }: GameRankModalProps) {
             await dispatch(deleteRank({ gameId: game.id, rankId })).unwrap();
         } catch (error) {
             console.error('Failed to delete rank:', error);
-            alert('Hiba történt a törléskor');
+            toast.error('Hiba történt a törléskor');
         }
     };
 

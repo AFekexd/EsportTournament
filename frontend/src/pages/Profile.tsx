@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { User, Trophy, Users, Calendar, Edit, Settings as SettingsIcon, Award, TrendingUp, Shield } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -44,7 +45,7 @@ export function ProfilePage() {
             await dispatch(setUserRank({ gameId, rankId })).unwrap();
         } catch (error) {
             console.error('Failed to update rank', error);
-            alert('Hiba történt a rang frissítésekor');
+            toast.error('Hiba történt a rang frissítésekor');
         }
     };
 

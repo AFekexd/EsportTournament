@@ -3,6 +3,7 @@ import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest, requireRole, optionalAuth } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { processImage, isBase64DataUrl, validateImageSize } from '../utils/imageProcessor.js';
+import { notificationService } from '../services/notificationService.js';
 
 export const tournamentsRouter = Router();
 
@@ -69,6 +70,7 @@ tournamentsRouter.post(
             hasQualifier,
             qualifierMatches,
             qualifierMinPoints,
+            teamSize,
         } = req.body;
 
         if (!name || !gameId || !maxTeams || !startDate || !registrationDeadline) {
@@ -105,9 +107,14 @@ tournamentsRouter.post(
                 qualifierMatches: qualifierMatches ? parseInt(qualifierMatches) : 0,
                 qualifierMinPoints: qualifierMinPoints ? parseInt(qualifierMinPoints) : 0,
                 status: 'DRAFT',
+                teamSize: teamSize ? parseInt(teamSize) : null,
             },
             include: { game: true },
         });
+
+        // Notify all users (async, don't await)
+        notificationService.notifyAllUsersNewTournament(tournament)
+            .catch(err => console.error('Failed to broadcast tournament notification:', err));
 
         res.status(201).json({ success: true, data: tournament });
     })
@@ -196,6 +203,7 @@ tournamentsRouter.patch(
             hasQualifier,
             qualifierMatches,
             qualifierMinPoints,
+            teamSize,
         } = req.body;
 
         // Process image if base64
@@ -225,6 +233,7 @@ tournamentsRouter.patch(
                 ...(hasQualifier !== undefined && { hasQualifier }),
                 ...(qualifierMatches !== undefined && { qualifierMatches: parseInt(qualifierMatches) }),
                 ...(qualifierMinPoints !== undefined && { qualifierMinPoints: parseInt(qualifierMinPoints) }),
+                ...(teamSize !== undefined && { teamSize: teamSize ? parseInt(teamSize) : null }),
             },
             include: {
                 game: true,
@@ -396,7 +405,9 @@ tournamentsRouter.post(
         await prisma.match.deleteMany({ where: { tournamentId: tournament.id } });
 
         // Check if this is a solo (1v1) tournament
-        const isSoloTournament = tournament.game?.teamSize === 1;
+        // Prioritize tournament.teamSize if set, otherwise fallback to game.teamSize, otherwise default to 1 (solo)
+        const teamSize = tournament.teamSize ?? tournament.game?.teamSize ?? 1;
+        const isSoloTournament = teamSize === 1;
         const matches: any[] = [];
 
         if (tournament.format === 'ROUND_ROBIN') {

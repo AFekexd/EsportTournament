@@ -102,7 +102,7 @@ usersRouter.patch(
             }
         }
 
-        const { displayName, avatarUrl } = req.body;
+        const { displayName, avatarUrl, emailNotifications } = req.body;
 
         // Process avatar image if base64
         let processedAvatarUrl = avatarUrl;
@@ -118,6 +118,7 @@ usersRouter.patch(
             data: {
                 ...(displayName && { displayName }),
                 ...(processedAvatarUrl !== undefined && { avatarUrl: processedAvatarUrl }),
+                ...(emailNotifications !== undefined && { emailNotifications }),
             },
         });
 

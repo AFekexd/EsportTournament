@@ -114,6 +114,121 @@ class NotificationService {
         }
     }
 
+    async notifyAllUsersNewTournament(tournament: { id: string; name: string }) {
+        // 1. Create Discord Channel for the tournament
+        let discordChannelId: string | null = null;
+        try {
+            discordChannelId = await discordService.createTournamentChannel(tournament.name);
+            if (discordChannelId) {
+                // Update tournament with the new channel ID
+                await prisma.tournament.update({
+                    where: { id: tournament.id },
+                    data: { discordChannelId }
+                });
+
+                // Get full tournament details for announcement
+                const fullTournament = await prisma.tournament.findUnique({
+                    where: { id: tournament.id },
+                    include: { game: true }
+                });
+
+                if (fullTournament) {
+                    await discordService.sendTournamentAnnouncement({
+                        id: fullTournament.id,
+                        name: fullTournament.name,
+                        game: fullTournament.game.name,
+                        startDate: fullTournament.startDate,
+                        maxTeams: fullTournament.maxTeams
+                    }, discordChannelId);
+                }
+            }
+        } catch (error) {
+            console.error('Failed to setup Discord for tournament:', error);
+        }
+
+        // Fetch all users
+        const users = await prisma.user.findMany({
+            select: { id: true, email: true, emailNotifications: true }
+        });
+
+        console.log(`📢 Broadcasting new tournament notification to ${users.length} users...`);
+
+        // Create in-app notifications and send emails in parallel chunks
+        const chunkSize = 50;
+        for (let i = 0; i < users.length; i += chunkSize) {
+            const chunk = users.slice(i, i + chunkSize);
+
+            await Promise.all(chunk.map(async (user) => {
+                // 1. Create in-app notification
+                await prisma.notification.create({
+                    data: {
+                        userId: user.id,
+                        type: 'SYSTEM',
+                        title: 'Új verseny!',
+                        message: `Hamarosan kezdődik: ${tournament.name}`,
+                        link: `/tournaments/${tournament.id}`,
+                    },
+                });
+
+                // 2. Send email if enabled
+                if (user.emailNotifications && user.email) {
+                    await emailService.sendNewTournamentNotification(user.email, tournament.name, tournament.id);
+                }
+            }));
+        }
+
+        console.log('✅ Broadcast complete');
+    }
+
+    async notifyAllUsersNewGame(game: { id: string; name: string }) {
+        const users = await prisma.user.findMany({
+            select: { id: true }
+        });
+
+        console.log(`📢 Broadcasting new game notification to ${users.length} users...`);
+
+        // Create notifications in chunks
+        const chunkSize = 50;
+        for (let i = 0; i < users.length; i += chunkSize) {
+            const chunk = users.slice(i, i + chunkSize);
+            await Promise.all(chunk.map(userId =>
+                prisma.notification.create({
+                    data: {
+                        userId: userId.id,
+                        type: 'SYSTEM',
+                        title: 'Új játék!',
+                        message: `Új játék érhető el: ${game.name}`,
+                        link: `/games`, // Or specific game link if page exists
+                    }
+                })
+            ));
+        }
+    }
+
+    async notifyAllUsersSystemMessage(title: string, message: string, link?: string) {
+        const users = await prisma.user.findMany({
+            select: { id: true }
+        });
+
+        console.log(`📢 Broadcasting system message to ${users.length} users...`);
+
+        const chunkSize = 50;
+        for (let i = 0; i < users.length; i += chunkSize) {
+            const chunk = users.slice(i, i + chunkSize);
+            await Promise.all(chunk.map(userId =>
+                prisma.notification.create({
+                    data: {
+                        userId: userId.id,
+                        type: 'SYSTEM',
+                        title,
+                        message,
+                        link,
+                    }
+                })
+            ));
+        }
+    }
+
     async notifyMatchResultToTeams(match: any, tournament: any) {
         if (!tournament.notifyUsers) return;
 
@@ -160,6 +275,18 @@ class NotificationService {
                 })
             )
         );
+
+        // Send to Discord if enabled and channel exists
+        if (tournament.notifyDiscord && tournament.discordChannelId && tournament.discordChannelId !== 'matches') {
+            await discordService.sendMatchResult({
+                tournament: tournament.name,
+                homeTeam: homeTeamName,
+                awayTeam: awayTeamName,
+                homeScore: match.homeScore || 0,
+                awayScore: match.awayScore || 0,
+                winner: (match.winner || match.winnerUser) ? (match.winner?.name || match.winnerUser?.username) : 'Döntetlen'
+            }, tournament.discordChannelId);
+        }
 
         console.log(`📧 Sent ${userIds.length} match result notifications`);
     }

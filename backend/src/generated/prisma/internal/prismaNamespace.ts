@@ -1877,6 +1877,7 @@ export const UserScalarFieldEnum = {
   role: 'role',
   elo: 'elo',
   timeBalanceSeconds: 'timeBalanceSeconds',
+  emailNotifications: 'emailNotifications',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1931,6 +1932,7 @@ export const TournamentScalarFieldEnum = {
   gameId: 'gameId',
   format: 'format',
   status: 'status',
+  teamSize: 'teamSize',
   maxTeams: 'maxTeams',
   startDate: 'startDate',
   endDate: 'endDate',
@@ -2247,6 +2249,13 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
  * Reference to a field of type 'DateTime'
  */
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -2299,13 +2308,6 @@ export type EnumTournamentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'TournamentStatus[]'
  */
 export type ListEnumTournamentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TournamentStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 

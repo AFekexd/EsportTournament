@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { BarChart3, Edit2, AlertCircle, Plus, Monitor, Clock, Trash2 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { createSchedule, deleteSchedule, fetchComputers } from '../../store/slices/bookingsSlice';
@@ -37,7 +38,7 @@ export function BookingManagement() {
             }
         } catch (error) {
             console.error('Failed to delete computer:', error);
-            alert('Hiba történt a gép törlése során');
+            toast.error('Hiba történt a gép törlése során');
         }
     };
 

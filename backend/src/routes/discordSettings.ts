@@ -11,12 +11,12 @@ discordRouter.get(
     '/channels',
     authenticate,
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-        const channels = discordService.getAvailableChannels();
+        const channels = await discordService.getAvailableChannels();
 
         const channelInfo = channels.map(channel => ({
-            id: channel,
-            name: getChannelDisplayName(channel),
-            icon: getChannelIcon(channel),
+            id: channel.id,
+            name: channel.name, // Use actual channel name
+            icon: '📝', // Default icon for text channels
         }));
 
         res.json({
@@ -67,18 +67,29 @@ discordRouter.get(
             take: 5,
         });
 
+        // Search Discord members
+        const discordMembers = await discordService.searchGuildMembers(searchTerm);
+
         const results = [
+            ...discordMembers.map(member => ({
+                type: 'discord_user',
+                id: member.id,
+                name: member.displayName || member.username,
+                username: member.username,
+                avatar: member.avatarUrl,
+                mention: `<@${member.id}>`,
+            })),
             ...users.map((user: { id: string; username: string; displayName: string | null }) => ({
                 type: 'user',
                 id: user.id,
                 name: user.displayName || user.username,
-                mention: `@${user.username}`,
+                mention: `@${user.username}`, // Fallback for website users not linked
             })),
             ...teams.map((team: { id: string; name: string }) => ({
                 type: 'team',
                 id: team.id,
                 name: team.name,
-                mention: `@${team.name}`,
+                mention: `@${team.name}`, // Fallback/Role mention if roles match team names
             })),
         ];
 
@@ -110,7 +121,8 @@ discordRouter.post(
         }
 
         // Check if user has permission
-        if (user.role !== 'ADMIN' && user.role !== 'ORGANIZER') {
+        const allowedRoles = ['ADMIN', 'ORGANIZER', 'MODERATOR', 'TEACHER'];
+        if (!allowedRoles.includes(user.role)) {
             return res.status(403).json({
                 success: false,
                 error: { message: 'Nincs jogosultságod Discord üzenet küldésére' },
@@ -133,12 +145,12 @@ discordRouter.post(
         }
 
         // Send to Discord
-        await discordService.sendWebhook({
+        await discordService.sendMessage(channel, {
             title,
             description: message,
             color: color ? parseInt(color.replace('#', ''), 16) : 0x8b5cf6,
             timestamp: new Date().toISOString(),
-        }, content, channel);
+        }, content);
 
         res.json({
             success: true,

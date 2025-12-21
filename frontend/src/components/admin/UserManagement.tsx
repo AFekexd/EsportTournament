@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { Users, Shield, Search, Edit2, Trash2, Clock } from 'lucide-react';
 import { authService } from '../../lib/auth-service';
 import { RoleChangeModal } from './RoleChangeModal';
@@ -116,11 +117,11 @@ export function UserManagement() {
                 setUsers(prev => prev.filter(u => u.id !== userId));
             } else {
                 const data = await response.json();
-                alert(`Hiba: ${data.message || 'Sikertelen törlés'}`);
+                toast.error(`Hiba: ${data.message || 'Sikertelen törlés'}`);
             }
         } catch (error) {
             console.error('Failed to delete user:', error);
-            alert('Hiba történt a törlés során');
+            toast.error('Hiba történt a törlés során');
         }
     };
 
@@ -142,7 +143,7 @@ export function UserManagement() {
                 const data = await response.json();
                 setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: data.data.role } : u));
             } else {
-                alert('Sikertelen szerep módosítás');
+                toast.error('Sikertelen szerep módosítás');
             }
         } catch (error) {
             console.error('Failed to update role:', error);

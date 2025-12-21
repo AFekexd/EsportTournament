@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { X, Monitor } from 'lucide-react';
 import { useAppDispatch } from '../../hooks/useRedux';
 import { fetchComputers } from '../../store/slices/bookingsSlice';
@@ -52,7 +53,7 @@ export function ComputerModal({ computer, onClose }: ComputerModalProps) {
         try {
             const token = authService.keycloak?.token;
             if (!token) {
-                alert('Nincs bejelentkezve');
+                toast.error('Nincs bejelentkezve');
                 return;
             }
 
@@ -81,7 +82,7 @@ export function ComputerModal({ computer, onClose }: ComputerModalProps) {
             onClose();
         } catch (error) {
             console.error('Failed to save computer:', error);
-            alert('Hiba történt a gép mentése során');
+            toast.error('Hiba történt a gép mentése során');
         } finally {
             setLoading(false);
         }

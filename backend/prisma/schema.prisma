@@ -82,6 +82,7 @@ model User {
   role          Role     @default(STUDENT)
   elo           Int      @default(1000)
   timeBalanceSeconds Int @default(0) // Kiosk time balance
+  emailNotifications Boolean @default(true)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -145,7 +146,7 @@ model Game {
   description String?
   imageUrl    String?
   rules       String?
-  teamSize    Int      // 1, 2, 3, 5
+  teamSize    Int?     // 1, 2, 3, 5 (Optional, defaults to 1 if not set)
   createdAt   DateTime @default(now())
 
   tournaments Tournament[]
@@ -165,6 +166,7 @@ model Tournament {
   game                 Game             @relation(fields: [gameId], references: [id])
   format               TournamentFormat @default(SINGLE_ELIMINATION)
   status               TournamentStatus @default(DRAFT)
+  teamSize             Int?             // Override Game.teamSize (1=1v1, 5=5v5 etc.)
   maxTeams             Int
   startDate            DateTime
   endDate              DateTime?

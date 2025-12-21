@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { Save, Bell, Lock, User, Moon, Sun } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -17,7 +18,7 @@ export function SettingsPage() {
         tournaments: true,
         teams: true,
         matches: false,
-        email: true,
+        email: user?.emailNotifications ?? true,
     });
     const [theme, setTheme] = useState<'dark' | 'light'>('dark');
     const [language, setLanguage] = useState('hu');
@@ -61,6 +62,7 @@ export function SettingsPage() {
                 body: JSON.stringify({
                     displayName,
                     avatarUrl: avatarUrl || undefined,
+                    emailNotifications: notifications.email,
                 }),
             });
 
@@ -72,7 +74,7 @@ export function SettingsPage() {
             setTimeout(() => setSaveSuccess(false), 3000);
         } catch (error) {
             console.error('Failed to save settings:', error);
-            alert('Hiba történt a mentés során');
+            toast.error('Hiba történt a mentés során');
         } finally {
             setSaveLoading(false);
         }

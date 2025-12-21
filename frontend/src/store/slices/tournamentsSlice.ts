@@ -137,6 +137,7 @@ export const createTournament = createAsyncThunk(
             hasQualifier?: boolean;
             qualifierMatches?: number;
             qualifierMinPoints?: number;
+            teamSize?: number | null;
         }
     ) => {
         const token = getToken();
@@ -177,6 +178,7 @@ export const updateTournament = createAsyncThunk(
                 qualifierMatches?: number;
                 qualifierMinPoints?: number;
                 maxTeams?: number;
+                teamSize?: number | null;
             }
         }
 

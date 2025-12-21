@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { X, Edit2, Key, ImageOff } from 'lucide-react';
 
 import { API_URL } from '../../config';
@@ -42,11 +43,11 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({ user, onClose, onS
                 onSuccess();
                 onClose();
             } else {
-                alert('Sikertelen mentés');
+                toast.error('Sikertelen mentés');
             }
         } catch (error) {
             console.error(error);
-            alert('Hiba történt');
+            toast.error('Hiba történt');
         } finally {
             setIsLoading(false);
         }
@@ -74,7 +75,7 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({ user, onClose, onS
                 onSuccess();
                 onClose(); // Or just refresh local state? For now close.
             } else {
-                alert('Sikertelen képtörlés');
+                toast.error('Sikertelen képtörlés');
             }
         } catch (error) {
             console.error(error);
@@ -85,7 +86,7 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({ user, onClose, onS
 
     const handlePasswordReset = async () => {
         if (!password) {
-            alert('Adj meg egy új jelszót!');
+            toast.error('Adj meg egy új jelszót!');
             return;
         }
         setIsLoading(true);
@@ -104,15 +105,15 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({ user, onClose, onS
             });
 
             if (response.ok) {
-                alert('Jelszó sikeresen módosítva!');
+                toast.success('Jelszó sikeresen módosítva!');
                 setPassword('');
             } else {
                 const data = await response.json();
-                alert(`Hiba: ${data.message || 'Sikertelen jelszócsere'}`);
+                toast.error(`Hiba: ${data.message || 'Sikertelen jelszócsere'}`);
             }
         } catch (error) {
             console.error(error);
-            alert('Hiba történt a jelszócsere során');
+            toast.error('Hiba történt a jelszócsere során');
         } finally {
             setIsLoading(false);
         }

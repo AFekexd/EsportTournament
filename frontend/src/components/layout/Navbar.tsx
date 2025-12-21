@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom';
 import { Bell, LogIn, LogOut, Shield, Crown, Star, MenuIcon } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
-import { fetchUnreadCount } from '../../store/slices/notificationsSlice';
-import { useEffect } from 'react';
+import { fetchUnreadCount, fetchNotifications } from '../../store/slices/notificationsSlice';
+import { useEffect, useState, useRef } from 'react';
 import { toggleSidebar } from '@/store/slices/uiSlice';
 
 const getRoleIcon = (role: string) => {
@@ -36,8 +36,12 @@ const getRoleColor = (role: string) => {
 export function Navbar() {
     const dispatch = useAppDispatch();
     const { user, isAuthenticated, isLoading, login, logout } = useAuth();
-    const { unreadCount } = useAppSelector((state) => state.notifications);
+    const { unreadCount, notifications, isLoading: notificationsLoading } = useAppSelector((state) => state.notifications);
     const isOpen = useAppSelector((state) => state.ui.sidebarOpen);
+
+    // Notification dropdown state
+    const [showNotifications, setShowNotifications] = useState(false);
+    const notificationRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -49,6 +53,25 @@ export function Navbar() {
             return () => clearInterval(interval);
         }
     }, [isAuthenticated, dispatch]);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+                setShowNotifications(false);
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const handleNotificationClick = () => {
+        if (!showNotifications) {
+            // Fetch latest 5 notifications when opening
+            dispatch(fetchNotifications({ page: 1, limit: 5 }));
+        }
+        setShowNotifications(!showNotifications);
+    };
 
     return (
         <header className="sticky top-0 z-40 w-full">
@@ -71,14 +94,74 @@ export function Navbar() {
                         <div className="h-9 w-24 animate-pulse rounded-full bg-white/5" />
                     ) : isAuthenticated && user ? (
                         <>
-                            <Link to="/notifications" className="group relative flex h-9 w-9 items-center justify-center rounded-full border border-white/5 bg-white/5 transition-all hover:border-primary/50 hover:bg-primary/10 hover:text-primary" aria-label="Notifications">
-                                <Bell size={18} className="text-muted-foreground transition-colors group-hover:text-primary" />
-                                {unreadCount > 0 && (
-                                    <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-[0_0_10px_rgba(139,92,246,0.5)]">
-                                        {unreadCount > 9 ? '9+' : unreadCount}
-                                    </span>
+                            <div className="relative" ref={notificationRef}>
+                                <button
+                                    onClick={handleNotificationClick}
+                                    className="group relative flex h-9 w-9 items-center justify-center rounded-full border border-white/5 bg-white/5 transition-all hover:border-primary/50 hover:bg-primary/10 hover:text-primary"
+                                    aria-label="Notifications"
+                                >
+                                    <Bell size={18} className="text-muted-foreground transition-colors group-hover:text-primary" />
+                                    {unreadCount > 0 && (
+                                        <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-[0_0_10px_rgba(139,92,246,0.5)]">
+                                            {unreadCount > 9 ? '9+' : unreadCount}
+                                        </span>
+                                    )}
+                                </button>
+
+                                {/* Notification Dropdown */}
+                                {showNotifications && (
+                                    <div className="absolute right-0 mt-2 w-80 rounded-xl border border-white/10 bg-[#1a1b26] shadow-xl shadow-black/50 overflow-hidden animate-in slide-in-from-top-2 duration-200">
+                                        <div className="flex items-center justify-between px-4 py-3 border-b border-white/5">
+                                            <h3 className="font-semibold text-white">Értesítések</h3>
+                                            <Link
+                                                to="/notifications"
+                                                onClick={() => setShowNotifications(false)}
+                                                className="text-xs text-primary hover:text-primary/80"
+                                            >
+                                                Összes
+                                            </Link>
+                                        </div>
+
+                                        <div className="max-h-[300px] overflow-y-auto">
+                                            {notificationsLoading ? (
+                                                <div className="p-4 text-center text-gray-400 text-sm">Betöltés...</div>
+                                            ) : notifications.length > 0 ? (
+                                                <div className="divide-y divide-white/5">
+                                                    {notifications.slice(0, 5).map((notification) => (
+                                                        <Link
+                                                            key={notification.id}
+                                                            to={notification.link || '/notifications'}
+                                                            onClick={() => setShowNotifications(false)}
+                                                            className={`block px-4 py-3 hover:bg-white/5 transition-colors ${!notification.read ? 'bg-primary/5' : ''}`}
+                                                        >
+                                                            <div className="flex gap-3">
+                                                                <div className={`mt-1 h-2 w-2 flex-shrink-0 rounded-full ${!notification.read ? 'bg-primary' : 'bg-gray-600'}`} />
+                                                                <div>
+                                                                    <p className={`text-sm ${!notification.read ? 'text-white font-medium' : 'text-gray-400'}`}>
+                                                                        {notification.message}
+                                                                    </p>
+                                                                    <p className="text-xs text-gray-500 mt-1">
+                                                                        {new Date(notification.createdAt).toLocaleString('hu-HU', {
+                                                                            month: 'short',
+                                                                            day: 'numeric',
+                                                                            hour: '2-digit',
+                                                                            minute: '2-digit'
+                                                                        })}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </Link>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div className="p-8 text-center text-gray-500 text-sm">
+                                                    Nincs új értesítés
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
                                 )}
-                            </Link>
+                            </div>
 
                             <div className="flex items-center gap-4">
                                 <Link to="/profile" className="flex items-center gap-3 transition-opacity hover:opacity-80">

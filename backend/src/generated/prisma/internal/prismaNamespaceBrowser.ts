@@ -98,6 +98,7 @@ export const UserScalarFieldEnum = {
   role: 'role',
   elo: 'elo',
   timeBalanceSeconds: 'timeBalanceSeconds',
+  emailNotifications: 'emailNotifications',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -152,6 +153,7 @@ export const TournamentScalarFieldEnum = {
   gameId: 'gameId',
   format: 'format',
   status: 'status',
+  teamSize: 'teamSize',
   maxTeams: 'maxTeams',
   startDate: 'startDate',
   endDate: 'endDate',

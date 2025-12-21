@@ -56,99 +56,145 @@ export function TournamentStatusModal({
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header">
-                    <h2 className="modal-title">Verseny beállítások</h2>
-                    <button className="modal-close" onClick={onClose}>
-                        <X size={20} />
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
+            <div className="bg-[#1a1b26] rounded-2xl w-full max-w-2xl border border-white/10 shadow-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                {/* Header */}
+                <div className="sticky top-0 bg-[#1a1b26] border-b border-white/10 p-6 flex items-center justify-between z-10">
+                    <h2 className="text-xl font-bold text-white">Verseny beállítások</h2>
+                    <button
+                        onClick={onClose}
+                        className="p-2 hover:bg-white/10 rounded-lg transition-colors group"
+                    >
+                        <X size={20} className="text-gray-400 group-hover:text-white transition-colors" />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="modal-body">
-                    <div className="form-section">
-                        <h3 className="section-title">Státusz</h3>
-                        <div className="flex flex-col gap-3">
+                {/* Body */}
+                <form onSubmit={handleSubmit} className="p-6 space-y-8">
+                    {/* Status Selection */}
+                    <div>
+                        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Státusz</h3>
+                        <div className="grid grid-cols-1 gap-3">
                             {statusOptions.map((option) => (
-                                <label
+                                <div
                                     key={option.value}
-                                    className={`flex items-start gap-4 p-4 border-2 border-border rounded-lg cursor-pointer transition-all duration-200 hover:border-primary/50 hover:bg-muted/30 ${selectedStatus === option.value ? 'border-primary bg-primary/10' : ''}`}
+                                    onClick={() => setSelectedStatus(option.value)}
+                                    className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 group
+                                        ${selectedStatus === option.value
+                                            ? 'border-primary bg-primary/10 shadow-[0_0_20px_rgba(139,92,246,0.1)]'
+                                            : 'border-white/5 bg-[#0f1015] hover:border-white/20 hover:bg-[#13141c]'}`}
                                 >
-                                    <input
-                                        type="radio"
-                                        name="status"
-                                        value={option.value}
-                                        checked={selectedStatus === option.value}
-                                        onChange={(e) => setSelectedStatus(e.target.value)}
-                                        className="mt-1 cursor-pointer"
-                                    />
-                                    <div className="flex flex-col gap-1">
-                                        <span className="font-semibold text-foreground">{option.label}</span>
-                                        <span className="text-sm text-muted-foreground">{option.description}</span>
+                                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors
+                                        ${selectedStatus === option.value ? 'border-primary' : 'border-gray-500 group-hover:border-gray-400'}`}>
+                                        {selectedStatus === option.value && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
                                     </div>
-                                </label>
+                                    <div className="flex flex-col">
+                                        <span className={`font-bold transition-colors ${selectedStatus === option.value ? 'text-white' : 'text-gray-300 group-hover:text-white'}`}>
+                                            {option.label}
+                                        </span>
+                                        <span className="text-sm text-gray-500 group-hover:text-gray-400 transition-colors">
+                                            {option.description}
+                                        </span>
+                                    </div>
+                                    {selectedStatus === option.value && (
+                                        <div className="absolute right-4 w-2 h-2 rounded-full bg-primary animate-pulse" />
+                                    )}
+                                </div>
                             ))}
                         </div>
                     </div>
 
-                    <div className="form-section">
-                        <h3 className="section-title">Értesítések</h3>
-
-                        <label className="checkbox-label">
-                            <input
-                                type="checkbox"
-                                checked={notifyUsers}
-                                onChange={(e) => setNotifyUsers(e.target.checked)}
-                            />
-                            <Bell size={18} />
-                            <span>Felhasználói értesítések küldése</span>
-                        </label>
-                        <p className="help-text">
-                            Minden meccs eredménynél értesítést küldenek a csapat tagjainak
-                        </p>
-
-                        <label className="checkbox-label">
-                            <input
-                                type="checkbox"
-                                checked={notifyDiscord}
-                                onChange={(e) => setNotifyDiscord(e.target.checked)}
-                            />
-                            <MessageSquare size={18} />
-                            <span>Discord értesítések küldése</span>
-                        </label>
-                        <p className="help-text">
-                            Meccs eredmények automatikusan kiírásra kerülnek Discord-ra
-                        </p>
-
-                        {notifyDiscord && (
-                            <div className="form-group">
-                                <label className="label">Discord csatorna</label>
-                                <select
-                                    className="input"
-                                    value={discordChannel}
-                                    onChange={(e) => setDiscordChannel(e.target.value)}
-                                >
-                                    <option value="matches">⚔️ Meccsek</option>
-                                    <option value="tournaments">🏆 Versenyek</option>
-                                    <option value="announcements">📢 Bejelentések</option>
-                                    <option value="general">💬 Általános</option>
-                                </select>
+                    {/* Notifications */}
+                    <div>
+                        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Értesítések</h3>
+                        <div className="space-y-4">
+                            {/* User Notifications */}
+                            <div className={`p-4 rounded-xl border transition-all duration-200 ${notifyUsers ? 'bg-primary/5 border-primary/30' : 'bg-[#0f1015] border-white/5'}`}>
+                                <label className="flex items-start gap-4 cursor-pointer">
+                                    <div className={`p-2 rounded-lg transition-colors ${notifyUsers ? 'bg-primary/20 text-primary' : 'bg-white/5 text-gray-400'}`}>
+                                        <Bell size={20} />
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="flex items-center justify-between">
+                                            <span className={`font-semibold ${notifyUsers ? 'text-white' : 'text-gray-300'}`}>
+                                                Felhasználói értesítések
+                                            </span>
+                                            <input
+                                                type="checkbox"
+                                                checked={notifyUsers}
+                                                onChange={(e) => setNotifyUsers(e.target.checked)}
+                                                className="w-5 h-5 rounded border-white/20 bg-[#1a1b26] text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer"
+                                            />
+                                        </div>
+                                        <p className="text-sm text-gray-500 mt-1">
+                                            Értesítés küldése minden meccs eredményről a résztvevők számára.
+                                        </p>
+                                    </div>
+                                </label>
                             </div>
-                        )}
+
+                            {/* Discord Notifications */}
+                            <div className={`p-4 rounded-xl border transition-all duration-200 ${notifyDiscord ? 'bg-[#5865F2]/10 border-[#5865F2]/30' : 'bg-[#0f1015] border-white/5'}`}>
+                                <label className="flex items-start gap-4 cursor-pointer">
+                                    <div className={`p-2 rounded-lg transition-colors ${notifyDiscord ? 'bg-[#5865F2]/20 text-[#5865F2]' : 'bg-white/5 text-gray-400'}`}>
+                                        <MessageSquare size={20} />
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="flex items-center justify-between">
+                                            <span className={`font-semibold ${notifyDiscord ? 'text-white' : 'text-gray-300'}`}>
+                                                Discord értesítések
+                                            </span>
+                                            <input
+                                                type="checkbox"
+                                                checked={notifyDiscord}
+                                                onChange={(e) => setNotifyDiscord(e.target.checked)}
+                                                className="w-5 h-5 rounded border-white/20 bg-[#1a1b26] text-[#5865F2] focus:ring-[#5865F2] focus:ring-offset-0 cursor-pointer"
+                                            />
+                                        </div>
+                                        <p className="text-sm text-gray-500 mt-1">
+                                            Meccs eredmények automatikus posztolása Discordra.
+                                        </p>
+
+                                        {notifyDiscord && (
+                                            <div className="mt-4 animate-in slide-in-from-top-2 duration-200">
+                                                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+                                                    Célcsatorna
+                                                </label>
+                                                <select
+                                                    className="w-full px-4 py-2 bg-[#1a1b26] border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#5865F2] transition-colors appearance-none"
+                                                    value={discordChannel}
+                                                    onChange={(e) => setDiscordChannel(e.target.value)}
+                                                >
+                                                    <option value="matches">⚔️ Meccsek</option>
+                                                    <option value="tournaments">🏆 Versenyek</option>
+                                                    <option value="announcements">📢 Bejelentések</option>
+                                                    <option value="general">💬 Általános</option>
+                                                </select>
+                                            </div>
+                                        )}
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" onClick={onClose}>
+                    {/* Footer */}
+                    <div className="flex gap-4 pt-4 border-t border-white/10">
+                        <button
+                            type="button"
+                            className="flex-1 px-6 py-3 bg-[#0f1015] hover:bg-[#13141c] border border-white/10 text-white rounded-xl font-semibold transition-all hover:border-white/20"
+                            onClick={onClose}
+                        >
                             Mégse
                         </button>
                         <button
                             type="submit"
-                            className="btn btn-primary"
+                            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled={updateLoading}
                         >
                             {updateLoading ? (
                                 <>
-                                    <div className="spinner" />
+                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                                     Mentés...
                                 </>
                             ) : (

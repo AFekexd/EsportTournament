@@ -3,6 +3,7 @@ import { Router } from 'express';
 import prisma from '../lib/prisma.js';
 import { emitMachineUpdate } from '../services/socket.js';
 import { authenticate, requireRole } from '../middleware/auth.js';
+import { notificationService } from '../services/notificationService.js';
 
 export const adminKioskRouter = Router();
 
@@ -39,6 +40,14 @@ adminKioskRouter.post('/machines/:id/lock', async (req, res) => {
             // We can emit a specific event if the client listens to it, 
             // or the client polls /status which will pick up the lock state.
             emitMachineUpdate(machine.hostname, { locked });
+        }
+
+        // Notify all users if the machine is locked (as per request)
+        if (locked) {
+            notificationService.notifyAllUsersSystemMessage(
+                'Gép lezárva',
+                `A(z) ${machine.name} gépet lezárta az adminisztrátor.`
+            ).catch(err => console.error('Failed to broadcast lock notification:', err));
         }
 
         res.json(machine);

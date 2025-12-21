@@ -3,6 +3,7 @@ import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest, requireRole } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { processImage, isBase64DataUrl, validateImageSize } from '../utils/imageProcessor.js';
+import { notificationService } from '../services/notificationService.js';
 
 export const gamesRouter = Router();
 
@@ -36,11 +37,11 @@ gamesRouter.post(
 
         const { name, description, imageUrl, rules, teamSize } = req.body;
 
-        if (!name || !teamSize) {
-            throw new ApiError('Name and team size are required', 400, 'MISSING_FIELDS');
+        if (!name) {
+            throw new ApiError('Name is required', 400, 'MISSING_FIELDS');
         }
 
-        if (![1, 2, 3, 5].includes(teamSize)) {
+        if (teamSize && ![1, 2, 3, 5].includes(teamSize)) {
             throw new ApiError('Team size must be 1, 2, 3, or 5', 400, 'INVALID_TEAM_SIZE');
         }
 
@@ -59,9 +60,13 @@ gamesRouter.post(
                 description,
                 imageUrl: processedImageUrl,
                 rules,
-                teamSize,
+                teamSize: teamSize || 1, // Default to 1v1
             },
         });
+
+        // Notify all users about the new game
+        notificationService.notifyAllUsersNewGame(game)
+            .catch(err => console.error('Failed to notify users about new game:', err));
 
         res.status(201).json({ success: true, data: game });
     })

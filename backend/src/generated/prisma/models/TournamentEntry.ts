@@ -581,14 +581,6 @@ export type TournamentEntryUncheckedUpdateManyWithoutTournamentNestedInput = {
   deleteMany?: Prisma.TournamentEntryScalarWhereInput | Prisma.TournamentEntryScalarWhereInput[]
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type TournamentEntryCreateWithoutUserInput = {
   id?: string
   seed?: number | null

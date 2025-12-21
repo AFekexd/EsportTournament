@@ -17,21 +17,17 @@ export function GameCreateModal({ onClose }: GameCreateModalProps) {
         description: '',
         imageUrl: '',
         rules: '',
-        teamSize: 5,
     });
 
-    const [errors, setErrors] = useState<{ name?: string; teamSize?: string }>({});
+    const [errors, setErrors] = useState<{ name?: string }>({});
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         // Validation
-        const newErrors: { name?: string; teamSize?: string } = {};
+        const newErrors: { name?: string } = {};
         if (!formData.name || formData.name.length < 2) {
             newErrors.name = 'A játék nevének legalább 2 karakter hosszúnak kell lennie';
-        }
-        if (![1, 2, 3, 5].includes(formData.teamSize)) {
-            newErrors.teamSize = 'A csapatméret 1, 2, 3 vagy 5 lehet';
         }
 
         if (Object.keys(newErrors).length > 0) {
@@ -45,7 +41,6 @@ export function GameCreateModal({ onClose }: GameCreateModalProps) {
                 description: formData.description || undefined,
                 imageUrl: formData.imageUrl || undefined,
                 rules: formData.rules || undefined,
-                teamSize: formData.teamSize,
             })).unwrap();
 
             onClose();
@@ -109,24 +104,6 @@ export function GameCreateModal({ onClose }: GameCreateModalProps) {
                         placeholder="https://example.com/image.jpg"
                         maxSizeMB={15}
                     />
-
-                    <div>
-                        <label htmlFor="game-teamSize" className="block text-sm font-medium text-gray-300 mb-2">
-                            Csapatméret <span className="text-red-400">*</span>
-                        </label>
-                        <select
-                            id="game-teamSize"
-                            className={`w-full px-4 py-3 bg-[#0f1015] border ${errors.teamSize ? 'border-red-500' : 'border-white/10'} rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
-                            value={formData.teamSize}
-                            onChange={(e) => setFormData({ ...formData, teamSize: parseInt(e.target.value) })}
-                        >
-                            <option value={1}>1v1</option>
-                            <option value={2}>2v2</option>
-                            <option value={3}>3v3</option>
-                            <option value={5}>5v5</option>
-                        </select>
-                        {errors.teamSize && <p className="text-red-400 text-sm mt-1">{errors.teamSize}</p>}
-                    </div>
 
                     <div>
                         <label htmlFor="game-rules" className="block text-sm font-medium text-gray-300 mb-2">

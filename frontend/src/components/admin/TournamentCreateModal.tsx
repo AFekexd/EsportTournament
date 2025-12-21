@@ -27,6 +27,8 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
         hasQualifier: false,
         qualifierMatches: 10,
         qualifierMinPoints: 50,
+        participationType: 'TEAM', // 'INDIVIDUAL' or 'TEAM'
+        teamSize: 5,
     });
 
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -53,7 +55,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
             newErrors.registrationDeadline = 'Add meg a jelentkezési határidőt';
         }
         if (formData.maxTeams < 2) {
-            newErrors.maxTeams = 'Legalább 2 csapat szükséges';
+            newErrors.maxTeams = 'Legalább 2 résztvevő szükséges';
         }
 
         if (Object.keys(newErrors).length > 0) {
@@ -75,6 +77,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                 hasQualifier: formData.hasQualifier,
                 qualifierMatches: formData.hasQualifier ? formData.qualifierMatches : 0,
                 qualifierMinPoints: formData.hasQualifier ? formData.qualifierMinPoints : 0,
+                teamSize: formData.participationType === 'INDIVIDUAL' ? 1 : formData.teamSize,
             })).unwrap();
 
             onClose();
@@ -138,6 +141,57 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                         </div>
                     </div>
 
+                    {/* Participation Type & Team Size */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                                Típus <span className="text-red-400">*</span>
+                            </label>
+                            <div className="grid grid-cols-2 gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, participationType: 'INDIVIDUAL' })}
+                                    className={`px-4 py-3 rounded-xl border font-medium transition-all ${formData.participationType === 'INDIVIDUAL'
+                                            ? 'bg-primary/20 border-primary text-primary'
+                                            : 'bg-[#0f1015] border-white/10 text-gray-400 hover:border-white/20'
+                                        }`}
+                                >
+                                    Egyéni (1v1)
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, participationType: 'TEAM' })}
+                                    className={`px-4 py-3 rounded-xl border font-medium transition-all ${formData.participationType === 'TEAM'
+                                            ? 'bg-primary/20 border-primary text-primary'
+                                            : 'bg-[#0f1015] border-white/10 text-gray-400 hover:border-white/20'
+                                        }`}
+                                >
+                                    Csapat
+                                </button>
+                            </div>
+                        </div>
+
+                        {formData.participationType === 'TEAM' && (
+                            <div>
+                                <label htmlFor="team-size" className="block text-sm font-medium text-gray-300 mb-2">
+                                    Csapatméret <span className="text-red-400">*</span>
+                                </label>
+                                <select
+                                    id="team-size"
+                                    className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors"
+                                    value={formData.teamSize}
+                                    onChange={(e) => setFormData({ ...formData, teamSize: parseInt(e.target.value) })}
+                                >
+                                    <option value={2}>2v2</option>
+                                    <option value={3}>3v3</option>
+                                    <option value={4}>4v4</option>
+                                    <option value={5}>5v5</option>
+                                    <option value={6}>6v6</option>
+                                </select>
+                            </div>
+                        )}
+                    </div>
+
                     {/* Description */}
                     <div>
                         <label htmlFor="tournament-description" className="block text-sm font-medium text-gray-300 mb-2">
@@ -184,7 +238,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
 
                         <div>
                             <label htmlFor="tournament-maxTeams" className="block text-sm font-medium text-gray-300 mb-2">
-                                Max csapatok <span className="text-red-400">*</span>
+                                Max {formData.participationType === 'INDIVIDUAL' ? 'indulók' : 'csapatok'} <span className="text-red-400">*</span>
                             </label>
                             <input
                                 id="tournament-maxTeams"
@@ -211,6 +265,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                                 className={`w-full px-4 py-3 bg-[#0f1015] border ${errors.registrationDeadline ? 'border-red-500' : 'border-white/10'} rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
                                 value={formData.registrationDeadline}
                                 onChange={(e) => setFormData({ ...formData, registrationDeadline: e.target.value })}
+                                onClick={(e) => e.currentTarget.showPicker()}
                             />
                             {errors.registrationDeadline && <p className="text-red-400 text-sm mt-1">{errors.registrationDeadline}</p>}
                         </div>
@@ -225,6 +280,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                                 className={`w-full px-4 py-3 bg-[#0f1015] border ${errors.startDate ? 'border-red-500' : 'border-white/10'} rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
                                 value={formData.startDate}
                                 onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                                onClick={(e) => e.currentTarget.showPicker()}
                             />
                             {errors.startDate && <p className="text-red-400 text-sm mt-1">{errors.startDate}</p>}
                         </div>
@@ -289,6 +345,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                             className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors"
                             value={formData.endDate}
                             onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                            onClick={(e) => e.currentTarget.showPicker()}
                         />
                     </div>
 

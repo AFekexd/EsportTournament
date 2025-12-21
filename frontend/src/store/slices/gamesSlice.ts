@@ -51,7 +51,7 @@ const getToken = (state: RootState) => state.auth.token;
 
 export const createGame = createAsyncThunk(
     'games/createGame',
-    async (gameData: { name: string; description?: string; imageUrl?: string; rules?: string; teamSize: number }, { getState }) => {
+    async (gameData: { name: string; description?: string; imageUrl?: string; rules?: string; teamSize?: number }, { getState }) => {
         const state = getState() as RootState;
         const token = getToken(state);
 

@@ -5,8 +5,9 @@ import { store } from './store';
 import { useAppDispatch, useAppSelector } from './hooks/useRedux';
 import { initKeycloak } from './store/slices/authSlice';
 import { Layout } from './components/layout';
-import { HomePage, TournamentsPage, TeamsPage, GamesPage, CalendarPage, ProfilePage, SettingsPage, AdminPage, TeamCreatePage, TeamDetailPage, GameDetailPage, TournamentDetailPage, LeaderboardsPage, NotificationsPage, DiscordAdminPage, BookingPage, TeacherTimePage } from './pages';
+import { HomePage, TournamentsPage, TeamsPage, GamesPage, CalendarPage, ProfilePage, SettingsPage, AdminPage, TeamCreatePage, TeamDetailPage, GameDetailPage, TournamentDetailPage, LeaderboardsPage, NotificationsPage, DiscordAdminPage, BookingPage, TeacherTimePage, TournamentEmbedPage } from './pages';
 import { PuffLoader } from 'react-spinners';
+import { Toaster } from './components/ui/sonner';
 
 function AppContent() {
   const dispatch = useAppDispatch();
@@ -67,7 +68,9 @@ function AppContent() {
           <Route path="teacher/time" element={<TeacherTimePage />} />
           <Route path="booking" element={<BookingPage />} />
         </Route>
+        <Route path="/embed/tournaments/:id" element={<TournamentEmbedPage />} />
       </Routes>
+      <Toaster />
     </BrowserRouter>
   );
 }

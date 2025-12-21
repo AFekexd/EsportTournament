@@ -5,6 +5,7 @@
     position: relative;
     width: 100%;
     height: 100%;
+    flex: 1;
     display: flex;
     flex-direction: column;
 }
@@ -334,6 +335,11 @@
     border: 2px dashed hsl(var(--border));
     border-radius: 1rem;
     gap: 1rem;
+    width: 100%;
+    flex: 1;
+    /* Ensure it grows to fill flex parent */
+    min-height: 100%;
+    /* Fallback */
 }
 
 /* Responsive */

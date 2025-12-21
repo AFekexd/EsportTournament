@@ -15,3 +15,4 @@ export { NotificationsPage } from './Notifications';
 export { DiscordAdminPage } from './DiscordSettings';
 export { BookingPage } from './Booking';
 export { TeacherTimePage } from './TeacherTimePage';
+export { TournamentEmbedPage } from './embed/TournamentEmbedPage';

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Trophy, Calendar, Users, Award, UserPlus, Maximize, Minimize, Shield, Clock, Edit2, Check, X } from 'lucide-react';
+import { ArrowLeft, Trophy, Calendar, Users, Award, UserPlus, Maximize, Minimize, Shield, Clock, Edit2, Check, X, Share2 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import { useAuth } from '../hooks/useAuth';
 import {
@@ -69,7 +70,7 @@ export function TournamentDetailPage() {
             setEditingEntryId(null);
         } catch (err) {
             console.error(err);
-            alert('Hiba történt a mentés során');
+            toast.error('Hiba történt a mentés során');
         }
     };
 
@@ -173,6 +174,22 @@ export function TournamentDetailPage() {
                     >
                         <ArrowLeft size={18} />
                         Vissza
+                    </button>
+
+                    <button
+                        className="absolute top-8 right-4 flex items-center gap-2 text-gray-400 hover:text-white transition-colors bg-black/30 hover:bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full border border-white/5"
+                        onClick={() => {
+                            // Use backend URL for sharing to get Open Graph tags
+                            // Assuming backend is on port 3000 locally or api domain in prod
+                            // We can construct this based on current origin if mapped, or hardcode/config
+                            const shareUrl = `${window.location.protocol}//${window.location.hostname}:6969/share/tournaments/${currentTournament.id}`;
+                            navigator.clipboard.writeText(shareUrl);
+                            toast.success('Megosztási link másolva a vágólapra!');
+                        }}
+                        title="Megosztás Discordra"
+                    >
+                        <Share2 size={18} />
+                        Megosztás
                     </button>
 
                     <div className="flex flex-col md:flex-row md:items-end gap-8">
@@ -574,7 +591,7 @@ export function TournamentDetailPage() {
                                 </button>
                             </div>
                         </div>
-                        <div className={`overflow-auto ${isFullscreen ? 'h-[calc(100vh-60px)]' : 'min-h-[600px] max-h-[800px]'}`}>
+                        <div className={`overflow-auto flex flex-col ${isFullscreen ? 'h-[calc(100vh-60px)]' : 'min-h-[600px] max-h-[800px]'}`}>
                             <TournamentBracket
                                 tournament={currentTournament}
                                 onMatchClick={handleMatchClick}

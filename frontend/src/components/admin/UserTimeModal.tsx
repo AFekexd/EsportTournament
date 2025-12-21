@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { X, Clock, Plus, Minus } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { API_URL } from '../../config';
@@ -44,11 +45,11 @@ export const UserTimeModal: React.FC<UserTimeModalProps> = ({ user, onClose, onS
                 onSuccess();
                 onClose();
             } else {
-                alert('Sikertelen időmódosítás');
+                toast.error('Sikertelen időmódosítás');
             }
         } catch (error) {
             console.error(error);
-            alert('Hiba történt');
+            toast.error('Hiba történt');
         } finally {
             setIsLoading(false);
         }

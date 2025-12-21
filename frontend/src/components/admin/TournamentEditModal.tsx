@@ -35,6 +35,8 @@ export function TournamentEditModal({ tournament, onClose }: TournamentEditModal
         hasQualifier: tournament.hasQualifier || false,
         qualifierMatches: tournament.qualifierMatches || 10,
         qualifierMinPoints: tournament.qualifierMinPoints || 50,
+        participationType: (tournament.teamSize === 1 || (!tournament.teamSize && tournament.game?.teamSize === 1)) ? 'INDIVIDUAL' : 'TEAM',
+        teamSize: tournament.teamSize || tournament.game?.teamSize || 5,
     });
 
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -77,11 +79,11 @@ export function TournamentEditModal({ tournament, onClose }: TournamentEditModal
                     maxTeams: formData.maxTeams,
                     startDate: formData.startDate,
                     endDate: formData.endDate || undefined,
-
                     registrationDeadline: formData.registrationDeadline,
                     hasQualifier: formData.hasQualifier,
                     qualifierMatches: formData.hasQualifier ? formData.qualifierMatches : 0,
                     qualifierMinPoints: formData.hasQualifier ? formData.qualifierMinPoints : 0,
+                    teamSize: formData.participationType === 'INDIVIDUAL' ? 1 : formData.teamSize,
                 },
             })).unwrap();
 
@@ -156,6 +158,57 @@ export function TournamentEditModal({ tournament, onClose }: TournamentEditModal
                                 ))}
                             </select>
                         </div>
+                    </div>
+
+                    {/* Participation Type & Team Size */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                                Típus <span className="text-red-400">*</span>
+                            </label>
+                            <div className="grid grid-cols-2 gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, participationType: 'INDIVIDUAL' })}
+                                    className={`px-4 py-3 rounded-xl border font-medium transition-all ${formData.participationType === 'INDIVIDUAL'
+                                            ? 'bg-primary/20 border-primary text-primary'
+                                            : 'bg-[#0f1015] border-white/10 text-gray-400 hover:border-white/20'
+                                        }`}
+                                >
+                                    Egyéni (1v1)
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, participationType: 'TEAM' })}
+                                    className={`px-4 py-3 rounded-xl border font-medium transition-all ${formData.participationType === 'TEAM'
+                                            ? 'bg-primary/20 border-primary text-primary'
+                                            : 'bg-[#0f1015] border-white/10 text-gray-400 hover:border-white/20'
+                                        }`}
+                                >
+                                    Csapat
+                                </button>
+                            </div>
+                        </div>
+
+                        {formData.participationType === 'TEAM' && (
+                            <div>
+                                <label htmlFor="edit-team-size" className="block text-sm font-medium text-gray-300 mb-2">
+                                    Csapatméret <span className="text-red-400">*</span>
+                                </label>
+                                <select
+                                    id="edit-team-size"
+                                    className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors"
+                                    value={formData.teamSize}
+                                    onChange={(e) => setFormData({ ...formData, teamSize: parseInt(e.target.value) })}
+                                >
+                                    <option value={2}>2v2</option>
+                                    <option value={3}>3v3</option>
+                                    <option value={4}>4v4</option>
+                                    <option value={5}>5v5</option>
+                                    <option value={6}>6v6</option>
+                                </select>
+                            </div>
+                        )}
                     </div>
 
                     {/* Description */}
@@ -243,6 +296,7 @@ export function TournamentEditModal({ tournament, onClose }: TournamentEditModal
                                 className={`w-full px-4 py-3 bg-[#0f1015] border ${errors.registrationDeadline ? 'border-red-500' : 'border-white/10'} rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
                                 value={formData.registrationDeadline}
                                 onChange={(e) => setFormData({ ...formData, registrationDeadline: e.target.value })}
+                                onClick={(e) => e.currentTarget.showPicker()}
                             />
                             {errors.registrationDeadline && <p className="text-red-400 text-sm mt-1">{errors.registrationDeadline}</p>}
                         </div>
@@ -257,6 +311,7 @@ export function TournamentEditModal({ tournament, onClose }: TournamentEditModal
                                 className={`w-full px-4 py-3 bg-[#0f1015] border ${errors.startDate ? 'border-red-500' : 'border-white/10'} rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
                                 value={formData.startDate}
                                 onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                                onClick={(e) => e.currentTarget.showPicker()}
                             />
                             {errors.startDate && <p className="text-red-400 text-sm mt-1">{errors.startDate}</p>}
                         </div>
@@ -321,6 +376,7 @@ export function TournamentEditModal({ tournament, onClose }: TournamentEditModal
                             className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors"
                             value={formData.endDate}
                             onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                            onClick={(e) => e.currentTarget.showPicker()}
                         />
                     </div>
 

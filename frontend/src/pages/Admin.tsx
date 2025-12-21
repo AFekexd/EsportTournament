@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import {
     Users, Trophy, Calendar, Gamepad2, Settings, Plus,
     Shield, Edit2, Trash2, ArrowUpRight, Monitor
@@ -53,7 +54,7 @@ export function AdminPage() {
                 await dispatch(deleteGame(gameId)).unwrap();
             } catch (error) {
                 console.error('Failed to delete game:', error);
-                alert('Nem sikerült törölni a játékot. Ellenőrizd, hogy nincsenek-e hozzárendelt versenyek.');
+                toast.error('Nem sikerült törölni a játékot. Ellenőrizd, hogy nincsenek-e hozzárendelt versenyek.');
             }
         }
     };

@@ -425,10 +425,10 @@ export function DiscordAdminPage() {
                         onClick={handleSend}
                         disabled={isSending || !title || !message}
                         className={`w-full py-4 rounded-xl font-bold text-lg shadow-lg transform transition-all active:scale-[0.98] flex items-center justify-center gap-3 ${isSending
-                            ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                            ? 'bg-gray-400 text-gray-400 cursor-not-allowed'
                             : sendSuccess
                                 ? 'bg-green-600 hover:bg-green-500 text-white'
-                                : 'btn-primary'
+                                : 'bg-blue-600 hover:bg-blue-500 text-white'
                             }`}
                     >
                         {isSending ? (
