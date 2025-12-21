@@ -83,9 +83,22 @@ export function DiscordAdminPage() {
         }
     };
 
+    // Debounce search effect
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (mentionSearch && mentionSearch.length >= 2) {
+                searchMentions(mentionSearch);
+            } else if (!mentionSearch || mentionSearch.length === 0) {
+                setMentionSuggestions([]);
+                setShowSuggestions(false);
+            }
+        }, 500); // 500ms delay
+
+        return () => clearTimeout(timer);
+    }, [mentionSearch]);
+
     const handleMentionSearchChange = (value: string) => {
         setMentionSearch(value);
-        searchMentions(value);
     };
 
     const addMention = (suggestion: MentionSuggestion) => {
@@ -286,7 +299,7 @@ export function DiscordAdminPage() {
                         <div className="space-y-4">
                             <div className="relative z-20">
                                 <div className="relative">
-                                    <Search className="absolute left-4 top-3.5 text-gray-500" size={16} />
+                                    <Search className="absolute right-4 top-3.5 text-gray-500" size={16} />
                                     <input
                                         type="text"
                                         className="w-full bg-black/40 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-primary transition-all"
