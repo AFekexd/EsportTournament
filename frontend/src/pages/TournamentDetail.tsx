@@ -182,7 +182,7 @@ export function TournamentDetailPage() {
                             // Use backend URL for sharing to get Open Graph tags
                             // Assuming backend is on port 3000 locally or api domain in prod
                             // We can construct this based on current origin if mapped, or hardcode/config
-                            const shareUrl = `${window.location.protocol}//${window.location.hostname}:6969/share/tournaments/${currentTournament.id}`;
+                            const shareUrl = `${window.location.protocol}//${window.location.hostname}/share/tournaments/${currentTournament.id}`;
                             navigator.clipboard.writeText(shareUrl);
                             toast.success('Megosztási link másolva a vágólapra!');
                         }}
