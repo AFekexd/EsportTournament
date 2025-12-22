@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, TextChannel, ChannelType, EmbedBuilder, PermissionsBitField, ColorResolvable } from 'discord.js';
+import { Client, GatewayIntentBits, TextChannel, ChannelType, EmbedBuilder, PermissionsBitField, ColorResolvable, CategoryChannel } from 'discord.js';
 
 interface DiscordEmbed {
     title: string;
@@ -48,50 +48,115 @@ class DiscordService {
         }
     }
 
-    /**
-     * Creates a new text channel for a tournament under the configured category
-     */
-    async createTournamentChannel(tournamentName: string): Promise<string | null> {
+    async ensureCategoryExists(name: string): Promise<string | null> {
         if (!this.isReady) return null;
+
+        try {
+            const guild = await this.client.guilds.fetch(this.guildId);
+            if (!guild) return null;
+
+            // Fetch all channels to ensure cache is populated
+            const channels = await guild.channels.fetch();
+
+            // Case-insensitive search for existing category
+            const existingCategory = channels.find(c =>
+                c?.type === ChannelType.GuildCategory &&
+                c.name.toLowerCase() === name.toLowerCase()
+            );
+
+            if (existingCategory) {
+                return existingCategory.id;
+            }
+
+            // Create new category if not found
+            const newCategory = await guild.channels.create({
+                name: name,
+                type: ChannelType.GuildCategory,
+            });
+
+            console.log(`✅ Created new Discord category: ${newCategory.name}`);
+            return newCategory.id;
+
+        } catch (error) {
+            console.error(`Failed to ensure category exists for ${name}:`, error);
+            return this.categoryId || null; // Fallback to default category
+        }
+    }
+
+    /**
+     * Creates new text and voice channels for a tournament under the game's category
+     */
+    async createTournamentChannels(tournamentName: string, gameName: string): Promise<{ textChannelId: string | null; voiceChannelId: string | null }> {
+        if (!this.isReady) return { textChannelId: null, voiceChannelId: null };
 
         try {
             const guild = await this.client.guilds.fetch(this.guildId);
             if (!guild) {
                 console.error(`Guild ${this.guildId} not found`);
-                return null;
+                return { textChannelId: null, voiceChannelId: null };
             }
 
-            // Sanitize channel name (lowercase, replace spaces with dashes, remove special chars)
+            // 1. Ensure Category Exists
+            let targetCategoryId = this.categoryId;
+            if (gameName) {
+                const gameCategoryId = await this.ensureCategoryExists(gameName);
+                if (gameCategoryId) {
+                    targetCategoryId = gameCategoryId;
+                }
+            }
+
+            // Sanitize channel name
             const channelName = tournamentName
                 .toLowerCase()
                 .replace(/[^a-z0-9\s-]/g, '')
                 .trim()
                 .replace(/\s+/g, '-');
 
-            const channel = await guild.channels.create({
+            const permissionOverwrites = [
+                {
+                    id: guild.id, // @everyone
+                    allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.ReadMessageHistory],
+                    deny: [PermissionsBitField.Flags.SendMessages], // Read-only for everyone by default
+                },
+                {
+                    id: this.client.user!.id,
+                    allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.ManageChannels, PermissionsBitField.Flags.Connect],
+                },
+            ];
+
+            // 2. Create Text Channel
+            const textChannel = await guild.channels.create({
                 name: `🏆-${channelName}`,
                 type: ChannelType.GuildText,
-                parent: this.categoryId || undefined,
-                permissionOverwrites: [
-                    {
-                        id: guild.id, // @everyone
-                        allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.ReadMessageHistory],
-                        deny: [PermissionsBitField.Flags.SendMessages], // Read-only for everyone by default
-                    },
-                    {
-                        id: this.client.user!.id,
-                        allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.ManageChannels],
-                    },
-                ],
+                parent: targetCategoryId || undefined,
+                permissionOverwrites,
                 topic: `Official channel for ${tournamentName}`,
             });
 
-            console.log(`✅ Created Discord channel: ${channel.name} (${channel.id})`);
-            return channel.id;
+            // 3. Create Voice Channel
+            const voiceChannel = await guild.channels.create({
+                name: `🔊 ${tournamentName}`,
+                type: ChannelType.GuildVoice,
+                parent: targetCategoryId || undefined,
+                permissionOverwrites: [
+                    ...permissionOverwrites,
+                    {
+                        id: guild.id,
+                        allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.Speak], // Allow speaking in voice
+                    }
+                ],
+            });
+
+            console.log(`✅ Created Discord channels for ${tournamentName}: Text(${textChannel.id}), Voice(${voiceChannel.id})`);
+
+            return {
+                textChannelId: textChannel.id,
+                voiceChannelId: voiceChannel.id
+            };
 
         } catch (error) {
-            console.error('Failed to create tournament channel:', error);
-            return null;
+            console.error('Failed to create tournament channels:', error);
+            return { textChannelId: null, voiceChannelId: null };
         }
     }
 

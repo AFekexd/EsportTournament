@@ -116,31 +116,38 @@ class NotificationService {
 
     async notifyAllUsersNewTournament(tournament: { id: string; name: string }) {
         // 1. Create Discord Channel for the tournament
+        // 1. Fetch full tournament details FIRST (needed for game name)
+        const fullTournament = await prisma.tournament.findUnique({
+            where: { id: tournament.id },
+            include: { game: true }
+        });
+
+        if (!fullTournament) {
+            console.error('Tournament not found during broadcast:', tournament.id);
+            return;
+        }
+
+        // 2. Create Discord Channels (Text + Voice) under the Game's Category
         let discordChannelId: string | null = null;
         try {
-            discordChannelId = await discordService.createTournamentChannel(tournament.name);
+            const channels = await discordService.createTournamentChannels(fullTournament.name, fullTournament.game.name);
+            discordChannelId = channels.textChannelId;
+
             if (discordChannelId) {
-                // Update tournament with the new channel ID
+                // Update tournament with the new text channel ID
                 await prisma.tournament.update({
                     where: { id: tournament.id },
                     data: { discordChannelId }
                 });
 
-                // Get full tournament details for announcement
-                const fullTournament = await prisma.tournament.findUnique({
-                    where: { id: tournament.id },
-                    include: { game: true }
-                });
-
-                if (fullTournament) {
-                    await discordService.sendTournamentAnnouncement({
-                        id: fullTournament.id,
-                        name: fullTournament.name,
-                        game: fullTournament.game.name,
-                        startDate: fullTournament.startDate,
-                        maxTeams: fullTournament.maxTeams
-                    }, discordChannelId);
-                }
+                // Send announcement to the new channel
+                await discordService.sendTournamentAnnouncement({
+                    id: fullTournament.id,
+                    name: fullTournament.name,
+                    game: fullTournament.game.name,
+                    startDate: fullTournament.startDate,
+                    maxTeams: fullTournament.maxTeams
+                }, discordChannelId);
             }
         } catch (error) {
             console.error('Failed to setup Discord for tournament:', error);
