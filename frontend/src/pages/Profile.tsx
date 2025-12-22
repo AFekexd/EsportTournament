@@ -18,10 +18,13 @@ export function ProfilePage() {
     const { tournaments } = useAppSelector((state) => state.tournaments);
     const { games, gameRanks, userRanks } = useAppSelector((state) => state.games);
 
+
+
     useEffect(() => {
         if (isAuthenticated) {
             dispatch(fetchTeams({ page: 1 }));
             dispatch(fetchTournaments({ page: 1 }));
+            dispatch(fetchGames());
             dispatch(fetchGames());
             dispatch(fetchUserRanks());
         }
@@ -144,6 +147,8 @@ export function ProfilePage() {
             </div>
 
             <div className="profile-content">
+
+                {/* Skill Levels Section */}
 
 
                 {/* Skill Levels Section */}

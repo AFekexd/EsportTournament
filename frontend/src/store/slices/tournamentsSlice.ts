@@ -74,7 +74,7 @@ export const fetchTournament = createAsyncThunk(
 
 export const registerForTournament = createAsyncThunk(
     'tournaments/register',
-    async ({ tournamentId, teamId }: { tournamentId: string; teamId: string }) => {
+    async ({ tournamentId, teamId }: { tournamentId: string; teamId: string }, { rejectWithValue }) => {
         const token = getToken();
 
         if (!token) throw new Error('Not authenticated');
@@ -91,7 +91,7 @@ export const registerForTournament = createAsyncThunk(
         const data: ApiResponse<any> = await response.json();
 
         if (!data.success) {
-            throw new Error(data.error?.message || 'Failed to register for tournament');
+            return rejectWithValue(data.error);
         }
 
         return data.data!;
@@ -203,6 +203,30 @@ export const updateTournament = createAsyncThunk(
         }
 
         return result.data!;
+    }
+);
+
+export const deleteTournament = createAsyncThunk(
+    'tournaments/deleteTournament',
+    async (id: string) => {
+        const token = getToken();
+
+        if (!token) throw new Error('Not authenticated');
+
+        const response = await fetch(`${API_URL}/tournaments/${id}`, {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        const result: ApiResponse<any> = await response.json();
+
+        if (!result.success) {
+            throw new Error(result.error?.message || 'Failed to delete tournament');
+        }
+
+        return id;
     }
 );
 
@@ -356,6 +380,13 @@ const tournamentsSlice = createSlice({
             .addCase(updateTournament.rejected, (state, action) => {
                 state.updateLoading = false;
                 state.error = action.error.message || 'Failed to update tournament';
+            })
+            // Delete tournament
+            .addCase(deleteTournament.fulfilled, (state, action) => {
+                state.tournaments = state.tournaments.filter(t => t.id !== action.payload);
+                if (state.currentTournament?.id === action.payload) {
+                    state.currentTournament = null;
+                }
             })
             // Generate bracket
             .addCase(generateBracket.pending, (state) => {

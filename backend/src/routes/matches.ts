@@ -44,7 +44,7 @@ matchesRouter.get(
         });
 
         if (!match) {
-            throw new ApiError('Match not found', 404, 'NOT_FOUND');
+            throw new ApiError('A meccs nem található', 404, 'NOT_FOUND');
         }
 
         res.json({ success: true, data: match });
@@ -61,7 +61,7 @@ matchesRouter.patch(
         });
 
         if (!user || !['ADMIN', 'ORGANIZER'].includes(user.role)) {
-            throw new ApiError('Only organizers can update match results', 403, 'FORBIDDEN');
+            throw new ApiError('Csak szervezők módosíthatják az eredményeket', 403, 'FORBIDDEN');
         }
 
         const { homeScore, awayScore, winnerId, winnerUserId } = req.body;
@@ -78,7 +78,7 @@ matchesRouter.patch(
         });
 
         if (!match) {
-            throw new ApiError('Match not found', 404, 'NOT_FOUND');
+            throw new ApiError('A meccs nem található', 404, 'NOT_FOUND');
         }
 
         // Check if this is a solo (1v1) tournament
@@ -86,12 +86,12 @@ matchesRouter.patch(
 
         // Validate winner for team matches
         if (winnerId && winnerId !== match.homeTeamId && winnerId !== match.awayTeamId) {
-            throw new ApiError('Invalid winner', 400, 'INVALID_WINNER');
+            throw new ApiError('Érvénytelen győztes', 400, 'INVALID_WINNER');
         }
 
         // Validate winner for solo matches
         if (winnerUserId && winnerUserId !== match.homeUserId && winnerUserId !== match.awayUserId) {
-            throw new ApiError('Invalid winner user', 400, 'INVALID_WINNER');
+            throw new ApiError('Érvénytelen győztes felhasználó', 400, 'INVALID_WINNER');
         }
 
         // Determine winner if not provided
@@ -396,13 +396,13 @@ matchesRouter.patch(
         });
 
         if (!user || !['ADMIN', 'ORGANIZER'].includes(user.role)) {
-            throw new ApiError('Only organizers can schedule matches', 403, 'FORBIDDEN');
+            throw new ApiError('Csak szervezők ütemezhetnek meccseket', 403, 'FORBIDDEN');
         }
 
         const { scheduledAt } = req.body;
 
         if (!scheduledAt) {
-            throw new ApiError('Scheduled time is required', 400, 'MISSING_TIME');
+            throw new ApiError('Az időpont megadása kötelező', 400, 'MISSING_TIME');
         }
 
         const match = await prisma.match.update({

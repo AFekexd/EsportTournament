@@ -23,7 +23,7 @@ teamsRouter.get(
         // If 'my' param is present, user must be authenticated
         if (my === 'true') {
             if (!req.user) {
-                throw new ApiError('Authentication required to fetch your teams', 401, 'UNAUTHORIZED');
+                throw new ApiError('Bejelentkezés szükséges a csapatok lekéréséhez', 401, 'UNAUTHORIZED');
             }
 
             const user = await prisma.user.findUnique({
@@ -31,7 +31,7 @@ teamsRouter.get(
             });
 
             if (!user) {
-                throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+                throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
             }
 
             const myTeams = await prisma.team.findMany({
@@ -115,7 +115,7 @@ teamsRouter.post(
         const { name, description, logoUrl } = req.body;
 
         if (!name || name.length < 3) {
-            throw new ApiError('Team name must be at least 3 characters', 400, 'INVALID_NAME');
+            throw new ApiError('A csapatnévnek legalább 3 karakternek kell lennie', 400, 'INVALID_NAME');
         }
 
         const user = await prisma.user.findUnique({
@@ -123,14 +123,14 @@ teamsRouter.post(
         });
 
         if (!user) {
-            throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
         // Process logo image if base64
         let processedLogoUrl = logoUrl;
         if (logoUrl && isBase64DataUrl(logoUrl)) {
             if (!validateImageSize(logoUrl, 150)) {
-                throw new ApiError('Logo too large (max 150MB)', 400, 'IMAGE_TOO_LARGE');
+                throw new ApiError('A logó túl nagy (max 150MB)', 400, 'IMAGE_TOO_LARGE');
             }
             processedLogoUrl = await processImage(logoUrl);
         }
@@ -187,7 +187,7 @@ teamsRouter.get(
         });
 
         if (!team) {
-            throw new ApiError('Team not found', 404, 'NOT_FOUND');
+            throw new ApiError('Csapat nem található', 404, 'NOT_FOUND');
         }
 
         res.json({ success: true, data: team });
@@ -218,7 +218,7 @@ teamsRouter.patch(
         let processedLogoUrl = logoUrl;
         if (logoUrl && isBase64DataUrl(logoUrl)) {
             if (!validateImageSize(logoUrl, 150)) {
-                throw new ApiError('Logo too large (max 150MB)', 400, 'IMAGE_TOO_LARGE');
+                throw new ApiError('A logó túl nagy (max 150MB)', 400, 'IMAGE_TOO_LARGE');
             }
             processedLogoUrl = await processImage(logoUrl);
         }
@@ -284,7 +284,7 @@ teamsRouter.post(
         });
 
         if (!user) {
-            throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
         // Check if already a member
@@ -293,7 +293,7 @@ teamsRouter.post(
         });
 
         if (existingMember) {
-            throw new ApiError('Already a member of this team', 400, 'ALREADY_MEMBER');
+            throw new ApiError('Már tagja vagy ennek a csapatnak', 400, 'ALREADY_MEMBER');
         }
 
         const member = await prisma.teamMember.create({
@@ -322,7 +322,7 @@ teamsRouter.post(
         });
 
         if (!user) {
-            throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
         const team = await prisma.team.findUnique({

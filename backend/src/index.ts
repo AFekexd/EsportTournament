@@ -9,6 +9,7 @@ import { Server } from 'socket.io'; // Socket.IO
 import { errorHandler } from './middleware/errorHandler.js';
 import { authRouter } from './routes/auth.js';
 import { usersRouter } from './routes/users.js';
+
 import { teamsRouter } from './routes/teams.js';
 import { tournamentsRouter } from './routes/tournaments.js';
 import { gamesRouter } from './routes/games.js';

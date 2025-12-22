@@ -149,3 +149,31 @@ export async function syncUserRole(keycloakUserId: string, newRole: string) {
         // Don't throw, just log. App state is primary, Keycloak is secondary sync here.
     }
 }
+
+/**
+ * Get federated identities for a user
+ */
+export async function getFederatedIdentities(keycloakUserId: string): Promise<Array<{ identityProvider: string; userId: string; userName: string }>> {
+    const token = await getAdminToken();
+    if (!token) return [];
+
+    const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+    };
+
+    const baseUrl = `${KEYCLOAK_URL}/admin/realms/${KEYCLOAK_REALM}`;
+
+    try {
+        const response = await fetch(`${baseUrl}/users/${keycloakUserId}/federated-identity`, { headers });
+        if (!response.ok) {
+            console.error(`Failed to fetch federated identities for ${keycloakUserId}: ${response.statusText}`);
+            return [];
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Failed to get federated identities:', error);
+        return [];
+    }
+}

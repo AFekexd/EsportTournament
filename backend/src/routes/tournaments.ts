@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest, requireRole, optionalAuth } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
+import { getFederatedIdentities } from '../utils/keycloak-admin.js';
 import { processImage, isBase64DataUrl, validateImageSize } from '../utils/imageProcessor.js';
 import { notificationService } from '../services/notificationService.js';
 
@@ -54,7 +55,7 @@ tournamentsRouter.post(
         });
 
         if (!user || !['ADMIN', 'ORGANIZER'].includes(user.role)) {
-            throw new ApiError('Only organizers can create tournaments', 403, 'FORBIDDEN');
+            throw new ApiError('Csak szervezők hozhatnak létre versenyt', 403, 'FORBIDDEN');
         }
 
         const {
@@ -87,7 +88,7 @@ tournamentsRouter.post(
         let processedImageUrl = imageUrl;
         if (imageUrl && isBase64DataUrl(imageUrl)) {
             if (!validateImageSize(imageUrl, 150)) {
-                throw new ApiError('Image too large (max 150KB)', 400, 'IMAGE_TOO_LARGE');
+                throw new ApiError('A kép túl nagy (max 150KB)', 400, 'IMAGE_TOO_LARGE');
             }
             processedImageUrl = await processImage(imageUrl);
         }
@@ -159,10 +160,42 @@ tournamentsRouter.get(
         });
 
         if (!tournament) {
-            throw new ApiError('Tournament not found', 404, 'NOT_FOUND');
+            throw new ApiError('A verseny nem található', 404, 'NOT_FOUND');
         }
 
         res.json({ success: true, data: tournament });
+    })
+);
+
+// Delete tournament (organizer+)
+tournamentsRouter.delete(
+    '/:id',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user || !['ADMIN', 'ORGANIZER'].includes(user.role)) {
+            throw new ApiError('Csak szervezők törölhetnek versenyt', 403, 'FORBIDDEN');
+        }
+
+        const tournament = await prisma.tournament.findUnique({
+            where: { id: req.params.id },
+        });
+
+        if (!tournament) {
+            throw new ApiError('A verseny nem található', 404, 'NOT_FOUND');
+        }
+
+        // Add cascade delete logic if needed, but Prisma usually handles it if schema is configured
+        // Assuming schema has onDelete: Cascade for relations or we need to delete manually
+        // Based on typical Prisma usage with relations defined in schema.
+        await prisma.tournament.delete({
+            where: { id: req.params.id },
+        });
+
+        res.json({ success: true, message: 'Tournament deleted' });
     })
 );
 
@@ -176,7 +209,7 @@ tournamentsRouter.patch(
         });
 
         if (!user || !['ADMIN', 'ORGANIZER'].includes(user.role)) {
-            throw new ApiError('Only organizers can update tournaments', 403, 'FORBIDDEN');
+            throw new ApiError('Csak szervezők módosíthatnak versenyt', 403, 'FORBIDDEN');
         }
 
         const tournament = await prisma.tournament.findUnique({
@@ -184,7 +217,7 @@ tournamentsRouter.patch(
         });
 
         if (!tournament) {
-            throw new ApiError('Tournament not found', 404, 'NOT_FOUND');
+            throw new ApiError('A verseny nem található', 404, 'NOT_FOUND');
         }
 
         const {
@@ -210,7 +243,7 @@ tournamentsRouter.patch(
         let processedImageUrl = imageUrl;
         if (imageUrl && isBase64DataUrl(imageUrl)) {
             if (!validateImageSize(imageUrl, 150)) {
-                throw new ApiError('Image too large (max 10MB)', 400, 'IMAGE_TOO_LARGE');
+                throw new ApiError('A kép túl nagy (max 10MB)', 400, 'IMAGE_TOO_LARGE');
             }
             processedImageUrl = await processImage(imageUrl);
         }
@@ -253,7 +286,7 @@ tournamentsRouter.post(
         const { teamId } = req.body;
 
         if (!teamId) {
-            throw new ApiError('Team ID is required', 400, 'MISSING_TEAM_ID');
+            throw new ApiError('Csapat azonosító szükséges', 400, 'MISSING_TEAM_ID');
         }
 
         const tournament = await prisma.tournament.findUnique({
@@ -262,11 +295,11 @@ tournamentsRouter.post(
         });
 
         if (!tournament) {
-            throw new ApiError('Tournament not found', 404, 'NOT_FOUND');
+            throw new ApiError('A verseny nem található', 404, 'NOT_FOUND');
         }
 
         if (tournament.status !== 'REGISTRATION') {
-            throw new ApiError('Tournament is not accepting registrations', 400, 'REGISTRATION_CLOSED');
+            throw new ApiError('A versenyre jelenleg nem lehet regisztrálni', 400, 'REGISTRATION_CLOSED');
         }
 
         // if (new Date() > tournament.registrationDeadline) {
@@ -274,7 +307,7 @@ tournamentsRouter.post(
         // }
 
         if (tournament._count.entries >= tournament.maxTeams) {
-            throw new ApiError('Tournament is full', 400, 'TOURNAMENT_FULL');
+            throw new ApiError('A verseny megtelt', 400, 'TOURNAMENT_FULL');
         }
 
         const user = await prisma.user.findUnique({
@@ -282,7 +315,7 @@ tournamentsRouter.post(
         });
 
         if (!user) {
-            throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
         // Check if user is captain of the team
@@ -291,11 +324,11 @@ tournamentsRouter.post(
         });
 
         if (!team) {
-            throw new ApiError('Team not found', 404, 'TEAM_NOT_FOUND');
+            throw new ApiError('Csapat nem található', 404, 'TEAM_NOT_FOUND');
         }
 
         if (team.ownerId !== user.id) {
-            throw new ApiError('Only team captain can register for tournaments', 403, 'NOT_CAPTAIN');
+            throw new ApiError('Csak a csapatkapitány regisztrálhat versenyre', 403, 'NOT_CAPTAIN');
         }
 
         // Check if already registered
@@ -304,7 +337,7 @@ tournamentsRouter.post(
         });
 
         if (existingEntry) {
-            throw new ApiError('Team already registered', 400, 'ALREADY_REGISTERED');
+            throw new ApiError('A csapat már részt vett ebben a tornácsonyban', 400, 'ALREADY_REGISTERED');
         }
 
         const entry = await prisma.tournamentEntry.create({
@@ -330,11 +363,11 @@ tournamentsRouter.delete(
         });
 
         if (!tournament) {
-            throw new ApiError('Tournament not found', 404, 'NOT_FOUND');
+            throw new ApiError('A verseny nem található', 404, 'NOT_FOUND');
         }
 
         if (tournament.status !== 'REGISTRATION' && tournament.status !== 'DRAFT') {
-            throw new ApiError('Cannot unregister after tournament has started', 400, 'CANNOT_UNREGISTER');
+            throw new ApiError('A verseny kezdete után nem lehet leiratkozni', 400, 'CANNOT_UNREGISTER');
         }
 
         const user = await prisma.user.findUnique({
@@ -342,7 +375,7 @@ tournamentsRouter.delete(
         });
 
         if (!user) {
-            throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
         const team = await prisma.team.findUnique({
@@ -376,7 +409,7 @@ tournamentsRouter.post(
         });
 
         if (!user || !['ADMIN', 'ORGANIZER'].includes(user.role)) {
-            throw new ApiError('Only organizers can generate brackets', 403, 'FORBIDDEN');
+            throw new ApiError('Csak szervezők generálhatnak ágrajzot', 403, 'FORBIDDEN');
         }
 
         const tournament = await prisma.tournament.findUnique({
@@ -394,11 +427,11 @@ tournamentsRouter.post(
         });
 
         if (!tournament) {
-            throw new ApiError('Tournament not found', 404, 'NOT_FOUND');
+            throw new ApiError('A verseny nem található', 404, 'NOT_FOUND');
         }
 
         if (tournament.entries.length < 2) {
-            throw new ApiError('Need at least 2 participants', 400, 'NOT_ENOUGH_PARTICIPANTS');
+            throw new ApiError('Legalább 2 résztvevő szükséges', 400, 'NOT_ENOUGH_PARTICIPANTS');
         }
 
         // Delete existing matches
@@ -701,7 +734,7 @@ tournamentsRouter.patch(
         });
 
         if (!user || !['ADMIN', 'ORGANIZER'].includes(user.role)) {
-            throw new ApiError('Only organizers can update entry stats', 403, 'FORBIDDEN');
+            throw new ApiError('Csak szervezők frissíthetik a statisztikákat', 403, 'FORBIDDEN');
         }
 
         const { matchesPlayed, qualifierPoints } = req.body;
@@ -715,7 +748,7 @@ tournamentsRouter.patch(
         });
 
         if (!existingEntry) {
-            throw new ApiError('Entry not found for this tournament', 404, 'NOT_FOUND');
+            throw new ApiError('Nevezés nem található ehhez a versenyhez', 404, 'NOT_FOUND');
         }
         const updatedEntry = await prisma.tournamentEntry.update({
             where: { id: req.params.entryId },

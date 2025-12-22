@@ -236,6 +236,34 @@ class DiscordService {
         }
     }
 
+    async setGuildMemberNickname(discordUserId: string, nickname: string): Promise<boolean> {
+        if (!this.isReady) return false;
+
+        try {
+            const guild = await this.client.guilds.fetch(this.guildId);
+            if (!guild) return false;
+
+            const member = await guild.members.fetch(discordUserId);
+            if (!member) {
+                console.warn(`Discord Member ${discordUserId} not found in guild`);
+                return false;
+            }
+
+            // Check if bot can modify the member (bot role must be higher)
+            if (!member.manageable) {
+                console.warn(`Cannot manage nickname for user ${member.user.tag} (Role hierarchy or owner)`);
+                return false;
+            }
+
+            await member.setNickname(nickname);
+            console.log(`✅ Updated nickname for ${member.user.tag} to "${nickname}"`);
+            return true;
+        } catch (error) {
+            console.error(`Failed to set nickname for ${discordUserId}:`, error);
+            return false;
+        }
+    }
+
     // --- Specific Notification Methods ---
 
     async sendTournamentAnnouncement(tournament: { name: string; game: string; startDate: Date; maxTeams: number; id: string }, channelId?: string) {

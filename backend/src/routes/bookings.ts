@@ -30,13 +30,13 @@ bookingsRouter.post(
         });
 
         if (!user || user.role !== 'ADMIN') {
-            throw new ApiError('Admin access required', 403, 'FORBIDDEN');
+            throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
         const { name, row, position, specs, status, isActive } = req.body;
 
         if (!name || row === undefined || position === undefined) {
-            throw new ApiError('name, row, and position are required', 400, 'MISSING_FIELDS');
+            throw new ApiError('Név, sor és pozíció kötelező', 400, 'MISSING_FIELDS');
         }
 
         const computer = await prisma.computer.create({
@@ -64,7 +64,7 @@ bookingsRouter.delete(
         });
 
         if (!user || user.role !== 'ADMIN') {
-            throw new ApiError('Admin access required', 403, 'FORBIDDEN');
+            throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
         await prisma.computer.delete({
@@ -85,13 +85,13 @@ bookingsRouter.post(
         });
 
         if (!user || user.role !== 'ADMIN') {
-            throw new ApiError('Admin access required', 403, 'FORBIDDEN');
+            throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
         // Check if computers already exist
         const existingCount = await prisma.computer.count();
         if (existingCount > 0) {
-            throw new ApiError('Computers already seeded', 400, 'ALREADY_SEEDED');
+            throw new ApiError('A számítógépek már létre lettek hozva', 400, 'ALREADY_SEEDED');
         }
 
         // Create 10 computers in 2x5 grid
@@ -140,25 +140,25 @@ bookingsRouter.post(
         });
 
         if (!user || user.role !== 'ADMIN') {
-            throw new ApiError('Admin access required', 403, 'FORBIDDEN');
+            throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
         const { dayOfWeek, startHour, endHour } = req.body;
 
         if (dayOfWeek === undefined || startHour === undefined || endHour === undefined) {
-            throw new ApiError('dayOfWeek, startHour, and endHour are required', 400, 'MISSING_FIELDS');
+            throw new ApiError('A nap, kezdőóra és végóra kötelező', 400, 'MISSING_FIELDS');
         }
 
         if (dayOfWeek < 0 || dayOfWeek > 6) {
-            throw new ApiError('dayOfWeek must be between 0 and 6', 400, 'INVALID_DAY');
+            throw new ApiError('A napnak 0 és 6 között kell lennie', 400, 'INVALID_DAY');
         }
 
         if (startHour < 0 || startHour > 23 || endHour < 0 || endHour > 23) {
-            throw new ApiError('Hours must be between 0 and 23', 400, 'INVALID_HOUR');
+            throw new ApiError('Az óráknak 0 és 23 között kell lenniük', 400, 'INVALID_HOUR');
         }
 
         if (startHour >= endHour) {
-            throw new ApiError('startHour must be less than endHour', 400, 'INVALID_RANGE');
+            throw new ApiError('A kezdőórának kisebbnek kell lennie a végóránál', 400, 'INVALID_RANGE');
         }
 
         const schedule = await prisma.bookingSchedule.create({
@@ -179,7 +179,7 @@ bookingsRouter.delete(
         });
 
         if (!user || user.role !== 'ADMIN') {
-            throw new ApiError('Admin access required', 403, 'FORBIDDEN');
+            throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
         await prisma.bookingSchedule.delete({
@@ -199,7 +199,7 @@ bookingsRouter.get(
         const date = new Date(dateStr);
 
         if (isNaN(date.getTime())) {
-            throw new ApiError('Invalid date format. Use YYYY-MM-DD', 400, 'INVALID_DATE');
+            throw new ApiError('Érvénytelen dátum formátum. Használd: ÉÉÉÉ-HH-NN', 400, 'INVALID_DATE');
         }
 
         // Get start and end of the day
@@ -234,7 +234,7 @@ bookingsRouter.post(
         const { computerId, date, startTime, endTime } = req.body;
 
         if (!computerId || !date || !startTime || !endTime) {
-            throw new ApiError('computerId, date, startTime, and endTime are required', 400, 'MISSING_FIELDS');
+            throw new ApiError('Számítógép, dátum, kezdés és befejezés kötelező', 400, 'MISSING_FIELDS');
         }
 
         const user = await prisma.user.findUnique({
@@ -242,7 +242,7 @@ bookingsRouter.post(
         });
 
         if (!user) {
-            throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
         // Validate computer exists
@@ -251,7 +251,7 @@ bookingsRouter.post(
         });
 
         if (!computer || !computer.isActive) {
-            throw new ApiError('Computer not found or inactive', 404, 'COMPUTER_NOT_FOUND');
+            throw new ApiError('A számítógép nem található vagy inaktív', 404, 'COMPUTER_NOT_FOUND');
         }
 
         // Parse dates
@@ -260,16 +260,16 @@ bookingsRouter.post(
         const end = new Date(endTime);
 
         if (isNaN(bookingDate.getTime()) || isNaN(start.getTime()) || isNaN(end.getTime())) {
-            throw new ApiError('Invalid date/time format', 400, 'INVALID_DATE');
+            throw new ApiError('Érvénytelen dátum/idő formátum', 400, 'INVALID_DATE');
         }
 
         // Validate duration (max 2 hours = 7200000 ms, min 30 min = 1800000 ms)
         const duration = end.getTime() - start.getTime();
         if (duration < 1800000) {
-            throw new ApiError('Minimum booking duration is 30 minutes', 400, 'DURATION_TOO_SHORT');
+            throw new ApiError('A minimális foglalási idő 30 perc', 400, 'DURATION_TOO_SHORT');
         }
         if (duration > 7200000) {
-            throw new ApiError('Maximum booking duration is 2 hours', 400, 'DURATION_TOO_LONG');
+            throw new ApiError('A maximális foglalási idő 2 óra', 400, 'DURATION_TOO_LONG');
         }
 
         // Check if the booking date matches the day of week with an active schedule
@@ -284,7 +284,7 @@ bookingsRouter.post(
         });
 
         if (!schedule) {
-            throw new ApiError('No booking schedule available for this time', 400, 'NO_SCHEDULE');
+            throw new ApiError('Nincs elérhető foglalási időpont', 400, 'NO_SCHEDULE');
         }
 
         // Check for overlapping bookings
@@ -310,7 +310,7 @@ bookingsRouter.post(
         });
 
         if (overlapping) {
-            throw new ApiError('This time slot is already booked', 400, 'SLOT_TAKEN');
+            throw new ApiError('Ez az időpont már foglalt', 400, 'SLOT_TAKEN');
         }
 
         // Create booking with check-in code
@@ -347,7 +347,7 @@ bookingsRouter.delete(
         });
 
         if (!user) {
-            throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
         const booking = await prisma.booking.findUnique({
@@ -355,12 +355,12 @@ bookingsRouter.delete(
         });
 
         if (!booking) {
-            throw new ApiError('Booking not found', 404, 'NOT_FOUND');
+            throw new ApiError('Foglalás nem található', 404, 'NOT_FOUND');
         }
 
         // Check permission: user owns booking or is admin
         if (booking.userId !== user.id && user.role !== 'ADMIN') {
-            throw new ApiError('Not authorized to delete this booking', 403, 'FORBIDDEN');
+            throw new ApiError('Nincs jogosultsága törölni ezt a foglalást', 403, 'FORBIDDEN');
         }
 
         await prisma.booking.delete({
@@ -384,13 +384,13 @@ bookingsRouter.post(
         });
 
         if (!user || user.role !== 'ADMIN') {
-            throw new ApiError('Admin access required', 403, 'FORBIDDEN');
+            throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
         const { checkInCode } = req.body;
 
         if (!checkInCode) {
-            throw new ApiError('Check-in code is required', 400, 'MISSING_CODE');
+            throw new ApiError('Bejelentkezési kód kötelező', 400, 'MISSING_CODE');
         }
 
         // Find booking by code
@@ -406,7 +406,7 @@ bookingsRouter.post(
         });
 
         if (!booking) {
-            throw new ApiError('Invalid or already used code', 404, 'NOT_FOUND');
+            throw new ApiError('Érvénytelen vagy már felhasznált kód', 404, 'NOT_FOUND');
         }
 
         // Validate time (can only check in 15 mins before or during booking)
@@ -415,11 +415,11 @@ bookingsRouter.post(
         const checkInStart = new Date(start.getTime() - 15 * 60000);
 
         if (now < checkInStart) {
-            throw new ApiError('Check-in not available yet (15 mins before start)', 400, 'TOO_EARLY');
+            throw new ApiError('Bejelentkezés még nem lehetséges (15 perccel kezdés előtt)', 400, 'TOO_EARLY');
         }
 
         if (now > booking.endTime) {
-            throw new ApiError('Booking has ended', 400, 'BOOKING_ENDED');
+            throw new ApiError('A foglalás lejárt', 400, 'BOOKING_ENDED');
         }
 
         const updatedBooking = await prisma.booking.update({
@@ -445,7 +445,7 @@ bookingsRouter.get(
         });
 
         if (!user) {
-            throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
         const bookings = await prisma.booking.findMany({
@@ -470,7 +470,7 @@ bookingsRouter.get(
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
         const startDate = new Date(req.params.startDate);
         if (isNaN(startDate.getTime())) {
-            throw new ApiError('Invalid date format. Use YYYY-MM-DD', 400, 'INVALID_DATE');
+            throw new ApiError('Érvénytelen dátum formátum. Használd: ÉÉÉÉ-HH-NN', 400, 'INVALID_DATE');
         }
 
         // Get 7 days of bookings starting from startDate
@@ -507,7 +507,7 @@ bookingsRouter.patch(
         });
 
         if (!user) {
-            throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
         const booking = await prisma.booking.findUnique({
@@ -515,11 +515,11 @@ bookingsRouter.patch(
         });
 
         if (!booking) {
-            throw new ApiError('Booking not found', 404, 'NOT_FOUND');
+            throw new ApiError('Foglalás nem található', 404, 'NOT_FOUND');
         }
 
         if (booking.userId !== user.id && user.role !== 'ADMIN') {
-            throw new ApiError('Not authorized to modify this booking', 403, 'FORBIDDEN');
+            throw new ApiError('Nincs jogosultsága módosítani ezt a foglalást', 403, 'FORBIDDEN');
         }
 
         const start = startTime ? new Date(startTime) : booking.startTime;
@@ -542,7 +542,7 @@ bookingsRouter.patch(
         });
 
         if (overlapping) {
-            throw new ApiError('This time slot is already booked', 400, 'SLOT_TAKEN');
+            throw new ApiError('Ez az időpont már foglalt', 400, 'SLOT_TAKEN');
         }
 
         const updatedBooking = await prisma.booking.update({
@@ -569,7 +569,7 @@ bookingsRouter.post(
         const { checkInCode } = req.body;
 
         if (!checkInCode) {
-            throw new ApiError('Check-in code is required', 400, 'MISSING_CODE');
+            throw new ApiError('Bejelentkezési kód kötelező', 400, 'MISSING_CODE');
         }
 
         const booking = await prisma.booking.findFirst({
@@ -580,11 +580,11 @@ bookingsRouter.post(
         });
 
         if (!booking) {
-            throw new ApiError('Invalid check-in code', 400, 'INVALID_CODE');
+            throw new ApiError('Érvénytelen bejelentkezési kód', 400, 'INVALID_CODE');
         }
 
         if (booking.checkedInAt) {
-            throw new ApiError('Already checked in', 400, 'ALREADY_CHECKED_IN');
+            throw new ApiError('Már bejelentkezve', 400, 'ALREADY_CHECKED_IN');
         }
 
         // Check if within valid check-in window (30 min before to end of booking)
@@ -593,11 +593,11 @@ bookingsRouter.post(
         checkInStart.setMinutes(checkInStart.getMinutes() - 30);
 
         if (now < checkInStart) {
-            throw new ApiError('Check-in not available yet', 400, 'TOO_EARLY');
+            throw new ApiError('Bejelentkezés még nem lehetséges', 400, 'TOO_EARLY');
         }
 
         if (now > booking.endTime) {
-            throw new ApiError('Booking has ended', 400, 'BOOKING_ENDED');
+            throw new ApiError('A foglalás lejárt', 400, 'BOOKING_ENDED');
         }
 
         const updatedBooking = await prisma.booking.update({
@@ -622,7 +622,7 @@ bookingsRouter.get(
         });
 
         if (!computer) {
-            throw new ApiError('Computer not found', 404, 'NOT_FOUND');
+            throw new ApiError('Számítógép nem található', 404, 'NOT_FOUND');
         }
 
         res.json({ success: true, data: computer });
@@ -639,7 +639,7 @@ bookingsRouter.patch(
         });
 
         if (!user || user.role !== 'ADMIN') {
-            throw new ApiError('Admin access required', 403, 'FORBIDDEN');
+            throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
         const { specs, installedGames, status, isActive } = req.body;
@@ -670,7 +670,7 @@ bookingsRouter.post(
         });
 
         if (!user) {
-            throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
         // Check if already on waitlist
@@ -684,7 +684,7 @@ bookingsRouter.post(
         });
 
         if (existing) {
-            throw new ApiError('Already on waitlist', 400, 'ALREADY_ON_WAITLIST');
+            throw new ApiError('Már rajta vagy a várólistán', 400, 'ALREADY_ON_WAITLIST');
         }
 
         const waitlistEntry = await prisma.waitlist.create({
@@ -714,7 +714,7 @@ bookingsRouter.delete(
         });
 
         if (!user) {
-            throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
         const entry = await prisma.waitlist.findUnique({
@@ -722,11 +722,11 @@ bookingsRouter.delete(
         });
 
         if (!entry) {
-            throw new ApiError('Waitlist entry not found', 404, 'NOT_FOUND');
+            throw new ApiError('Várólista bejegyzés nem található', 404, 'NOT_FOUND');
         }
 
         if (entry.userId !== user.id && user.role !== 'ADMIN') {
-            throw new ApiError('Not authorized', 403, 'FORBIDDEN');
+            throw new ApiError('Nincs jogosultsága', 403, 'FORBIDDEN');
         }
 
         await prisma.waitlist.delete({
@@ -747,7 +747,7 @@ bookingsRouter.get(
         });
 
         if (!user) {
-            throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
         const entries = await prisma.waitlist.findMany({
@@ -775,7 +775,7 @@ bookingsRouter.get(
         });
 
         if (!user || user.role !== 'ADMIN') {
-            throw new ApiError('Admin access required', 403, 'FORBIDDEN');
+            throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
         // Get date range (last 30 days)

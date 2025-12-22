@@ -32,24 +32,24 @@ gamesRouter.post(
         });
 
         if (!user || user.role !== 'ADMIN') {
-            throw new ApiError('Only admins can create games', 403, 'FORBIDDEN');
+            throw new ApiError('Csak adminisztrátorok hozhatnak létre játékokat', 403, 'FORBIDDEN');
         }
 
         const { name, description, imageUrl, rules, teamSize } = req.body;
 
         if (!name) {
-            throw new ApiError('Name is required', 400, 'MISSING_FIELDS');
+            throw new ApiError('A név kötelező', 400, 'MISSING_FIELDS');
         }
 
         if (teamSize && ![1, 2, 3, 5].includes(teamSize)) {
-            throw new ApiError('Team size must be 1, 2, 3, or 5', 400, 'INVALID_TEAM_SIZE');
+            throw new ApiError('A csapatméretnek 1, 2, 3 vagy 5-nek kell lennie', 400, 'INVALID_TEAM_SIZE');
         }
 
         // Process image if base64
         let processedImageUrl = imageUrl;
         if (imageUrl && isBase64DataUrl(imageUrl)) {
             if (!validateImageSize(imageUrl, 10)) {
-                throw new ApiError('Image too large (max 10MB)', 400, 'IMAGE_TOO_LARGE');
+                throw new ApiError('A kép túl nagy (max 10MB)', 400, 'IMAGE_TOO_LARGE');
             }
             processedImageUrl = await processImage(imageUrl);
         }
@@ -89,7 +89,7 @@ gamesRouter.get(
         });
 
         if (!game) {
-            throw new ApiError('Game not found', 404, 'NOT_FOUND');
+            throw new ApiError('A játék nem található', 404, 'NOT_FOUND');
         }
 
         res.json({ success: true, data: game });
@@ -106,20 +106,20 @@ gamesRouter.patch(
         });
 
         if (!user || user.role !== 'ADMIN') {
-            throw new ApiError('Only admins can update games', 403, 'FORBIDDEN');
+            throw new ApiError('Csak adminisztrátorok módosíthatnak játékokat', 403, 'FORBIDDEN');
         }
 
         const { name, description, imageUrl, rules, teamSize } = req.body;
 
         if (teamSize && ![1, 2, 3, 5].includes(teamSize)) {
-            throw new ApiError('Team size must be 1, 2, 3, or 5', 400, 'INVALID_TEAM_SIZE');
+            throw new ApiError('A csapatméretnek 1, 2, 3 vagy 5-nek kell lennie', 400, 'INVALID_TEAM_SIZE');
         }
 
         // Process image if base64
         let processedImageUrl = imageUrl;
         if (imageUrl && isBase64DataUrl(imageUrl)) {
             if (!validateImageSize(imageUrl, 10)) {
-                throw new ApiError('Image too large (max 10MB)', 400, 'IMAGE_TOO_LARGE');
+                throw new ApiError('A kép túl nagy (max 10MB)', 400, 'IMAGE_TOO_LARGE');
             }
             processedImageUrl = await processImage(imageUrl);
         }
@@ -149,7 +149,7 @@ gamesRouter.delete(
         });
 
         if (!user || user.role !== 'ADMIN') {
-            throw new ApiError('Only admins can delete games', 403, 'FORBIDDEN');
+            throw new ApiError('Csak adminisztrátorok törölhetnek játékokat', 403, 'FORBIDDEN');
         }
 
         // Check for existing tournaments
@@ -158,7 +158,7 @@ gamesRouter.delete(
         });
 
         if (tournamentCount > 0) {
-            throw new ApiError('Cannot delete game with existing tournaments', 400, 'HAS_TOURNAMENTS');
+            throw new ApiError('Nem lehet törölni olyan játékot, amelyhez versenyek tartoznak', 400, 'HAS_TOURNAMENTS');
         }
 
         await prisma.game.delete({ where: { id: req.params.id } });
@@ -190,13 +190,13 @@ gamesRouter.post(
         });
 
         if (!user || user.role !== 'ADMIN') {
-            throw new ApiError('Admin access required', 403, 'FORBIDDEN');
+            throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
         const { name, value, image, order } = req.body;
 
         if (!name || value === undefined) {
-            throw new ApiError('Name and value are required', 400, 'MISSING_FIELDS');
+            throw new ApiError('A név és érték kötelező', 400, 'MISSING_FIELDS');
         }
 
         const rank = await prisma.rank.create({
@@ -223,7 +223,7 @@ gamesRouter.delete(
         });
 
         if (!user || user.role !== 'ADMIN') {
-            throw new ApiError('Admin access required', 403, 'FORBIDDEN');
+            throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
         await prisma.rank.delete({

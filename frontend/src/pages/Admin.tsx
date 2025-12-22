@@ -7,7 +7,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import { useAuth } from '../hooks/useAuth';
 import { fetchGames, deleteGame } from '../store/slices/gamesSlice';
-import { fetchTournaments } from '../store/slices/tournamentsSlice';
+import { fetchTournaments, deleteTournament } from '../store/slices/tournamentsSlice';
 import { fetchTeams } from '../store/slices/teamsSlice';
 import { fetchSchedules, fetchComputers } from '../store/slices/bookingsSlice';
 import { GameCreateModal } from '../components/admin/GameCreateModal';
@@ -21,6 +21,7 @@ import { UserManagement } from '../components/admin/UserManagement';
 import { KioskManager } from '../components/admin/KioskManager';
 import { Link } from 'react-router-dom';
 import './Admin.css';
+import { authService } from '../lib/auth-service';
 import type { Game, Tournament } from '../types';
 
 export function AdminPage() {
@@ -28,9 +29,15 @@ export function AdminPage() {
     const { user } = useAuth();
     const { games } = useAppSelector((state) => state.games);
     const { tournaments } = useAppSelector((state) => state.tournaments);
-    const { pagination } = useAppSelector((state) => state.teams);
+
 
     const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'tournaments' | 'games' | 'bookings' | 'kiosk'>('overview');
+    const [stats, setStats] = useState({
+        activeTournaments: 0,
+        registeredUsers: 0,
+        createdTeams: 0,
+        playedMatches: 0
+    });
     const [showGameModal, setShowGameModal] = useState(false);
     const [editingGame, setEditingGame] = useState<Game | null>(null);
     const [showTournamentModal, setShowTournamentModal] = useState(false);
@@ -44,17 +51,45 @@ export function AdminPage() {
         dispatch(fetchTeams({ page: 1 }));
         dispatch(fetchSchedules());
         dispatch(fetchComputers());
-    }, [dispatch]);
 
-
+        // Fetch stats
+        const fetchStats = async () => {
+            try {
+                const token = authService.keycloak?.token;
+                const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/stats`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data) {
+                    setStats(data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch stats:', error);
+            }
+        };
+        if (user) fetchStats();
+    }, [dispatch, user]);
 
     const handleDeleteGame = async (gameId: string) => {
         if (confirm('Biztosan törölni szeretnéd ezt a játékot? Ez a művelet nem visszavonható!')) {
             try {
                 await dispatch(deleteGame(gameId)).unwrap();
+                toast.success('Játék sikeresen törölve');
             } catch (error) {
                 console.error('Failed to delete game:', error);
                 toast.error('Nem sikerült törölni a játékot. Ellenőrizd, hogy nincsenek-e hozzárendelt versenyek.');
+            }
+        }
+    };
+
+    const handleDeleteTournament = async (tournamentId: string) => {
+        if (confirm('Biztosan törölni szeretnéd ezt a versenyt? Ez a művelet nem visszavonható, és minden hozzá tartozó adat (meccsek, eredmények) törlődni fog!')) {
+            try {
+                await dispatch(deleteTournament(tournamentId)).unwrap();
+                toast.success('Verseny sikeresen törölve');
+            } catch (error) {
+                console.error('Failed to delete tournament:', error);
+                toast.error('Nem sikerült törölni a versenyt');
             }
         }
     };
@@ -69,10 +104,10 @@ export function AdminPage() {
         );
     }
 
-    const totalUsers = pagination?.total || 0;
-    const totalTournaments = tournaments.length;
+    const totalUsers = stats.registeredUsers;
+    const totalTournaments = stats.activeTournaments;
     const activeTournaments = tournaments.filter(t => t.status === 'IN_PROGRESS').length;
-    const totalTeams = pagination?.total || 0;
+    const totalTeams = stats.createdTeams;
 
     const getStatusBadge = (status: string) => {
         const statusConfig: Record<string, { class: string; label: string }> = {
@@ -429,6 +464,13 @@ export function AdminPage() {
                                                             title="Szerkesztés"
                                                         >
                                                             <Edit2 size={18} />
+                                                        </button>
+                                                        <button
+                                                            className="p-2 rounded-lg bg-white/5 hover:bg-red-500/10 text-gray-400 hover:text-red-400 transition-colors"
+                                                            onClick={() => handleDeleteTournament(tournament.id)}
+                                                            title="Törlés"
+                                                        >
+                                                            <Trash2 size={18} />
                                                         </button>
                                                     </td>
                                                 </tr>

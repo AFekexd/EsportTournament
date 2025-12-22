@@ -47,7 +47,7 @@ export interface AuthenticatedRequest extends Request {
 // Helper function to get the highest role from Keycloak token
 export const getHighestRole = (tokenPayload: KeycloakTokenPayload): 'ADMIN' | 'MODERATOR' | 'ORGANIZER' | 'STUDENT' => {
     const realmRoles = tokenPayload.realm_access?.roles || [];
-    
+
     // Check for roles in priority order
     if (realmRoles.includes('ADMIN')) {
         return 'ADMIN';
@@ -58,7 +58,7 @@ export const getHighestRole = (tokenPayload: KeycloakTokenPayload): 'ADMIN' | 'M
     if (realmRoles.includes('ORGANIZER')) {
         return 'ORGANIZER';
     }
-    
+
     return 'STUDENT';
 };
 
@@ -71,7 +71,7 @@ export const authenticate = async (
         const authHeader = req.headers.authorization;
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            throw new ApiError('No token provided', 401, 'UNAUTHORIZED');
+            throw new ApiError('Nem található token', 401, 'UNAUTHORIZED');
         }
 
         const token = authHeader.substring(7);
@@ -86,7 +86,7 @@ export const authenticate = async (
                 },
                 (err, decoded) => {
                     if (err) {
-                        reject(new ApiError('Invalid token', 401, 'INVALID_TOKEN'));
+                        reject(new ApiError('Érvénytelen token', 401, 'INVALID_TOKEN'));
                     } else {
                         resolve(decoded as KeycloakTokenPayload);
                     }
@@ -105,14 +105,14 @@ export const authenticate = async (
 export const requireRole = (...roles: string[]) => {
     return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
         if (!req.user) {
-            return next(new ApiError('Not authenticated', 401, 'UNAUTHORIZED'));
+            return next(new ApiError('Nincs bejelentkezve', 401, 'UNAUTHORIZED'));
         }
 
         const userRoles = req.user.realm_access?.roles || [];
         const hasRole = roles.some((role) => userRoles.includes(role));
 
         if (!hasRole) {
-            return next(new ApiError('Insufficient permissions', 403, 'FORBIDDEN'));
+            return next(new ApiError('Nincs jogosultsága', 403, 'FORBIDDEN'));
         }
 
         next();

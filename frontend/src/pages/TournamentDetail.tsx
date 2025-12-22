@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Trophy, Calendar, Users, Award, UserPlus, Maximize, Minimize, Shield, Clock, Edit2, Check, X, Share2 } from 'lucide-react';
+import { ArrowLeft, Trophy, Calendar, Users, Award, UserPlus, Maximize, Minimize, Shield, Clock, Edit2, Check, X, Share2, Trash2 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import { useAuth } from '../hooks/useAuth';
 import {
@@ -11,6 +11,7 @@ import {
     generateBracket,
     updateMatch,
     updateEntryStats,
+    deleteTournament
 } from '../store/slices/tournamentsSlice';
 import { fetchMyTeams } from '../store/slices/teamsSlice';
 import { TournamentStatusModal } from '../components/admin';
@@ -99,8 +100,9 @@ export function TournamentDetailPage() {
 
             setShowRegisterModal(false);
             dispatch(fetchTournament(currentTournament.id));
-        } catch (err) {
+        } catch (err: any) {
             console.error('Failed to register:', err);
+            toast.error(err?.message || 'Nem sikerült regisztrálni a versenyre');
         }
     };
 
@@ -245,6 +247,27 @@ export function TournamentDetailPage() {
                                     onClick={() => setShowStatusModal(true)}
                                 >
                                     Státusz módosítása
+                                </button>
+                            )}
+
+                            {(user?.role === 'ADMIN' || (user?.role === 'ORGANIZER')) && (
+                                <button
+                                    className="btn btn-secondary w-full bg-red-500/10 hover:bg-red-500/20 text-red-500 hover:text-red-400 border-red-500/20"
+                                    onClick={async () => {
+                                        if (confirm('Biztosan törölni szeretnéd ezt a versenyt? Ez a művelet nem visszavonható, és minden hozzá tartozó adat (meccsek, eredmények) törlődni fog!')) {
+                                            try {
+                                                await dispatch(deleteTournament(currentTournament.id)).unwrap();
+                                                toast.success('Verseny sikeresen törölve');
+                                                navigate('/tournaments');
+                                            } catch (error) {
+                                                console.error('Failed to delete tournament:', error);
+                                                toast.error('Nem sikerült törölni a versenyt');
+                                            }
+                                        }
+                                    }}
+                                >
+                                    <Trash2 size={18} />
+                                    Verseny törlése
                                 </button>
                             )}
                         </div>

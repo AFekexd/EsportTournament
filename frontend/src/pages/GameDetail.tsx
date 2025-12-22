@@ -1,14 +1,17 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Trophy, Users, Calendar, Gamepad2 } from 'lucide-react';
+import { ArrowLeft, Trophy, Users, Calendar, Gamepad2, Trash2 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
-import { fetchGame, clearCurrentGame } from '../store/slices/gamesSlice';
+import { fetchGame, clearCurrentGame, deleteGame } from '../store/slices/gamesSlice';
+import { useAuth } from '../hooks/useAuth';
+import { toast } from 'sonner';
 import './GameDetail.css';
 
 export function GameDetailPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const { user } = useAuth();
     const { currentGame, isLoading } = useAppSelector((state) => state.games);
 
     useEffect(() => {
@@ -38,6 +41,26 @@ export function GameDetailPage() {
                     <ArrowLeft size={18} />
                     Vissza
                 </button>
+                {user?.role === 'ADMIN' && currentGame && (
+                    <button
+                        className="btn btn-ghost text-red-500 hover:text-red-400 hover:bg-red-500/10"
+                        onClick={async () => {
+                            if (window.confirm('Biztosan törölni szeretnéd ezt a játékot? Ez a művelet nem visszavonható!')) {
+                                try {
+                                    await dispatch(deleteGame(currentGame.id)).unwrap();
+                                    toast.success('Játék sikeresen törölve');
+                                    navigate('/games');
+                                } catch (error) {
+                                    console.error('Failed to delete game:', error);
+                                    toast.error('Nem sikerült törölni a játékot');
+                                }
+                            }
+                        }}
+                    >
+                        <Trash2 size={18} />
+                        Törlés
+                    </button>
+                )}
             </div>
 
             {/* Game Header */}

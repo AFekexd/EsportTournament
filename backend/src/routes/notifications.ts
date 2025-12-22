@@ -16,7 +16,7 @@ notificationsRouter.get(
         });
 
         if (!user) {
-            throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
         const { page = '1', limit = '20' } = req.query;
@@ -41,7 +41,7 @@ notificationsRouter.get(
         });
 
         if (!user) {
-            throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
         const count = await notificationService.getUnreadCount(user.id);
@@ -60,7 +60,7 @@ notificationsRouter.patch(
         });
 
         if (!user) {
-            throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
         await notificationService.markAsRead(req.params.id, user.id);
@@ -79,7 +79,7 @@ notificationsRouter.patch(
         });
 
         if (!user) {
-            throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
         await notificationService.markAllAsRead(user.id);
