@@ -62,7 +62,7 @@ export const fetchMyTeams = createAsyncThunk(
         const state = getState() as RootState;
         const token = getToken(state);
 
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/teams?my=true`, {
             headers: { Authorization: `Bearer ${token}` },
@@ -104,7 +104,7 @@ export const createTeam = createAsyncThunk(
         const state = getState() as RootState;
         const token = getToken(state);
 
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/teams`, {
             method: 'POST',
@@ -131,7 +131,7 @@ export const joinTeam = createAsyncThunk(
         const state = getState() as RootState;
         const token = getToken(state);
 
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/teams/join`, {
             method: 'POST',
@@ -158,7 +158,7 @@ export const leaveTeam = createAsyncThunk(
         const state = getState() as RootState;
         const token = getToken(state);
 
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/teams/${teamId}/leave`, {
             method: 'POST',
@@ -181,7 +181,7 @@ export const updateTeam = createAsyncThunk(
         const state = getState() as RootState;
         const token = getToken(state);
 
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/teams/${id}`, {
             method: 'PATCH',
@@ -208,7 +208,7 @@ export const deleteTeam = createAsyncThunk(
         const state = getState() as RootState;
         const token = getToken(state);
 
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/teams/${id}`, {
             method: 'DELETE',
@@ -231,7 +231,7 @@ export const removeMember = createAsyncThunk(
         const state = getState() as RootState;
         const token = getToken(state);
 
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/teams/${teamId}/members/${memberId}`, {
             method: 'DELETE',
@@ -254,7 +254,7 @@ export const regenerateJoinCode = createAsyncThunk(
         const state = getState() as RootState;
         const token = getToken(state);
 
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/teams/${teamId}/regenerate-code`, {
             method: 'POST',

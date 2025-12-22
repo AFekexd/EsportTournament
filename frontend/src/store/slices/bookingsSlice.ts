@@ -122,7 +122,7 @@ export const fetchComputers = createAsyncThunk('bookings/fetchComputers', async 
 export const seedComputers = createAsyncThunk('bookings/seedComputers', async (_, { getState }) => {
     const state = getState() as RootState;
     const token = getToken(state);
-    if (!token) throw new Error('Not authenticated');
+    if (!token) throw new Error('Nincs bejelentkezve!');
 
     const response = await fetch(`${API_URL}/bookings/computers/seed`, {
         method: 'POST',
@@ -145,7 +145,7 @@ export const createSchedule = createAsyncThunk(
     async (scheduleData: { dayOfWeek: number; startHour: number; endHour: number }, { getState }) => {
         const state = getState() as RootState;
         const token = getToken(state);
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/bookings/schedules`, {
             method: 'POST',
@@ -166,7 +166,7 @@ export const deleteSchedule = createAsyncThunk(
     async (id: string, { getState }) => {
         const state = getState() as RootState;
         const token = getToken(state);
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/bookings/schedules/${id}`, {
             method: 'DELETE',
@@ -191,7 +191,7 @@ export const fetchBookingsForDate = createAsyncThunk(
 export const fetchMyBookings = createAsyncThunk('bookings/fetchMyBookings', async (_, { getState }) => {
     const state = getState() as RootState;
     const token = getToken(state);
-    if (!token) throw new Error('Not authenticated');
+    if (!token) throw new Error('Nincs bejelentkezve!');
 
     const response = await fetch(`${API_URL}/bookings/my`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -209,7 +209,7 @@ export const createBooking = createAsyncThunk(
     ) => {
         const state = getState() as RootState;
         const token = getToken(state);
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/bookings`, {
             method: 'POST',
@@ -230,7 +230,7 @@ export const deleteBooking = createAsyncThunk(
     async (id: string, { getState }) => {
         const state = getState() as RootState;
         const token = getToken(state);
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/bookings/${id}`, {
             method: 'DELETE',
@@ -262,7 +262,7 @@ export const updateBooking = createAsyncThunk(
     ) => {
         const state = getState() as RootState;
         const token = getToken(state);
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/bookings/${id}`, {
             method: 'PATCH',
@@ -283,7 +283,7 @@ export const checkInByCode = createAsyncThunk(
     async (checkInCode: string, { getState }) => {
         const state = getState() as RootState;
         const token = getToken(state);
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/bookings/checkin`, {
             method: 'POST',
@@ -321,7 +321,7 @@ export const addToWaitlist = createAsyncThunk(
     ) => {
         const state = getState() as RootState;
         const token = getToken(state);
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/bookings/waitlist`, {
             method: 'POST',
@@ -342,7 +342,7 @@ export const removeFromWaitlist = createAsyncThunk(
     async (id: string, { getState }) => {
         const state = getState() as RootState;
         const token = getToken(state);
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/bookings/waitlist/${id}`, {
             method: 'DELETE',
@@ -359,7 +359,7 @@ export const fetchMyWaitlist = createAsyncThunk(
     async (_, { getState }) => {
         const state = getState() as RootState;
         const token = getToken(state);
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/bookings/waitlist/my`, {
             headers: { Authorization: `Bearer ${token}` },
@@ -375,7 +375,7 @@ export const fetchBookingStats = createAsyncThunk(
     async (_, { getState }) => {
         const state = getState() as RootState;
         const token = getToken(state);
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/bookings/stats`, {
             headers: { Authorization: `Bearer ${token}` },
@@ -394,7 +394,7 @@ export const updateComputer = createAsyncThunk(
     ) => {
         const state = getState() as RootState;
         const token = getToken(state);
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/bookings/computers/${id}`, {
             method: 'PATCH',

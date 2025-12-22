@@ -42,7 +42,7 @@ export const fetchNotifications = createAsyncThunk(
     async ({ page = 1, limit = 20 }: { page?: number; limit?: number } = {}) => {
         const token = getToken();
 
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/notifications?page=${page}&limit=${limit}`, {
             headers: { Authorization: `Bearer ${token}` },
@@ -79,7 +79,7 @@ export const fetchUnreadCount = createAsyncThunk('notifications/fetchUnreadCount
 export const markAsRead = createAsyncThunk('notifications/markAsRead', async (id: string) => {
     const token = getToken();
 
-    if (!token) throw new Error('Not authenticated');
+    if (!token) throw new Error('Nincs bejelentkezve!');
 
     const response = await fetch(`${API_URL}/notifications/${id}/read`, {
         method: 'PATCH',
@@ -98,7 +98,7 @@ export const markAsRead = createAsyncThunk('notifications/markAsRead', async (id
 export const markAllAsRead = createAsyncThunk('notifications/markAllAsRead', async () => {
     const token = getToken();
 
-    if (!token) throw new Error('Not authenticated');
+    if (!token) throw new Error('Nincs bejelentkezve!');
 
     const response = await fetch(`${API_URL}/notifications/read-all`, {
         method: 'PATCH',

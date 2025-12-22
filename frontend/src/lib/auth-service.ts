@@ -48,7 +48,7 @@ class AuthService {
                 this.setupTokenRefresh();
                 await this.syncUserWithBackend();
             } else {
-                console.log('User is not authenticated');
+                console.log('User is Nincs bejelentkezve!');
                 store.dispatch(clearCredentials());
             }
 
@@ -107,7 +107,7 @@ class AuthService {
         }
 
         if (!this._keycloak.authenticated) {
-            console.warn('User not authenticated');
+            console.warn('User Nincs bejelentkezve!');
             return null;
         }
 

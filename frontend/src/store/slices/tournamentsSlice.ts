@@ -77,7 +77,7 @@ export const registerForTournament = createAsyncThunk(
     async ({ tournamentId, teamId }: { tournamentId: string; teamId: string }, { rejectWithValue }) => {
         const token = getToken();
 
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/tournaments/${tournamentId}/register`, {
             method: 'POST',
@@ -103,7 +103,7 @@ export const unregisterFromTournament = createAsyncThunk(
     async ({ tournamentId, teamId }: { tournamentId: string; teamId: string }) => {
         const token = getToken();
 
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/tournaments/${tournamentId}/register/${teamId}`, {
             method: 'DELETE',
@@ -141,7 +141,7 @@ export const createTournament = createAsyncThunk(
         }
     ) => {
         const token = getToken();
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
         const response = await fetch(`${API_URL}/tournaments`, {
             method: 'POST',
             headers: {
@@ -185,7 +185,7 @@ export const updateTournament = createAsyncThunk(
     ) => {
         const token = getToken();
 
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/tournaments/${id}`, {
             method: 'PATCH',
@@ -211,7 +211,7 @@ export const deleteTournament = createAsyncThunk(
     async (id: string) => {
         const token = getToken();
 
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/tournaments/${id}`, {
             method: 'DELETE',
@@ -235,7 +235,7 @@ export const generateBracket = createAsyncThunk(
     async (tournamentId: string) => {
         const token = getToken();
 
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/tournaments/${tournamentId}/generate-bracket`, {
             method: 'POST',
@@ -259,7 +259,7 @@ export const updateMatch = createAsyncThunk(
     async ({ matchId, data }: { matchId: string; data: { homeScore?: number; awayScore?: number; winnerId?: string } }) => {
         const token = getToken();
 
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/matches/${matchId}/result`, {
             method: 'PATCH',
@@ -285,7 +285,7 @@ export const updateEntryStats = createAsyncThunk(
     async ({ tournamentId, entryId, data }: { tournamentId: string; entryId: string; data: { matchesPlayed?: number; qualifierPoints?: number } }) => {
         const token = getToken();
 
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/tournaments/${tournamentId}/entries/${entryId}`, {
             method: 'PATCH',

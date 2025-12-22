@@ -25,7 +25,7 @@ const getToken = (state: RootState) => state.auth.token;
 export const fetchMachines = createAsyncThunk('kiosk/fetchMachines', async (_, { getState }) => {
     const state = getState() as RootState;
     const token = getToken(state);
-    if (!token) throw new Error('Not authenticated');
+    if (!token) throw new Error('Nincs bejelentkezve!');
 
     const response = await fetch(`${API_URL}/admin/kiosk/machines`, {
         headers: { Authorization: `Bearer ${token}` },

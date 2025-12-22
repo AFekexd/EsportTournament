@@ -55,7 +55,7 @@ export const createGame = createAsyncThunk(
         const state = getState() as RootState;
         const token = getToken(state);
 
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/games`, {
             method: 'POST',
@@ -82,7 +82,7 @@ export const updateGame = createAsyncThunk(
         const state = getState() as RootState;
         const token = getToken(state);
 
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/games/${id}`, {
             method: 'PATCH',
@@ -109,7 +109,7 @@ export const deleteGame = createAsyncThunk(
         const state = getState() as RootState;
         const token = getToken(state);
 
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/games/${id}`, {
             method: 'DELETE',
@@ -140,7 +140,7 @@ export const addRank = createAsyncThunk(
     async ({ gameId, rankData }: { gameId: string; rankData: { name: string; value: number; image?: string; order: number } }, { getState }) => {
         const state = getState() as RootState;
         const token = getToken(state);
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/games/${gameId}/ranks`, {
             method: 'POST',
@@ -158,7 +158,7 @@ export const deleteRank = createAsyncThunk(
     async ({ gameId, rankId }: { gameId: string; rankId: string }, { getState }) => {
         const state = getState() as RootState;
         const token = getToken(state);
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/games/ranks/${rankId}`, {
             method: 'DELETE',
@@ -173,7 +173,7 @@ export const deleteRank = createAsyncThunk(
 export const fetchUserRanks = createAsyncThunk('games/fetchUserRanks', async (_, { getState }) => {
     const state = getState() as RootState;
     const token = getToken(state);
-    if (!token) throw new Error('Not authenticated');
+    if (!token) throw new Error('Nincs bejelentkezve!');
 
     const response = await fetch(`${API_URL}/users/me/ranks`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -188,7 +188,7 @@ export const setUserRank = createAsyncThunk(
     async ({ gameId, rankId }: { gameId: string; rankId: string }, { getState }) => {
         const state = getState() as RootState;
         const token = getToken(state);
-        if (!token) throw new Error('Not authenticated');
+        if (!token) throw new Error('Nincs bejelentkezve!');
 
         const response = await fetch(`${API_URL}/users/me/ranks`, {
             method: 'POST',
