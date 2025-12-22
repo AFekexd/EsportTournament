@@ -44,7 +44,14 @@ leaderboardsRouter.get(
                         },
                     },
                 },
-                orderBy: { elo: 'desc' },
+                orderBy: [
+                    {
+                        wonMatches: {
+                            _count: 'desc',
+                        },
+                    },
+                    { elo: 'desc' },
+                ],
                 take: parseInt(limit as string),
                 skip,
             }),
@@ -192,7 +199,14 @@ leaderboardsRouter.get(
                     },
                 },
             },
-            orderBy: { elo: 'desc' },
+            orderBy: [
+                {
+                    wonMatches: {
+                        _count: 'desc',
+                    },
+                },
+                { elo: 'desc' },
+            ],
             take: 3,
         });
 
@@ -201,6 +215,10 @@ leaderboardsRouter.get(
             rank: index + 1,
             matchesPlayed: player._count.homeMatches + player._count.awayMatches,
             matchesWon: player._count.wonMatches,
+            winRate:
+                player._count.homeMatches + player._count.awayMatches > 0
+                    ? (player._count.wonMatches / (player._count.homeMatches + player._count.awayMatches)) * 100
+                    : 0,
         }));
 
         res.json({ success: true, data: rankedPlayers });

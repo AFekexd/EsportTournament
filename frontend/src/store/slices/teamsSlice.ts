@@ -34,12 +34,13 @@ const getToken = (state: RootState) => state.auth.token;
 
 export const fetchTeams = createAsyncThunk(
     'teams/fetchTeams',
-    async ({ page = 1, search }: { page?: number; search?: string }, { getState }) => {
+    async ({ page = 1, search, my }: { page?: number; search?: string; my?: boolean }, { getState }) => {
         const state = getState() as RootState;
         const token = getToken(state);
 
         const params = new URLSearchParams({ page: String(page), limit: '12' });
         if (search) params.append('search', search);
+        if (my) params.append('my', 'true');
 
         const response = await fetch(`${API_URL}/teams?${params}`, {
             headers: token ? { Authorization: `Bearer ${token}` } : {},
