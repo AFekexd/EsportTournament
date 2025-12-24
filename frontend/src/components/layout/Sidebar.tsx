@@ -104,7 +104,10 @@ export function Sidebar() {
               to="/"
               className="flex items-center gap-2 font-bold text-primary transition-opacity hover:opacity-80"
             >
-              <img src="/Pixelated.png" className="w-8 h-8" />
+              <img
+                src="/esportlogo.png"
+                className="md:w-15 md:h-15 w-12 h-12"
+              />
               <span className="text-xl tracking-tight text-white font-black tracking-tighter drop-shadow-[0_0_10px_rgba(139,92,246,0.3)]">
                 EsportHub
               </span>
