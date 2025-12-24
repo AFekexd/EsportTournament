@@ -115,3 +115,60 @@ usersRouter.patch(
         res.json({ success: true, data: updatedUser });
     })
 );
+// Get public user profile
+usersRouter.get(
+    '/:id/public',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const userId = req.params.id;
+
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+                id: true,
+                username: true,
+                displayName: true,
+                avatarUrl: true,
+                role: true,
+                createdAt: true,
+                teamMemberships: {
+                    include: {
+                        team: true
+                    }
+                },
+                ranks: {
+                    include: {
+                        rank: true,
+                        game: true
+                    }
+                }
+            }
+        });
+
+        if (!user) {
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
+        }
+
+        // Formatting response to be cleaner
+        const publicProfile = {
+            id: user.id,
+            username: user.username,
+            displayName: user?.displayName,
+            avatarUrl: user?.avatarUrl,
+            role: user.role,
+            createdAt: user.createdAt,
+            teams: user.teamMemberships.map(tm => tm.team),
+            ranks: user.ranks.map(ur => ({
+                id: ur.id,
+                gameId: ur.gameId,
+                gameName: ur.game.name,
+                gameImage: ur.game.imageUrl,
+                rankName: ur.rank.name,
+                rankValue: ur.rank.value,
+                rankImage: ur.rank.image
+            }))
+        };
+
+        res.json({ success: true, data: publicProfile });
+    })
+);

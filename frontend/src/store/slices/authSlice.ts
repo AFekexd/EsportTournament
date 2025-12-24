@@ -86,6 +86,11 @@ const authSlice = createSlice({
         setLoading: (state, action: PayloadAction<boolean>) => {
             state.isLoading = action.payload;
         },
+        updateUser: (state, action: PayloadAction<Partial<User>>) => {
+            if (state.user) {
+                state.user = { ...state.user, ...action.payload };
+            }
+        },
         setError: (state, action: PayloadAction<string>) => {
             state.error = action.payload;
             state.isLoading = false;
@@ -138,6 +143,6 @@ const authSlice = createSlice({
     },
 });
 
-export const { setCredentials, clearCredentials, setLoading, setError } = authSlice.actions;
+export const { setCredentials, clearCredentials, setLoading, setError, updateUser } = authSlice.actions;
 export default authSlice.reducer;
 

@@ -1,4 +1,5 @@
 import { UserMinus, Crown } from "lucide-react";
+import { Link } from "react-router-dom";
 import type { TeamMember } from "../../types";
 
 interface MemberCardProps {
@@ -19,8 +20,11 @@ export function MemberCard({
 
   return (
     <div className="flex items-center gap-4 p-5 bg-card/60 backdrop-blur-xl border border-border transition-all duration-300 hover:border-primary/50 hover:shadow-[0_0_20px_hsla(var(--primary),0.2)]">
-      <div className="relative w-14 h-14 shrink-0">
-        <div className="w-full h-full rounded-full bg-gradient-to-br from-primary to-[hsl(320,100%,65%)] flex items-center justify-center text-white font-bold text-xl overflow-hidden">
+      <Link
+        to={`/profile/${member.userId}`}
+        className="relative w-14 h-14 shrink-0 block"
+      >
+        <div className="w-full h-full rounded-full bg-gradient-to-br from-primary to-[hsl(320,100%,65%)] flex items-center justify-center text-white font-bold text-xl overflow-hidden hover:opacity-80 transition-opacity">
           {member.user?.avatarUrl ? (
             <img
               src={member.user.avatarUrl}
@@ -43,12 +47,17 @@ export function MemberCard({
             <Crown size={14} />
           </div>
         )}
-      </div>
+      </Link>
 
       <div className="flex-1 min-w-0">
-        <h3 className="text-base font-semibold text-foreground mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-          {member.user?.displayName || member.user?.username}
-        </h3>
+        <Link
+          to={`/profile/${member.userId}`}
+          className="hover:text-primary transition-colors"
+        >
+          <h3 className="text-base font-semibold text-foreground mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
+            {member.user?.displayName || member.user?.username}
+          </h3>
+        </Link>
         <p className="text-sm text-muted-foreground mb-1">
           @{member.user?.username}
         </p>

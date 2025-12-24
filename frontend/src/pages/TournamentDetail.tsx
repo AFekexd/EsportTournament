@@ -573,9 +573,10 @@ export function TournamentDetailPage() {
                       if (entry.user && !entry.team) {
                         // Solo Player Card
                         return (
-                          <div
+                          <Link
                             key={entry.id}
-                            className="relative group overflow-hidden rounded-xl border border-white/10 bg-[#252632] hover:border-primary/50 transition-all duration-300"
+                            to={`/profile/${entry.user.id}`}
+                            className="relative group overflow-hidden rounded-xl border border-white/10 bg-[#252632] hover:border-primary/50 transition-all duration-300 block"
                           >
                             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
@@ -584,7 +585,10 @@ export function TournamentDetailPage() {
                                 {entry.user.avatarUrl ? (
                                   <img
                                     src={entry.user.avatarUrl}
-                                    alt={entry.user.displayName}
+                                    alt={
+                                      entry.user.displayName ||
+                                      entry.user.username
+                                    }
                                     className="w-full h-full object-cover"
                                   />
                                 ) : (
@@ -623,7 +627,7 @@ export function TournamentDetailPage() {
                                 </span>
                               </div>
                             </div>
-                          </div>
+                          </Link>
                         );
                       } else if (entry.team) {
                         // Team Card
@@ -786,9 +790,18 @@ export function TournamentDetailPage() {
                                     name?.charAt(0).toUpperCase()
                                   )}
                                 </div>
-                                <span className="font-medium text-white">
-                                  {name}
-                                </span>
+                                {entry.user ? (
+                                  <Link
+                                    to={`/profile/${entry.user.id}`}
+                                    className="font-medium text-white hover:text-primary transition-colors"
+                                  >
+                                    {name}
+                                  </Link>
+                                ) : (
+                                  <span className="font-medium text-white">
+                                    {name}
+                                  </span>
+                                )}
                               </div>
                             </td>
                             <td className="px-6 py-4">

@@ -2,11 +2,14 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { Save, Bell, Lock, User, Shield, Mail, AtSign } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
+import { useAppDispatch } from "../hooks/useRedux";
+import { updateUser } from "../store/slices/authSlice";
 import { ImageUpload } from "../components/common/ImageUpload";
 import { API_URL } from "../config";
 import { authService } from "../lib/auth-service";
 
 export function SettingsPage() {
+  const dispatch = useAppDispatch();
   const { user, isAuthenticated } = useAuth();
 
   // Settings state
@@ -63,11 +66,14 @@ export function SettingsPage() {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to update profile");
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to update profile");
       }
 
       setSaveSuccess(true);
+      dispatch(updateUser(data.data));
       toast.success("Beállítások sikeresen mentve!");
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error) {

@@ -268,6 +268,7 @@ export function Navbar() {
                     <div className="h-full w-full overflow-hidden rounded-full bg-background">
                       {user.avatarUrl ? (
                         <img
+                          key={user.avatarUrl}
                           src={user.avatarUrl}
                           alt={user.displayName || user.username}
                           className="h-full w-full object-cover"

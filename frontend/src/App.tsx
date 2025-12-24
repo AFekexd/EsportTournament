@@ -1,13 +1,32 @@
-import { useEffect, useRef } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { store } from './store';
-import { useAppDispatch, useAppSelector } from './hooks/useRedux';
-import { initKeycloak } from './store/slices/authSlice';
-import { Layout } from './components/layout';
-import { HomePage, TournamentsPage, TeamsPage, GamesPage, CalendarPage, ProfilePage, SettingsPage, AdminPage, TeamCreatePage, TeamDetailPage, GameDetailPage, TournamentDetailPage, LeaderboardsPage, NotificationsPage, DiscordAdminPage, BookingPage, TeacherTimePage, TournamentEmbedPage } from './pages';
-import { PuffLoader } from 'react-spinners';
-import { Toaster } from './components/ui/sonner';
+import { useEffect, useRef } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Provider } from "react-redux";
+import { store } from "./store";
+import { useAppDispatch, useAppSelector } from "./hooks/useRedux";
+import { initKeycloak } from "./store/slices/authSlice";
+import { Layout } from "./components/layout";
+import {
+  HomePage,
+  TournamentsPage,
+  TeamsPage,
+  GamesPage,
+  CalendarPage,
+  ProfilePage,
+  SettingsPage,
+  AdminPage,
+  TeamCreatePage,
+  TeamDetailPage,
+  GameDetailPage,
+  TournamentDetailPage,
+  LeaderboardsPage,
+  NotificationsPage,
+  DiscordAdminPage,
+  BookingPage,
+  TeacherTimePage,
+  TournamentEmbedPage,
+} from "./pages";
+import { PuffLoader } from "react-spinners";
+import { Toaster } from "./components/ui/sonner";
 
 function AppContent() {
   const dispatch = useAppDispatch();
@@ -31,7 +50,7 @@ function AppContent() {
 
   useEffect(() => {
     if (error) {
-      console.error('Auth error:', error);
+      console.error("Auth error:", error);
     }
   }, [error]);
 
@@ -40,7 +59,9 @@ function AppContent() {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-6">
           <PuffLoader color="#8b5cf6" size={60} />
-          <span className="font-bold uppercase tracking-widest text-muted-foreground group-hover:text-white transition-colors text-lg">Betöltés...</span>
+          <span className="font-bold uppercase tracking-widest text-muted-foreground group-hover:text-white transition-colors text-lg">
+            Betöltés...
+          </span>
         </div>
       </div>
     );
@@ -63,12 +84,16 @@ function AppContent() {
           <Route path="discord-settings" element={<DiscordAdminPage />} />
           <Route path="calendar" element={<CalendarPage />} />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="profile/:id" element={<ProfilePage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="admin" element={<AdminPage />} />
           <Route path="teacher/time" element={<TeacherTimePage />} />
           <Route path="booking" element={<BookingPage />} />
         </Route>
-        <Route path="/embed/tournaments/:id" element={<TournamentEmbedPage />} />
+        <Route
+          path="/embed/tournaments/:id"
+          element={<TournamentEmbedPage />}
+        />
       </Routes>
       <Toaster />
     </BrowserRouter>

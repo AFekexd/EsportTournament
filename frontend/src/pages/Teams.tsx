@@ -69,10 +69,12 @@ function TeamCard({ team }: { team: Team }) {
       <div className="flex items-center gap-2 mb-4">
         <div className="flex -space-x-2">
           {team.members?.slice(0, 5).map((member: TeamMember) => (
-            <div
+            <Link
               key={member.id}
-              className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 border-2 border-[#1a1b26] flex items-center justify-center text-white text-xs font-semibold"
+              to={`/profile/${member.userId}`}
+              className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 border-2 border-[#1a1b26] flex items-center justify-center text-white text-xs font-semibold hover:border-primary transition-colors cursor-pointer"
               title={member.user?.displayName || member.user?.username}
+              onClick={(e) => e.stopPropagation()} // Prevent card click
             >
               {member.user?.avatarUrl ? (
                 <img
@@ -87,7 +89,7 @@ function TeamCard({ team }: { team: Team }) {
                     .toUpperCase()}
                 </span>
               )}
-            </div>
+            </Link>
           ))}
           {team.members && team.members.length > 5 && (
             <div className="w-8 h-8 rounded-full bg-primary/20 border-2 border-[#1a1b26] flex items-center justify-center text-primary text-xs font-bold">

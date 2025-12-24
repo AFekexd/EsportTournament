@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { toast } from "sonner";
 import {
   ArrowLeft,
   Users,
@@ -13,6 +14,8 @@ import {
   Trash2,
   RefreshCw,
   Info,
+  Shield,
+  Calendar,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import { useAuth } from "../hooks/useAuth";
@@ -25,7 +28,6 @@ import {
 } from "../store/slices/teamsSlice";
 import { TeamEditModal } from "../components/teams/TeamEditModal";
 import { MemberCard } from "../components/teams/MemberCard";
-import "./TeamDetail.css";
 
 type TabType = "overview" | "members" | "tournaments" | "settings";
 
@@ -58,6 +60,7 @@ export function TeamDetailPage() {
     if (currentTeam?.joinCode) {
       navigator.clipboard.writeText(currentTeam.joinCode);
       setCopied(true);
+      toast.success("Csatlakozási kód vágólapra másolva!");
       setTimeout(() => setCopied(false), 2000);
     }
   };
@@ -67,6 +70,7 @@ export function TeamDetailPage() {
       const link = `${window.location.origin}/teams?joinCode=${currentTeam.joinCode}`;
       navigator.clipboard.writeText(link);
       setCopiedLink(true);
+      toast.success("Meghívó link vágólapra másolva!");
       setTimeout(() => setCopiedLink(false), 2000);
     }
   };
@@ -74,6 +78,7 @@ export function TeamDetailPage() {
   const handleRegenerateCode = async () => {
     if (currentTeam?.id) {
       await dispatch(regenerateJoinCode(currentTeam.id));
+      toast.success("Csatlakozási kód újragenerálva!");
     }
   };
 
@@ -83,311 +88,408 @@ export function TeamDetailPage() {
       window.confirm("Biztosan eltávolítod ezt a tagot?")
     ) {
       await dispatch(removeMember({ teamId: currentTeam.id, memberId }));
+      toast.success("Tag eltávolítva.");
     }
   };
 
   const handleDeleteTeam = async () => {
     if (currentTeam?.id) {
       await dispatch(deleteTeam(currentTeam.id));
+      toast.success("Csapat törölve.");
       navigate("/teams");
     }
   };
 
   if (isLoading || !currentTeam) {
     return (
-      <div className="loading-container">
-        <div className="spinner-large" />
-        <p>Betöltés...</p>
+      <div className="min-h-screen flex items-center justify-center bg-[#0f1015]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+          <p className="text-gray-400">Csapat betöltése...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="team-detail-page">
-      {/* Header */}
-      <div className="page-header">
-        <button className="btn btn-ghost" onClick={() => navigate("/teams")}>
-          <ArrowLeft size={18} />
-          Vissza
-        </button>
-      </div>
-
-      {/* Team Info Card */}
-      <div className="team-header card">
-        <div className="team-header-content">
-          {currentTeam.logoUrl && (
-            <div className="team-logo">
-              <img src={currentTeam.logoUrl} alt={currentTeam.name} />
-            </div>
-          )}
-          <div className="team-info">
-            <h1 className="team-name">{currentTeam.name}</h1>
-            <div className="team-meta">
-              <span className="team-elo">
-                <Trophy size={16} />
-                {currentTeam.elo} ELO
-              </span>
-              <span className="team-members-count">
-                <Users size={16} />
-                {currentTeam.members?.length || 0} tagok
-              </span>
-            </div>
-          </div>
+    <div className="min-h-screen bg-[#0f1015] text-white p-4 md:p-8 rounded-sm">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Back Button */}
+        <div>
+          <button
+            onClick={() => navigate("/teams")}
+            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+          >
+            <ArrowLeft size={20} />
+            <span>Vissza a csapatokhoz</span>
+          </button>
         </div>
 
-        {isOwner && currentTeam.joinCode && (
-          <div className="join-code-section">
-            <label className="join-code-label">Csatlakozási kód:</label>
-            <div className="join-code-group">
-              <code className="join-code">{currentTeam.joinCode}</code>
-              <button
-                className="btn btn-sm btn-secondary"
-                onClick={handleCopyJoinCode}
-                title="Kód másolása"
-              >
-                {copied ? <Check size={16} /> : <Copy size={16} />}
-              </button>
-              <button
-                className="btn btn-sm btn-secondary"
-                onClick={handleCopyInviteLink}
-                title="Meghívó link másolása"
-              >
-                {copiedLink ? <Check size={16} /> : <LinkIcon size={16} />}
-              </button>
-              <button
-                className="btn btn-sm btn-secondary"
-                onClick={handleRegenerateCode}
-                title="Újragenerálás"
-              >
-                <RefreshCw size={16} />
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
+        {/* Team Header Card */}
+        <div className="relative overflow-hidden rounded-2xl bg-[#1a1b26] border border-white/5 shadow-2xl">
+          {/* Banner */}
+          <div className="h-48 relative group">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-900/40 via-blue-900/40 to-primary/40"></div>
+            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#1a1b26] to-transparent"></div>
 
-      {/* Tabs */}
-      <div className="tabs-container">
-        <div className="tabs">
-          <button
-            className={`tab ${activeTab === "overview" ? "active" : ""}`}
-            onClick={() => setActiveTab("overview")}
-          >
-            <Info size={18} />
-            Áttekintés
-          </button>
-          <button
-            className={`tab ${activeTab === "members" ? "active" : ""}`}
-            onClick={() => setActiveTab("members")}
-          >
-            <Users size={18} />
-            Tagok
-          </button>
-          <button
-            className={`tab ${activeTab === "tournaments" ? "active" : ""}`}
-            onClick={() => setActiveTab("tournaments")}
-          >
-            <Trophy size={18} />
-            Versenyek
-          </button>
-          {isOwner && (
-            <button
-              className={`tab ${activeTab === "settings" ? "active" : ""}`}
-              onClick={() => setActiveTab("settings")}
-            >
-              <Settings size={18} />
-              Beállítások
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Tab Content */}
-      <div className="tab-content">
-        {activeTab === "overview" && (
-          <div className="overview-tab">
-            <div className="card">
-              <h2 className="section-title">Leírás</h2>
-              <p className="team-description">
-                {currentTeam.description || "Nincs leírás megadva."}
-              </p>
-            </div>
-
-            <div className="stats-grid">
-              <div className="stat-card card">
-                <div className="stat-icon">
-                  <Trophy />
-                </div>
-                <div className="stat-info">
-                  <span className="stat-value">{currentTeam.elo}</span>
-                  <span className="stat-label">ELO</span>
-                </div>
-              </div>
-              <div className="stat-card card">
-                <div className="stat-icon">
-                  <Users />
-                </div>
-                <div className="stat-info">
-                  <span className="stat-value">
-                    {currentTeam.members?.length || 0}
-                  </span>
-                  <span className="stat-label">Tagok</span>
-                </div>
-              </div>
-              <div className="stat-card card">
-                <div className="stat-icon">
-                  <Trophy />
-                </div>
-                <div className="stat-info">
-                  <span className="stat-value">
-                    {currentTeam.tournamentEntries?.length || 0}
-                  </span>
-                  <span className="stat-label">Versenyek</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === "members" && (
-          <div className="members-tab">
-            <div className="members-header">
-              <h2 className="section-title">Csapattagok</h2>
-              {isOwner && (
-                <button className="btn btn-primary btn-sm">
-                  <UserPlus size={16} />
-                  Tag hozzáadása
-                </button>
-              )}
-            </div>
-
-            <div className="members-grid">
-              {currentTeam.members?.map((member) => (
-                <MemberCard
-                  key={member.userId}
-                  member={member}
-                  isOwner={isOwner}
-                  currentUserId={user?.id}
-                  onRemove={() => handleRemoveMember(member.userId)}
-                />
-              ))}
-            </div>
-
-            {(!currentTeam.members || currentTeam.members.length === 0) && (
-              <div className="empty-state card">
-                <Users size={48} />
-                <p>Még nincsenek tagok ebben a csapatban</p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {activeTab === "tournaments" && (
-          <div className="tournaments-tab">
-            <h2 className="section-title">Versenyek</h2>
-
-            {currentTeam.tournamentEntries &&
-            currentTeam.tournamentEntries.length > 0 ? (
-              <div className="tournaments-list">
-                {currentTeam.tournamentEntries.map((entry) => (
-                  <Link
-                    key={entry.id}
-                    to={`/tournaments/${entry.tournament?.id}`}
-                    className="tournament-card card"
-                  >
-                    <div className="tournament-info">
-                      <h3>{entry.tournament?.name}</h3>
-                      <p className="tournament-game">
-                        {entry.tournament?.game?.name}
-                      </p>
-                    </div>
-                    <span
-                      className={`badge ${
-                        entry.tournament?.status === "REGISTRATION"
-                          ? "badge-success"
-                          : entry.tournament?.status === "IN_PROGRESS"
-                          ? "badge-warning"
-                          : entry.tournament?.status === "COMPLETED"
-                          ? "badge-primary"
-                          : entry.tournament?.status === "CANCELLED"
-                          ? "badge-error"
-                          : "badge-secondary"
-                      }`}
-                    >
-                      {entry.tournament?.status === "REGISTRATION"
-                        ? "Regisztráció"
-                        : entry.tournament?.status === "IN_PROGRESS"
-                        ? "Folyamatban"
-                        : entry.tournament?.status === "COMPLETED"
-                        ? "Befejezett"
-                        : entry.tournament?.status === "CANCELLED"
-                        ? "Törölve"
-                        : entry.tournament?.status === "DRAFT"
-                        ? "Piszkozat"
-                        : entry.tournament?.status}
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <div className="empty-state card">
-                <Trophy size={48} />
-                <p>Ez a csapat még nem vesz részt versenyeken</p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {activeTab === "settings" && isOwner && (
-          <div className="settings-tab">
-            <div className="settings-section card">
-              <h2 className="section-title">Csapat beállítások</h2>
-
-              <button
-                className="btn btn-secondary"
-                onClick={() => setShowEditModal(true)}
-              >
-                <Edit size={18} />
-                Csapat szerkesztése
-              </button>
-            </div>
-
-            <div className="settings-section card danger-zone">
-              <h2 className="section-title">Veszélyzóna</h2>
-              <p className="danger-description">
-                A csapat törlése végleges és nem visszavonható művelet.
-              </p>
-
-              {!showDeleteConfirm ? (
+            {isOwner && (
+              <div className="absolute top-6 right-6 flex gap-3 z-20">
                 <button
-                  className="btn btn-danger"
-                  onClick={() => setShowDeleteConfirm(true)}
+                  onClick={() => setShowEditModal(true)}
+                  className="p-2 bg-black/40 hover:bg-black/60 text-white backdrop-blur-md border border-white/10 rounded-full transition-all hover:scale-105"
+                  title="Szerkesztés"
                 >
-                  <Trash2 size={18} />
-                  Csapat törlése
+                  <Edit size={20} />
                 </button>
-              ) : (
-                <div className="delete-confirm">
-                  <p>Biztosan törölni szeretnéd ezt a csapatot?</p>
-                  <div className="delete-actions">
-                    <button
-                      className="btn btn-danger"
-                      onClick={handleDeleteTeam}
-                    >
-                      Igen, törlés
-                    </button>
-                    <button
-                      className="btn btn-secondary"
-                      onClick={() => setShowDeleteConfirm(false)}
-                    >
-                      Mégse
-                    </button>
+              </div>
+            )}
+          </div>
+
+          <div className="px-8 pb-8">
+            <div className="relative flex flex-col md:flex-row gap-8 items-end -mt-20">
+              {/* Logo */}
+              <div className="relative shrink-0 mx-auto md:mx-0 z-10">
+                <div className="w-36 h-36 md:w-44 md:h-44 rounded-2xl p-1.5 bg-[#1a1b26] shadow-2xl relative rotate-3 hover:rotate-0 transition-transform duration-300">
+                  <div className="w-full h-full rounded-xl p-1 bg-gradient-to-br from-blue-500 to-purple-600">
+                    <div className="w-full h-full rounded-lg bg-[#0f1015] overflow-hidden flex items-center justify-center relative z-10">
+                      {currentTeam.logoUrl ? (
+                        <img
+                          src={currentTeam.logoUrl}
+                          alt={currentTeam.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-5xl font-bold text-white">
+                          {currentTeam.name.charAt(0).toUpperCase()}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
-              )}
+              </div>
+
+              {/* Info & Meta */}
+              <div className="flex-1 w-full flex flex-col md:flex-row items-center md:items-end justify-between gap-6 md:pb-4">
+                <div className="text-center md:text-left space-y-2">
+                  <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight">
+                    {currentTeam.name}
+                  </h1>
+
+                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-gray-400">
+                    <span className="flex items-center gap-2 bg-white/5 px-3 py-1 rounded-full text-sm">
+                      <Trophy size={14} className="text-yellow-500" />
+                      <span className="font-bold text-white">
+                        {currentTeam.elo}
+                      </span>{" "}
+                      ELO
+                    </span>
+                    <span className="flex items-center gap-2 bg-white/5 px-3 py-1 rounded-full text-sm">
+                      <Users size={14} className="text-blue-400" />
+                      <span>{currentTeam.members?.length || 0} tag</span>
+                    </span>
+                    <span className="flex items-center gap-2 bg-white/5 px-3 py-1 rounded-full text-sm">
+                      <Calendar size={14} className="text-purple-400" />
+                      <span>
+                        Létrehozva:{" "}
+                        {new Date(currentTeam.createdAt).toLocaleDateString(
+                          "hu-HU"
+                        )}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+
+                {/* Join Code (for Owner) */}
+                {isOwner && currentTeam.joinCode && (
+                  <div className="bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl p-4 flex flex-col gap-2 min-w-[250px]">
+                    <div className="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">
+                      Csatlakozási kód
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <code className="flex-1 bg-black/50 border border-white/5 rounded px-3 py-1.5 font-mono text-lg text-primary tracking-widest text-center">
+                        {currentTeam.joinCode}
+                      </code>
+                      <button
+                        onClick={handleCopyJoinCode}
+                        className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white"
+                        title="Másolás"
+                      >
+                        {copied ? (
+                          <Check size={18} className="text-green-500" />
+                        ) : (
+                          <Copy size={18} />
+                        )}
+                      </button>
+                    </div>
+                    <div className="flex gap-2 mt-1">
+                      <button
+                        onClick={handleCopyInviteLink}
+                        className="flex-1 text-xs bg-white/5 hover:bg-white/10 py-1.5 rounded text-gray-300 transition-colors flex items-center justify-center gap-1"
+                      >
+                        {copiedLink ? (
+                          <Check size={12} />
+                        ) : (
+                          <LinkIcon size={12} />
+                        )}{" "}
+                        Link másolása
+                      </button>
+                      <button
+                        onClick={handleRegenerateCode}
+                        className="flex-1 text-xs bg-white/5 hover:bg-white/10 py-1.5 rounded text-gray-300 transition-colors flex items-center justify-center gap-1"
+                      >
+                        <RefreshCw size={12} /> Új kód
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        )}
+
+          {/* Tabs Navigation */}
+          <div className="flex items-center gap-1 px-8 border-t border-white/5 bg-black/20 overflow-x-auto">
+            {(["overview", "members", "tournaments", "settings"] as const).map(
+              (tab) => {
+                if (tab === "settings" && !isOwner) return null;
+
+                const icons = {
+                  overview: Info,
+                  members: Users,
+                  tournaments: Trophy,
+                  settings: Settings,
+                };
+                const labels = {
+                  overview: "Áttekintés",
+                  members: "Tagok",
+                  tournaments: "Versenyek",
+                  settings: "Beállítások",
+                };
+                const Icon = icons[tab];
+
+                return (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                      activeTab === tab
+                        ? "border-primary text-primary bg-primary/5"
+                        : "border-transparent text-gray-400 hover:text-white hover:bg-white/5"
+                    }`}
+                  >
+                    <Icon size={18} />
+                    {labels[tab]}
+                  </button>
+                );
+              }
+            )}
+          </div>
+        </div>
+
+        {/* Tab Content */}
+        <div className="space-y-6">
+          {activeTab === "overview" && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <div className="bg-[#1a1b26] rounded-xl border border-white/5 p-6 h-full">
+                  <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <Info size={20} className="text-primary" />A Csapatról
+                  </h2>
+                  <div className="prose prose-invert max-w-none text-gray-300 leading-relaxed">
+                    {currentTeam.description ? (
+                      currentTeam.description
+                    ) : (
+                      <span className="italic opacity-50">
+                        Nincs leírás megadva.
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="bg-[#1a1b26] rounded-xl border border-white/5 p-6">
+                  <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">
+                    Statisztikák
+                  </h2>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-3 bg-black/20 rounded-lg">
+                      <span className="text-gray-400 flex items-center gap-2">
+                        <Trophy size={16} /> Versenyek
+                      </span>
+                      <span className="text-xl font-bold text-white">
+                        {currentTeam.tournamentEntries?.length || 0}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-black/20 rounded-lg">
+                      <span className="text-gray-400 flex items-center gap-2">
+                        <Users size={16} /> Tagok
+                      </span>
+                      <span className="text-xl font-bold text-white">
+                        {currentTeam.members?.length || 0}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-black/20 rounded-lg">
+                      <span className="text-gray-400 flex items-center gap-2">
+                        <Shield size={16} /> Kapitania
+                      </span>
+                      <span className="text-white font-medium">
+                        {currentTeam.owner?.displayName ||
+                          currentTeam.owner?.username}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "members" && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold text-white">Csapattagok</h2>
+                {isOwner && (
+                  <button className="btn btn-primary btn-sm gap-2">
+                    <UserPlus size={16} />
+                    Tag meghívása
+                  </button>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {currentTeam.members?.length ? (
+                  currentTeam.members.map((member) => (
+                    <MemberCard
+                      key={member.userId}
+                      member={member}
+                      isOwner={isOwner}
+                      currentUserId={user?.id}
+                      onRemove={() => handleRemoveMember(member.userId)}
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-full py-12 text-center text-gray-500 bg-[#1a1b26]/50 rounded-xl border border-dashed border-white/10">
+                    <Users size={48} className="mx-auto mb-3 opacity-20" />
+                    <p>Még nincsenek tagok.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {activeTab === "tournaments" && (
+            <div className="space-y-6">
+              <h2 className="text-xl font-bold text-white">
+                Nevezett Versenyek
+              </h2>
+              {currentTeam.tournamentEntries?.length ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {currentTeam.tournamentEntries.map((entry) => (
+                    <Link
+                      key={entry.id}
+                      to={`/tournaments/${entry.tournament?.id}`}
+                      className="group bg-[#1a1b26] border border-white/5 rounded-xl p-5 hover:border-primary/50 transition-all hover:-translate-y-1 block shadow-lg shadow-black/20"
+                    >
+                      <div className="flex justify-between items-start mb-4">
+                        <h3 className="font-bold text-white text-lg group-hover:text-primary transition-colors line-clamp-1">
+                          {entry.tournament?.name}
+                        </h3>
+                        <div
+                          className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border ${
+                            entry.tournament?.status === "REGISTRATION"
+                              ? "bg-green-500/10 text-green-500 border-green-500/20"
+                              : entry.tournament?.status === "IN_PROGRESS"
+                              ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
+                              : "bg-red-500/10 text-red-500 border-red-500/20"
+                          }`}
+                        >
+                          {entry.tournament?.status}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-gray-400 mb-2">
+                        <Trophy size={14} className="text-primary" />
+                        <span>{entry.tournament?.game?.name}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-500">
+                        <Calendar size={12} />
+                        <span>
+                          {new Date(
+                            entry.tournament?.startDate || ""
+                          ).toLocaleDateString("hu-HU")}
+                        </span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="py-12 text-center text-gray-500 bg-[#1a1b26]/50 rounded-xl border border-dashed border-white/10">
+                  <Trophy size={48} className="mx-auto mb-3 opacity-20" />
+                  <p>Nincs verseny nevezés.</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === "settings" && isOwner && (
+            <div className="space-y-6 max-w-2xl mx-auto">
+              <div className="bg-[#1a1b26] rounded-xl border border-white/5 p-6">
+                <h2 className="text-lg font-bold text-white mb-4">
+                  Csapat szerkesztése
+                </h2>
+                <p className="text-gray-400 text-sm mb-4">
+                  Kép, név, leírás módosítása.
+                </p>
+                <button
+                  className="btn btn-secondary w-full flex items-center justify-center gap-2"
+                  onClick={() => setShowEditModal(true)}
+                >
+                  <Edit size={16} />
+                  Adatok módosítása
+                </button>
+              </div>
+
+              <div className="bg-red-500/5 rounded-xl border border-red-500/20 p-6">
+                <h2 className="text-lg font-bold text-red-500 mb-2">
+                  Veszélyzóna
+                </h2>
+                <p className="text-red-400/70 text-sm mb-4">
+                  A csapat törlése végleges és nem visszavonható. Minden adat
+                  (tagok, elért eredmények) elvész.
+                </p>
+
+                {!showDeleteConfirm ? (
+                  <button
+                    className="btn btn-danger w-full flex items-center justify-center gap-2"
+                    onClick={() => setShowDeleteConfirm(true)}
+                  >
+                    <Trash2 size={16} />
+                    Csapat törlése
+                  </button>
+                ) : (
+                  <div className="space-y-3 bg-red-500/10 p-4 rounded-lg border border-red-500/20 animate-in fade-in zoom-in-95">
+                    <p className="text-white text-sm font-medium text-center">
+                      Biztosan törölni szeretnéd?
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        className="btn btn-danger flex-1"
+                        onClick={handleDeleteTeam}
+                      >
+                        Igen, törlés
+                      </button>
+                      <button
+                        className="btn btn-ghost flex-1 text-white hover:bg-white/10"
+                        onClick={() => setShowDeleteConfirm(false)}
+                      >
+                        Mégse
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Edit Modal */}
