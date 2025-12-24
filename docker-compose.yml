@@ -10,7 +10,7 @@ services:
         - VITE_KEYCLOAK_REALM=${VITE_KEYCLOAK_REALM}
         - VITE_KEYCLOAK_CLIENT_ID=${VITE_KEYCLOAK_CLIENT_ID}
     ports:
-      - "80:80"
+      - "5555:80"
     depends_on:
       - backend
     restart: always
