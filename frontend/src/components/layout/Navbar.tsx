@@ -152,7 +152,7 @@ export function Navbar() {
                       {notifications.length > 0 && (
                         <button
                           onClick={handleDeleteAll}
-                          className="text-gray-400 hover:text-red-400 transition-colors p-1"
+                          className="text-gray-400 hover:text-red-400 transition-colors p-2 rounded-md hover:bg-white/5"
                           title="Összes törlése"
                         >
                           <Trash2 size={16} />
@@ -168,59 +168,63 @@ export function Navbar() {
                       ) : notifications.length > 0 ? (
                         <div className="divide-y divide-white/5">
                           {notifications.slice(0, 5).map((notification) => (
-                            <Link
+                            <div
                               key={notification.id}
-                              to={notification.link || "/notifications"}
-                              onClick={() => {
-                                if (!notification.read) {
-                                  dispatch(markAsRead(notification.id));
-                                }
-                                setShowNotifications(false);
-                              }}
-                              className={`block px-4 py-3 hover:bg-white/5 transition-colors ${
+                              className={`relative group transition-colors hover:bg-white/5 ${
                                 !notification.read ? "bg-primary/5" : ""
                               }`}
                             >
-                              <div className="flex gap-3">
-                                <div
-                                  className={`mt-1 h-2 w-2 flex-shrink-0 rounded-full ${
-                                    !notification.read
-                                      ? "bg-primary"
-                                      : "bg-gray-600"
-                                  }`}
-                                />
-                                <div className="flex-1 min-w-0">
-                                  <p
-                                    className={`text-sm ${
-                                      !notification.read
-                                        ? "text-white font-medium"
-                                        : "text-gray-400"
-                                    } pr-6 break-words`}
-                                  >
-                                    {notification.message}
-                                  </p>
-                                  <p className="text-xs text-gray-500 mt-1">
-                                    {new Date(
-                                      notification.createdAt
-                                    ).toLocaleString("hu-HU", {
-                                      month: "short",
-                                      day: "numeric",
-                                      hour: "2-digit",
-                                      minute: "2-digit",
-                                    })}
-                                  </p>
-                                </div>
-                                <button
-                                  onClick={(e) =>
-                                    handleDeleteOne(e, notification.id)
+                              <Link
+                                to={notification.link || "/notifications"}
+                                onClick={() => {
+                                  if (!notification.read) {
+                                    dispatch(markAsRead(notification.id));
                                   }
-                                  className="absolute right-2 top-3 p-1.5 rounded-full text-gray-500 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 hover:text-red-400 transition-all"
-                                  title="Törlés"
-                                >
-                                  <Trash2 size={14} />
-                                </button>
-                              </div>
-                            </Link>
+                                  setShowNotifications(false);
+                                }}
+                                className="block px-4 py-3"
+                              >
+                                <div className="flex gap-3">
+                                  <div
+                                    className={`mt-1 h-2 w-2 flex-shrink-0 rounded-full ${
+                                      !notification.read
+                                        ? "bg-primary"
+                                        : "bg-gray-600"
+                                    }`}
+                                  />
+                                  <div className="flex-1 min-w-0">
+                                    <p
+                                      className={`text-sm ${
+                                        !notification.read
+                                          ? "text-white font-medium"
+                                          : "text-gray-400"
+                                      } pr-6 break-words`}
+                                    >
+                                      {notification.message}
+                                    </p>
+                                    <p className="text-xs text-gray-500 mt-1">
+                                      {new Date(
+                                        notification.createdAt
+                                      ).toLocaleString("hu-HU", {
+                                        month: "short",
+                                        day: "numeric",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                      })}
+                                    </p>
+                                  </div>
+                                </div>
+                              </Link>
+                              <button
+                                onClick={(e) =>
+                                  handleDeleteOne(e, notification.id)
+                                }
+                                className="absolute right-2 top-3 p-1.5 rounded-full text-gray-500 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 hover:text-red-400 transition-all z-10"
+                                title="Törlés"
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                            </div>
                           ))}
                         </div>
                       ) : (
