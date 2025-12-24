@@ -80,3 +80,38 @@ usersRouter.patch(
         res.json({ success: true, data: user });
     })
 );
+
+// Update user profile (User/Admin)
+usersRouter.patch(
+    '/:id',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const currentUser = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!currentUser) {
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
+        }
+
+        const targetUserId = req.params.id;
+
+        // Allow if admin OR if updating self
+        if (currentUser.role !== 'ADMIN' && currentUser.id !== targetUserId) {
+            throw new ApiError('Nincs jogosultságod a profil szerkesztéséhez', 403, 'FORBIDDEN');
+        }
+
+        const { displayName, avatarUrl, emailNotifications } = req.body;
+
+        const updatedUser = await prisma.user.update({
+            where: { id: targetUserId },
+            data: {
+                displayName,
+                avatarUrl,
+                emailNotifications,
+            },
+        });
+
+        res.json({ success: true, data: updatedUser });
+    })
+);

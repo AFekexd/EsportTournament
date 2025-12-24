@@ -31,8 +31,8 @@ gamesRouter.post(
             where: { keycloakId: req.user!.sub },
         });
 
-        if (!user || user.role !== 'ADMIN') {
-            throw new ApiError('Csak adminisztrátorok hozhatnak létre játékokat', 403, 'FORBIDDEN');
+        if (!user || user.role !== 'ADMIN' && user.role !== 'ORGANIZER') {
+            throw new ApiError('Csak adminisztrátorok és organizátorok hozhatnak létre játékokat', 403, 'FORBIDDEN');
         }
 
         const { name, description, imageUrl, rules, teamSize } = req.body;
@@ -104,9 +104,9 @@ gamesRouter.patch(
         const user = await prisma.user.findUnique({
             where: { keycloakId: req.user!.sub },
         });
-
-        if (!user || user.role !== 'ADMIN') {
-            throw new ApiError('Csak adminisztrátorok módosíthatnak játékokat', 403, 'FORBIDDEN');
+ 
+        if (!user || user.role !== 'ADMIN' && user.role !== 'ORGANIZER') {
+            throw new ApiError('Csak adminisztrátorok és organizátorok módosíthatnak játékokat', 403, 'FORBIDDEN');
         }
 
         const { name, description, imageUrl, rules, teamSize } = req.body;
@@ -148,8 +148,8 @@ gamesRouter.delete(
             where: { keycloakId: req.user!.sub },
         });
 
-        if (!user || user.role !== 'ADMIN') {
-            throw new ApiError('Csak adminisztrátorok törölhetnek játékokat', 403, 'FORBIDDEN');
+        if (!user || user.role !== 'ADMIN' && user.role !== 'ORGANIZER') {
+            throw new ApiError('Csak adminisztrátorok és organizátorok törölhetnek játékokat', 403, 'FORBIDDEN');
         }
 
         // Check for existing tournaments

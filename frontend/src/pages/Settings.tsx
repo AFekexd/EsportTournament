@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 import { useState } from "react";
-import { Save, Bell, Lock, User, Moon, Sun } from "lucide-react";
+import { Save, Bell, Lock, User, Shield, Mail, AtSign } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { ImageUpload } from "../components/common/ImageUpload";
 import { API_URL } from "../config";
@@ -8,31 +8,22 @@ import { authService } from "../lib/auth-service";
 
 export function SettingsPage() {
   const { user, isAuthenticated } = useAuth();
-  const [activeTab, setActiveTab] = useState<
-    "account" | "notifications" | "privacy" | "appearance"
-  >("account");
 
   // Settings state
   const [displayName, setDisplayName] = useState(user?.displayName || "");
   const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || "");
-  const [email] = useState(user?.email || "");
-  const [notifications, setNotifications] = useState({
-    tournaments: true,
-    teams: true,
-    matches: false,
-    email: user?.emailNotifications ?? true,
-  });
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
-  const [language, setLanguage] = useState("hu");
+  const [emailNotifications, setEmailNotifications] = useState(
+    user?.emailNotifications ?? true
+  );
 
   if (!isAuthenticated) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col items-center justify-center py-20 bg-[#1a1b26]/50 rounded-2xl border border-white/5">
-          <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6">
+        <div className="flex flex-col items-center justify-center py-20 glass-card rounded-2xl">
+          <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6 neon-border">
             <Lock size={40} className="text-gray-500" />
           </div>
-          <h3 className="text-xl font-bold text-white mb-2">
+          <h3 className="text-xl font-bold text-white mb-2 text-glow">
             Nem vagy bejelentkezve
           </h3>
           <p className="text-gray-400">
@@ -68,7 +59,7 @@ export function SettingsPage() {
         body: JSON.stringify({
           displayName,
           avatarUrl: avatarUrl || undefined,
-          emailNotifications: notifications.email,
+          emailNotifications: emailNotifications,
         }),
       });
 
@@ -77,6 +68,7 @@ export function SettingsPage() {
       }
 
       setSaveSuccess(true);
+      toast.success("Beállítások sikeresen mentve!");
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error) {
       console.error("Failed to save settings:", error);
@@ -87,385 +79,200 @@ export function SettingsPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-12 page">
       {/* Modern Header with Gradient */}
-      <div className="mb-12 text-center relative">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-primary/20 blur-3xl rounded-full -z-10" />
-        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-primary-100 to-gray-400 bg-clip-text text-transparent mb-4">
+      <div className="mb-16 text-center relative animate-fade-in">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/20 blur-[100px] rounded-full -z-10" />
+        <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-primary-300 to-primary-500 bg-clip-text text-transparent mb-6 text-glow">
           Beállítások
         </h1>
-        <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-          Kezeld a fiókod és preferenciáid
+        <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+          Szabd személyre a profilod és kezeld a fiókod egy helyen.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Sidebar */}
-        <div className="lg:col-span-1">
-          <div className="bg-[#1a1b26] rounded-xl border border-white/5 p-2">
-            <button
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all ${
-                activeTab === "account"
-                  ? "bg-primary text-white"
-                  : "text-gray-400 hover:text-white hover:bg-white/5"
-              }`}
-              onClick={() => setActiveTab("account")}
-            >
-              <User size={18} />
-              Fiók
-            </button>
-            <button
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all ${
-                activeTab === "notifications"
-                  ? "bg-primary text-white"
-                  : "text-gray-400 hover:text-white hover:bg-white/5"
-              }`}
-              onClick={() => setActiveTab("notifications")}
-            >
-              <Bell size={18} />
-              Értesítések
-            </button>
-            <button
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all ${
-                activeTab === "privacy"
-                  ? "bg-primary text-white"
-                  : "text-gray-400 hover:text-white hover:bg-white/5"
-              }`}
-              onClick={() => setActiveTab("privacy")}
-            >
-              <Lock size={18} />
-              Adatvédelem
-            </button>
-            <button
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all ${
-                activeTab === "appearance"
-                  ? "bg-primary text-white"
-                  : "text-gray-400 hover:text-white hover:bg-white/5"
-              }`}
-              onClick={() => setActiveTab("appearance")}
-            >
-              <Moon size={18} />
-              Megjelenés
-            </button>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        {/* Profile Card */}
+        <div
+          className="glass-card rounded-2xl p-8 hover:scale-[1.01] transition-transform animate-slide-up"
+          style={{ animationDelay: "0.1s" }}
+        >
+          <div className="flex items-center gap-4 mb-8">
+            <div className="p-3 bg-primary/10 rounded-xl neon-border">
+              <User size={24} className="text-primary" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-white">Profil Adatai</h2>
+              <p className="text-sm text-gray-400">Hogyan látnak mások téged</p>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="flex justify-center mb-6">
+              <ImageUpload
+                value={avatarUrl}
+                onChange={setAvatarUrl}
+                label="Profilkép"
+                placeholder="https://example.com/avatar.jpg"
+                maxSizeMB={15}
+                className="w-64 w-full"
+                aspect="square"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label
+                htmlFor="displayName"
+                className="text-sm font-medium text-gray-300 ml-1"
+              >
+                Megjelenítendő név
+              </label>
+              <input
+                id="displayName"
+                type="text"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                className="w-full px-5 py-4 bg-[#0a0a0f]/50 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-lg"
+                placeholder="pl. GamerPro123"
+              />
+            </div>
           </div>
         </div>
 
-        {/* Content */}
-        <div className="lg:col-span-3">
-          <div className="bg-[#1a1b26] rounded-xl border border-white/5 p-8">
-            {activeTab === "account" && (
+        {/* Right Column: Account & Notifications */}
+        <div
+          className="space-y-8 animate-slide-up"
+          style={{ animationDelay: "0.2s" }}
+        >
+          {/* Account Details */}
+          <div className="glass-card rounded-2xl p-8 hover:border-white/20">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="p-3 bg-blue-500/10 rounded-xl border border-blue-500/20">
+                <Shield size={24} className="text-blue-400" />
+              </div>
               <div>
-                <h2 className="text-2xl font-bold text-white mb-6">
-                  Fiók beállítások
-                </h2>
+                <h2 className="text-xl font-bold text-white">Fiók Adatok</h2>
+                <p className="text-sm text-gray-400">
+                  Biztonsági és azonosítási adatok
+                </p>
+              </div>
+            </div>
 
-                <div className="space-y-6">
-                  {/* Avatar Upload */}
-                  <div>
-                    <ImageUpload
-                      value={avatarUrl}
-                      onChange={setAvatarUrl}
-                      label="Profilkép"
-                      placeholder="https://example.com/avatar.jpg"
-                      maxSizeMB={15}
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="displayName"
-                      className="block text-sm font-medium text-gray-300 mb-2"
-                    >
-                      Megjelenítendő név
-                    </label>
-                    <input
-                      id="displayName"
-                      type="text"
-                      value={displayName}
-                      onChange={(e) => setDisplayName(e.target.value)}
-                      className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="block text-sm font-medium text-gray-300 mb-2"
-                    >
-                      Email cím
-                    </label>
-                    <input
-                      id="email"
-                      type="email"
-                      value={email}
-                      disabled
-                      className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-gray-500 cursor-not-allowed"
-                    />
-                    <p className="text-sm text-gray-500 mt-2">
-                      Az email cím nem módosítható
-                    </p>
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="username"
-                      className="block text-sm font-medium text-gray-300 mb-2"
-                    >
-                      Felhasználónév
-                    </label>
-                    <input
-                      id="username"
-                      type="text"
-                      value={user?.username}
-                      disabled
-                      className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-gray-500 cursor-not-allowed"
-                    />
-                    <p className="text-sm text-gray-500 mt-2">
-                      A felhasználónév nem módosítható
-                    </p>
-                  </div>
-
-                  <button
-                    type="button"
-                    className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed ${
-                      saveSuccess
-                        ? "bg-green-600 hover:bg-green-700 shadow-green-600/20"
-                        : "bg-primary hover:bg-primary/90 shadow-primary/20"
-                    }`}
-                    onClick={handleSave}
-                    disabled={saveLoading}
-                  >
-                    {saveLoading ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        Mentés...
-                      </>
-                    ) : saveSuccess ? (
-                      <>
-                        <Save size={18} />
-                        Mentve!
-                      </>
-                    ) : (
-                      <>
-                        <Save size={18} />
-                        Mentés
-                      </>
-                    )}
-                  </button>
+            <div className="space-y-4">
+              <div className="group">
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5 block ml-1">
+                  Email Cím
+                </label>
+                <div className="flex items-center gap-3 px-4 py-3 bg-[#0a0a0f] border border-white/5 rounded-xl text-gray-400 group-hover:border-white/10 transition-colors">
+                  <Mail size={18} className="text-gray-600" />
+                  <span className="flex-1 font-mono">{user?.email}</span>
+                  <Lock size={14} className="text-gray-700" />
                 </div>
               </div>
-            )}
 
-            {activeTab === "notifications" && (
-              <div>
-                <h2 className="text-2xl font-bold text-white mb-6">
-                  Értesítési beállítások
-                </h2>
-
-                <div className="space-y-4">
-                  {[
-                    {
-                      key: "tournaments",
-                      title: "Verseny értesítések",
-                      desc: "Értesítések új versenyekről és regisztrációkról",
-                    },
-                    {
-                      key: "teams",
-                      title: "Csapat értesítések",
-                      desc: "Értesítések csapat eseményekről és meghívókról",
-                    },
-                    {
-                      key: "matches",
-                      title: "Mérkőzés értesítések",
-                      desc: "Értesítések közelgő mérkőzésekről",
-                    },
-                    {
-                      key: "email",
-                      title: "Email értesítések",
-                      desc: "Értesítések emailben",
-                    },
-                  ].map((item) => (
-                    <div
-                      key={item.key}
-                      className="flex items-center justify-between p-4 bg-[#0f1015] rounded-xl"
-                    >
-                      <div>
-                        <h3 className="font-medium text-white">{item.title}</h3>
-                        <p className="text-sm text-gray-400 mt-1">
-                          {item.desc}
-                        </p>
-                      </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={
-                            notifications[
-                              item.key as keyof typeof notifications
-                            ]
-                          }
-                          onChange={(e) =>
-                            setNotifications({
-                              ...notifications,
-                              [item.key]: e.target.checked,
-                            })
-                          }
-                          className="sr-only peer"
-                        />
-                        <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-                      </label>
-                    </div>
-                  ))}
-
-                  <button
-                    className="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 mt-6"
-                    onClick={handleSave}
-                  >
-                    <Save size={18} />
-                    Mentés
-                  </button>
+              <div className="group">
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5 block ml-1">
+                  Felhasználónév
+                </label>
+                <div className="flex items-center gap-3 px-4 py-3 bg-[#0a0a0f] border border-white/5 rounded-xl text-gray-400 group-hover:border-white/10 transition-colors">
+                  <AtSign size={18} className="text-gray-600" />
+                  <span className="flex-1 font-mono">{user?.username}</span>
+                  <Lock size={14} className="text-gray-700" />
                 </div>
               </div>
-            )}
 
-            {activeTab === "privacy" && (
+              <div className="mt-2 text-xs text-center text-gray-600">
+                Ezek az adatok biztonsági okokból nem módosíthatók.
+              </div>
+            </div>
+          </div>
+
+          {/* Notifications */}
+          <div className="glass-card rounded-2xl p-8 hover:border-white/20">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="p-3 bg-yellow-500/10 rounded-xl border border-yellow-500/20">
+                <Bell size={24} className="text-yellow-400" />
+              </div>
               <div>
-                <h2 className="text-2xl font-bold text-white mb-6">
-                  Adatvédelmi beállítások
-                </h2>
+                <h2 className="text-xl font-bold text-white">Értesítések</h2>
+                <p className="text-sm text-gray-400">
+                  Válaszd ki, miről szeretnél hallani
+                </p>
+              </div>
+            </div>
 
-                <div className="space-y-4">
-                  {[
-                    {
-                      title: "Profil láthatósága",
-                      desc: "Mások láthatják a profilodat",
-                    },
-                    {
-                      title: "Statisztikák láthatósága",
-                      desc: "Mások láthatják a statisztikáidat",
-                    },
-                  ].map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-4 bg-[#0f1015] rounded-xl"
-                    >
-                      <div>
-                        <h3 className="font-medium text-white">{item.title}</h3>
-                        <p className="text-sm text-gray-400 mt-1">
-                          {item.desc}
-                        </p>
-                      </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          defaultChecked
-                          className="sr-only peer"
-                        />
-                        <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-                      </label>
-                    </div>
-                  ))}
-
-                  <button
-                    className="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 mt-6"
-                    onClick={handleSave}
-                  >
-                    <Save size={18} />
-                    Mentés
-                  </button>
+            <div
+              className="flex items-center justify-between p-4 bg-[#0a0a0f]/50 border border-white/5 rounded-xl hover:bg-[#0a0a0f] transition-all cursor-pointer"
+              onClick={() => setEmailNotifications(!emailNotifications)}
+            >
+              <div className="flex items-center gap-4">
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
+                    emailNotifications
+                      ? "bg-primary/20 text-primary"
+                      : "bg-gray-800 text-gray-500"
+                  }`}
+                >
+                  <Mail size={20} />
+                </div>
+                <div>
+                  <h3 className="font-medium text-white">Email értesítések</h3>
+                  <p className="text-xs text-gray-400">
+                    Fontos hírek, emlékeztetők
+                  </p>
                 </div>
               </div>
-            )}
 
-            {activeTab === "appearance" && (
-              <div>
-                <h2 className="text-2xl font-bold text-white mb-6">
-                  Megjelenési beállítások
-                </h2>
-
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-4">
-                      Téma
-                    </label>
-                    <div className="grid grid-cols-2 gap-4">
-                      <button
-                        className={`p-6 rounded-xl border-2 transition-all ${
-                          theme === "dark"
-                            ? "border-primary bg-primary/10"
-                            : "border-white/10 bg-[#0f1015] hover:border-white/20"
-                        }`}
-                        onClick={() => setTheme("dark")}
-                      >
-                        <Moon
-                          size={32}
-                          className={
-                            theme === "dark" ? "text-primary" : "text-gray-400"
-                          }
-                        />
-                        <p
-                          className={`mt-2 font-medium ${
-                            theme === "dark" ? "text-white" : "text-gray-400"
-                          }`}
-                        >
-                          Sötét
-                        </p>
-                      </button>
-                      <button
-                        className={`p-6 rounded-xl border-2 transition-all ${
-                          theme === "light"
-                            ? "border-primary bg-primary/10"
-                            : "border-white/10 bg-[#0f1015] hover:border-white/20"
-                        }`}
-                        onClick={() => setTheme("light")}
-                      >
-                        <Sun
-                          size={32}
-                          className={
-                            theme === "light" ? "text-primary" : "text-gray-400"
-                          }
-                        />
-                        <p
-                          className={`mt-2 font-medium ${
-                            theme === "light" ? "text-white" : "text-gray-400"
-                          }`}
-                        >
-                          Világos
-                        </p>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="language"
-                      className="block text-sm font-medium text-gray-300 mb-2"
-                    >
-                      Nyelv
-                    </label>
-                    <select
-                      id="language"
-                      value={language}
-                      onChange={(e) => setLanguage(e.target.value)}
-                      className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors"
-                    >
-                      <option value="hu">Magyar</option>
-                      <option value="en">English</option>
-                    </select>
-                  </div>
-
-                  <button
-                    className="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold transition-all shadow-lg shadow-primary/20"
-                    onClick={handleSave}
-                  >
-                    <Save size={18} />
-                    Mentés
-                  </button>
-                </div>
+              <div
+                className={`w-12 h-7 rounded-full p-1 transition-colors relative ${
+                  emailNotifications ? "bg-primary" : "bg-gray-700"
+                }`}
+              >
+                <div
+                  className={`w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${
+                    emailNotifications ? "translate-x-5" : "translate-x-0"
+                  }`}
+                />
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Floating Action Button (Desktop: Bottom Right, Mobile: Sticky Bottom) */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 md:p-8 md:static md:mt-3 flex justify-center md:justify-end max-w-5xl mx-auto z-20 pointer-events-none">
+        <div className="pointer-events-auto">
+          <button
+            onClick={handleSave}
+            disabled={saveLoading}
+            className={`flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg transform hover:-translate-y-1 ${
+              saveSuccess
+                ? "bg-green-500 hover:bg-green-600 shadow-green-500/25 text-white"
+                : "bg-gradient-to-r from-primary to-neon-pink hover:brightness-110 shadow-primary/25 text-white"
+            } ${saveLoading ? "opacity-75 cursor-wait" : ""}`}
+          >
+            {saveLoading ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Mentés...
+              </>
+            ) : saveSuccess ? (
+              <>
+                <Shield size={20} />
+                Sikeresen Mentve!
+              </>
+            ) : (
+              <>
+                <Save size={20} />
+                Változtatások Mentése
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Spacer for sticky mobile button */}
+      <div className="h-24 md:h-0" />
     </div>
   );
 }

@@ -112,6 +112,42 @@ export const markAllAsRead = createAsyncThunk('notifications/markAllAsRead', asy
     }
 });
 
+export const deleteNotification = createAsyncThunk('notifications/deleteNotification', async (id: string) => {
+    const token = getToken();
+
+    if (!token) throw new Error('Nincs bejelentkezve!');
+
+    const response = await fetch(`${API_URL}/notifications/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data: ApiResponse<any> = await response.json();
+
+    if (!data.success) {
+        throw new Error(data.error?.message || 'Failed to delete notification');
+    }
+
+    return id;
+});
+
+export const clearAllNotifications = createAsyncThunk('notifications/clearAllNotifications', async () => {
+    const token = getToken();
+
+    if (!token) throw new Error('Nincs bejelentkezve!');
+
+    const response = await fetch(`${API_URL}/notifications`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data: ApiResponse<any> = await response.json();
+
+    if (!data.success) {
+        throw new Error(data.error?.message || 'Failed to clear all notifications');
+    }
+});
+
 const notificationsSlice = createSlice({
     name: 'notifications',
     initialState,
@@ -155,6 +191,19 @@ const notificationsSlice = createSlice({
                 state.notifications.forEach((n) => {
                     n.read = true;
                 });
+                state.unreadCount = 0;
+            })
+            // Delete notification
+            .addCase(deleteNotification.fulfilled, (state, action) => {
+                const notification = state.notifications.find(n => n.id === action.payload);
+                if (notification && !notification.read) {
+                    state.unreadCount = Math.max(0, state.unreadCount - 1);
+                }
+                state.notifications = state.notifications.filter(n => n.id !== action.payload);
+            })
+            // Clear all notifications
+            .addCase(clearAllNotifications.fulfilled, (state) => {
+                state.notifications = [];
                 state.unreadCount = 0;
             });
     },

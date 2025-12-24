@@ -178,8 +178,8 @@ tournamentsRouter.delete(
             where: { keycloakId: req.user!.sub },
         });
 
-        if (!user || user.role !== 'ADMIN') {
-            throw new ApiError('Csak adminisztrátorok törölhetnek versenyt', 403, 'FORBIDDEN');
+        if (!user || user.role !== 'ADMIN' && user.role !== 'ORGANIZER') {
+            throw new ApiError('Csak adminisztrátorok és organizátorok törölhetnek versenyt', 403, 'FORBIDDEN');
         }
 
         const tournament = await prisma.tournament.findUnique({

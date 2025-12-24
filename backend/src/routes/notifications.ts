@@ -87,3 +87,41 @@ notificationsRouter.patch(
         res.json({ success: true, message: 'All notifications marked as read' });
     })
 );
+
+// Delete notification
+notificationsRouter.delete(
+    '/:id',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user) {
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
+        }
+
+        await notificationService.deleteNotification(req.params.id, user.id);
+
+        res.json({ success: true, message: 'Notification deleted' });
+    })
+);
+
+// Delete all notifications
+notificationsRouter.delete(
+    '/',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user) {
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
+        }
+
+        await notificationService.deleteAllNotifications(user.id);
+
+        res.json({ success: true, message: 'All notifications deleted' });
+    })
+);

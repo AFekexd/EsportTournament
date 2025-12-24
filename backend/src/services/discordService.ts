@@ -1,4 +1,19 @@
-import { Client, GatewayIntentBits, TextChannel, ChannelType, EmbedBuilder, PermissionsBitField, ColorResolvable, CategoryChannel } from 'discord.js';
+import { 
+    Client, 
+    GatewayIntentBits, 
+    TextChannel, 
+    ChannelType, 
+    EmbedBuilder, 
+    PermissionsBitField, 
+    ColorResolvable, 
+    CategoryChannel,
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    Interaction,
+    Role,
+    CacheType
+} from 'discord.js';
 
 interface DiscordEmbed {
     title: string;
@@ -19,6 +34,7 @@ class DiscordService {
             intents: [
                 GatewayIntentBits.Guilds,
                 GatewayIntentBits.GuildMessages,
+                GatewayIntentBits.GuildMembers, // Needed for role management
             ],
         });
 
@@ -39,12 +55,53 @@ class DiscordService {
         this.client.once('ready', () => {
             console.log(`✅ Discord Bot logged in as ${this.client.user?.tag}`);
             this.isReady = true;
+            this.setupInteractionHandler();
         });
 
         try {
             await this.client.login(DISCORD_BOT_TOKEN);
         } catch (error) {
             console.error('❌ Failed to login to Discord:', error);
+        }
+    }
+
+    private setupInteractionHandler() {
+        this.client.on('interactionCreate', async (interaction: Interaction<CacheType>) => {
+            if (!interaction.isButton()) return;
+
+            if (interaction.customId.startsWith('toggle_role_')) {
+                const roleName = interaction.customId.replace('toggle_role_', '');
+                await this.handleRoleToggle(interaction, roleName);
+            }
+        });
+    }
+
+    private async handleRoleToggle(interaction: any, roleName: string) {
+        try {
+            const guild = await this.client.guilds.fetch(this.guildId);
+            if (!guild) return;
+
+            // Find role by name (case insensitive)
+            const role = guild.roles.cache.find(r => r.name.toLowerCase() === roleName.toLowerCase());
+
+            if (!role) {
+                await interaction.reply({ content: '❌ A kért rang nem található.', ephemeral: true });
+                return;
+            }
+
+            const member = await guild.members.fetch(interaction.user.id);
+            if (!member) return;
+
+            if (member.roles.cache.has(role.id)) {
+                await member.roles.remove(role);
+                await interaction.reply({ content: `✅ Eltávolítva a(z) **${role.name}** értesítés.`, ephemeral: true });
+            } else {
+                await member.roles.add(role);
+                await interaction.reply({ content: `✅ Feliratkozva a(z) **${role.name}** értesítésekre!`, ephemeral: true });
+            }
+        } catch (error) {
+            console.error('Failed to toggle role:', error);
+            await interaction.reply({ content: '❌ Hiba történt a rang módosítása közben.', ephemeral: true });
         }
     }
 
@@ -55,11 +112,11 @@ class DiscordService {
             const guild = await this.client.guilds.fetch(this.guildId);
             if (!guild) return null;
 
-            // Fetch all channels to ensure cache is populated
-            const channels = await guild.channels.fetch();
+            // Fetch all channels
+            await guild.channels.fetch();
 
             // Case-insensitive search for existing category
-            const existingCategory = channels.find(c =>
+            const existingCategory = guild.channels.cache.find(c =>
                 c?.type === ChannelType.GuildCategory &&
                 c.name.toLowerCase() === name.toLowerCase()
             );
@@ -79,7 +136,38 @@ class DiscordService {
 
         } catch (error) {
             console.error(`Failed to ensure category exists for ${name}:`, error);
-            return this.categoryId || null; // Fallback to default category
+            return this.categoryId || null;
+        }
+    }
+
+    async ensureRoleExists(name: string): Promise<Role | null> {
+        if (!this.isReady) return null;
+
+        try {
+            const guild = await this.client.guilds.fetch(this.guildId);
+            if (!guild) return null;
+
+            await guild.roles.fetch();
+
+            const existingRole = guild.roles.cache.find(r => r.name.toLowerCase() === name.toLowerCase());
+            
+            if (existingRole) {
+                return existingRole;
+            }
+
+            // Create Role
+            const newRole = await guild.roles.create({
+                name: name,
+                color: 'Green', // Default to green or random
+                mentionable: true,
+                reason: 'Auto-created for Game Notifications',
+            });
+
+            console.log(`✅ Created new Discord role: ${newRole.name}`);
+            return newRole;
+        } catch (error) {
+            console.error(`Failed to ensure role exists for ${name}:`, error);
+            return null;
         }
     }
 
@@ -96,13 +184,15 @@ class DiscordService {
                 return { textChannelId: null, voiceChannelId: null };
             }
 
-            // 1. Ensure Category Exists
+            // 1. Ensure Category & Role Exists
             let targetCategoryId = this.categoryId;
             if (gameName) {
                 const gameCategoryId = await this.ensureCategoryExists(gameName);
                 if (gameCategoryId) {
                     targetCategoryId = gameCategoryId;
                 }
+                // Ensure Role exists for this game
+                await this.ensureRoleExists(gameName);
             }
 
             // Sanitize channel name
@@ -163,7 +253,7 @@ class DiscordService {
     /**
      * Sends a message to a specific channel (by ID)
      */
-    async sendMessage(channelId: string, embedData: DiscordEmbed, content?: string): Promise<boolean> {
+    async sendMessage(channelId: string, embedData: DiscordEmbed, content?: string, components?: any[]): Promise<boolean> {
         if (!this.isReady) return false;
 
         try {
@@ -186,6 +276,7 @@ class DiscordService {
             await (channel as TextChannel).send({
                 content: content,
                 embeds: [embed],
+                components: components,
             });
 
             return true;
@@ -203,7 +294,6 @@ class DiscordService {
             if (!guild) return [];
 
             const channels = await guild.channels.fetch();
-            //console.log(channels);
             return channels
                 .filter(c => c?.type === ChannelType.GuildText)
                 .map(c => ({
@@ -267,13 +357,27 @@ class DiscordService {
     // --- Specific Notification Methods ---
 
     async sendTournamentAnnouncement(tournament: { name: string; game: string; startDate: Date; maxTeams: number; id: string }, channelId?: string) {
-        if (!channelId) {
-            // Check if there is a general/announcements channel configured, otherwise we might skip
-            // For now, we only send if we have a target channel.
-            // If the user hasn't configured a channel ID, we can try to find a default one or just return.
-            // But usually this method is called when we have a target.
-            return false;
+        if (!channelId) return false;
+
+        // Try to find role to mention
+        let mentionString = '@everyone';
+        if (tournament.game) {
+             const guild = this.client.guilds.cache.get(this.guildId);
+             const role = guild?.roles.cache.find(r => r.name.toLowerCase() === tournament.game.toLowerCase());
+             if (role) {
+                 mentionString = role.toString();
+             }
         }
+
+        // Create Subscribe Button
+        const row = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`toggle_role_${tournament.game}`)
+                    .setLabel(`🔔 Értesítések: ${tournament.game}`)
+                    .setStyle(ButtonStyle.Secondary)
+                    .setEmoji('🎮')
+            );
 
         return this.sendMessage(channelId, {
             title: '🏆 Új Verseny!',
@@ -286,7 +390,7 @@ class DiscordService {
                 { name: 'Link', value: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/tournaments/${tournament.id}`, inline: false },
             ],
             timestamp: new Date().toISOString(),
-        }, '@everyone'); // Mention everyone for new tournaments
+        }, mentionString, [row]); 
     }
 
     async sendMatchResult(match: { tournament: string; homeTeam: string; awayTeam: string; homeScore: number; awayScore: number; winner: string }, channelId: string) {

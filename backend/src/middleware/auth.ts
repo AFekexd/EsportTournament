@@ -109,7 +109,8 @@ export const requireRole = (...roles: string[]) => {
         }
 
         const userRoles = req.user.realm_access?.roles || [];
-        const hasRole = roles.some((role) => userRoles.includes(role));
+        // Allow if user has one of the required roles OR is an ADMIN
+        const hasRole = roles.some((role) => userRoles.includes(role)) || userRoles.includes('ADMIN');
 
         if (!hasRole) {
             return next(new ApiError('Nincs jogosultsága', 403, 'FORBIDDEN'));
