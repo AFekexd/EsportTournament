@@ -1129,7 +1129,7 @@ export function TournamentDetailPage() {
 
                           <div
                             className={`
-                                relative w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-300 z-10
+                                relative w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-300 z-10 flex-shrink-0
                                 ${
                                   isSelected
                                     ? "bg-primary border-primary scale-110"
@@ -1146,7 +1146,7 @@ export function TournamentDetailPage() {
                           </div>
 
                           <div
-                            className={`relative w-10 h-10 rounded-lg overflow-hidden border border-white/10 transition-transform duration-300 ${
+                            className={`relative w-10 h-10 rounded-lg overflow-hidden border border-white/10 transition-transform duration-300 flex-shrink-0 ${
                               isSelected ? "ring-2 ring-primary/50" : ""
                             }`}
                           >

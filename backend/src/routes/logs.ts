@@ -61,6 +61,14 @@ logsRouter.get(
                             id: true,
                             name: true,
                         }
+                    },
+                    admin: {
+                        select: {
+                            id: true,
+                            username: true,
+                            displayName: true,
+                            avatarUrl: true,
+                        }
                     }
                 },
                 orderBy: { createdAt: 'desc' },

@@ -71,6 +71,7 @@ export function Sidebar() {
 
   const isActive = (path: string) => {
     if (path === "/") return location.pathname === "/";
+    if (path === "/admin") return location.pathname === "/admin";
     return location.pathname.startsWith(path);
   };
 

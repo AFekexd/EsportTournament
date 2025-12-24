@@ -22,6 +22,12 @@ interface Log {
   type: string;
   message: string;
   createdAt: string;
+  admin?: {
+    id: string;
+    username: string;
+    displayName: string | null;
+    avatarUrl: string | null;
+  };
   user?: {
     id: string;
     username: string;
@@ -210,14 +216,15 @@ export function AdminLogs() {
                 <th className="p-4 font-medium w-48">Időpont</th>
                 <th className="p-4 font-medium w-32">Típus</th>
                 <th className="p-4 font-medium">Üzenet</th>
-                <th className="p-4 font-medium w-48">Felhasználó</th>
+                <th className="p-4 font-medium w-48">Végrehajtó</th>
+                <th className="p-4 font-medium w-48">Érintett Felhasználó</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
               {loading ? (
                 <tr>
                   <td
-                    colSpan={4}
+                    colSpan={5}
                     className="p-12 text-center text-muted-foreground"
                   >
                     <div className="flex justify-center mb-2">
@@ -229,7 +236,7 @@ export function AdminLogs() {
               ) : logs.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={4}
+                    colSpan={5}
                     className="p-12 text-center text-muted-foreground"
                   >
                     <Info size={32} className="mx-auto mb-3 opacity-20" />
@@ -261,6 +268,30 @@ export function AdminLogs() {
                         <span className="ml-2 text-xs px-2 py-0.5 rounded bg-white/5 text-gray-400 border border-white/5">
                           🖥️ {log.computer.name}
                         </span>
+                      )}
+                    </td>
+                    <td className="p-4">
+                      {log.admin ? (
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-indigo-500/20 flex items-center justify-center overflow-hidden border border-indigo-500/30">
+                            {log.admin.avatarUrl ? (
+                              <img
+                                src={log.admin.avatarUrl}
+                                alt=""
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <span className="text-[10px] font-bold text-indigo-400">
+                                {log.admin.username.charAt(0).toUpperCase()}
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-indigo-300 font-medium">
+                            {log.admin.displayName || log.admin.username}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-gray-600 text-xs italic">-</span>
                       )}
                     </td>
                     <td className="p-4">

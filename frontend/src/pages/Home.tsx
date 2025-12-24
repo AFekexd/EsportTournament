@@ -73,15 +73,15 @@ export function HomePage() {
   ];
 
   return (
-    <div className="flex flex-col gap-20 pb-20">
+    <div className="flex flex-col gap-20 pb-20 ">
       {/* Hero Section */}
-      <section className="relative grid  min-h-[600px] grid-cols-1 items-center gap-12 overflow-hidden py-12 lg:grid-cols-2">
+      <section className="relative grid min-h-[600px] grid-cols-1 items-center gap-12 rounded-xl overflow-hidden py-12 lg:grid-cols-2">
         {/* Background Effects */}
         <div className="absolute -left-20 -top-20 -z-10 h-96 w-96 rounded-full bg-primary/30 blur-[128px]" />
-        <div className="absolute right-0 top-1/2 -z-10 h-96 w-96 rounded-full bg-[hsl(var(--neon-pink))]/20 blur-[128px]" />
+        <div className="absolute  right-0 top-1/2 -z-10 h-96 w-96 rounded-full bg-[hsl(var(--neon-pink))]/20 blur-[128px]" />
         <div className="absolute left-1/2 bottom-0 -z-10 h-64 w-64 rounded-full bg-accent/20 blur-[100px]" />
 
-        <div className="flex flex-col gap-8 p-10">
+        <div className="flex flex-col gap-8 p-10 ">
           <div className="w-fit rounded-full border border-primary/50 bg-primary/10 px-4 py-1.5 backdrop-blur-md shadow-[0_0_15px_rgba(139,92,246,0.3)]">
             <div className="flex items-center gap-2 text-sm font-bold text-primary tracking-wide">
               <Zap className="h-4 w-4 fill-primary animate-pulse" />

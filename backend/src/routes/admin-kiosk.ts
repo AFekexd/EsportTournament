@@ -16,9 +16,10 @@ adminKioskRouter.get('/machines', async (req, res) => {
 });
 
 // Admin Remote Unlock / Lock 
-adminKioskRouter.post('/machines/:id/lock', async (req, res) => {
+adminKioskRouter.post('/machines/:id/lock', authenticate, requireRole('ADMIN'), async (req: any, res: any) => {
     const { id } = req.params;
     const { locked } = req.body; // boolean
+    const user = req.user;
 
     try {
         const machine = await prisma.computer.update({
@@ -31,7 +32,8 @@ adminKioskRouter.post('/machines/:id/lock', async (req, res) => {
             data: {
                 type: locked ? 'LOCK' : 'UNLOCK',
                 message: `Machine ${machine.name} was ${locked ? 'locked' : 'unlocked'} by admin`,
-                computerId: id
+                computerId: id,
+                adminId: user?.sub ? (await prisma.user.findUnique({ where: { keycloakId: user.sub } }))?.id : undefined
             }
         });
 
@@ -57,7 +59,7 @@ adminKioskRouter.post('/machines/:id/lock', async (req, res) => {
 });
 
 // Add time to user
-adminKioskRouter.post('/users/:id/add-time', authenticate, requireRole('ADMIN', 'TEACHER'), async (req, res) => {
+adminKioskRouter.post('/users/:id/add-time', authenticate, requireRole('ADMIN', 'TEACHER'), async (req: any, res: any) => {
     const { id } = req.params;
     const { seconds } = req.body;
 
@@ -76,7 +78,8 @@ adminKioskRouter.post('/users/:id/add-time', authenticate, requireRole('ADMIN', 
             data: {
                 type: actionType,
                 message: `${actionMsg} ${Math.abs(secondsNum)} seconds ${secondsNum >= 0 ? 'to' : 'from'} user ${user.username}`,
-                userId: user.id
+                userId: user.id,
+                adminId: (await prisma.user.findUnique({ where: { keycloakId: req.user!.sub } }))?.id
             }
         });
 
@@ -88,7 +91,7 @@ adminKioskRouter.post('/users/:id/add-time', authenticate, requireRole('ADMIN', 
 });
 
 // Toggle Competition Mode
-adminKioskRouter.post('/machines/:id/competition-mode', async (req, res) => {
+adminKioskRouter.post('/machines/:id/competition-mode', authenticate, requireRole('ADMIN'), async (req: any, res: any) => {
     const { id } = req.params;
     const { enabled } = req.body; // boolean
 
@@ -103,7 +106,8 @@ adminKioskRouter.post('/machines/:id/competition-mode', async (req, res) => {
             data: {
                 type: 'COMPETITION_MODE',
                 message: `Machine ${machine.name} competition mode ${enabled ? 'enabled' : 'disabled'} by admin`,
-                computerId: id
+                computerId: id,
+                adminId: (await prisma.user.findUnique({ where: { keycloakId: req.user!.sub } }))?.id
             }
         });
 
@@ -132,7 +136,7 @@ adminKioskRouter.get('/logs', async (req, res) => {
 
 
 
-adminKioskRouter.post('/users/:id/reset-password', authenticate, requireRole('ADMIN'), async (req, res) => {
+adminKioskRouter.post('/users/:id/reset-password', authenticate, requireRole('ADMIN'), async (req: any, res: any) => {
     const { id } = req.params;
     const { password } = req.body;
 
@@ -205,7 +209,8 @@ adminKioskRouter.post('/users/:id/reset-password', authenticate, requireRole('AD
             data: {
                 type: 'PASSWORD_RESET',
                 message: `Password reset for user ${user.username} by admin`,
-                userId: user.id
+                userId: user.id,
+                adminId: (await prisma.user.findUnique({ where: { keycloakId: req.user!.sub } }))?.id
             }
         });
 

@@ -103,6 +103,7 @@ model User {
   // Kiosk relations
   sessions          Session[]
   logs              Log[]
+  adminLogs         Log[]              @relation("LogAdmin")
 
   ranks             UserRank[]
 }
@@ -408,6 +409,8 @@ model Log {
   message   String?
   userId    String?
   user      User?    @relation(fields: [userId], references: [id])
+  adminId   String?
+  admin     User?    @relation("LogAdmin", fields: [adminId], references: [id])
   computerId String?
   computer   Computer? @relation(fields: [computerId], references: [id])
   createdAt DateTime @default(now())

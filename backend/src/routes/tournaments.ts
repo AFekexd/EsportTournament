@@ -270,6 +270,7 @@ tournamentsRouter.patch(
                 ...(qualifierMatches !== undefined && { qualifierMatches: parseInt(qualifierMatches) }),
                 ...(qualifierMinPoints !== undefined && { qualifierMinPoints: parseInt(qualifierMinPoints) }),
                 ...(teamSize !== undefined && { teamSize: teamSize ? parseInt(teamSize) : null }),
+                ...(requireRank !== undefined && { requireRank }),
             },
             include: {
                 game: true,

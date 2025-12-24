@@ -102,6 +102,7 @@ export function TournamentEditModal({
               formData.participationType === "INDIVIDUAL"
                 ? 1
                 : formData.teamSize,
+            requireRank: formData.requireRank,
           },
         })
       ).unwrap();
