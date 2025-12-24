@@ -305,22 +305,6 @@ export function TournamentDetailPage() {
             Vissza
           </button>
 
-          <button
-            className="absolute top-8 right-4 flex items-center gap-2 text-gray-400 hover:text-white transition-colors bg-black/30 hover:bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full border border-white/5"
-            onClick={() => {
-              // Use backend URL for sharing to get Open Graph tags
-              // Assuming backend is on port 3000 locally or api domain in prod
-              // We can construct this based on current origin if mapped, or hardcode/config
-              const shareUrl = `${window.location.protocol}//${window.location.hostname}/share/tournaments/${currentTournament.id}`;
-              navigator.clipboard.writeText(shareUrl);
-              toast.success("Megosztási link másolva a vágólapra!");
-            }}
-            title="Megosztás Discordra"
-          >
-            <Share2 size={18} />
-            Megosztás
-          </button>
-
           <div className="flex flex-col md:flex-row md:items-end gap-8">
             <div className="flex-grow space-y-4">
               <div className="flex flex-wrap items-center gap-3">
@@ -395,6 +379,18 @@ export function TournamentDetailPage() {
                   Státusz módosítása
                 </Button>
               )}
+
+              <Button
+                onClick={() => {
+                  const shareUrl = `${window.location.protocol}//${window.location.hostname}/share/tournaments/${currentTournament.id}`;
+                  navigator.clipboard.writeText(shareUrl);
+                  toast.success("Megosztási link másolva a vágólapra!");
+                }}
+                className="w-full bg-white/10 hover:bg-white/20 border-white/10"
+              >
+                <Share2 size={18} />
+                Megosztás
+              </Button>
 
               {(user?.role === "ADMIN" || user?.role === "ORGANIZER") && (
                 <Button

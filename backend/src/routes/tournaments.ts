@@ -317,9 +317,7 @@ tournamentsRouter.post(
             throw new ApiError('A verseny megtelt', 400, 'TOURNAMENT_FULL');
         }
 
-        if (tournament.hasQualifier) {
-            throw new ApiError('A verseny befejezve', 400, 'TOURNAMENT_CLOSED');
-        }
+
 
         const user = await prisma.user.findUnique({
             where: { keycloakId: req.user!.sub },
