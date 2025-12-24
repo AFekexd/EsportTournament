@@ -7,7 +7,6 @@ import {
   Users,
   Calendar,
   Edit,
-  Settings as SettingsIcon,
   Shield,
   Loader2,
 } from "lucide-react";
