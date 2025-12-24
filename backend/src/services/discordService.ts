@@ -21,6 +21,7 @@ interface DiscordEmbed {
     color: number;
     fields?: Array<{ name: string; value: string; inline?: boolean }>;
     timestamp?: string;
+    image?: { url: string };
 }
 
 class DiscordService {
@@ -171,6 +172,16 @@ class DiscordService {
         }
     }
 
+    private sanitizeName(name: string): string {
+        return name
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "") // Remove accents
+            .replace(/[^a-z0-9\s-]/g, "") // Remove special chars
+            .trim()
+            .replace(/\s+/g, "-"); // Replace spaces with dashes
+    }
+
     /**
      * Creates new text and voice channels for a tournament under the game's category
      */
@@ -196,11 +207,7 @@ class DiscordService {
             }
 
             // Sanitize channel name
-            const channelName = tournamentName
-                .toLowerCase()
-                .replace(/[^a-z0-9\s-]/g, '')
-                .trim()
-                .replace(/\s+/g, '-');
+            const channelName = this.sanitizeName(tournamentName);
 
             const permissionOverwrites = [
                 {
@@ -271,6 +278,10 @@ class DiscordService {
 
             if (embedData.fields) {
                 embed.addFields(embedData.fields);
+            }
+
+            if (embedData.image) {
+                embed.setImage(embedData.image.url);
             }
 
             await (channel as TextChannel).send({
@@ -356,7 +367,7 @@ class DiscordService {
 
     // --- Specific Notification Methods ---
 
-    async sendTournamentAnnouncement(tournament: { name: string; game: string; startDate: Date; maxTeams: number; id: string }, channelId?: string) {
+    async sendTournamentAnnouncement(tournament: { name: string; game: string; startDate: Date; maxTeams: number; id: string; imageUrl?: string | null }, channelId?: string) {
         if (!channelId) return false;
 
         // Try to find role to mention
@@ -389,6 +400,7 @@ class DiscordService {
                 { name: 'Max csapatok', value: tournament.maxTeams.toString(), inline: true },
                 { name: 'Link', value: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/tournaments/${tournament.id}`, inline: false },
             ],
+            image: tournament.imageUrl ? { url: tournament.imageUrl } : undefined,
             timestamp: new Date().toISOString(),
         }, mentionString, [row]); 
     }

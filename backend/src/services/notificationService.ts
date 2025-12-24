@@ -146,7 +146,8 @@ class NotificationService {
                     name: fullTournament.name,
                     game: fullTournament.game.name,
                     startDate: fullTournament.startDate,
-                    maxTeams: fullTournament.maxTeams
+                    maxTeams: fullTournament.maxTeams,
+                    imageUrl: fullTournament.imageUrl
                 }, discordChannelId);
             }
         } catch (error) {
