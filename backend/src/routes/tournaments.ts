@@ -72,6 +72,7 @@ tournamentsRouter.post(
             qualifierMatches,
             qualifierMinPoints,
             teamSize,
+            requireRank,
         } = req.body;
 
         if (!name || !gameId || !maxTeams || !startDate || !registrationDeadline) {
@@ -105,10 +106,11 @@ tournamentsRouter.post(
                 endDate: endDate ? new Date(endDate) : null,
                 registrationDeadline: new Date(registrationDeadline),
                 hasQualifier: hasQualifier || false,
-                qualifierMatches: qualifierMatches ? parseInt(qualifierMatches) : 0,
-                qualifierMinPoints: qualifierMinPoints ? parseInt(qualifierMinPoints) : 0,
+                qualifierMatches: qualifierMatches ? parseInt(qualifierMatches) : undefined,
+                qualifierMinPoints: qualifierMinPoints ? parseInt(qualifierMinPoints) : undefined,
                 status: 'DRAFT',
-                teamSize: teamSize ? parseInt(teamSize) : null,
+                teamSize: teamSize ? parseInt(teamSize) : undefined,
+                requireRank: requireRank !== undefined ? requireRank : undefined,
             },
             include: { game: true },
         });
@@ -176,8 +178,8 @@ tournamentsRouter.delete(
             where: { keycloakId: req.user!.sub },
         });
 
-        if (!user || !['ADMIN', 'ORGANIZER'].includes(user.role)) {
-            throw new ApiError('Csak szervezők törölhetnek versenyt', 403, 'FORBIDDEN');
+        if (!user || user.role !== 'ADMIN') {
+            throw new ApiError('Csak adminisztrátorok törölhetnek versenyt', 403, 'FORBIDDEN');
         }
 
         const tournament = await prisma.tournament.findUnique({
@@ -237,6 +239,7 @@ tournamentsRouter.patch(
             qualifierMatches,
             qualifierMinPoints,
             teamSize,
+            requireRank,
         } = req.body;
 
         // Process image if base64
@@ -283,7 +286,7 @@ tournamentsRouter.post(
     '/:id/register',
     authenticate,
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-        const { teamId } = req.body;
+        const { teamId, memberIds } = req.body;
 
         if (!teamId) {
             throw new ApiError('Csapat azonosító szükséges', 400, 'MISSING_TEAM_ID');
@@ -291,7 +294,10 @@ tournamentsRouter.post(
 
         const tournament = await prisma.tournament.findUnique({
             where: { id: req.params.id },
-            include: { _count: { select: { entries: true } } },
+            include: { 
+                game: true,
+                _count: { select: { entries: true } } 
+            },
         });
 
         if (!tournament) {
@@ -302,12 +308,16 @@ tournamentsRouter.post(
             throw new ApiError('A versenyre jelenleg nem lehet regisztrálni', 400, 'REGISTRATION_CLOSED');
         }
 
-        // if (new Date() > tournament.registrationDeadline) {
-        //     throw new ApiError('Registration deadline has passed', 400, 'DEADLINE_PASSED');
-        // }
+        if (new Date() > tournament.registrationDeadline) {
+            throw new ApiError('A verseny befejezve', 400, 'DEADLINE_PASSED');
+        }
 
         if (tournament._count.entries >= tournament.maxTeams) {
             throw new ApiError('A verseny megtelt', 400, 'TOURNAMENT_FULL');
+        }
+
+        if (tournament.hasQualifier) {
+            throw new ApiError('A verseny befejezve', 400, 'TOURNAMENT_CLOSED');
         }
 
         const user = await prisma.user.findUnique({
@@ -321,14 +331,43 @@ tournamentsRouter.post(
         // Check if user is captain of the team
         const team = await prisma.team.findUnique({
             where: { id: teamId },
+            include: { 
+                members: {
+                    include: {
+                        user: true
+                    }
+                } 
+            },
         });
 
         if (!team) {
             throw new ApiError('Csapat nem található', 404, 'TEAM_NOT_FOUND');
         }
 
-        if (team.ownerId !== user.id) {
+        if (team.ownerId !== user.id && user.role !== 'ADMIN' && user.role !== 'ORGANIZER') {
             throw new ApiError('Csak a csapatkapitány regisztrálhat versenyre', 403, 'NOT_CAPTAIN');
+        }
+
+        // Validate Team Size and Selected Members
+        const requiredTeamSize = tournament.teamSize || tournament.game.teamSize || 1; // Default to 1 if not set
+        
+        // If it's not a solo tournament (size > 1), require member selection
+        if (requiredTeamSize > 1) {
+            if (!memberIds || !Array.isArray(memberIds)) {
+                 throw new ApiError(`Kérlek válassz ki pontosan ${requiredTeamSize} tagot a versenyre.`, 400, 'MEMBERS_REQUIRED');
+            }
+
+            if (memberIds.length !== requiredTeamSize) {
+                throw new ApiError(`A versenyre pontosan ${requiredTeamSize} fő nevezése szükséges (kiválasztva: ${memberIds.length}).`, 400, 'INVALID_TEAM_SIZE');
+            }
+
+            // Verify all selected members are actually in the team
+            const teamMemberIds = team.members.map(m => m.userId);
+            const allMembersValid = memberIds.every(id => teamMemberIds.includes(id));
+
+            if (!allMembersValid) {
+                throw new ApiError('Egy vagy több kiválasztott játékos nem tagja a csapatnak.', 400, 'INVALID_MEMBERS');
+            }
         }
 
         // Check if already registered
@@ -340,13 +379,64 @@ tournamentsRouter.post(
             throw new ApiError('A csapat már részt vett ebben a tornácsonyban', 400, 'ALREADY_REGISTERED');
         }
 
+        // Validate that all members have a rank for the game if required
+        if (tournament.requireRank) {
+             const membersToCheck = requiredTeamSize > 1 ? memberIds : [user.id];
+             
+             // Fetch ranks for these users for this game
+             const userRanks = await prisma.userRank.findMany({
+                 where: {
+                     userId: { in: membersToCheck },
+                     gameId: tournament.gameId
+                 },
+                 include: {
+                     user: true
+                 }
+             });
+
+             // Check if count matches
+             if (userRanks.length !== membersToCheck.length) {
+                 // Identify who is missing a rank
+                 const usersWithRank = userRanks.map(ur => ur.userId);
+                 const missingRankUserId = membersToCheck.find((id: string) => !usersWithRank.includes(id));
+                 
+                 // Try to find the user details for the error message
+                 let missingUserName = 'Egy csapattag';
+                 if (missingRankUserId) {
+                     // We might already have this user in team.members if team size > 1
+                     if (team) {
+                        const missingMember = team.members.find(m => m.userId === missingRankUserId);
+                        if (missingMember?.user?.displayName) missingUserName = missingMember.user.displayName;
+                        else if (missingMember?.user?.username) missingUserName = missingMember.user.username;
+                     } 
+                     
+                     // Fallback if solo (user variable)
+                     if (missingRankUserId === user.id) missingUserName = user.displayName || user.username;
+                 }
+
+                 throw new ApiError(`${missingUserName} nem rendelkezik ranggal ebben a játékban (Rank beállítása kötelező).`, 400, 'RANK_REQUIRED');
+             }
+        }
+
         const entry = await prisma.tournamentEntry.create({
             data: {
                 tournamentId: req.params.id,
                 teamId,
                 seed: team.elo, // Initial seed based on ELO
+                // Connect selected participants
+                participants: {
+                    connect: requiredTeamSize > 1 
+                        ? memberIds.map((id: string) => ({ id })) 
+                        : undefined // Or maybe handle solo registration logic differently if needed? For team -> teamId registration, usually we might want to track who is playing even if it is 5v5 entire roster, but here we specifically select subset. If entire roster matches size, we could auto-select, but let's be explicit.
+                } 
             },
-            include: { team: true, tournament: true },
+            include: { 
+                team: true, 
+                tournament: true,
+                participants: {
+                    select: { id: true, username: true, displayName: true, avatarUrl: true }
+                }
+            },
         });
 
         res.status(201).json({ success: true, data: entry });

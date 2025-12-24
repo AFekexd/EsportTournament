@@ -74,7 +74,7 @@ export const fetchTournament = createAsyncThunk(
 
 export const registerForTournament = createAsyncThunk(
     'tournaments/register',
-    async ({ tournamentId, teamId }: { tournamentId: string; teamId: string }, { rejectWithValue }) => {
+    async ({ tournamentId, teamId, memberIds }: { tournamentId: string; teamId: string; memberIds?: string[] }, { rejectWithValue }) => {
         const token = getToken();
 
         if (!token) throw new Error('Nincs bejelentkezve!');
@@ -85,7 +85,7 @@ export const registerForTournament = createAsyncThunk(
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ teamId }),
+            body: JSON.stringify({ teamId, memberIds }),
         });
 
         const data: ApiResponse<any> = await response.json();
@@ -138,6 +138,7 @@ export const createTournament = createAsyncThunk(
             qualifierMatches?: number;
             qualifierMinPoints?: number;
             teamSize?: number | null;
+            requireRank?: boolean;
         }
     ) => {
         const token = getToken();
@@ -179,6 +180,7 @@ export const updateTournament = createAsyncThunk(
                 qualifierMinPoints?: number;
                 maxTeams?: number;
                 teamSize?: number | null;
+                requireRank?: boolean;
             }
         }
 

@@ -44,7 +44,15 @@ teamsRouter.get(
                     owner: { select: { id: true, username: true, displayName: true } },
                     members: {
                         include: {
-                            user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
+                            user: {
+                                select: {
+                                    id: true,
+                                    username: true,
+                                    displayName: true,
+                                    avatarUrl: true,
+                                    ranks: true
+                                }
+                            },
                         },
                     },
                     _count: { select: { tournamentEntries: true } },
@@ -82,7 +90,15 @@ teamsRouter.get(
                 owner: { select: { id: true, username: true, displayName: true } },
                 members: {
                     include: {
-                        user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
+                        user: {
+                            select: {
+                                id: true,
+                                username: true,
+                                displayName: true,
+                                avatarUrl: true,
+                                ranks: true
+                            }
+                        },
                     },
                 },
                 _count: { select: { tournamentEntries: true } },

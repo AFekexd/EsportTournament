@@ -61,6 +61,7 @@ export type TournamentMinAggregateOutputType = {
   hasQualifier: boolean | null
   qualifierMatches: number | null
   qualifierMinPoints: number | null
+  requireRank: boolean | null
 }
 
 export type TournamentMaxAggregateOutputType = {
@@ -84,6 +85,7 @@ export type TournamentMaxAggregateOutputType = {
   hasQualifier: boolean | null
   qualifierMatches: number | null
   qualifierMinPoints: number | null
+  requireRank: boolean | null
 }
 
 export type TournamentCountAggregateOutputType = {
@@ -107,6 +109,7 @@ export type TournamentCountAggregateOutputType = {
   hasQualifier: number
   qualifierMatches: number
   qualifierMinPoints: number
+  requireRank: number
   _all: number
 }
 
@@ -146,6 +149,7 @@ export type TournamentMinAggregateInputType = {
   hasQualifier?: true
   qualifierMatches?: true
   qualifierMinPoints?: true
+  requireRank?: true
 }
 
 export type TournamentMaxAggregateInputType = {
@@ -169,6 +173,7 @@ export type TournamentMaxAggregateInputType = {
   hasQualifier?: true
   qualifierMatches?: true
   qualifierMinPoints?: true
+  requireRank?: true
 }
 
 export type TournamentCountAggregateInputType = {
@@ -192,6 +197,7 @@ export type TournamentCountAggregateInputType = {
   hasQualifier?: true
   qualifierMatches?: true
   qualifierMinPoints?: true
+  requireRank?: true
   _all?: true
 }
 
@@ -302,6 +308,7 @@ export type TournamentGroupByOutputType = {
   hasQualifier: boolean
   qualifierMatches: number
   qualifierMinPoints: number
+  requireRank: boolean
   _count: TournamentCountAggregateOutputType | null
   _avg: TournamentAvgAggregateOutputType | null
   _sum: TournamentSumAggregateOutputType | null
@@ -348,6 +355,7 @@ export type TournamentWhereInput = {
   hasQualifier?: Prisma.BoolFilter<"Tournament"> | boolean
   qualifierMatches?: Prisma.IntFilter<"Tournament"> | number
   qualifierMinPoints?: Prisma.IntFilter<"Tournament"> | number
+  requireRank?: Prisma.BoolFilter<"Tournament"> | boolean
   game?: Prisma.XOR<Prisma.GameScalarRelationFilter, Prisma.GameWhereInput>
   entries?: Prisma.TournamentEntryListRelationFilter
   matches?: Prisma.MatchListRelationFilter
@@ -374,6 +382,7 @@ export type TournamentOrderByWithRelationInput = {
   hasQualifier?: Prisma.SortOrder
   qualifierMatches?: Prisma.SortOrder
   qualifierMinPoints?: Prisma.SortOrder
+  requireRank?: Prisma.SortOrder
   game?: Prisma.GameOrderByWithRelationInput
   entries?: Prisma.TournamentEntryOrderByRelationAggregateInput
   matches?: Prisma.MatchOrderByRelationAggregateInput
@@ -403,6 +412,7 @@ export type TournamentWhereUniqueInput = Prisma.AtLeast<{
   hasQualifier?: Prisma.BoolFilter<"Tournament"> | boolean
   qualifierMatches?: Prisma.IntFilter<"Tournament"> | number
   qualifierMinPoints?: Prisma.IntFilter<"Tournament"> | number
+  requireRank?: Prisma.BoolFilter<"Tournament"> | boolean
   game?: Prisma.XOR<Prisma.GameScalarRelationFilter, Prisma.GameWhereInput>
   entries?: Prisma.TournamentEntryListRelationFilter
   matches?: Prisma.MatchListRelationFilter
@@ -429,6 +439,7 @@ export type TournamentOrderByWithAggregationInput = {
   hasQualifier?: Prisma.SortOrder
   qualifierMatches?: Prisma.SortOrder
   qualifierMinPoints?: Prisma.SortOrder
+  requireRank?: Prisma.SortOrder
   _count?: Prisma.TournamentCountOrderByAggregateInput
   _avg?: Prisma.TournamentAvgOrderByAggregateInput
   _max?: Prisma.TournamentMaxOrderByAggregateInput
@@ -460,6 +471,7 @@ export type TournamentScalarWhereWithAggregatesInput = {
   hasQualifier?: Prisma.BoolWithAggregatesFilter<"Tournament"> | boolean
   qualifierMatches?: Prisma.IntWithAggregatesFilter<"Tournament"> | number
   qualifierMinPoints?: Prisma.IntWithAggregatesFilter<"Tournament"> | number
+  requireRank?: Prisma.BoolWithAggregatesFilter<"Tournament"> | boolean
 }
 
 export type TournamentCreateInput = {
@@ -482,6 +494,7 @@ export type TournamentCreateInput = {
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
+  requireRank?: boolean
   game: Prisma.GameCreateNestedOneWithoutTournamentsInput
   entries?: Prisma.TournamentEntryCreateNestedManyWithoutTournamentInput
   matches?: Prisma.MatchCreateNestedManyWithoutTournamentInput
@@ -508,6 +521,7 @@ export type TournamentUncheckedCreateInput = {
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
+  requireRank?: boolean
   entries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutTournamentInput
   matches?: Prisma.MatchUncheckedCreateNestedManyWithoutTournamentInput
 }
@@ -532,6 +546,7 @@ export type TournamentUpdateInput = {
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
+  requireRank?: Prisma.BoolFieldUpdateOperationsInput | boolean
   game?: Prisma.GameUpdateOneRequiredWithoutTournamentsNestedInput
   entries?: Prisma.TournamentEntryUpdateManyWithoutTournamentNestedInput
   matches?: Prisma.MatchUpdateManyWithoutTournamentNestedInput
@@ -558,6 +573,7 @@ export type TournamentUncheckedUpdateInput = {
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
+  requireRank?: Prisma.BoolFieldUpdateOperationsInput | boolean
   entries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutTournamentNestedInput
   matches?: Prisma.MatchUncheckedUpdateManyWithoutTournamentNestedInput
 }
@@ -583,6 +599,7 @@ export type TournamentCreateManyInput = {
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
+  requireRank?: boolean
 }
 
 export type TournamentUpdateManyMutationInput = {
@@ -605,6 +622,7 @@ export type TournamentUpdateManyMutationInput = {
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
+  requireRank?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type TournamentUncheckedUpdateManyInput = {
@@ -628,6 +646,7 @@ export type TournamentUncheckedUpdateManyInput = {
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
+  requireRank?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type TournamentListRelationFilter = {
@@ -661,6 +680,7 @@ export type TournamentCountOrderByAggregateInput = {
   hasQualifier?: Prisma.SortOrder
   qualifierMatches?: Prisma.SortOrder
   qualifierMinPoints?: Prisma.SortOrder
+  requireRank?: Prisma.SortOrder
 }
 
 export type TournamentAvgOrderByAggregateInput = {
@@ -691,6 +711,7 @@ export type TournamentMaxOrderByAggregateInput = {
   hasQualifier?: Prisma.SortOrder
   qualifierMatches?: Prisma.SortOrder
   qualifierMinPoints?: Prisma.SortOrder
+  requireRank?: Prisma.SortOrder
 }
 
 export type TournamentMinOrderByAggregateInput = {
@@ -714,6 +735,7 @@ export type TournamentMinOrderByAggregateInput = {
   hasQualifier?: Prisma.SortOrder
   qualifierMatches?: Prisma.SortOrder
   qualifierMinPoints?: Prisma.SortOrder
+  requireRank?: Prisma.SortOrder
 }
 
 export type TournamentSumOrderByAggregateInput = {
@@ -830,6 +852,7 @@ export type TournamentCreateWithoutGameInput = {
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
+  requireRank?: boolean
   entries?: Prisma.TournamentEntryCreateNestedManyWithoutTournamentInput
   matches?: Prisma.MatchCreateNestedManyWithoutTournamentInput
 }
@@ -854,6 +877,7 @@ export type TournamentUncheckedCreateWithoutGameInput = {
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
+  requireRank?: boolean
   entries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutTournamentInput
   matches?: Prisma.MatchUncheckedCreateNestedManyWithoutTournamentInput
 }
@@ -908,6 +932,7 @@ export type TournamentScalarWhereInput = {
   hasQualifier?: Prisma.BoolFilter<"Tournament"> | boolean
   qualifierMatches?: Prisma.IntFilter<"Tournament"> | number
   qualifierMinPoints?: Prisma.IntFilter<"Tournament"> | number
+  requireRank?: Prisma.BoolFilter<"Tournament"> | boolean
 }
 
 export type TournamentCreateWithoutEntriesInput = {
@@ -930,6 +955,7 @@ export type TournamentCreateWithoutEntriesInput = {
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
+  requireRank?: boolean
   game: Prisma.GameCreateNestedOneWithoutTournamentsInput
   matches?: Prisma.MatchCreateNestedManyWithoutTournamentInput
 }
@@ -955,6 +981,7 @@ export type TournamentUncheckedCreateWithoutEntriesInput = {
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
+  requireRank?: boolean
   matches?: Prisma.MatchUncheckedCreateNestedManyWithoutTournamentInput
 }
 
@@ -994,6 +1021,7 @@ export type TournamentUpdateWithoutEntriesInput = {
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
+  requireRank?: Prisma.BoolFieldUpdateOperationsInput | boolean
   game?: Prisma.GameUpdateOneRequiredWithoutTournamentsNestedInput
   matches?: Prisma.MatchUpdateManyWithoutTournamentNestedInput
 }
@@ -1019,6 +1047,7 @@ export type TournamentUncheckedUpdateWithoutEntriesInput = {
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
+  requireRank?: Prisma.BoolFieldUpdateOperationsInput | boolean
   matches?: Prisma.MatchUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
@@ -1042,6 +1071,7 @@ export type TournamentCreateWithoutMatchesInput = {
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
+  requireRank?: boolean
   game: Prisma.GameCreateNestedOneWithoutTournamentsInput
   entries?: Prisma.TournamentEntryCreateNestedManyWithoutTournamentInput
 }
@@ -1067,6 +1097,7 @@ export type TournamentUncheckedCreateWithoutMatchesInput = {
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
+  requireRank?: boolean
   entries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutTournamentInput
 }
 
@@ -1106,6 +1137,7 @@ export type TournamentUpdateWithoutMatchesInput = {
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
+  requireRank?: Prisma.BoolFieldUpdateOperationsInput | boolean
   game?: Prisma.GameUpdateOneRequiredWithoutTournamentsNestedInput
   entries?: Prisma.TournamentEntryUpdateManyWithoutTournamentNestedInput
 }
@@ -1131,6 +1163,7 @@ export type TournamentUncheckedUpdateWithoutMatchesInput = {
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
+  requireRank?: Prisma.BoolFieldUpdateOperationsInput | boolean
   entries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutTournamentNestedInput
 }
 
@@ -1154,6 +1187,7 @@ export type TournamentCreateManyGameInput = {
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
+  requireRank?: boolean
 }
 
 export type TournamentUpdateWithoutGameInput = {
@@ -1176,6 +1210,7 @@ export type TournamentUpdateWithoutGameInput = {
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
+  requireRank?: Prisma.BoolFieldUpdateOperationsInput | boolean
   entries?: Prisma.TournamentEntryUpdateManyWithoutTournamentNestedInput
   matches?: Prisma.MatchUpdateManyWithoutTournamentNestedInput
 }
@@ -1200,6 +1235,7 @@ export type TournamentUncheckedUpdateWithoutGameInput = {
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
+  requireRank?: Prisma.BoolFieldUpdateOperationsInput | boolean
   entries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutTournamentNestedInput
   matches?: Prisma.MatchUncheckedUpdateManyWithoutTournamentNestedInput
 }
@@ -1224,6 +1260,7 @@ export type TournamentUncheckedUpdateManyWithoutGameInput = {
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
+  requireRank?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -1287,6 +1324,7 @@ export type TournamentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   hasQualifier?: boolean
   qualifierMatches?: boolean
   qualifierMinPoints?: boolean
+  requireRank?: boolean
   game?: boolean | Prisma.GameDefaultArgs<ExtArgs>
   entries?: boolean | Prisma.Tournament$entriesArgs<ExtArgs>
   matches?: boolean | Prisma.Tournament$matchesArgs<ExtArgs>
@@ -1314,6 +1352,7 @@ export type TournamentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   hasQualifier?: boolean
   qualifierMatches?: boolean
   qualifierMinPoints?: boolean
+  requireRank?: boolean
   game?: boolean | Prisma.GameDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tournament"]>
 
@@ -1338,6 +1377,7 @@ export type TournamentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   hasQualifier?: boolean
   qualifierMatches?: boolean
   qualifierMinPoints?: boolean
+  requireRank?: boolean
   game?: boolean | Prisma.GameDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tournament"]>
 
@@ -1362,9 +1402,10 @@ export type TournamentSelectScalar = {
   hasQualifier?: boolean
   qualifierMatches?: boolean
   qualifierMinPoints?: boolean
+  requireRank?: boolean
 }
 
-export type TournamentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "imageUrl" | "gameId" | "format" | "status" | "teamSize" | "maxTeams" | "startDate" | "endDate" | "registrationDeadline" | "createdAt" | "updatedAt" | "notifyUsers" | "notifyDiscord" | "discordChannelId" | "hasQualifier" | "qualifierMatches" | "qualifierMinPoints", ExtArgs["result"]["tournament"]>
+export type TournamentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "imageUrl" | "gameId" | "format" | "status" | "teamSize" | "maxTeams" | "startDate" | "endDate" | "registrationDeadline" | "createdAt" | "updatedAt" | "notifyUsers" | "notifyDiscord" | "discordChannelId" | "hasQualifier" | "qualifierMatches" | "qualifierMinPoints" | "requireRank", ExtArgs["result"]["tournament"]>
 export type TournamentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   game?: boolean | Prisma.GameDefaultArgs<ExtArgs>
   entries?: boolean | Prisma.Tournament$entriesArgs<ExtArgs>
@@ -1406,6 +1447,7 @@ export type $TournamentPayload<ExtArgs extends runtime.Types.Extensions.Internal
     hasQualifier: boolean
     qualifierMatches: number
     qualifierMinPoints: number
+    requireRank: boolean
   }, ExtArgs["result"]["tournament"]>
   composites: {}
 }
@@ -1852,6 +1894,7 @@ export interface TournamentFieldRefs {
   readonly hasQualifier: Prisma.FieldRef<"Tournament", 'Boolean'>
   readonly qualifierMatches: Prisma.FieldRef<"Tournament", 'Int'>
   readonly qualifierMinPoints: Prisma.FieldRef<"Tournament", 'Int'>
+  readonly requireRank: Prisma.FieldRef<"Tournament", 'Boolean'>
 }
     
 

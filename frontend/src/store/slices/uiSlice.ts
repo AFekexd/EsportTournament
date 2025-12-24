@@ -11,7 +11,7 @@ interface UiState {
 }
 
 const initialState: UiState = {
-    sidebarOpen: true,
+    sidebarOpen: false,
     mobileMenuOpen: false,
     toast: {
         show: false,

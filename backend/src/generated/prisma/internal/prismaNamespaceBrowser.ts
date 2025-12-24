@@ -165,7 +165,8 @@ export const TournamentScalarFieldEnum = {
   discordChannelId: 'discordChannelId',
   hasQualifier: 'hasQualifier',
   qualifierMatches: 'qualifierMatches',
-  qualifierMinPoints: 'qualifierMinPoints'
+  qualifierMinPoints: 'qualifierMinPoints',
+  requireRank: 'requireRank'
 } as const
 
 export type TournamentScalarFieldEnum = (typeof TournamentScalarFieldEnum)[keyof typeof TournamentScalarFieldEnum]

@@ -91,6 +91,7 @@ model User {
   notifications     Notification[]
   gameStats         GameStats[]
   tournamentEntries TournamentEntry[]  // For solo tournament registration
+  participatingEntries TournamentEntry[] @relation("TournamentParticipants") // For team tournament participation
   discordSettings   DiscordSettings?
   bookings          Booking[]          // Computer bookings
   waitlistEntries   Waitlist[]         // Waitlist entries
@@ -183,6 +184,8 @@ model Tournament {
   hasQualifier       Boolean @default(false)
   qualifierMatches   Int     @default(0)
   qualifierMinPoints Int     @default(0)
+  
+  requireRank        Boolean @default(true) // If true, all participants must have a rank for the game
 
   entries TournamentEntry[]
   matches Match[]
@@ -201,6 +204,8 @@ model TournamentEntry {
   matchesPlayed Int      @default(0)
   qualifierPoints Int    @default(0)
   registeredAt DateTime   @default(now())
+
+  participants User[]     @relation("TournamentParticipants")
 
   @@unique([tournamentId, teamId])
   @@unique([tournamentId, userId])

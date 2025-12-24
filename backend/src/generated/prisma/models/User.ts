@@ -281,6 +281,7 @@ export type UserWhereInput = {
   notifications?: Prisma.NotificationListRelationFilter
   gameStats?: Prisma.GameStatsListRelationFilter
   tournamentEntries?: Prisma.TournamentEntryListRelationFilter
+  participatingEntries?: Prisma.TournamentEntryListRelationFilter
   discordSettings?: Prisma.XOR<Prisma.DiscordSettingsNullableScalarRelationFilter, Prisma.DiscordSettingsWhereInput> | null
   bookings?: Prisma.BookingListRelationFilter
   waitlistEntries?: Prisma.WaitlistListRelationFilter
@@ -310,6 +311,7 @@ export type UserOrderByWithRelationInput = {
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   gameStats?: Prisma.GameStatsOrderByRelationAggregateInput
   tournamentEntries?: Prisma.TournamentEntryOrderByRelationAggregateInput
+  participatingEntries?: Prisma.TournamentEntryOrderByRelationAggregateInput
   discordSettings?: Prisma.DiscordSettingsOrderByWithRelationInput
   bookings?: Prisma.BookingOrderByRelationAggregateInput
   waitlistEntries?: Prisma.WaitlistOrderByRelationAggregateInput
@@ -342,6 +344,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   notifications?: Prisma.NotificationListRelationFilter
   gameStats?: Prisma.GameStatsListRelationFilter
   tournamentEntries?: Prisma.TournamentEntryListRelationFilter
+  participatingEntries?: Prisma.TournamentEntryListRelationFilter
   discordSettings?: Prisma.XOR<Prisma.DiscordSettingsNullableScalarRelationFilter, Prisma.DiscordSettingsWhereInput> | null
   bookings?: Prisma.BookingListRelationFilter
   waitlistEntries?: Prisma.WaitlistListRelationFilter
@@ -409,6 +412,7 @@ export type UserCreateInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
@@ -438,6 +442,7 @@ export type UserUncheckedCreateInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
@@ -467,6 +472,7 @@ export type UserUpdateInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
@@ -496,6 +502,7 @@ export type UserUncheckedUpdateInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
@@ -617,6 +624,16 @@ export type UserNullableScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput | null
 }
 
+export type UserListRelationFilter = {
+  every?: Prisma.UserWhereInput
+  some?: Prisma.UserWhereInput
+  none?: Prisma.UserWhereInput
+}
+
+export type UserOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -679,6 +696,18 @@ export type UserCreateNestedOneWithoutTournamentEntriesInput = {
   connect?: Prisma.UserWhereUniqueInput
 }
 
+export type UserCreateNestedManyWithoutParticipatingEntriesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutParticipatingEntriesInput, Prisma.UserUncheckedCreateWithoutParticipatingEntriesInput> | Prisma.UserCreateWithoutParticipatingEntriesInput[] | Prisma.UserUncheckedCreateWithoutParticipatingEntriesInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutParticipatingEntriesInput | Prisma.UserCreateOrConnectWithoutParticipatingEntriesInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+}
+
+export type UserUncheckedCreateNestedManyWithoutParticipatingEntriesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutParticipatingEntriesInput, Prisma.UserUncheckedCreateWithoutParticipatingEntriesInput> | Prisma.UserCreateWithoutParticipatingEntriesInput[] | Prisma.UserUncheckedCreateWithoutParticipatingEntriesInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutParticipatingEntriesInput | Prisma.UserCreateOrConnectWithoutParticipatingEntriesInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+}
+
 export type UserUpdateOneWithoutTournamentEntriesNestedInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutTournamentEntriesInput, Prisma.UserUncheckedCreateWithoutTournamentEntriesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutTournamentEntriesInput
@@ -687,6 +716,32 @@ export type UserUpdateOneWithoutTournamentEntriesNestedInput = {
   delete?: Prisma.UserWhereInput | boolean
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTournamentEntriesInput, Prisma.UserUpdateWithoutTournamentEntriesInput>, Prisma.UserUncheckedUpdateWithoutTournamentEntriesInput>
+}
+
+export type UserUpdateManyWithoutParticipatingEntriesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutParticipatingEntriesInput, Prisma.UserUncheckedCreateWithoutParticipatingEntriesInput> | Prisma.UserCreateWithoutParticipatingEntriesInput[] | Prisma.UserUncheckedCreateWithoutParticipatingEntriesInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutParticipatingEntriesInput | Prisma.UserCreateOrConnectWithoutParticipatingEntriesInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutParticipatingEntriesInput | Prisma.UserUpsertWithWhereUniqueWithoutParticipatingEntriesInput[]
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutParticipatingEntriesInput | Prisma.UserUpdateWithWhereUniqueWithoutParticipatingEntriesInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutParticipatingEntriesInput | Prisma.UserUpdateManyWithWhereWithoutParticipatingEntriesInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserUncheckedUpdateManyWithoutParticipatingEntriesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutParticipatingEntriesInput, Prisma.UserUncheckedCreateWithoutParticipatingEntriesInput> | Prisma.UserCreateWithoutParticipatingEntriesInput[] | Prisma.UserUncheckedCreateWithoutParticipatingEntriesInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutParticipatingEntriesInput | Prisma.UserCreateOrConnectWithoutParticipatingEntriesInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutParticipatingEntriesInput | Prisma.UserUpsertWithWhereUniqueWithoutParticipatingEntriesInput[]
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutParticipatingEntriesInput | Prisma.UserUpdateWithWhereUniqueWithoutParticipatingEntriesInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutParticipatingEntriesInput | Prisma.UserUpdateManyWithWhereWithoutParticipatingEntriesInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
 }
 
 export type UserCreateNestedOneWithoutHomeMatchesInput = {
@@ -868,6 +923,7 @@ export type UserCreateWithoutOwnedTeamsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
@@ -896,6 +952,7 @@ export type UserUncheckedCreateWithoutOwnedTeamsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
@@ -940,6 +997,7 @@ export type UserUpdateWithoutOwnedTeamsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
@@ -968,6 +1026,7 @@ export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
@@ -996,6 +1055,7 @@ export type UserCreateWithoutTeamMembershipsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
@@ -1024,6 +1084,7 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
@@ -1068,6 +1129,7 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
@@ -1096,6 +1158,7 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
@@ -1124,6 +1187,7 @@ export type UserCreateWithoutTournamentEntriesInput = {
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
@@ -1152,6 +1216,7 @@ export type UserUncheckedCreateWithoutTournamentEntriesInput = {
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
@@ -1166,6 +1231,69 @@ export type UserUncheckedCreateWithoutTournamentEntriesInput = {
 export type UserCreateOrConnectWithoutTournamentEntriesInput = {
   where: Prisma.UserWhereUniqueInput
   create: Prisma.XOR<Prisma.UserCreateWithoutTournamentEntriesInput, Prisma.UserUncheckedCreateWithoutTournamentEntriesInput>
+}
+
+export type UserCreateWithoutParticipatingEntriesInput = {
+  id?: string
+  keycloakId: string
+  email: string
+  username: string
+  displayName?: string | null
+  avatarUrl?: string | null
+  role?: $Enums.Role
+  elo?: number
+  timeBalanceSeconds?: number
+  emailNotifications?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
+  ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
+  tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
+  waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
+  homeMatches?: Prisma.MatchCreateNestedManyWithoutHomeUserInput
+  awayMatches?: Prisma.MatchCreateNestedManyWithoutAwayUserInput
+  wonMatches?: Prisma.MatchCreateNestedManyWithoutWinnerUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  logs?: Prisma.LogCreateNestedManyWithoutUserInput
+  ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutParticipatingEntriesInput = {
+  id?: string
+  keycloakId: string
+  email: string
+  username: string
+  displayName?: string | null
+  avatarUrl?: string | null
+  role?: $Enums.Role
+  elo?: number
+  timeBalanceSeconds?: number
+  emailNotifications?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
+  ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
+  tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
+  homeMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutHomeUserInput
+  awayMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutAwayUserInput
+  wonMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutWinnerUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
+  ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutParticipatingEntriesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutParticipatingEntriesInput, Prisma.UserUncheckedCreateWithoutParticipatingEntriesInput>
 }
 
 export type UserUpsertWithoutTournamentEntriesInput = {
@@ -1196,6 +1324,7 @@ export type UserUpdateWithoutTournamentEntriesInput = {
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
@@ -1224,6 +1353,7 @@ export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
@@ -1233,6 +1363,40 @@ export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserUpsertWithWhereUniqueWithoutParticipatingEntriesInput = {
+  where: Prisma.UserWhereUniqueInput
+  update: Prisma.XOR<Prisma.UserUpdateWithoutParticipatingEntriesInput, Prisma.UserUncheckedUpdateWithoutParticipatingEntriesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutParticipatingEntriesInput, Prisma.UserUncheckedCreateWithoutParticipatingEntriesInput>
+}
+
+export type UserUpdateWithWhereUniqueWithoutParticipatingEntriesInput = {
+  where: Prisma.UserWhereUniqueInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutParticipatingEntriesInput, Prisma.UserUncheckedUpdateWithoutParticipatingEntriesInput>
+}
+
+export type UserUpdateManyWithWhereWithoutParticipatingEntriesInput = {
+  where: Prisma.UserScalarWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateManyMutationInput, Prisma.UserUncheckedUpdateManyWithoutParticipatingEntriesInput>
+}
+
+export type UserScalarWhereInput = {
+  AND?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+  OR?: Prisma.UserScalarWhereInput[]
+  NOT?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+  id?: Prisma.StringFilter<"User"> | string
+  keycloakId?: Prisma.StringFilter<"User"> | string
+  email?: Prisma.StringFilter<"User"> | string
+  username?: Prisma.StringFilter<"User"> | string
+  displayName?: Prisma.StringNullableFilter<"User"> | string | null
+  avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
+  elo?: Prisma.IntFilter<"User"> | number
+  timeBalanceSeconds?: Prisma.IntFilter<"User"> | number
+  emailNotifications?: Prisma.BoolFilter<"User"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
 }
 
 export type UserCreateWithoutHomeMatchesInput = {
@@ -1253,6 +1417,7 @@ export type UserCreateWithoutHomeMatchesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
@@ -1281,6 +1446,7 @@ export type UserUncheckedCreateWithoutHomeMatchesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
@@ -1314,6 +1480,7 @@ export type UserCreateWithoutAwayMatchesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
@@ -1342,6 +1509,7 @@ export type UserUncheckedCreateWithoutAwayMatchesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
@@ -1375,6 +1543,7 @@ export type UserCreateWithoutWonMatchesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
@@ -1403,6 +1572,7 @@ export type UserUncheckedCreateWithoutWonMatchesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
@@ -1447,6 +1617,7 @@ export type UserUpdateWithoutHomeMatchesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
@@ -1475,6 +1646,7 @@ export type UserUncheckedUpdateWithoutHomeMatchesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
@@ -1514,6 +1686,7 @@ export type UserUpdateWithoutAwayMatchesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
@@ -1542,6 +1715,7 @@ export type UserUncheckedUpdateWithoutAwayMatchesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
@@ -1581,6 +1755,7 @@ export type UserUpdateWithoutWonMatchesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
@@ -1609,6 +1784,7 @@ export type UserUncheckedUpdateWithoutWonMatchesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
@@ -1636,6 +1812,7 @@ export type UserCreateWithoutGameStatsInput = {
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
@@ -1664,6 +1841,7 @@ export type UserUncheckedCreateWithoutGameStatsInput = {
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
@@ -1708,6 +1886,7 @@ export type UserUpdateWithoutGameStatsInput = {
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
@@ -1736,6 +1915,7 @@ export type UserUncheckedUpdateWithoutGameStatsInput = {
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
@@ -1765,6 +1945,7 @@ export type UserCreateWithoutRanksInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
@@ -1793,6 +1974,7 @@ export type UserUncheckedCreateWithoutRanksInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
@@ -1837,6 +2019,7 @@ export type UserUpdateWithoutRanksInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
@@ -1865,6 +2048,7 @@ export type UserUncheckedUpdateWithoutRanksInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
@@ -1892,6 +2076,7 @@ export type UserCreateWithoutNotificationsInput = {
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
@@ -1920,6 +2105,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
@@ -1964,6 +2150,7 @@ export type UserUpdateWithoutNotificationsInput = {
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
@@ -1992,6 +2179,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
@@ -2021,6 +2209,7 @@ export type UserCreateWithoutDiscordSettingsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
   homeMatches?: Prisma.MatchCreateNestedManyWithoutHomeUserInput
@@ -2049,6 +2238,7 @@ export type UserUncheckedCreateWithoutDiscordSettingsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
   homeMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutHomeUserInput
@@ -2093,6 +2283,7 @@ export type UserUpdateWithoutDiscordSettingsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
   homeMatches?: Prisma.MatchUpdateManyWithoutHomeUserNestedInput
@@ -2121,6 +2312,7 @@ export type UserUncheckedUpdateWithoutDiscordSettingsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
   homeMatches?: Prisma.MatchUncheckedUpdateManyWithoutHomeUserNestedInput
@@ -2149,6 +2341,7 @@ export type UserCreateWithoutBookingsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
   waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
   homeMatches?: Prisma.MatchCreateNestedManyWithoutHomeUserInput
@@ -2177,6 +2370,7 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
   waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
   homeMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutHomeUserInput
@@ -2221,6 +2415,7 @@ export type UserUpdateWithoutBookingsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
   homeMatches?: Prisma.MatchUpdateManyWithoutHomeUserNestedInput
@@ -2249,6 +2444,7 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
   homeMatches?: Prisma.MatchUncheckedUpdateManyWithoutHomeUserNestedInput
@@ -2277,6 +2473,7 @@ export type UserCreateWithoutSessionsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
@@ -2305,6 +2502,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
@@ -2349,6 +2547,7 @@ export type UserUpdateWithoutSessionsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
@@ -2377,6 +2576,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
@@ -2405,6 +2605,7 @@ export type UserCreateWithoutLogsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
@@ -2433,6 +2634,7 @@ export type UserUncheckedCreateWithoutLogsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
@@ -2477,6 +2679,7 @@ export type UserUpdateWithoutLogsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
@@ -2505,6 +2708,7 @@ export type UserUncheckedUpdateWithoutLogsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
@@ -2533,6 +2737,7 @@ export type UserCreateWithoutWaitlistEntriesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
   homeMatches?: Prisma.MatchCreateNestedManyWithoutHomeUserInput
@@ -2561,6 +2766,7 @@ export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
   discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
   homeMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutHomeUserInput
@@ -2605,6 +2811,7 @@ export type UserUpdateWithoutWaitlistEntriesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
   homeMatches?: Prisma.MatchUpdateManyWithoutHomeUserNestedInput
@@ -2633,6 +2840,7 @@ export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
   tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
   homeMatches?: Prisma.MatchUncheckedUpdateManyWithoutHomeUserNestedInput
@@ -2641,6 +2849,79 @@ export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserUpdateWithoutParticipatingEntriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  keycloakId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  elo?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
+  ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
+  tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
+  homeMatches?: Prisma.MatchUpdateManyWithoutHomeUserNestedInput
+  awayMatches?: Prisma.MatchUpdateManyWithoutAwayUserNestedInput
+  wonMatches?: Prisma.MatchUpdateManyWithoutWinnerUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  logs?: Prisma.LogUpdateManyWithoutUserNestedInput
+  ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutParticipatingEntriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  keycloakId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  elo?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+  ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
+  tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
+  homeMatches?: Prisma.MatchUncheckedUpdateManyWithoutHomeUserNestedInput
+  awayMatches?: Prisma.MatchUncheckedUpdateManyWithoutAwayUserNestedInput
+  wonMatches?: Prisma.MatchUncheckedUpdateManyWithoutWinnerUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
+  ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateManyWithoutParticipatingEntriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  keycloakId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  elo?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -2654,6 +2935,7 @@ export type UserCountOutputType = {
   notifications: number
   gameStats: number
   tournamentEntries: number
+  participatingEntries: number
   bookings: number
   waitlistEntries: number
   homeMatches: number
@@ -2670,6 +2952,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   gameStats?: boolean | UserCountOutputTypeCountGameStatsArgs
   tournamentEntries?: boolean | UserCountOutputTypeCountTournamentEntriesArgs
+  participatingEntries?: boolean | UserCountOutputTypeCountParticipatingEntriesArgs
   bookings?: boolean | UserCountOutputTypeCountBookingsArgs
   waitlistEntries?: boolean | UserCountOutputTypeCountWaitlistEntriesArgs
   homeMatches?: boolean | UserCountOutputTypeCountHomeMatchesArgs
@@ -2722,6 +3005,13 @@ export type UserCountOutputTypeCountGameStatsArgs<ExtArgs extends runtime.Types.
  * UserCountOutputType without action
  */
 export type UserCountOutputTypeCountTournamentEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TournamentEntryWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountParticipatingEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.TournamentEntryWhereInput
 }
 
@@ -2800,6 +3090,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   gameStats?: boolean | Prisma.User$gameStatsArgs<ExtArgs>
   tournamentEntries?: boolean | Prisma.User$tournamentEntriesArgs<ExtArgs>
+  participatingEntries?: boolean | Prisma.User$participatingEntriesArgs<ExtArgs>
   discordSettings?: boolean | Prisma.User$discordSettingsArgs<ExtArgs>
   bookings?: boolean | Prisma.User$bookingsArgs<ExtArgs>
   waitlistEntries?: boolean | Prisma.User$waitlistEntriesArgs<ExtArgs>
@@ -2864,6 +3155,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   gameStats?: boolean | Prisma.User$gameStatsArgs<ExtArgs>
   tournamentEntries?: boolean | Prisma.User$tournamentEntriesArgs<ExtArgs>
+  participatingEntries?: boolean | Prisma.User$participatingEntriesArgs<ExtArgs>
   discordSettings?: boolean | Prisma.User$discordSettingsArgs<ExtArgs>
   bookings?: boolean | Prisma.User$bookingsArgs<ExtArgs>
   waitlistEntries?: boolean | Prisma.User$waitlistEntriesArgs<ExtArgs>
@@ -2886,6 +3178,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     gameStats: Prisma.$GameStatsPayload<ExtArgs>[]
     tournamentEntries: Prisma.$TournamentEntryPayload<ExtArgs>[]
+    participatingEntries: Prisma.$TournamentEntryPayload<ExtArgs>[]
     discordSettings: Prisma.$DiscordSettingsPayload<ExtArgs> | null
     bookings: Prisma.$BookingPayload<ExtArgs>[]
     waitlistEntries: Prisma.$WaitlistPayload<ExtArgs>[]
@@ -3308,6 +3601,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   gameStats<T extends Prisma.User$gameStatsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$gameStatsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GameStatsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tournamentEntries<T extends Prisma.User$tournamentEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tournamentEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  participatingEntries<T extends Prisma.User$participatingEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$participatingEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   discordSettings<T extends Prisma.User$discordSettingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$discordSettingsArgs<ExtArgs>>): Prisma.Prisma__DiscordSettingsClient<runtime.Types.Result.GetResult<Prisma.$DiscordSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   bookings<T extends Prisma.User$bookingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   waitlistEntries<T extends Prisma.User$waitlistEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$waitlistEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WaitlistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3845,6 +4139,30 @@ export type User$gameStatsArgs<ExtArgs extends runtime.Types.Extensions.Internal
  * User.tournamentEntries
  */
 export type User$tournamentEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TournamentEntry
+   */
+  select?: Prisma.TournamentEntrySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TournamentEntry
+   */
+  omit?: Prisma.TournamentEntryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TournamentEntryInclude<ExtArgs> | null
+  where?: Prisma.TournamentEntryWhereInput
+  orderBy?: Prisma.TournamentEntryOrderByWithRelationInput | Prisma.TournamentEntryOrderByWithRelationInput[]
+  cursor?: Prisma.TournamentEntryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TournamentEntryScalarFieldEnum | Prisma.TournamentEntryScalarFieldEnum[]
+}
+
+/**
+ * User.participatingEntries
+ */
+export type User$participatingEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the TournamentEntry
    */

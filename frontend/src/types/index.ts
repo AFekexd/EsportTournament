@@ -13,6 +13,7 @@ export interface User {
     teamMemberships?: TeamMember[];
     ownedTeams?: Team[];
     emailNotifications?: boolean;
+    ranks?: UserRank[];
 }
 
 export interface Team {
@@ -98,6 +99,7 @@ export interface Tournament {
     hasQualifier?: boolean;
     qualifierMatches?: number;
     qualifierMinPoints?: number;
+    requireRank?: boolean;
     teamSize?: number | null;
     createdAt: string;
     updatedAt: string;
