@@ -284,7 +284,13 @@ export function TournamentDetailPage() {
       {/* Hero Section */}
       <div className="relative h-[400px] w-full mb-8 group">
         <div className="absolute inset-0 overflow-hidden">
-          {currentTournament.game?.imageUrl ? (
+          {currentTournament.imageUrl ? (
+            <img
+              src={currentTournament.imageUrl}
+              alt={currentTournament.name}
+              className="w-full h-full object-cover filter brightness-[0.3] group-hover:brightness-[0.4] transition-all duration-700"
+            />
+          ) : currentTournament.game?.imageUrl ? (
             <img
               src={currentTournament.game.imageUrl}
               alt={currentTournament.game.name}
@@ -297,6 +303,24 @@ export function TournamentDetailPage() {
         </div>
 
         <div className="container mx-auto px-4 h-full relative flex flex-col justify-end pb-12">
+          {/* Badges - Moved to bottom left */}
+          <div className="absolute bottom-8 left-4 flex flex-wrap items-center gap-3 z-10">
+            <span
+              className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${
+                statusLabels[currentTournament.status]?.class ||
+                "bg-gray-500/20 text-gray-400 border-gray-500/50"
+              }`}
+            >
+              <StatusIcon size={14} />
+              {statusLabels[currentTournament.status]?.label ||
+                currentTournament.status}
+            </span>
+            {currentTournament.game && (
+              <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-white border border-white/10 backdrop-blur-md">
+                {currentTournament.game.name}
+              </span>
+            )}
+          </div>
           <button
             className="absolute top-8 left-4 flex items-center gap-2 text-gray-400 hover:text-white transition-colors bg-black/30 hover:bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full border border-white/5"
             onClick={() => navigate("/tournaments")}
@@ -307,24 +331,6 @@ export function TournamentDetailPage() {
 
           <div className="flex flex-col md:flex-row md:items-end gap-8">
             <div className="flex-grow space-y-4">
-              <div className="flex flex-wrap items-center gap-3">
-                <span
-                  className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${
-                    statusLabels[currentTournament.status]?.class ||
-                    "bg-gray-500/20 text-gray-400 border-gray-500/50"
-                  }`}
-                >
-                  <StatusIcon size={14} />
-                  {statusLabels[currentTournament.status]?.label ||
-                    currentTournament.status}
-                </span>
-                {currentTournament.game && (
-                  <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-white border border-white/10 backdrop-blur-md">
-                    {currentTournament.game.name}
-                  </span>
-                )}
-              </div>
-
               <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
                 {currentTournament.name}
               </h1>
