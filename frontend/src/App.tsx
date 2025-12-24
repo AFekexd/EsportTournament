@@ -25,6 +25,7 @@ import {
   TeacherTimePage,
   TournamentEmbedPage,
 } from "./pages";
+import { AdminLogs } from "./components/admin/AdminLogs";
 import { PuffLoader } from "react-spinners";
 import { Toaster } from "./components/ui/sonner";
 
@@ -87,6 +88,7 @@ function AppContent() {
           <Route path="profile/:id" element={<ProfilePage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="admin" element={<AdminPage />} />
+          <Route path="admin/logs" element={<AdminLogs />} />
           <Route path="teacher/time" element={<TeacherTimePage />} />
           <Route path="booking" element={<BookingPage />} />
         </Route>

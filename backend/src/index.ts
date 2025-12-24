@@ -8,6 +8,12 @@ import { Server } from 'socket.io'; // Socket.IO
 
 import { errorHandler } from './middleware/errorHandler.js';
 import { authRouter } from './routes/auth.js';
+import { logsRouter } from './routes/logs.js';
+
+// ... other imports
+
+// Routes
+// ... other routes
 import { usersRouter } from './routes/users.js';
 
 import { teamsRouter } from './routes/teams.js';
@@ -87,6 +93,7 @@ app.use('/api/notifications', notificationsRouter);
 app.use('/api/leaderboards', leaderboardsRouter);
 app.use('/api/discord', discordRouter);
 app.use('/api/bookings', bookingsRouter);
+app.use('/api/logs', logsRouter);
 app.use('/share', shareRouter);
 
 // Kiosk & Admin Kiosk Routes

@@ -18,7 +18,7 @@ import {
   setUserRank,
   fetchRanks,
 } from "../store/slices/gamesSlice";
-import { fetchTeams } from "../store/slices/teamsSlice";
+import { fetchMyTeams } from "../store/slices/teamsSlice";
 import { fetchTournaments } from "../store/slices/tournamentsSlice";
 import {
   fetchPublicProfile,
@@ -48,7 +48,7 @@ export function ProfilePage() {
       if (!games.length) dispatch(fetchGames());
 
       if (isOwnProfile) {
-        dispatch(fetchTeams({ page: 1, my: true }));
+        dispatch(fetchMyTeams());
         dispatch(fetchTournaments({ page: 1 })); // Ideally should capture my tournaments
         dispatch(fetchUserRanks());
       } else if (id) {
