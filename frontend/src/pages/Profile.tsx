@@ -242,13 +242,6 @@ export function ProfilePage() {
               <div className="absolute top-6 right-6 flex gap-3 z-20">
                 <Link
                   to="/settings"
-                  className="p-2 bg-black/40 hover:bg-black/60 text-white backdrop-blur-md border border-white/10 rounded-full transition-all hover:scale-105"
-                  title="Beállítások"
-                >
-                  <SettingsIcon size={20} />
-                </Link>
-                <Link
-                  to="/settings"
                   className="p-2 bg-primary hover:bg-primary/90 !text-white shadow-lg shadow-primary/20 rounded-full transition-all hover:scale-105"
                   title="Szerkesztés"
                 >

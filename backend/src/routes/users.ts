@@ -103,6 +103,10 @@ usersRouter.patch(
 
         const { displayName, avatarUrl, emailNotifications } = req.body;
 
+        if (displayName && displayName !== currentUser.displayName && currentUser.role !== 'ADMIN') {
+             throw new ApiError('A megjelenítendő nevet csak adminisztrátor módosíthatja', 403, 'FORBIDDEN');
+        }
+
         const updatedUser = await prisma.user.update({
             where: { id: targetUserId },
             data: {

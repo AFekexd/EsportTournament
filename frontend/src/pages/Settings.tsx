@@ -10,7 +10,7 @@ import { authService } from "../lib/auth-service";
 
 export function SettingsPage() {
   const dispatch = useAppDispatch();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isAdmin } = useAuth();
 
   // Settings state
   const [displayName, setDisplayName] = useState(user?.displayName || "");
@@ -129,18 +129,39 @@ export function SettingsPage() {
             <div className="space-y-2">
               <label
                 htmlFor="displayName"
-                className="text-sm font-medium text-gray-300 ml-1"
+                className="text-sm font-medium text-gray-300 ml-1 flex items-center justify-between"
               >
-                Megjelenítendő név
+                <span>Megjelenítendő név</span>
+                {!isAdmin && (
+                  <span className="text-[10px] text-gray-500 uppercase tracking-widest flex items-center gap-1">
+                    <Lock size={10} />
+                    Csak Admin módosíthatja
+                  </span>
+                )}
               </label>
-              <input
-                id="displayName"
-                type="text"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                className="w-full px-5 py-4 bg-[#0a0a0f]/50 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-lg"
-                placeholder="pl. GamerPro123"
-              />
+              <div className="relative">
+                <input
+                  id="displayName"
+                  type="text"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  disabled={!isAdmin}
+                  className={`w-full px-5 py-4 bg-[#0a0a0f]/50 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-lg ${
+                    !isAdmin ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  placeholder="pl. GamerPro123"
+                />
+                {!isAdmin && (
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
+                    <Lock size={18} />
+                  </div>
+                )}
+              </div>
+              {!isAdmin && (
+                <p className="text-xs text-gray-500 ml-1">
+                  Biztonsági okokból a nevedet csak adminisztrátor módosíthatja.
+                </p>
+              )}
             </div>
           </div>
         </div>

@@ -331,7 +331,7 @@ export function TeamDetailPage() {
                     </div>
                     <div className="flex items-center justify-between p-3 bg-black/20 rounded-lg">
                       <span className="text-gray-400 flex items-center gap-2">
-                        <Shield size={16} /> Kapitania
+                        <Shield size={16} /> Csapat kapitány
                       </span>
                       <span className="text-white font-medium">
                         {currentTeam.owner?.displayName ||
