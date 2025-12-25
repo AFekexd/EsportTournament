@@ -13,7 +13,7 @@ gamesRouter.get(
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
         const games = await prisma.game.findMany({
             include: {
-                _count: { select: { tournaments: true } },
+                _count: { select: { tournaments: true, userRanks: true } },
             },
             orderBy: { name: 'asc' },
         });
@@ -84,7 +84,7 @@ gamesRouter.get(
                     orderBy: { startDate: 'asc' },
                     take: 5,
                 },
-                _count: { select: { tournaments: true, gameStats: true } },
+                _count: { select: { tournaments: true, userRanks: true } },
             },
         });
 

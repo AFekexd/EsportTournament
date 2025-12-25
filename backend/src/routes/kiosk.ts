@@ -80,10 +80,29 @@ kioskRouter.post('/session/start', async (req, res) => {
             return;
         }
 
-        // Check if user has time (Skip for ADMIN/TEACHER)
-        if (!['ADMIN', 'TEACHER'].includes(user.role) && user.timeBalanceSeconds <= 0) {
-            res.status(403).json({ error: 'No time balance remaining' });
-            return;
+        // Check if user has time & booking (Skip for ADMIN/TEACHER)
+        if (!['ADMIN', 'TEACHER'].includes(user.role)) {
+            // 1. Check for Active Booking
+            const now = new Date();
+            const activeBooking = await prisma.booking.findFirst({
+                where: {
+                    userId: user.id,
+                    computerId: machine.id,
+                    startTime: { lte: now },
+                    endTime: { gte: now }
+                }
+            });
+
+            if (!activeBooking) {
+                res.status(403).json({ error: 'Nincs érvényes foglalásod erre a gépre és időpontra.' });
+                return;
+            }
+
+            // 2. Check Time Balance
+            if (user.timeBalanceSeconds <= 0) {
+                res.status(403).json({ error: 'Nincs időegyenleged.' });
+                return;
+            }
         }
 
         // Close any existing open sessions for this machine
@@ -115,7 +134,8 @@ kioskRouter.post('/session/start', async (req, res) => {
         emitMachineUpdate(machine.hostname || machine.id, { status: 'occupied', userId: user.id });
         emitSessionUpdate({ type: 'start', session });
 
-        res.json({ success: true, session, remainingTime: user.timeBalanceSeconds });
+        const remainingTime = ['ADMIN', 'TEACHER'].includes(user.role) ? -1 : user.timeBalanceSeconds;
+        res.json({ success: true, session, remainingTime });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
@@ -217,7 +237,7 @@ kioskRouter.get('/status/:machineId', async (req, res) => {
             const now = new Date();
             const durationSeconds = Math.floor((now.getTime() - activeSession.startTime.getTime()) / 1000);
             const isUnlimited = ['ADMIN', 'TEACHER'].includes(activeSession.user.role);
-            const remaining = isUnlimited ? 999999 : activeSession.user.timeBalanceSeconds - durationSeconds;
+            const remaining = isUnlimited ? -1 : activeSession.user.timeBalanceSeconds - durationSeconds;
 
             if (remaining <= 0 && !isUnlimited) {
                 // Time up!
@@ -230,6 +250,50 @@ kioskRouter.get('/status/:machineId', async (req, res) => {
             res.json({ Locked: true, Message: "No active session" });
         }
 
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Register Machine manually
+kioskRouter.post('/register', async (req, res) => {
+    const { name, hostname, row, position, adminPassword } = req.body;
+
+    // Simple Admin Password Check (In production use proper auth or env secret)
+    if (adminPassword !== 'admin123') {
+        res.status(401).json({ error: 'Hibás admin jelszó' });
+        return;
+    }
+
+    try {
+        const existing = await prisma.computer.findUnique({ where: { hostname } });
+        if (existing) {
+            res.status(400).json({ error: 'A gép már regisztrálva van' });
+            return;
+        }
+
+        // Check if row/pos is taken
+        const spotTaken = await prisma.computer.findFirst({
+            where: { row: parseInt(row), position: parseInt(position) }
+        });
+
+        if (spotTaken) {
+            res.status(400).json({ error: 'A megadott sor/pozíció már foglalt' });
+            return;
+        }
+
+        const computer = await prisma.computer.create({
+            data: {
+                name,
+                hostname,
+                row: parseInt(row),
+                position: parseInt(position),
+                isActive: true
+            }
+        });
+
+        res.json({ success: true, data: computer });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });

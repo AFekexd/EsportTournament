@@ -44,10 +44,18 @@ const formatLabels: Record<string, string> = {
   SWISS: "Svájci",
 };
 
+const teamSizeLabels: Record<number, string> = {
+  1: "1v1",
+  2: "2v2",
+  3: "3v3",
+  5: "5v5",
+};
+
 function TournamentCard({ tournament }: { tournament: Tournament }) {
   const startDate = new Date(tournament.startDate);
   const regDeadline = new Date(tournament.registrationDeadline);
   const statusInfo = statusLabels[tournament.status] || statusLabels.DRAFT;
+  const teamSize = tournament.teamSize || tournament.game?.teamSize || 1;
 
   return (
     <Link
@@ -70,6 +78,14 @@ function TournamentCard({ tournament }: { tournament: Tournament }) {
 
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#1a1b26] via-transparent to-transparent opacity-90" />
+
+        {/* Team Size Badge */}
+        <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 shadow-lg z-10">
+          <span className="text-xs font-bold text-white tracking-wider flex items-center gap-1">
+            <Users size={12} className="text-primary" />
+            {teamSizeLabels[teamSize] || `${teamSize}v${teamSize}`}
+          </span>
+        </div>
 
         {/* Status Badge */}
         <div className="absolute top-3 right-3">
@@ -214,7 +230,7 @@ export function TournamentsPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="pl-1 pr-8 py-3 bg-[#1a1b26] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer"
+              className="pl-4 pr-10 py-3 bg-[#1a1b26] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer min-w-[180px]"
             >
               <option value="">Minden státusz</option>
               <option value="REGISTRATION">Regisztráció</option>

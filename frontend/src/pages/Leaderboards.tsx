@@ -137,7 +137,7 @@ export function LeaderboardsPage() {
                   </div>
                   <Link
                     to={`/profile/${player.id}`}
-                    className="block hover:opacity-80 transition-opacity"
+                    className="hover:opacity-80 transition-opacity group"
                   >
                     <div className="mb-4 flex justify-center">
                       <div className="w-20 h-20 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
@@ -148,7 +148,7 @@ export function LeaderboardsPage() {
                             className="w-full h-full rounded-full object-cover"
                           />
                         ) : (
-                          <span>
+                          <span className="text-2xl font-bold ">
                             {(player.displayName || player.username)
                               .charAt(0)
                               .toUpperCase()}
@@ -156,7 +156,7 @@ export function LeaderboardsPage() {
                         )}
                       </div>
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-2">
+                    <h3 className="text-xl font-bold text-white mb-2 !text-primary">
                       {player.displayName || player.username}
                     </h3>
                   </Link>
@@ -229,24 +229,29 @@ export function LeaderboardsPage() {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-white text-sm font-bold">
-                              {player.avatarUrl ? (
-                                <img
-                                  src={player.avatarUrl}
-                                  alt={player.displayName || player.username}
-                                  className="w-full h-full rounded-full object-cover"
-                                />
-                              ) : (
-                                <span>
-                                  {(player.displayName || player.username)
-                                    .charAt(0)
-                                    .toUpperCase()}
-                                </span>
-                              )}
-                            </div>
-                            <span className="font-medium text-white">
-                              {player.displayName || player.username}
-                            </span>
+                            <Link
+                              to={`/profile/${player.id}`}
+                              className="flex items-center gap-2"
+                            >
+                              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-white text-sm font-bold">
+                                {player.avatarUrl ? (
+                                  <img
+                                    src={player.avatarUrl}
+                                    alt={player.displayName || player.username}
+                                    className="w-full h-full rounded-full object-cover "
+                                  />
+                                ) : (
+                                  <span className="">
+                                    {(player.displayName || player.username)
+                                      .charAt(0)
+                                      .toUpperCase()}
+                                  </span>
+                                )}
+                              </div>
+                              <span className="font-medium text-primary hover:!text-white transition-colors">
+                                {player.displayName || player.username}
+                              </span>
+                            </Link>
                           </div>
                         </td>
                         <td className="px-6 py-4 text-primary font-bold">

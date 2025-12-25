@@ -55,7 +55,7 @@ export interface Game {
     tournaments?: Tournament[];
     _count?: {
         tournaments: number;
-        gameStats: number;
+        userRanks: number;
     };
 }
 

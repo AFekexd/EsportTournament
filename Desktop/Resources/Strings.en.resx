@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" msdata:Ordinal="5" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  
+  <!-- Lock Screen -->
+  <data name="LockedScreen_Title" xml:space="preserve">
+    <value>Computer Locked</value>
+  </data>
+  <data name="LockedScreen_Instruction" xml:space="preserve">
+    <value>Press SPACE to login</value>
+  </data>
+  
+  <!-- Login Panel -->
+  <data name="LoginPanel_Title" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="LoginPanel_Username" xml:space="preserve">
+    <value>Username:</value>
+  </data>
+  <data name="LoginPanel_Password" xml:space="preserve">
+    <value>Password:</value>
+  </data>
+  <data name="LoginPanel_LoginButton" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="LoginPanel_EmptyFields" xml:space="preserve">
+    <value>Please fill in all fields!</value>
+  </data>
+  
+  <!-- Context Menu -->
+  <data name="ContextMenu_Pause" xml:space="preserve">
+    <value>Pause Session</value>
+  </data>
+  <data name="ContextMenu_Resume" xml:space="preserve">
+    <value>Resume Session</value>
+  </data>
+  <data name="ContextMenu_Logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  
+  <!-- Notifications -->
+  <data name="Notification_Warning_15Min" xml:space="preserve">
+    <value>WARNING: 15 minutes remaining!</value>
+  </data>
+  <data name="Notification_Warning_10Min" xml:space="preserve">
+    <value>WARNING: 10 minutes remaining!</value>
+  </data>
+  <data name="Notification_Warning_5Min" xml:space="preserve">
+    <value>WARNING: 5 minutes remaining!</value>
+  </data>
+  <data name="Notification_Warning_1Min" xml:space="preserve">
+    <value>WARNING: 1 minute remaining!</value>
+  </data>
+  <data name="Notification_TimeExpired" xml:space="preserve">
+    <value>Your time has expired! Logging out...</value>
+  </data>
+  <data name="Notification_SessionPaused" xml:space="preserve">
+    <value>Session paused (max {0} minutes)</value>
+  </data>
+  <data name="Notification_SessionResumed" xml:space="preserve">
+    <value>Session resumed</value>
+  </data>
+  <data name="Notification_PauseTimeExceeded" xml:space="preserve">
+    <value>Pause time limit exceeded! Session resumed.</value>
+  </data>
+  
+  <!-- Errors -->
+  <data name="Error_NoTimeRemaining" xml:space="preserve">
+    <value>No time remaining!</value>
+  </data>
+  <data name="Error_MachineLocked" xml:space="preserve">
+    <value>Machine is locked by administrator!</value>
+  </data>
+  <data name="Error_NetworkError" xml:space="preserve">
+    <value>Connection error: {0}</value>
+  </data>
+  <data name="Error_AuthenticationFailed" xml:space="preserve">
+    <value>Error: {0}</value>
+  </data>
+  
+  <!-- Fail-Safe Dialog -->
+  <data name="FailSafe_Title" xml:space="preserve">
+    <value>Fail-Safe Exit</value>
+  </data>
+  <data name="FailSafe_PasswordLabel" xml:space="preserve">
+    <value>Emergency Admin Password:</value>
+  </data>
+  <data name="FailSafe_ExitButton" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="FailSafe_CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  
+  <!-- System Messages -->
+  <data name="System_AppName" xml:space="preserve">
+    <value>Esport Manager</value>
+  </data>
+  <data name="System_BackgroundMessage" xml:space="preserve">
+    <value>Application running in background. Right-click to exit.</value>
+  </data>
+  <data name="System_LoggedInAs" xml:space="preserve">
+    <value>Logged in as: {0}</value>
+  </data>
+  
+  <!-- Offline Mode -->
+  <data name="Offline_Mode" xml:space="preserve">
+    <value>Offline Mode - Limited Session</value>
+  </data>
+  <data name="Offline_CachedLogin" xml:space="preserve">
+    <value>Offline login successful (limited time)</value>
+  </data>
+</root>

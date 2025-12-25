@@ -400,11 +400,6 @@ export function AdminPage() {
                         </div>
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
-
-                      {/* Team Size Badge */}
-                      <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-white border border-white/10">
-                        {game.teamSize} vs {game.teamSize}
-                      </div>
                     </div>
 
                     {/* Content */}
@@ -546,6 +541,15 @@ export function AdminPage() {
                             {tournament.game?.name || "-"}
                           </td>
                           <td className="p-4 text-sm text-gray-400">
+                            <span className="inline-block px-1.5 py-0.5 rounded bg-white/10 text-white font-mono text-xs mr-2">
+                              {(tournament.teamSize ||
+                                tournament.game?.teamSize ||
+                                1) +
+                                "v" +
+                                (tournament.teamSize ||
+                                  tournament.game?.teamSize ||
+                                  1)}
+                            </span>
                             {tournament.format === "SINGLE_ELIMINATION" &&
                               "Egyenes kiesés"}
                             {tournament.format === "DOUBLE_ELIMINATION" &&

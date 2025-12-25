@@ -197,6 +197,12 @@ export function ProfilePage() {
     return game?.imageUrl || null;
   };
 
+  const formatTimeBalance = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    return `${hours}h ${minutes}m`;
+  };
+
   const topGameImage = getTopGameImage();
 
   return (
@@ -373,6 +379,20 @@ export function ProfilePage() {
                       </div>
                     </div>
                   </div>
+
+                  {isOwnProfile && (
+                    <div className="bg-[#0f1015] rounded-xl p-4 border border-white/5 text-center min-w-[100px] hover:border-green-500/50 transition-all group relative overflow-hidden">
+                      <div className="absolute inset-0 bg-green-500/5 group-hover:bg-green-500/10 transition-colors"></div>
+                      <div className="relative z-10">
+                        <div className="text-gray-500 text-[10px] uppercase tracking-widest font-bold mb-1 group-hover:text-green-400 transition-colors">
+                          Időegyenleg
+                        </div>
+                        <div className="text-2xl font-black text-white">
+                          {formatTimeBalance(user?.timeBalanceSeconds || 0)}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
