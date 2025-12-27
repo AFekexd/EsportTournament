@@ -71,10 +71,10 @@ namespace EsportManager.Services
 
     public class ApiConfig
     {
-        public string BaseUrl { get; set; } = "http://localhost:6969/api";
-        public string StatusUrl { get; set; } = "http://localhost:6969/api/kiosk/status/";
-        public string StartSessionUrl { get; set; } = "http://localhost:6969/api/kiosk/session/start";
-        public string EndSessionUrl { get; set; } = "http://localhost:6969/api/kiosk/session/end";
+        public string BaseUrl { get; set; } = "https://esport-backend.afeke.com/api";
+        public string StatusUrl { get; set; } = "https://esport-backend.afeke.com/api/kiosk/status/";
+        public string StartSessionUrl { get; set; } = "https://esport-backend.afeke.com/api/kiosk/session/start";
+        public string EndSessionUrl { get; set; } = "https://esport-backend.afeke.com/api/kiosk/session/end";
     }
 
     public class SecurityConfig

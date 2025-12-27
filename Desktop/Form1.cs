@@ -69,8 +69,8 @@ namespace EsportManager
         {
             InitializeComponent();
 
-            // Auto-Start beállítása
-            EnsureStartup();
+            // Auto-Start beállítása - KIKAPCSOLVA: Scheduled Task használata helyette
+            // EnsureStartup();
 
             // Form beállítások a Kiosk módhoz
             this.FormBorderStyle = FormBorderStyle.None;
@@ -99,7 +99,7 @@ namespace EsportManager
             _timer.Start();
 
             // Task Manager letiltása induláskor
-            SetTaskManagerState(false);
+
 
             // Billentyű események
             this.KeyDown += Form1_KeyDown;
@@ -545,7 +545,7 @@ namespace EsportManager
             this.Activate();
             
             ShowLockedScreen();
-            SetTaskManagerState(false);
+
             _isUnlocked = false;
             
             Console.WriteLine("[LOGOUT] Felhasználó kijelentkezett a tálca ikon segítségével");
@@ -1003,7 +1003,7 @@ namespace EsportManager
         {
             _isUnlocked = true;
             this.Hide();
-            SetTaskManagerState(true);
+
             
             // Tálca ikon megjelenítése
             _notifyIcon.Visible = true;
@@ -1079,7 +1079,7 @@ namespace EsportManager
                         this.Show();
                         this.Activate();
                         ShowLockedScreen();
-                        SetTaskManagerState(false);
+
                     }
                 }
             }
@@ -1145,7 +1145,7 @@ namespace EsportManager
                         {
                             _isUnlocked = true;
                             this.Hide();
-                            SetTaskManagerState(true);
+
                             _notifyIcon.Visible = true;
                             _notifyIcon.ShowBalloonTip(3000, "Esport Manager", "Verseny mód aktív.", ToolTipIcon.Info);
                         }
@@ -1168,7 +1168,7 @@ namespace EsportManager
                         this.Show();
                         this.Activate();
                         ShowLockedScreen();
-                        SetTaskManagerState(false);
+
                         
                         // Windows kijelentkeztetés
                        // RunLogoutScript(_currentUserId ?? "User");
@@ -1197,24 +1197,6 @@ namespace EsportManager
             {
                 // Ha a szerver nem elérhető, maradjon zárolva
                 Console.WriteLine($"Hálózati hiba: {ex.Message}");
-            }
-        }
-
-        private void SetTaskManagerState(bool enable)
-        {
-            try
-            {
-                RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Policies\System");
-                if (key != null)
-                {
-                    key.SetValue("DisableTaskMgr", enable ? 0 : 1, RegistryValueKind.DWord);
-                    key.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                // Hiba eset�n ne csin�ljon semmit
-                Console.WriteLine($"Registry hozz�f�r�si hiba: {ex.Message}");
             }
         }
 
@@ -1307,8 +1289,16 @@ namespace EsportManager
                 {
                     if (textBox.Text == FailSafePassword)
                     {
-                        // Feladatkezelő engedélyezése és kilépés
-                        SetTaskManagerState(true);
+                        // Kilépés
+                        try 
+                        {
+                            File.Create(Path.Combine(Path.GetTempPath(), "EsportManager_Stop.signal")).Close();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"[FAILSAFE] Could not create stop signal: {ex.Message}");
+                        }
+
                         _allowClose = true;
                         _timer.Stop();
                         if (_notifyIcon != null) _notifyIcon.Visible = false;
