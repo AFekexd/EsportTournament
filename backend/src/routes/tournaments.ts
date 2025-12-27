@@ -679,7 +679,7 @@ tournamentsRouter.post(
                         team: true,
                         user: true,
                     },
-                    orderBy: { seed: 'desc' },
+                    orderBy: [{ seed: 'desc' }, { registeredAt: 'asc' }],
                 },
             },
         });
