@@ -271,7 +271,7 @@ export function TournamentDetailPage() {
   const handleUnregister = (entry: any) => {
     if (!currentTournament) return;
 
-    const targetId = entry.teamId || entry.userId;
+    const targetId = entry.id;
     if (!targetId) return;
 
     setConfirmModal({

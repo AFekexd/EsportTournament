@@ -467,7 +467,7 @@ const tournamentsSlice = createSlice({
                  if (state.currentTournament && state.currentTournament.entries) {
                      const { targetId } = action.payload;
                      state.currentTournament.entries = state.currentTournament.entries.filter(e => 
-                         e.teamId !== targetId && e.userId !== targetId
+                         e.id !== targetId
                      );
                      // Update counts
                      if (state.currentTournament.participantsCount !== undefined) {

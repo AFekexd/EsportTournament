@@ -536,7 +536,49 @@ tournamentsRouter.delete(
             throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
-        // Determine tournament type
+        // Try to find entry by ID first (more robust)
+        const targetId = req.params.targetId;
+        const entryById = await prisma.tournamentEntry.findUnique({
+            where: { id: targetId },
+            include: { team: true, user: true }
+        });
+
+        if (entryById) {
+            if (entryById.tournamentId !== tournament.id) {
+                // Entry exists but belongs to another tournament?
+                // Depending on security model, we might throw 404 or 400.
+                // Or just fall through to existing logic.
+                // Let's ignore it here and let fallback handle it or just error.
+            } else {
+                 // Check Permissions for Entry ID deletion
+                 let isAllowed = false;
+                 if (['ADMIN', 'ORGANIZER'].includes(currentUser.role)) {
+                     isAllowed = true;
+                 } else if (entryById.userId === currentUser.id) {
+                     // Self unregister
+                     isAllowed = true;
+                 } else if (entryById.teamId && entryById.team?.ownerId === currentUser.id) {
+                     // Team Captain unregister
+                     isAllowed = true;
+                 }
+
+                 if (!isAllowed) {
+                     throw new ApiError('Nincs jogosultságod a nevezés törlésére', 403, 'FORBIDDEN');
+                 }
+                
+                // Check Status (if not admin)
+                if (!['ADMIN', 'ORGANIZER'].includes(currentUser.role)) {
+                    if (tournament.status !== 'REGISTRATION') {
+                        throw new ApiError('A verseny kezdete után nem lehet leiratkozni', 400, 'CANNOT_UNREGISTER');
+                    }
+                }
+
+                await prisma.tournamentEntry.delete({ where: { id: entryById.id } });
+                return res.json({ success: true, message: 'Sikeres leiratkozás' });
+            }
+        }
+
+        // Determine tournament type (Fallback to old logic if not Entry ID)
         const teamSize = tournament.teamSize ?? tournament.game?.teamSize ?? 1;
         const isSolo = teamSize === 1;
 
