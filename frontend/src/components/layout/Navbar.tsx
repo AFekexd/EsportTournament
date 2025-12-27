@@ -9,6 +9,7 @@ import {
   MenuIcon,
   Trash2,
 } from "lucide-react";
+import { ConfirmationModal } from "../common/ConfirmationModal";
 import { useAuth } from "../../hooks/useAuth";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import {
@@ -61,6 +62,24 @@ export function Navbar() {
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
 
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    variant: "danger" | "warning" | "info" | "primary";
+    confirmLabel?: string;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: () => {},
+    variant: "primary",
+  });
+
+  const closeConfirmModal = () =>
+    setConfirmModal((prev) => ({ ...prev, isOpen: false }));
+
   useEffect(() => {
     if (isAuthenticated) {
       dispatch(fetchUnreadCount());
@@ -96,9 +115,16 @@ export function Navbar() {
 
   const handleDeleteAll = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (confirm("Biztosan törölni szeretnéd az összes értesítést?")) {
-      dispatch(clearAllNotifications());
-    }
+    setConfirmModal({
+      isOpen: true,
+      title: "Értesítések törlése",
+      message: "Biztosan törölni szeretnéd az összes értesítést?",
+      variant: "danger",
+      confirmLabel: "Törlés",
+      onConfirm: () => {
+        dispatch(clearAllNotifications());
+      },
+    });
   };
 
   const handleDeleteOne = (e: React.MouseEvent, id: string) => {
@@ -303,6 +329,16 @@ export function Navbar() {
           )}
         </div>
       </div>
+
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={closeConfirmModal}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        variant={confirmModal.variant}
+        confirmLabel={confirmModal.confirmLabel}
+      />
     </header>
   );
 }

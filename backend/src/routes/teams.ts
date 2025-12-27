@@ -224,8 +224,16 @@ teamsRouter.patch(
             throw new ApiError('Team not found', 404, 'NOT_FOUND');
         }
 
-        if (team.owner.keycloakId !== req.user!.sub) {
-            throw new ApiError('Only team owner can update team', 403, 'FORBIDDEN');
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user) {
+            throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+        }
+
+        if (team.owner.keycloakId !== req.user!.sub && !['ADMIN', 'ORGANIZER'].includes(user.role)) {
+            throw new ApiError('Only team owner or admin can update team', 403, 'FORBIDDEN');
         }
 
         const { name, description, logoUrl } = req.body;
@@ -266,8 +274,16 @@ teamsRouter.delete(
             throw new ApiError('Team not found', 404, 'NOT_FOUND');
         }
 
-        if (team.owner.keycloakId !== req.user!.sub) {
-            throw new ApiError('Only team owner can delete team', 403, 'FORBIDDEN');
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user) {
+            throw new ApiError('User not found', 404, 'USER_NOT_FOUND');
+        }
+
+        if (team.owner.keycloakId !== req.user!.sub && !['ADMIN', 'ORGANIZER'].includes(user.role)) {
+            throw new ApiError('Only team owner or admin can delete team', 403, 'FORBIDDEN');
         }
 
         await prisma.team.delete({ where: { id: req.params.id } });
@@ -383,8 +399,8 @@ teamsRouter.delete(
             throw new ApiError('Team not found', 404, 'NOT_FOUND');
         }
 
-        if (team.ownerId !== user.id) {
-            throw new ApiError('Only team owner can remove members', 403, 'FORBIDDEN');
+        if (team.ownerId !== user.id && !['ADMIN', 'ORGANIZER'].includes(user.role)) {
+            throw new ApiError('Only team owner or admin can remove members', 403, 'FORBIDDEN');
         }
 
         // Cannot remove owner

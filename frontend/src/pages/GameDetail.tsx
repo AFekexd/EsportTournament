@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   ArrowLeft,
@@ -8,6 +8,7 @@ import {
   Gamepad2,
   Trash2,
 } from "lucide-react";
+import { ConfirmationModal } from "../components/common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import {
   fetchGame,
@@ -24,6 +25,24 @@ export function GameDetailPage() {
   const dispatch = useAppDispatch();
   const { user } = useAuth();
   const { currentGame, isLoading } = useAppSelector((state) => state.games);
+
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    variant: "danger" | "warning" | "info" | "primary";
+    confirmLabel?: string;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: () => {},
+    variant: "primary",
+  });
+
+  const closeConfirmModal = () =>
+    setConfirmModal((prev) => ({ ...prev, isOpen: false }));
 
   useEffect(() => {
     if (id) {
@@ -55,21 +74,25 @@ export function GameDetailPage() {
         {user?.role === "ADMIN" && currentGame && (
           <button
             className="btn btn-ghost text-red-500 hover:text-red-400 hover:bg-red-500/10"
-            onClick={async () => {
-              if (
-                window.confirm(
-                  "Biztosan törölni szeretnéd ezt a játékot? Ez a művelet nem visszavonható!"
-                )
-              ) {
-                try {
-                  await dispatch(deleteGame(currentGame.id)).unwrap();
-                  toast.success("Játék sikeresen törölve");
-                  navigate("/games");
-                } catch (error) {
-                  console.error("Failed to delete game:", error);
-                  toast.error("Nem sikerült törölni a játékot");
-                }
-              }
+            onClick={() => {
+              setConfirmModal({
+                isOpen: true,
+                title: "Játék törlése",
+                message:
+                  "Biztosan törölni szeretnéd ezt a játékot? Ez a művelet nem visszavonható!",
+                variant: "danger",
+                confirmLabel: "Törlés",
+                onConfirm: async () => {
+                  try {
+                    await dispatch(deleteGame(currentGame.id)).unwrap();
+                    toast.success("Játék sikeresen törölve");
+                    navigate("/games");
+                  } catch (error) {
+                    console.error("Failed to delete game:", error);
+                    toast.error("Nem sikerült törölni a játékot");
+                  }
+                },
+              });
             }}
           >
             <Trash2 size={18} />
@@ -218,6 +241,15 @@ export function GameDetailPage() {
           </div>
         </div>
       </div>
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={closeConfirmModal}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        variant={confirmModal.variant}
+        confirmLabel={confirmModal.confirmLabel}
+      />
     </div>
   );
 }

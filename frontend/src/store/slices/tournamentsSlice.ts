@@ -32,12 +32,13 @@ const getToken = () => authService.keycloak?.token;
 
 export const fetchTournaments = createAsyncThunk(
     'tournaments/fetchTournaments',
-    async ({ page = 1, status, gameId }: { page?: number; status?: string; gameId?: string }) => {
+    async ({ page = 1, status, gameId, search }: { page?: number; status?: string; gameId?: string; search?: string }) => {
         const token = getToken();
 
         const params = new URLSearchParams({ page: String(page), limit: '12' });
         if (status) params.append('status', status);
         if (gameId) params.append('gameId', gameId);
+        if (search) params.append('search', search);
 
         const response = await fetch(`${API_URL}/tournaments?${params}`, {
             headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -74,7 +75,7 @@ export const fetchTournament = createAsyncThunk(
 
 export const registerForTournament = createAsyncThunk(
     'tournaments/register',
-    async ({ tournamentId, teamId, memberIds }: { tournamentId: string; teamId: string; memberIds?: string[] }, { rejectWithValue }) => {
+    async ({ tournamentId, teamId, memberIds, userId }: { tournamentId: string; teamId?: string; memberIds?: string[]; userId?: string }, { rejectWithValue }) => {
         const token = getToken();
 
         if (!token) throw new Error('Nincs bejelentkezve!');
@@ -85,7 +86,7 @@ export const registerForTournament = createAsyncThunk(
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ teamId, memberIds }),
+            body: JSON.stringify({ teamId, memberIds, userId }),
         });
 
         const data: ApiResponse<any> = await response.json();
@@ -100,12 +101,12 @@ export const registerForTournament = createAsyncThunk(
 
 export const unregisterFromTournament = createAsyncThunk(
     'tournaments/unregister',
-    async ({ tournamentId, teamId }: { tournamentId: string; teamId: string }) => {
+    async ({ tournamentId, targetId }: { tournamentId: string; targetId: string }) => {
         const token = getToken();
 
         if (!token) throw new Error('Nincs bejelentkezve!');
 
-        const response = await fetch(`${API_URL}/tournaments/${tournamentId}/register/${teamId}`, {
+        const response = await fetch(`${API_URL}/tournaments/${tournamentId}/register/${targetId}`, {
             method: 'DELETE',
             headers: { Authorization: `Bearer ${token}` },
         });
@@ -116,7 +117,7 @@ export const unregisterFromTournament = createAsyncThunk(
             throw new Error(data.error?.message || 'Failed to unregister from tournament');
         }
 
-        return { tournamentId, teamId };
+        return { tournamentId, targetId };
     }
 );
 
@@ -324,7 +325,9 @@ const tournamentsSlice = createSlice({
         builder
             // Fetch tournaments
             .addCase(fetchTournaments.pending, (state) => {
-                state.isLoading = true;
+                if (state.tournaments.length === 0) {
+                    state.isLoading = true;
+                }
                 state.error = null;
             })
             .addCase(fetchTournaments.fulfilled, (state, action) => {
@@ -338,7 +341,9 @@ const tournamentsSlice = createSlice({
             })
             // Fetch single tournament
             .addCase(fetchTournament.pending, (state) => {
-                state.isLoading = true;
+                if (!state.currentTournament) {
+                    state.isLoading = true;
+                }
                 state.error = null;
             })
             .addCase(fetchTournament.fulfilled, (state, action) => {
@@ -376,7 +381,15 @@ const tournamentsSlice = createSlice({
                 }
                 // Update current tournament if it's the same
                 if (state.currentTournament?.id === action.payload.id) {
-                    state.currentTournament = action.payload;
+                    state.currentTournament = {
+                        ...state.currentTournament,
+                        ...action.payload,
+                        // Preserve relations if missing in payload
+                        entries: action.payload.entries || state.currentTournament.entries,
+                        matches: action.payload.matches || state.currentTournament.matches,
+                        game: action.payload.game || state.currentTournament.game,
+                        _count: action.payload._count || state.currentTournament._count,
+                    };
                 }
             })
             .addCase(updateTournament.rejected, (state, action) => {
@@ -433,6 +446,36 @@ const tournamentsSlice = createSlice({
                         state.currentTournament.entries[index] = action.payload;
                     }
                 }
+            })
+            // Register
+            .addCase(registerForTournament.fulfilled, (state, action) => {
+                if (state.currentTournament) {
+                     if (!state.currentTournament.entries) {
+                         state.currentTournament.entries = [];
+                     }
+                     state.currentTournament.entries.push(action.payload);
+                     // Update counts
+                     if (state.currentTournament.participantsCount !== undefined) {
+                         state.currentTournament.participantsCount++;
+                     } else if (state.currentTournament._count) {
+                         state.currentTournament._count.entries++;
+                     }
+                }
+            })
+            // Unregister
+            .addCase(unregisterFromTournament.fulfilled, (state, action) => {
+                 if (state.currentTournament && state.currentTournament.entries) {
+                     const { targetId } = action.payload;
+                     state.currentTournament.entries = state.currentTournament.entries.filter(e => 
+                         e.teamId !== targetId && e.userId !== targetId
+                     );
+                     // Update counts
+                     if (state.currentTournament.participantsCount !== undefined) {
+                         state.currentTournament.participantsCount = Math.max(0, state.currentTournament.participantsCount - 1);
+                     } else if (state.currentTournament._count) {
+                         state.currentTournament._count.entries = Math.max(0, state.currentTournament._count.entries - 1);
+                     }
+                 }
             });
     },
 });

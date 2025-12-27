@@ -207,7 +207,7 @@ export function HomePage() {
                   className="flex flex-col items-center justify-center border-l border-white/5 py-4 first:border-0 group hover:bg-white/5 rounded-lg transition-colors"
                 >
                   <span className="text-glow mb-2 text-5xl font-black tracking-tight text-white md:text-6xl group-hover:scale-110 transition-transform duration-300 group-hover:text-primary">
-                    {stat.value}+
+                    {stat.value}
                   </span>
                   <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground group-hover:text-white transition-colors">
                     {stat.label}

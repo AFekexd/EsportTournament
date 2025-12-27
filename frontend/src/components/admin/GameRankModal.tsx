@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { X, Plus, Trash2, Shield, GripVertical } from "lucide-react";
+import { ConfirmationModal } from "../common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { fetchRanks, addRank, deleteRank } from "../../store/slices/gamesSlice";
 import type { Game } from "../../types";
@@ -27,6 +28,24 @@ export function GameRankModal({ game, onClose }: GameRankModalProps) {
     dispatch(fetchRanks(game.id));
   }, [dispatch, game.id]);
 
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    variant: "danger" | "warning" | "info" | "primary";
+    confirmLabel?: string;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: () => {},
+    variant: "primary",
+  });
+
+  const closeConfirmModal = () =>
+    setConfirmModal((prev) => ({ ...prev, isOpen: false }));
+
   const handleAdd = async () => {
     if (!newRank.name) return;
     try {
@@ -50,14 +69,22 @@ export function GameRankModal({ game, onClose }: GameRankModalProps) {
     }
   };
 
-  const handleDelete = async (rankId: string) => {
-    if (!confirm("Biztosan törölni szeretnéd ezt a rangot?")) return;
-    try {
-      await dispatch(deleteRank({ gameId: game.id, rankId })).unwrap();
-    } catch (error) {
-      console.error("Failed to delete rank:", error);
-      toast.error("Hiba történt a törléskor");
-    }
+  const handleDelete = (rankId: string) => {
+    setConfirmModal({
+      isOpen: true,
+      title: "Rang törlése",
+      message: "Biztosan törölni szeretnéd ezt a rangot?",
+      variant: "danger",
+      confirmLabel: "Törlés",
+      onConfirm: async () => {
+        try {
+          await dispatch(deleteRank({ gameId: game.id, rankId })).unwrap();
+        } catch (error) {
+          console.error("Failed to delete rank:", error);
+          toast.error("Hiba történt a törléskor");
+        }
+      },
+    });
   };
 
   return (
@@ -268,6 +295,16 @@ export function GameRankModal({ game, onClose }: GameRankModalProps) {
           </div>
         </div>
       </div>
+
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={closeConfirmModal}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        variant={confirmModal.variant}
+        confirmLabel={confirmModal.confirmLabel}
+      />
     </div>
   );
 }

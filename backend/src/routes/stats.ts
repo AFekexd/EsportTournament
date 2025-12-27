@@ -30,7 +30,10 @@ router.get('/', async (req, res, next) => {
       // Count completed matches
       prisma.match.count({
         where: {
-          status: 'COMPLETED',
+          OR: [
+            { status: 'COMPLETED' },
+            { playedAt: { not: null } }
+          ]
         },
       }),
     ]);

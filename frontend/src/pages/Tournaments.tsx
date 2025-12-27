@@ -130,7 +130,9 @@ function TournamentCard({ tournament }: { tournament: Tournament }) {
           <div className="flex items-center gap-2">
             <Users size={16} className="text-blue-400" />
             <div>
-              <p className="text-xs text-gray-500">Csapatok</p>
+              <p className="text-xs text-gray-500">
+                {teamSize === 1 ? "Játékosok" : "Csapatok"}
+              </p>
               <p className="text-xs font-medium text-white">
                 {tournament._count?.entries || 0} / {tournament.maxTeams}
               </p>

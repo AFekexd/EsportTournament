@@ -17,6 +17,7 @@ import {
   Shield,
   Calendar,
 } from "lucide-react";
+import { ConfirmationModal } from "../components/common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import { useAuth } from "../hooks/useAuth";
 import {
@@ -41,8 +42,26 @@ export function TeamDetailPage() {
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const [copied, setCopied] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    variant: "danger" | "warning" | "info" | "primary";
+    confirmLabel?: string;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: () => {},
+    variant: "primary",
+  });
+
+  const closeConfirmModal = () =>
+    setConfirmModal((prev) => ({ ...prev, isOpen: false }));
 
   const isOwner = currentTeam?.ownerId === user?.id;
 
@@ -82,22 +101,38 @@ export function TeamDetailPage() {
     }
   };
 
-  const handleRemoveMember = async (memberId: string) => {
-    if (
-      currentTeam?.id &&
-      window.confirm("Biztosan eltávolítod ezt a tagot?")
-    ) {
-      await dispatch(removeMember({ teamId: currentTeam.id, memberId }));
-      toast.success("Tag eltávolítva.");
-    }
+  const handleRemoveMember = (memberId: string) => {
+    if (!currentTeam?.id) return;
+
+    setConfirmModal({
+      isOpen: true,
+      title: "Tag eltávolítása",
+      message: "Biztosan eltávolítod ezt a tagot?",
+      variant: "danger",
+      confirmLabel: "Eltávolítás",
+      onConfirm: async () => {
+        await dispatch(removeMember({ teamId: currentTeam.id, memberId }));
+        toast.success("Tag eltávolítva.");
+      },
+    });
   };
 
-  const handleDeleteTeam = async () => {
-    if (currentTeam?.id) {
-      await dispatch(deleteTeam(currentTeam.id));
-      toast.success("Csapat törölve.");
-      navigate("/teams");
-    }
+  const handleDeleteTeam = () => {
+    if (!currentTeam?.id) return;
+
+    setConfirmModal({
+      isOpen: true,
+      title: "Csapat törlése",
+      message:
+        "A csapat törlése végleges és nem visszavonható. Minden adat (tagok, elért eredmények) elvész. Biztosan törölni szeretnéd?",
+      variant: "danger",
+      confirmLabel: "Törlés",
+      onConfirm: async () => {
+        await dispatch(deleteTeam(currentTeam.id));
+        toast.success("Csapat törölve.");
+        navigate("/teams");
+      },
+    });
   };
 
   if (isLoading || !currentTeam) {
@@ -457,35 +492,13 @@ export function TeamDetailPage() {
                   (tagok, elért eredmények) elvész.
                 </p>
 
-                {!showDeleteConfirm ? (
-                  <button
-                    className="btn btn-danger w-full flex items-center justify-center gap-2"
-                    onClick={() => setShowDeleteConfirm(true)}
-                  >
-                    <Trash2 size={16} />
-                    Csapat törlése
-                  </button>
-                ) : (
-                  <div className="space-y-3 bg-red-500/10 p-4 rounded-lg border border-red-500/20 animate-in fade-in zoom-in-95">
-                    <p className="text-white text-sm font-medium text-center">
-                      Biztosan törölni szeretnéd?
-                    </p>
-                    <div className="flex gap-2">
-                      <button
-                        className="btn btn-danger flex-1"
-                        onClick={handleDeleteTeam}
-                      >
-                        Igen, törlés
-                      </button>
-                      <button
-                        className="btn btn-ghost flex-1 text-white hover:bg-white/10"
-                        onClick={() => setShowDeleteConfirm(false)}
-                      >
-                        Mégse
-                      </button>
-                    </div>
-                  </div>
-                )}
+                <button
+                  className="btn btn-danger w-full flex items-center justify-center gap-2"
+                  onClick={handleDeleteTeam}
+                >
+                  <Trash2 size={16} />
+                  Csapat törlése
+                </button>
               </div>
             </div>
           )}
@@ -499,6 +512,16 @@ export function TeamDetailPage() {
           onClose={() => setShowEditModal(false)}
         />
       )}
+
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={closeConfirmModal}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        variant={confirmModal.variant}
+        confirmLabel={confirmModal.confirmLabel}
+      />
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 
 export const usersRouter = Router();
 
-// Get all users (Admin/Organizer only)
+// Get all users (Admin/Organizer only) or Search users
 usersRouter.get(
     '/',
     authenticate,
@@ -18,8 +18,28 @@ usersRouter.get(
             throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
+        const { search, limit = '20' } = req.query;
+        const where: any = {};
+
+        if (search) {
+            where.OR = [
+                { username: { contains: String(search), mode: 'insensitive' } },
+                { displayName: { contains: String(search), mode: 'insensitive' } },
+            ];
+        }
+
         const users = await prisma.user.findMany({
+            where,
             orderBy: { createdAt: 'desc' },
+            take: parseInt(limit as string),
+            select: {
+                id: true,
+                username: true,
+                displayName: true,
+                avatarUrl: true,
+                role: true,
+                elo: true
+            }
         });
 
         res.json({ success: true, data: users });

@@ -9,6 +9,7 @@ import {
   Clock,
   Trash2,
 } from "lucide-react";
+import { ConfirmationModal } from "../common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import {
   createSchedule,
@@ -45,31 +46,56 @@ export function BookingManagement() {
   const [showComputerModal, setShowComputerModal] = useState(false);
   const [editingComputer, setEditingComputer] = useState<any>(null);
 
-  const handleDeleteComputer = async (computerId: string) => {
-    if (!confirm("Biztosan törölni szeretnéd ezt a gépet?")) return;
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    variant: "danger" | "warning" | "info" | "primary";
+    confirmLabel?: string;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: () => {},
+    variant: "primary",
+  });
 
-    try {
-      const token = authService.keycloak?.token;
-      if (!token) return;
+  const closeConfirmModal = () =>
+    setConfirmModal((prev) => ({ ...prev, isOpen: false }));
 
-      const response = await fetch(
-        `${API_URL}/bookings/computers/${computerId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+  const handleDeleteComputer = (computerId: string) => {
+    setConfirmModal({
+      isOpen: true,
+      title: "Gép törlése",
+      message: "Biztosan törölni szeretnéd ezt a gépet?",
+      variant: "danger",
+      confirmLabel: "Törlés",
+      onConfirm: async () => {
+        try {
+          const token = authService.keycloak?.token;
+          if (!token) return;
+
+          const response = await fetch(
+            `${API_URL}/bookings/computers/${computerId}`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          const data = await response.json();
+          if (data.success) {
+            dispatch(fetchComputers());
+          }
+        } catch (error) {
+          console.error("Failed to delete computer:", error);
+          toast.error("Hiba történt a gép törlése során");
         }
-      );
-
-      const data = await response.json();
-      if (data.success) {
-        dispatch(fetchComputers());
-      }
-    } catch (error) {
-      console.error("Failed to delete computer:", error);
-      toast.error("Hiba történt a gép törlése során");
-    }
+      },
+    });
   };
 
   return (
@@ -372,6 +398,16 @@ export function BookingManagement() {
           }}
         />
       )}
+
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={closeConfirmModal}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        variant={confirmModal.variant}
+        confirmLabel={confirmModal.confirmLabel}
+      />
     </div>
   );
 }

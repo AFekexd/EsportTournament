@@ -6,6 +6,7 @@ import { authService } from "../../lib/auth-service";
 import { RoleChangeModal } from "./RoleChangeModal";
 import { UserTimeModal } from "./UserTimeModal";
 import { UserEditModal } from "./UserEditModal";
+import { ConfirmationModal } from "../common/ConfirmationModal";
 import { API_URL } from "../../config";
 
 interface User {
@@ -29,6 +30,24 @@ export function UserManagement() {
   const [roleModalUser, setRoleModalUser] = useState<User | null>(null);
   const [timeModalUser, setTimeModalUser] = useState<User | null>(null);
   const [editModalUser, setEditModalUser] = useState<User | null>(null);
+
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    variant: "danger" | "warning" | "info" | "primary";
+    confirmLabel?: string;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: () => {},
+    variant: "primary",
+  });
+
+  const closeConfirmModal = () =>
+    setConfirmModal((prev) => ({ ...prev, isOpen: false }));
 
   useEffect(() => {
     fetchUsers();
@@ -121,31 +140,38 @@ export function UserManagement() {
     return matchesSearch && matchesRole;
   });
 
-  const handleDeleteUser = async (userId: string) => {
-    if (!window.confirm("Biztosan törölni szeretnéd ezt a felhasználót?"))
-      return;
+  const handleDeleteUser = (userId: string) => {
+    setConfirmModal({
+      isOpen: true,
+      title: "Felhasználó törlése",
+      message: "Biztosan törölni szeretnéd ezt a felhasználót?",
+      variant: "danger",
+      confirmLabel: "Törlés",
+      onConfirm: async () => {
+        try {
+          const token = authService.keycloak?.token;
+          if (!token) return;
 
-    try {
-      const token = authService.keycloak?.token;
-      if (!token) return;
+          const response = await fetch(`${API_URL}/users/${userId}`, {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
 
-      const response = await fetch(`${API_URL}/users/${userId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        setUsers((prev) => prev.filter((u) => u.id !== userId));
-      } else {
-        const data = await response.json();
-        toast.error(`Hiba: ${data.message || "Sikertelen törlés"}`);
-      }
-    } catch (error) {
-      console.error("Failed to delete user:", error);
-      toast.error("Hiba történt a törlés során");
-    }
+          if (response.ok) {
+            setUsers((prev) => prev.filter((u) => u.id !== userId));
+            toast.success("Felhasználó sikeresen törölve");
+          } else {
+            const data = await response.json();
+            toast.error(`Hiba: ${data.message || "Sikertelen törlés"}`);
+          }
+        } catch (error) {
+          console.error("Failed to delete user:", error);
+          toast.error("Hiba történt a törlés során");
+        }
+      },
+    });
   };
 
   const handleRoleUpdate = async (userId: string, newRole: string) => {
@@ -409,6 +435,16 @@ export function UserManagement() {
           }}
         />
       )}
+
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={closeConfirmModal}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        variant={confirmModal.variant}
+        confirmLabel={confirmModal.confirmLabel}
+      />
     </div>
   );
 }

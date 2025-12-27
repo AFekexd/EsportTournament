@@ -109,6 +109,7 @@ export interface Tournament {
         entries: number;
         matches: number;
     };
+    participantsCount?: number;
 }
 
 export interface TournamentEntry {

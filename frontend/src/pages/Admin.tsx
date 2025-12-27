@@ -12,7 +12,9 @@ import {
   Trash2,
   ArrowUpRight,
   Monitor,
+  Search,
 } from "lucide-react";
+import { ConfirmationModal } from "../components/common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import { useAuth } from "../hooks/useAuth";
 import { fetchGames, deleteGame } from "../store/slices/gamesSlice";
@@ -20,7 +22,8 @@ import {
   fetchTournaments,
   deleteTournament,
 } from "../store/slices/tournamentsSlice";
-import { fetchTeams } from "../store/slices/teamsSlice";
+// fetchTeams moved to TeamManagement
+// import { fetchTeams } from "../store/slices/teamsSlice";
 import { fetchSchedules, fetchComputers } from "../store/slices/bookingsSlice";
 import { GameCreateModal } from "../components/admin/GameCreateModal";
 import { GameEditModal } from "../components/admin/GameEditModal";
@@ -30,6 +33,7 @@ import { TournamentEditModal } from "../components/admin/TournamentEditModal";
 import { TournamentStatusModal } from "../components/admin/TournamentStatusModal";
 import { BookingManagement } from "../components/booking/BookingManagement";
 import { UserManagement } from "../components/admin/UserManagement";
+import { TeamManagement } from "../components/admin/TeamManagement";
 import { KioskManager } from "../components/admin/KioskManager";
 import { Link } from "react-router-dom";
 import "./Admin.css";
@@ -40,10 +44,33 @@ export function AdminPage() {
   const dispatch = useAppDispatch();
   const { user } = useAuth();
   const { games } = useAppSelector((state) => state.games);
-  const { tournaments } = useAppSelector((state) => state.tournaments);
+
+  const { tournaments, pagination: tournamentPagination } = useAppSelector(
+    (state) => state.tournaments
+  );
+
+  const [tournamentSearch, setTournamentSearch] = useState("");
+  const [debouncedTournamentSearch, setDebouncedTournamentSearch] =
+    useState("");
+  const [tournamentPage, setTournamentPage] = useState(1);
+
+  // Debounce search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedTournamentSearch(tournamentSearch);
+      setTournamentPage(1); // Reset page on search
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [tournamentSearch]);
 
   const [activeTab, setActiveTab] = useState<
-    "overview" | "users" | "tournaments" | "games" | "bookings" | "kiosk"
+    | "overview"
+    | "users"
+    | "teams"
+    | "tournaments"
+    | "games"
+    | "bookings"
+    | "kiosk"
   >("overview");
   const [stats, setStats] = useState({
     activeTournaments: 0,
@@ -62,68 +89,104 @@ export function AdminPage() {
   );
   const [editingGameRanks, setEditingGameRanks] = useState<Game | null>(null);
 
-  useEffect(() => {
-    dispatch(fetchGames());
-    dispatch(fetchTournaments({}));
-    dispatch(fetchTeams({ page: 1 }));
-    dispatch(fetchSchedules());
-    dispatch(fetchComputers());
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    variant: "danger" | "warning" | "info" | "primary";
+    confirmLabel?: string;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: () => {},
+    variant: "primary",
+  });
 
-    // Fetch stats
-    const fetchStats = async () => {
-      try {
-        const token = authService.keycloak?.token;
-        const response = await fetch(
-          `${
-            import.meta.env.VITE_API_URL || "http://localhost:3000/api"
-          }/stats`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
+  const closeConfirmModal = () =>
+    setConfirmModal((prev) => ({ ...prev, isOpen: false }));
+
+  useEffect(() => {
+    const loadData = async () => {
+      dispatch(fetchGames());
+      dispatch(
+        fetchTournaments({
+          page: tournamentPage,
+          search: debouncedTournamentSearch,
+        })
+      );
+      // fetchTeams is handled in TeamManagement component
+      dispatch(fetchSchedules());
+      dispatch(fetchComputers());
+
+      if (user) {
+        try {
+          const token = authService.keycloak?.token;
+          const response = await fetch(
+            `${
+              import.meta.env.VITE_API_URL || "http://localhost:3000/api"
+            }/stats`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          const data = await response.json();
+          if (data) {
+            setStats(data);
           }
-        );
-        const data = await response.json();
-        if (data) {
-          setStats(data);
+        } catch (error) {
+          console.error("Failed to fetch stats:", error);
         }
-      } catch (error) {
-        console.error("Failed to fetch stats:", error);
       }
     };
-    if (user) fetchStats();
-  }, [dispatch, user]);
 
-  const handleDeleteGame = async (gameId: string) => {
-    if (
-      confirm(
-        "Biztosan törölni szeretnéd ezt a játékot? Ez a művelet nem visszavonható!"
-      )
-    ) {
-      try {
-        await dispatch(deleteGame(gameId)).unwrap();
-        toast.success("Játék sikeresen törölve");
-      } catch (error) {
-        console.error("Failed to delete game:", error);
-        toast.error(
-          "Nem sikerült törölni a játékot. Ellenőrizd, hogy nincsenek-e hozzárendelt versenyek."
-        );
-      }
-    }
+    loadData();
+    const interval = setInterval(loadData, 30000); // Poll every 30s
+
+    return () => clearInterval(interval);
+  }, [dispatch, user, tournamentPage, debouncedTournamentSearch]);
+
+  const handleDeleteGame = (gameId: string) => {
+    setConfirmModal({
+      isOpen: true,
+      title: "Játék törlése",
+      message:
+        "Biztosan törölni szeretnéd ezt a játékot? Ez a művelet nem visszavonható!",
+      variant: "danger",
+      confirmLabel: "Törlés",
+      onConfirm: async () => {
+        try {
+          await dispatch(deleteGame(gameId)).unwrap();
+          toast.success("Játék sikeresen törölve");
+        } catch (error) {
+          console.error("Failed to delete game:", error);
+          toast.error(
+            "Nem sikerült törölni a játékot. Ellenőrizd, hogy nincsenek-e hozzárendelt versenyek."
+          );
+        }
+      },
+    });
   };
 
-  const handleDeleteTournament = async (tournamentId: string) => {
-    if (
-      confirm(
-        "Biztosan törölni szeretnéd ezt a versenyt? Ez a művelet nem visszavonható, és minden hozzá tartozó adat (meccsek, eredmények) törlődni fog!"
-      )
-    ) {
-      try {
-        await dispatch(deleteTournament(tournamentId)).unwrap();
-        toast.success("Verseny sikeresen törölve");
-      } catch (error) {
-        console.error("Failed to delete tournament:", error);
-        toast.error("Nem sikerült törölni a versenyt");
-      }
-    }
+  const handleDeleteTournament = (tournamentId: string) => {
+    setConfirmModal({
+      isOpen: true,
+      title: "Verseny törlése",
+      message:
+        "Biztosan törölni szeretnéd ezt a versenyt? Ez a művelet nem visszavonható, és minden hozzá tartozó adat (meccsek, eredmények) törlődni fog!",
+      variant: "danger",
+      confirmLabel: "Törlés",
+      onConfirm: async () => {
+        try {
+          await dispatch(deleteTournament(tournamentId)).unwrap();
+          toast.success("Verseny sikeresen törölve");
+        } catch (error) {
+          console.error("Failed to delete tournament:", error);
+          toast.error("Nem sikerült törölni a versenyt");
+        }
+      },
+    });
   };
 
   if (!user || (user.role !== "ADMIN" && user.role !== "ORGANIZER")) {
@@ -182,6 +245,7 @@ export function AdminPage() {
   const tabs = [
     { id: "overview", label: "Áttekintés", icon: Settings },
     { id: "users", label: "Felhasználók", icon: Users },
+    { id: "teams", label: "Csapatok", icon: Shield },
     { id: "tournaments", label: "Versenyek", icon: Trophy },
     { id: "games", label: "Játékok", icon: Gamepad2 },
     { id: "bookings", label: "Gépfoglalás", icon: Calendar },
@@ -477,9 +541,15 @@ export function AdminPage() {
           </div>
         )}
 
+        {activeTab === "teams" && (
+          <div className="animate-fade-in">
+            <TeamManagement />
+          </div>
+        )}
+
         {activeTab === "tournaments" && (
           <div className="animate-fade-in">
-            <div className="flex flex-wrap justify-between items-center mb-8 gap-4">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
               <div>
                 <h2 className="text-xl font-bold text-white flex items-center gap-2">
                   <Trophy className="text-yellow-500" size={24} />
@@ -489,13 +559,28 @@ export function AdminPage() {
                   Versenyek létrehozása és szerkesztése
                 </p>
               </div>
-              <button
-                className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors shadow-lg shadow-primary/20"
-                onClick={() => setShowTournamentModal(true)}
-              >
-                <Plus size={18} />
-                <span>Új verseny</span>
-              </button>
+              <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                <div className="relative flex-1 md:w-64">
+                  <Search
+                    size={18}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Keresés..."
+                    value={tournamentSearch}
+                    onChange={(e) => setTournamentSearch(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 bg-[#0f1015] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors text-sm"
+                  />
+                </div>
+                <button
+                  className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors shadow-lg shadow-primary/20 whitespace-nowrap"
+                  onClick={() => setShowTournamentModal(true)}
+                >
+                  <Plus size={18} />
+                  <span>Új verseny</span>
+                </button>
+              </div>
             </div>
 
             <div className="rounded-xl border border-white/10 overflow-hidden bg-[#161722]/50">
@@ -607,6 +692,27 @@ export function AdminPage() {
                   </tbody>
                 </table>
               </div>
+              {/* Pagination */}
+              {tournamentPagination && tournamentPagination.pages > 1 && (
+                <div className="flex justify-center p-4 border-t border-white/5 gap-2 bg-[#161722]">
+                  {Array.from(
+                    { length: tournamentPagination.pages },
+                    (_, i) => i + 1
+                  ).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => setTournamentPage(page)}
+                      className={`px-3 py-1 rounded-lg text-sm transition-colors ${
+                        tournamentPagination.page === page
+                          ? "bg-primary text-white"
+                          : "bg-white/5 text-gray-400 hover:bg-white/10"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -652,6 +758,16 @@ export function AdminPage() {
           onClose={() => setStatusTournament(null)}
         />
       )}
+
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={closeConfirmModal}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        variant={confirmModal.variant}
+        confirmLabel={confirmModal.confirmLabel}
+      />
     </div>
   );
 }

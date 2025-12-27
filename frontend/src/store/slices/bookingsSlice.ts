@@ -431,7 +431,9 @@ const bookingsSlice = createSlice({
         builder
             // Computers
             .addCase(fetchComputers.pending, (state) => {
-                state.isLoading = true;
+                if (state.computers.length === 0) {
+                    state.isLoading = true;
+                }
             })
             .addCase(fetchComputers.fulfilled, (state, action) => {
                 state.isLoading = false;
@@ -460,7 +462,9 @@ const bookingsSlice = createSlice({
             })
             // Bookings
             .addCase(fetchBookingsForDate.pending, (state) => {
-                state.isLoading = true;
+                if (state.bookings.length === 0) {
+                    state.isLoading = true;
+                }
             })
             .addCase(fetchBookingsForDate.fulfilled, (state, action) => {
                 state.isLoading = false;
@@ -483,7 +487,9 @@ const bookingsSlice = createSlice({
             })
             // Weekly bookings
             .addCase(fetchWeeklyBookings.pending, (state) => {
-                state.isLoading = true;
+                if (state.weeklyBookings.length === 0) {
+                    state.isLoading = true;
+                }
             })
             .addCase(fetchWeeklyBookings.fulfilled, (state, action) => {
                 state.isLoading = false;

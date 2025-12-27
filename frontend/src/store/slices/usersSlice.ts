@@ -53,6 +53,24 @@ export const fetchPublicProfile = createAsyncThunk(
   }
 );
 
+export const searchUsers = createAsyncThunk(
+  'users/searchUsers',
+  async (query: string, { getState }) => {
+    const state = getState() as RootState;
+    const token = getToken(state);
+
+    const response = await fetch(`${API_URL}/users?search=${encodeURIComponent(query)}&limit=10`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+
+    const data = await response.json();
+    if (!data.success) {
+      throw new Error(data.message || 'Failed to search users');
+    }
+    return data.data;
+  }
+);
+
 const usersSlice = createSlice({
   name: 'users',
   initialState,
