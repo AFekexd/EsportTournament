@@ -32,10 +32,10 @@ const getToken = () => authService.keycloak?.token;
 
 export const fetchTournaments = createAsyncThunk(
     'tournaments/fetchTournaments',
-    async ({ page = 1, status, gameId, search }: { page?: number; status?: string; gameId?: string; search?: string }) => {
+    async ({ page = 1, limit = 12, status, gameId, search }: { page?: number; limit?: number; status?: string; gameId?: string; search?: string }) => {
         const token = getToken();
 
-        const params = new URLSearchParams({ page: String(page), limit: '12' });
+        const params = new URLSearchParams({ page: String(page), limit: String(limit) });
         if (status) params.append('status', status);
         if (gameId) params.append('gameId', gameId);
         if (search) params.append('search', search);
