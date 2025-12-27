@@ -268,8 +268,8 @@ class NotificationService {
         }
 
         // Create notifications for all participants
-        const homeTeamName = match.homeTeam?.name || match.homeUser?.displayName || match.homeUser?.username || 'TBD';
-        const awayTeamName = match.awayTeam?.name || match.awayUser?.displayName || match.awayUser?.username || 'TBD';
+        const homeTeamName = match.homeTeam?.name || match.homeUser?.displayName || match.homeUser?.username || 'Ismeretlen';
+        const awayTeamName = match.awayTeam?.name || match.awayUser?.displayName || match.awayUser?.username || 'Ismeretlen';
         const score = `${homeTeamName} ${match.homeScore ?? 0} - ${match.awayScore ?? 0} ${awayTeamName}`;
 
         await Promise.all(

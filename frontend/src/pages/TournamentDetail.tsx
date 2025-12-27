@@ -409,6 +409,10 @@ export function TournamentDetailPage() {
                 {currentTournament.game.name}
               </span>
             )}
+            <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-purple-500/20 text-purple-400 border border-purple-500/50 backdrop-blur-md">
+              <Users size={14} />
+              {requiredTeamSize}v{requiredTeamSize}
+            </span>
           </div>
           <button
             className="absolute top-8 left-4 flex items-center gap-2 text-gray-400 hover:text-white transition-colors bg-black/30 hover:bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full border border-white/5"
@@ -430,27 +434,38 @@ export function TournamentDetailPage() {
                 </p>
               )}
 
-              <div className="flex flex-wrap gap-6 text-sm text-gray-300 pt-2">
-                <div className="flex items-center gap-2">
-                  <Calendar size={18} className="text-primary" />
-                  <span>
-                    {startDate.toLocaleDateString("hu-HU", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </span>
+              <div className="flex flex-col gap-2 pt-2">
+                <div className="flex flex-wrap gap-6 text-sm text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <Calendar size={18} className="text-primary" />
+                    <span>
+                      {startDate.toLocaleDateString("hu-HU", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Users size={18} className="text-primary" />
+                    <span>
+                      {currentTournament.participantsCount ??
+                        (currentTournament._count?.entries || 0)}{" "}
+                      / {currentTournament.maxTeams} résztvevő
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Users size={18} className="text-primary" />
-                  <span>
-                    {currentTournament.participantsCount ??
-                      (currentTournament._count?.entries || 0)}{" "}
-                    / {currentTournament.maxTeams} résztvevő
-                  </span>
-                </div>
+
+                {currentTournament.requireRank && (
+                  <div className="flex items-center gap-2 text-yellow-500 bg-yellow-500/10 px-3 py-2 rounded-lg border border-yellow-500/20 w-fit">
+                    <Shield size={16} />
+                    <span className="text-sm font-semibold">
+                      Kötelező rangot beállítani a profilban a részvételhez!
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 

@@ -679,7 +679,7 @@ tournamentsRouter.post(
                         team: true,
                         user: true,
                     },
-                    orderBy: { seed: 'asc' },
+                    orderBy: { seed: 'desc' },
                 },
             },
         });
@@ -764,11 +764,17 @@ tournamentsRouter.post(
             }
 
             // Create upper bracket matches (same as single elimination)
+            // Create upper bracket matches (using standard seeding)
             const firstRoundMatches = bracketSize / 2;
+            const seeds = getStandardSeeding(bracketSize);
 
             for (let i = 0; i < firstRoundMatches; i++) {
-                const homeEntry = seededEntries[i];
-                const awayEntry = seededEntries[bracketSize - 1 - i];
+                const seed1 = seeds[i * 2];
+                const seed2 = seeds[i * 2 + 1];
+                
+                // seed is 1-based, tournament.entries is 0-based
+                const homeEntry = (seed1 <= tournament.entries.length) ? tournament.entries[seed1 - 1] : null;
+                const awayEntry = (seed2 <= tournament.entries.length) ? tournament.entries[seed2 - 1] : null;
 
                 matches.push({
                     tournamentId: tournament.id,
@@ -855,10 +861,14 @@ tournamentsRouter.post(
             }
 
             const firstRoundMatches = bracketSize / 2;
+            const seeds = getStandardSeeding(bracketSize);
 
             for (let i = 0; i < firstRoundMatches; i++) {
-                const homeEntry = seededEntries[i];
-                const awayEntry = seededEntries[bracketSize - 1 - i];
+                const seed1 = seeds[i * 2];
+                const seed2 = seeds[i * 2 + 1];
+
+                const homeEntry = (seed1 <= tournament.entries.length) ? tournament.entries[seed1 - 1] : null;
+                const awayEntry = (seed2 <= tournament.entries.length) ? tournament.entries[seed2 - 1] : null;
 
                 matches.push({
                     tournamentId: tournament.id,
@@ -1031,3 +1041,22 @@ tournamentsRouter.patch(
         res.json({ success: true, data: updatedEntry });
     })
 );
+
+// Helper function to generate standard seeding indices (1-based)
+function getStandardSeeding(size: number): number[] {
+    if (size < 2) return [1];
+    
+    let seeds = [1, 2];
+    const rounds = Math.ceil(Math.log2(size));
+    
+    for (let i = 0; i < rounds - 1; i++) {
+        const nextSeeds: number[] = [];
+        const currentCount = seeds.length * 2;
+        for (const seed of seeds) {
+            nextSeeds.push(seed);
+            nextSeeds.push(currentCount + 1 - seed);
+        }
+        seeds = nextSeeds;
+    }
+    return seeds;
+}

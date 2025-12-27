@@ -185,8 +185,8 @@ matchesRouter.patch(
 
             // Send Discord notification
             if (match.tournament.notifyDiscord && (actualWinnerId || actualWinnerUserId)) {
-                const homeTeamName = updatedMatch.homeTeam?.name || updatedMatch.homeUser?.displayName || updatedMatch.homeUser?.username || 'TBD';
-                const awayTeamName = updatedMatch.awayTeam?.name || updatedMatch.awayUser?.displayName || updatedMatch.awayUser?.username || 'TBD';
+                const homeTeamName = updatedMatch.homeTeam?.name || updatedMatch.homeUser?.displayName || updatedMatch.homeUser?.username || 'Ismeretlen';
+                const awayTeamName = updatedMatch.awayTeam?.name || updatedMatch.awayUser?.displayName || updatedMatch.awayUser?.username || 'Ismeretlen';
                 const winnerName = isSoloTournament
                     ? (actualWinnerUserId === updatedMatch.homeUserId ? homeTeamName : awayTeamName)
                     : (actualWinnerId === updatedMatch.homeTeamId ? homeTeamName : awayTeamName);
