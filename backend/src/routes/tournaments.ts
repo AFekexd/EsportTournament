@@ -73,6 +73,7 @@ tournamentsRouter.post(
             qualifierMinPoints,
             teamSize,
             requireRank,
+            seedingMethod,
         } = req.body;
 
         if (!name || !gameId || !maxTeams || !startDate || !registrationDeadline) {
@@ -111,6 +112,7 @@ tournamentsRouter.post(
                 status: 'DRAFT',
                 teamSize: teamSize ? parseInt(teamSize) : undefined,
                 requireRank: requireRank !== undefined ? requireRank : undefined,
+                seedingMethod: seedingMethod || 'STANDARD',
             },
             include: { game: true },
         });
@@ -256,6 +258,7 @@ tournamentsRouter.patch(
             qualifierMinPoints,
             teamSize,
             requireRank,
+            seedingMethod,
         } = req.body;
 
         // Process image if base64
@@ -287,6 +290,7 @@ tournamentsRouter.patch(
                 ...(qualifierMinPoints !== undefined && { qualifierMinPoints: parseInt(qualifierMinPoints) }),
                 ...(teamSize !== undefined && { teamSize: teamSize ? parseInt(teamSize) : null }),
                 ...(requireRank !== undefined && { requireRank }),
+                ...(seedingMethod && { seedingMethod }),
             },
             include: {
                 game: true,
@@ -694,6 +698,12 @@ tournamentsRouter.post(
             entries = entries.filter(e => (e.qualifierPoints || 0) >= (tournament.qualifierMinPoints || 0));
             // Re-sort by qualifier points descending for seeding purposes
             entries.sort((a, b) => (b.qualifierPoints || 0) - (a.qualifierPoints || 0));
+        } else if (tournament.seedingMethod === 'RANDOM') {
+             // Shuffle entries
+             entries = entries.sort(() => Math.random() - 0.5);
+        } else if (tournament.seedingMethod === 'STANDARD' || tournament.seedingMethod === 'SEQUENTIAL') {
+             // Default sorting by seed handled by DB query above.
+             // If manual seeding is needed or ELO ignoring requested by other means, can be done here.
         }
 
         if (entries.length < 2) {
@@ -781,11 +791,15 @@ tournamentsRouter.post(
             // -> Sounds like pure sequential pairing 1-2, 3-4 from the available list.
             
             let seeds: number[] = [];
-            if (tournament.hasQualifier) {
+            if (tournament.seedingMethod === 'SEQUENTIAL' || (tournament.hasQualifier && tournament.seedingMethod !== 'STANDARD')) {
                  // Sequential seeding: 1, 2, 3, 4, 5, 6...
+                 // Default to sequential for qualifiers unless explicitly standard, OR if SEQUENTIAL selected.
+                 seeds = Array.from({length: bracketSize}, (_, i) => i + 1);
+            } else if (tournament.seedingMethod === 'RANDOM') {
+                 // Random was handled by shuffling entries, so we can use Sequential seeds [1..N] on the shuffled list
                  seeds = Array.from({length: bracketSize}, (_, i) => i + 1);
             } else {
-                 // Standard seeding: 1, 8, 4, 5...
+                 // Standard seeding: 1, 8, 4, 5... (1vs8, 2vs7)
                  seeds = getStandardSeeding(bracketSize);
             }
 
@@ -884,8 +898,10 @@ tournamentsRouter.post(
             const firstRoundMatches = bracketSize / 2;
             
             let seeds: number[] = [];
-            if (tournament.hasQualifier) {
+            if (tournament.seedingMethod === 'SEQUENTIAL' || (tournament.hasQualifier && tournament.seedingMethod !== 'STANDARD')) {
                  // Sequential seeding
+                 seeds = Array.from({length: bracketSize}, (_, i) => i + 1);
+            } else if (tournament.seedingMethod === 'RANDOM') {
                  seeds = Array.from({length: bracketSize}, (_, i) => i + 1);
             } else {
                  seeds = getStandardSeeding(bracketSize);

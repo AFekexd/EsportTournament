@@ -139,6 +139,7 @@ export const createTournament = createAsyncThunk(
             qualifierMatches?: number;
             qualifierMinPoints?: number;
             teamSize?: number | null;
+            seedingMethod?: 'STANDARD' | 'SEQUENTIAL' | 'RANDOM';
             requireRank?: boolean;
         }
     ) => {
@@ -181,6 +182,7 @@ export const updateTournament = createAsyncThunk(
                 qualifierMinPoints?: number;
                 maxTeams?: number;
                 teamSize?: number | null;
+                seedingMethod?: 'STANDARD' | 'SEQUENTIAL' | 'RANDOM';
                 requireRank?: boolean;
             }
         }

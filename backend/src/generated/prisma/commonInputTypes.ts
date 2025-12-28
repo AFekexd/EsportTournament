@@ -236,6 +236,13 @@ export type DateTimeNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
 }
 
+export type EnumSeedingMethodFilter<$PrismaModel = never> = {
+  equals?: $Enums.SeedingMethod | Prisma.EnumSeedingMethodFieldRefInput<$PrismaModel>
+  in?: $Enums.SeedingMethod[] | Prisma.ListEnumSeedingMethodFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SeedingMethod[] | Prisma.ListEnumSeedingMethodFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSeedingMethodFilter<$PrismaModel> | $Enums.SeedingMethod
+}
+
 export type EnumTournamentFormatWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.TournamentFormat | Prisma.EnumTournamentFormatFieldRefInput<$PrismaModel>
   in?: $Enums.TournamentFormat[] | Prisma.ListEnumTournamentFormatFieldRefInput<$PrismaModel>
@@ -268,6 +275,16 @@ export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
+}
+
+export type EnumSeedingMethodWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SeedingMethod | Prisma.EnumSeedingMethodFieldRefInput<$PrismaModel>
+  in?: $Enums.SeedingMethod[] | Prisma.ListEnumSeedingMethodFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SeedingMethod[] | Prisma.ListEnumSeedingMethodFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSeedingMethodWithAggregatesFilter<$PrismaModel> | $Enums.SeedingMethod
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSeedingMethodFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSeedingMethodFilter<$PrismaModel>
 }
 
 export type EnumBracketTypeFilter<$PrismaModel = never> = {
@@ -624,6 +641,13 @@ export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
 }
 
+export type NestedEnumSeedingMethodFilter<$PrismaModel = never> = {
+  equals?: $Enums.SeedingMethod | Prisma.EnumSeedingMethodFieldRefInput<$PrismaModel>
+  in?: $Enums.SeedingMethod[] | Prisma.ListEnumSeedingMethodFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SeedingMethod[] | Prisma.ListEnumSeedingMethodFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSeedingMethodFilter<$PrismaModel> | $Enums.SeedingMethod
+}
+
 export type NestedEnumTournamentFormatWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.TournamentFormat | Prisma.EnumTournamentFormatFieldRefInput<$PrismaModel>
   in?: $Enums.TournamentFormat[] | Prisma.ListEnumTournamentFormatFieldRefInput<$PrismaModel>
@@ -656,6 +680,16 @@ export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumSeedingMethodWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SeedingMethod | Prisma.EnumSeedingMethodFieldRefInput<$PrismaModel>
+  in?: $Enums.SeedingMethod[] | Prisma.ListEnumSeedingMethodFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SeedingMethod[] | Prisma.ListEnumSeedingMethodFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSeedingMethodWithAggregatesFilter<$PrismaModel> | $Enums.SeedingMethod
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSeedingMethodFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSeedingMethodFilter<$PrismaModel>
 }
 
 export type NestedEnumBracketTypeFilter<$PrismaModel = never> = {

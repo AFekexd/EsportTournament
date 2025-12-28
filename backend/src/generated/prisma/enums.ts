@@ -83,6 +83,15 @@ export const NotificationType = {
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
 
 
+export const SeedingMethod = {
+  STANDARD: 'STANDARD',
+  SEQUENTIAL: 'SEQUENTIAL',
+  RANDOM: 'RANDOM'
+} as const
+
+export type SeedingMethod = (typeof SeedingMethod)[keyof typeof SeedingMethod]
+
+
 export const ComputerStatus = {
   AVAILABLE: 'AVAILABLE',
   MAINTENANCE: 'MAINTENANCE',

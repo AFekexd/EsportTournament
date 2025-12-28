@@ -99,6 +99,7 @@ export interface Tournament {
     hasQualifier?: boolean;
     qualifierMatches?: number;
     qualifierMinPoints?: number;
+    seedingMethod?: 'STANDARD' | 'SEQUENTIAL' | 'RANDOM';
     requireRank?: boolean;
     teamSize?: number | null;
     createdAt: string;

@@ -1942,6 +1942,7 @@ export const TournamentScalarFieldEnum = {
   notifyUsers: 'notifyUsers',
   notifyDiscord: 'notifyDiscord',
   discordChannelId: 'discordChannelId',
+  seedingMethod: 'seedingMethod',
   hasQualifier: 'hasQualifier',
   qualifierMatches: 'qualifierMatches',
   qualifierMinPoints: 'qualifierMinPoints',
@@ -2310,6 +2311,20 @@ export type EnumTournamentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'TournamentStatus[]'
  */
 export type ListEnumTournamentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TournamentStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SeedingMethod'
+ */
+export type EnumSeedingMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SeedingMethod'>
+    
+
+
+/**
+ * Reference to a field of type 'SeedingMethod[]'
+ */
+export type ListEnumSeedingMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SeedingMethod[]'>
     
 
 

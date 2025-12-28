@@ -38,6 +38,7 @@ export function TournamentEditModal({
     hasQualifier: tournament.hasQualifier || false,
     qualifierMatches: tournament.qualifierMatches || 10,
     qualifierMinPoints: tournament.qualifierMinPoints || 50,
+    seedingMethod: tournament.seedingMethod || "STANDARD",
     participationType:
       tournament.teamSize === 1 ||
       (!tournament.teamSize && tournament.game?.teamSize === 1)
@@ -98,6 +99,7 @@ export function TournamentEditModal({
             qualifierMinPoints: formData.hasQualifier
               ? formData.qualifierMinPoints
               : 0,
+            seedingMethod: formData.seedingMethod,
             teamSize:
               formData.participationType === "INDIVIDUAL"
                 ? 1
@@ -126,6 +128,12 @@ export function TournamentEditModal({
     { value: "DOUBLE_ELIMINATION", label: "Dupla kieséses" },
     { value: "ROUND_ROBIN", label: "Körmérkőzés" },
     { value: "SWISS", label: "Svájci rendszer" },
+  ];
+
+  const seedingOptions = [
+    { value: "STANDARD", label: "Standard (ELO alapján)" },
+    { value: "SEQUENTIAL", label: "Szekvenciális (1v2, 3v4)" },
+    { value: "RANDOM", label: "Véletlenszerű (Shuffle)" },
   ];
 
   return (
@@ -345,6 +353,40 @@ export function TournamentEditModal({
                 ))}
               </select>
             </div>
+          </div>
+
+          {/* Seeding Method */}
+          <div>
+            <label
+              htmlFor="edit-tournament-seeding"
+              className="block text-sm font-medium text-gray-300 mb-2"
+            >
+              Kiemelési módszer
+            </label>
+            <select
+              id="edit-tournament-seeding"
+              className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors"
+              value={formData.seedingMethod}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  seedingMethod: e.target.value as
+                    | "STANDARD"
+                    | "SEQUENTIAL"
+                    | "RANDOM",
+                })
+              }
+            >
+              {seedingOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              Standard: 1v8, 2v7. Szekvenciális: 1v2, 3v4. Véletlenszerű: Nincs
+              kiemelés.
+            </p>
           </div>
 
           {/* Max Teams */}

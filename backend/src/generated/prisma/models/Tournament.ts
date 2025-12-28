@@ -58,6 +58,7 @@ export type TournamentMinAggregateOutputType = {
   notifyUsers: boolean | null
   notifyDiscord: boolean | null
   discordChannelId: string | null
+  seedingMethod: $Enums.SeedingMethod | null
   hasQualifier: boolean | null
   qualifierMatches: number | null
   qualifierMinPoints: number | null
@@ -82,6 +83,7 @@ export type TournamentMaxAggregateOutputType = {
   notifyUsers: boolean | null
   notifyDiscord: boolean | null
   discordChannelId: string | null
+  seedingMethod: $Enums.SeedingMethod | null
   hasQualifier: boolean | null
   qualifierMatches: number | null
   qualifierMinPoints: number | null
@@ -106,6 +108,7 @@ export type TournamentCountAggregateOutputType = {
   notifyUsers: number
   notifyDiscord: number
   discordChannelId: number
+  seedingMethod: number
   hasQualifier: number
   qualifierMatches: number
   qualifierMinPoints: number
@@ -146,6 +149,7 @@ export type TournamentMinAggregateInputType = {
   notifyUsers?: true
   notifyDiscord?: true
   discordChannelId?: true
+  seedingMethod?: true
   hasQualifier?: true
   qualifierMatches?: true
   qualifierMinPoints?: true
@@ -170,6 +174,7 @@ export type TournamentMaxAggregateInputType = {
   notifyUsers?: true
   notifyDiscord?: true
   discordChannelId?: true
+  seedingMethod?: true
   hasQualifier?: true
   qualifierMatches?: true
   qualifierMinPoints?: true
@@ -194,6 +199,7 @@ export type TournamentCountAggregateInputType = {
   notifyUsers?: true
   notifyDiscord?: true
   discordChannelId?: true
+  seedingMethod?: true
   hasQualifier?: true
   qualifierMatches?: true
   qualifierMinPoints?: true
@@ -305,6 +311,7 @@ export type TournamentGroupByOutputType = {
   notifyUsers: boolean
   notifyDiscord: boolean
   discordChannelId: string | null
+  seedingMethod: $Enums.SeedingMethod
   hasQualifier: boolean
   qualifierMatches: number
   qualifierMinPoints: number
@@ -352,6 +359,7 @@ export type TournamentWhereInput = {
   notifyUsers?: Prisma.BoolFilter<"Tournament"> | boolean
   notifyDiscord?: Prisma.BoolFilter<"Tournament"> | boolean
   discordChannelId?: Prisma.StringNullableFilter<"Tournament"> | string | null
+  seedingMethod?: Prisma.EnumSeedingMethodFilter<"Tournament"> | $Enums.SeedingMethod
   hasQualifier?: Prisma.BoolFilter<"Tournament"> | boolean
   qualifierMatches?: Prisma.IntFilter<"Tournament"> | number
   qualifierMinPoints?: Prisma.IntFilter<"Tournament"> | number
@@ -379,6 +387,7 @@ export type TournamentOrderByWithRelationInput = {
   notifyUsers?: Prisma.SortOrder
   notifyDiscord?: Prisma.SortOrder
   discordChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
+  seedingMethod?: Prisma.SortOrder
   hasQualifier?: Prisma.SortOrder
   qualifierMatches?: Prisma.SortOrder
   qualifierMinPoints?: Prisma.SortOrder
@@ -409,6 +418,7 @@ export type TournamentWhereUniqueInput = Prisma.AtLeast<{
   notifyUsers?: Prisma.BoolFilter<"Tournament"> | boolean
   notifyDiscord?: Prisma.BoolFilter<"Tournament"> | boolean
   discordChannelId?: Prisma.StringNullableFilter<"Tournament"> | string | null
+  seedingMethod?: Prisma.EnumSeedingMethodFilter<"Tournament"> | $Enums.SeedingMethod
   hasQualifier?: Prisma.BoolFilter<"Tournament"> | boolean
   qualifierMatches?: Prisma.IntFilter<"Tournament"> | number
   qualifierMinPoints?: Prisma.IntFilter<"Tournament"> | number
@@ -436,6 +446,7 @@ export type TournamentOrderByWithAggregationInput = {
   notifyUsers?: Prisma.SortOrder
   notifyDiscord?: Prisma.SortOrder
   discordChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
+  seedingMethod?: Prisma.SortOrder
   hasQualifier?: Prisma.SortOrder
   qualifierMatches?: Prisma.SortOrder
   qualifierMinPoints?: Prisma.SortOrder
@@ -468,6 +479,7 @@ export type TournamentScalarWhereWithAggregatesInput = {
   notifyUsers?: Prisma.BoolWithAggregatesFilter<"Tournament"> | boolean
   notifyDiscord?: Prisma.BoolWithAggregatesFilter<"Tournament"> | boolean
   discordChannelId?: Prisma.StringNullableWithAggregatesFilter<"Tournament"> | string | null
+  seedingMethod?: Prisma.EnumSeedingMethodWithAggregatesFilter<"Tournament"> | $Enums.SeedingMethod
   hasQualifier?: Prisma.BoolWithAggregatesFilter<"Tournament"> | boolean
   qualifierMatches?: Prisma.IntWithAggregatesFilter<"Tournament"> | number
   qualifierMinPoints?: Prisma.IntWithAggregatesFilter<"Tournament"> | number
@@ -491,6 +503,7 @@ export type TournamentCreateInput = {
   notifyUsers?: boolean
   notifyDiscord?: boolean
   discordChannelId?: string | null
+  seedingMethod?: $Enums.SeedingMethod
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
@@ -518,6 +531,7 @@ export type TournamentUncheckedCreateInput = {
   notifyUsers?: boolean
   notifyDiscord?: boolean
   discordChannelId?: string | null
+  seedingMethod?: $Enums.SeedingMethod
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
@@ -543,6 +557,7 @@ export type TournamentUpdateInput = {
   notifyUsers?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyDiscord?: Prisma.BoolFieldUpdateOperationsInput | boolean
   discordChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seedingMethod?: Prisma.EnumSeedingMethodFieldUpdateOperationsInput | $Enums.SeedingMethod
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
@@ -570,6 +585,7 @@ export type TournamentUncheckedUpdateInput = {
   notifyUsers?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyDiscord?: Prisma.BoolFieldUpdateOperationsInput | boolean
   discordChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seedingMethod?: Prisma.EnumSeedingMethodFieldUpdateOperationsInput | $Enums.SeedingMethod
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
@@ -596,6 +612,7 @@ export type TournamentCreateManyInput = {
   notifyUsers?: boolean
   notifyDiscord?: boolean
   discordChannelId?: string | null
+  seedingMethod?: $Enums.SeedingMethod
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
@@ -619,6 +636,7 @@ export type TournamentUpdateManyMutationInput = {
   notifyUsers?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyDiscord?: Prisma.BoolFieldUpdateOperationsInput | boolean
   discordChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seedingMethod?: Prisma.EnumSeedingMethodFieldUpdateOperationsInput | $Enums.SeedingMethod
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
@@ -643,6 +661,7 @@ export type TournamentUncheckedUpdateManyInput = {
   notifyUsers?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyDiscord?: Prisma.BoolFieldUpdateOperationsInput | boolean
   discordChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seedingMethod?: Prisma.EnumSeedingMethodFieldUpdateOperationsInput | $Enums.SeedingMethod
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
@@ -677,6 +696,7 @@ export type TournamentCountOrderByAggregateInput = {
   notifyUsers?: Prisma.SortOrder
   notifyDiscord?: Prisma.SortOrder
   discordChannelId?: Prisma.SortOrder
+  seedingMethod?: Prisma.SortOrder
   hasQualifier?: Prisma.SortOrder
   qualifierMatches?: Prisma.SortOrder
   qualifierMinPoints?: Prisma.SortOrder
@@ -708,6 +728,7 @@ export type TournamentMaxOrderByAggregateInput = {
   notifyUsers?: Prisma.SortOrder
   notifyDiscord?: Prisma.SortOrder
   discordChannelId?: Prisma.SortOrder
+  seedingMethod?: Prisma.SortOrder
   hasQualifier?: Prisma.SortOrder
   qualifierMatches?: Prisma.SortOrder
   qualifierMinPoints?: Prisma.SortOrder
@@ -732,6 +753,7 @@ export type TournamentMinOrderByAggregateInput = {
   notifyUsers?: Prisma.SortOrder
   notifyDiscord?: Prisma.SortOrder
   discordChannelId?: Prisma.SortOrder
+  seedingMethod?: Prisma.SortOrder
   hasQualifier?: Prisma.SortOrder
   qualifierMatches?: Prisma.SortOrder
   qualifierMinPoints?: Prisma.SortOrder
@@ -804,6 +826,10 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
 
+export type EnumSeedingMethodFieldUpdateOperationsInput = {
+  set?: $Enums.SeedingMethod
+}
+
 export type TournamentCreateNestedOneWithoutEntriesInput = {
   create?: Prisma.XOR<Prisma.TournamentCreateWithoutEntriesInput, Prisma.TournamentUncheckedCreateWithoutEntriesInput>
   connectOrCreate?: Prisma.TournamentCreateOrConnectWithoutEntriesInput
@@ -849,6 +875,7 @@ export type TournamentCreateWithoutGameInput = {
   notifyUsers?: boolean
   notifyDiscord?: boolean
   discordChannelId?: string | null
+  seedingMethod?: $Enums.SeedingMethod
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
@@ -874,6 +901,7 @@ export type TournamentUncheckedCreateWithoutGameInput = {
   notifyUsers?: boolean
   notifyDiscord?: boolean
   discordChannelId?: string | null
+  seedingMethod?: $Enums.SeedingMethod
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
@@ -929,6 +957,7 @@ export type TournamentScalarWhereInput = {
   notifyUsers?: Prisma.BoolFilter<"Tournament"> | boolean
   notifyDiscord?: Prisma.BoolFilter<"Tournament"> | boolean
   discordChannelId?: Prisma.StringNullableFilter<"Tournament"> | string | null
+  seedingMethod?: Prisma.EnumSeedingMethodFilter<"Tournament"> | $Enums.SeedingMethod
   hasQualifier?: Prisma.BoolFilter<"Tournament"> | boolean
   qualifierMatches?: Prisma.IntFilter<"Tournament"> | number
   qualifierMinPoints?: Prisma.IntFilter<"Tournament"> | number
@@ -952,6 +981,7 @@ export type TournamentCreateWithoutEntriesInput = {
   notifyUsers?: boolean
   notifyDiscord?: boolean
   discordChannelId?: string | null
+  seedingMethod?: $Enums.SeedingMethod
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
@@ -978,6 +1008,7 @@ export type TournamentUncheckedCreateWithoutEntriesInput = {
   notifyUsers?: boolean
   notifyDiscord?: boolean
   discordChannelId?: string | null
+  seedingMethod?: $Enums.SeedingMethod
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
@@ -1018,6 +1049,7 @@ export type TournamentUpdateWithoutEntriesInput = {
   notifyUsers?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyDiscord?: Prisma.BoolFieldUpdateOperationsInput | boolean
   discordChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seedingMethod?: Prisma.EnumSeedingMethodFieldUpdateOperationsInput | $Enums.SeedingMethod
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1044,6 +1076,7 @@ export type TournamentUncheckedUpdateWithoutEntriesInput = {
   notifyUsers?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyDiscord?: Prisma.BoolFieldUpdateOperationsInput | boolean
   discordChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seedingMethod?: Prisma.EnumSeedingMethodFieldUpdateOperationsInput | $Enums.SeedingMethod
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1068,6 +1101,7 @@ export type TournamentCreateWithoutMatchesInput = {
   notifyUsers?: boolean
   notifyDiscord?: boolean
   discordChannelId?: string | null
+  seedingMethod?: $Enums.SeedingMethod
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
@@ -1094,6 +1128,7 @@ export type TournamentUncheckedCreateWithoutMatchesInput = {
   notifyUsers?: boolean
   notifyDiscord?: boolean
   discordChannelId?: string | null
+  seedingMethod?: $Enums.SeedingMethod
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
@@ -1134,6 +1169,7 @@ export type TournamentUpdateWithoutMatchesInput = {
   notifyUsers?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyDiscord?: Prisma.BoolFieldUpdateOperationsInput | boolean
   discordChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seedingMethod?: Prisma.EnumSeedingMethodFieldUpdateOperationsInput | $Enums.SeedingMethod
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1160,6 +1196,7 @@ export type TournamentUncheckedUpdateWithoutMatchesInput = {
   notifyUsers?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyDiscord?: Prisma.BoolFieldUpdateOperationsInput | boolean
   discordChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seedingMethod?: Prisma.EnumSeedingMethodFieldUpdateOperationsInput | $Enums.SeedingMethod
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1184,6 +1221,7 @@ export type TournamentCreateManyGameInput = {
   notifyUsers?: boolean
   notifyDiscord?: boolean
   discordChannelId?: string | null
+  seedingMethod?: $Enums.SeedingMethod
   hasQualifier?: boolean
   qualifierMatches?: number
   qualifierMinPoints?: number
@@ -1207,6 +1245,7 @@ export type TournamentUpdateWithoutGameInput = {
   notifyUsers?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyDiscord?: Prisma.BoolFieldUpdateOperationsInput | boolean
   discordChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seedingMethod?: Prisma.EnumSeedingMethodFieldUpdateOperationsInput | $Enums.SeedingMethod
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1232,6 +1271,7 @@ export type TournamentUncheckedUpdateWithoutGameInput = {
   notifyUsers?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyDiscord?: Prisma.BoolFieldUpdateOperationsInput | boolean
   discordChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seedingMethod?: Prisma.EnumSeedingMethodFieldUpdateOperationsInput | $Enums.SeedingMethod
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1257,6 +1297,7 @@ export type TournamentUncheckedUpdateManyWithoutGameInput = {
   notifyUsers?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyDiscord?: Prisma.BoolFieldUpdateOperationsInput | boolean
   discordChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seedingMethod?: Prisma.EnumSeedingMethodFieldUpdateOperationsInput | $Enums.SeedingMethod
   hasQualifier?: Prisma.BoolFieldUpdateOperationsInput | boolean
   qualifierMatches?: Prisma.IntFieldUpdateOperationsInput | number
   qualifierMinPoints?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1321,6 +1362,7 @@ export type TournamentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   notifyUsers?: boolean
   notifyDiscord?: boolean
   discordChannelId?: boolean
+  seedingMethod?: boolean
   hasQualifier?: boolean
   qualifierMatches?: boolean
   qualifierMinPoints?: boolean
@@ -1349,6 +1391,7 @@ export type TournamentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   notifyUsers?: boolean
   notifyDiscord?: boolean
   discordChannelId?: boolean
+  seedingMethod?: boolean
   hasQualifier?: boolean
   qualifierMatches?: boolean
   qualifierMinPoints?: boolean
@@ -1374,6 +1417,7 @@ export type TournamentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   notifyUsers?: boolean
   notifyDiscord?: boolean
   discordChannelId?: boolean
+  seedingMethod?: boolean
   hasQualifier?: boolean
   qualifierMatches?: boolean
   qualifierMinPoints?: boolean
@@ -1399,13 +1443,14 @@ export type TournamentSelectScalar = {
   notifyUsers?: boolean
   notifyDiscord?: boolean
   discordChannelId?: boolean
+  seedingMethod?: boolean
   hasQualifier?: boolean
   qualifierMatches?: boolean
   qualifierMinPoints?: boolean
   requireRank?: boolean
 }
 
-export type TournamentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "imageUrl" | "gameId" | "format" | "status" | "teamSize" | "maxTeams" | "startDate" | "endDate" | "registrationDeadline" | "createdAt" | "updatedAt" | "notifyUsers" | "notifyDiscord" | "discordChannelId" | "hasQualifier" | "qualifierMatches" | "qualifierMinPoints" | "requireRank", ExtArgs["result"]["tournament"]>
+export type TournamentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "imageUrl" | "gameId" | "format" | "status" | "teamSize" | "maxTeams" | "startDate" | "endDate" | "registrationDeadline" | "createdAt" | "updatedAt" | "notifyUsers" | "notifyDiscord" | "discordChannelId" | "seedingMethod" | "hasQualifier" | "qualifierMatches" | "qualifierMinPoints" | "requireRank", ExtArgs["result"]["tournament"]>
 export type TournamentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   game?: boolean | Prisma.GameDefaultArgs<ExtArgs>
   entries?: boolean | Prisma.Tournament$entriesArgs<ExtArgs>
@@ -1444,6 +1489,7 @@ export type $TournamentPayload<ExtArgs extends runtime.Types.Extensions.Internal
     notifyUsers: boolean
     notifyDiscord: boolean
     discordChannelId: string | null
+    seedingMethod: $Enums.SeedingMethod
     hasQualifier: boolean
     qualifierMatches: number
     qualifierMinPoints: number
@@ -1891,6 +1937,7 @@ export interface TournamentFieldRefs {
   readonly notifyUsers: Prisma.FieldRef<"Tournament", 'Boolean'>
   readonly notifyDiscord: Prisma.FieldRef<"Tournament", 'Boolean'>
   readonly discordChannelId: Prisma.FieldRef<"Tournament", 'String'>
+  readonly seedingMethod: Prisma.FieldRef<"Tournament", 'SeedingMethod'>
   readonly hasQualifier: Prisma.FieldRef<"Tournament", 'Boolean'>
   readonly qualifierMatches: Prisma.FieldRef<"Tournament", 'Int'>
   readonly qualifierMinPoints: Prisma.FieldRef<"Tournament", 'Int'>

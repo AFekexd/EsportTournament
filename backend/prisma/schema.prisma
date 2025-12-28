@@ -67,6 +67,12 @@ enum NotificationType {
   WAITLIST_AVAILABLE
 }
 
+enum SeedingMethod {
+  STANDARD
+  SEQUENTIAL
+  RANDOM
+}
+
 // ============================================
 // MODELS
 // ============================================
@@ -180,6 +186,9 @@ model Tournament {
   notifyUsers      Boolean @default(false) // Send in-app notifications
   notifyDiscord    Boolean @default(false) // Post to Discord
   discordChannelId String? @default("matches") // Which Discord channel to use
+
+  // Seeding settings
+  seedingMethod SeedingMethod @default(STANDARD)
 
   // Qualifier settings
   hasQualifier       Boolean @default(false)

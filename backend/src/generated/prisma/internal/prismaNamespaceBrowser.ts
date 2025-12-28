@@ -163,6 +163,7 @@ export const TournamentScalarFieldEnum = {
   notifyUsers: 'notifyUsers',
   notifyDiscord: 'notifyDiscord',
   discordChannelId: 'discordChannelId',
+  seedingMethod: 'seedingMethod',
   hasQualifier: 'hasQualifier',
   qualifierMatches: 'qualifierMatches',
   qualifierMinPoints: 'qualifierMinPoints',
