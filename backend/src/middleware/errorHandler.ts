@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { Request, Response, NextFunction } from 'express';
 
 export interface AppError extends Error {

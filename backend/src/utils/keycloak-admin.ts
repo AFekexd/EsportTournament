@@ -1,4 +1,4 @@
-
+import "dotenv/config";
 import { ApiError } from '../middleware/errorHandler.js';
 
 const KEYCLOAK_URL = process.env.VITE_KEYCLOAK_URL || process.env.KEYCLOAK_URL || 'https://keycloak.pollak.info';

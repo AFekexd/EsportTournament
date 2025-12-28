@@ -1,4 +1,4 @@
-
+import "dotenv/config";
 import { Router } from 'express';
 import prisma from '../lib/prisma.js';
 import { emitMachineUpdate } from '../services/socket.js';
