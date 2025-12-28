@@ -537,10 +537,12 @@ export function TVDisplayPage() {
           ))}
         </div>
         <div className="text-right">
-          <h4 className="text-xl font-bold text-white tracking-wider">
+          <h4 className="text-xl font-bold text-white tracking-wider ">
             POLLÁK ESPORT
           </h4>
-          <p className="text-sm text-gray-400">Hivatalos Versenyplatform</p>
+          <p className="text-sm text-gray-400 font-sans">
+            Hivatalos Versenyplatform
+          </p>
         </div>
       </div>
 

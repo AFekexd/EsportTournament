@@ -17,3 +17,4 @@ export { BookingPage } from './Booking';
 export { TeacherTimePage } from './TeacherTimePage';
 export { TournamentEmbedPage } from './embed/TournamentEmbedPage';
 export { TVDisplayPage } from './TVDisplayPage';
+export { TVRecruitmentPage } from './TVRecruitmentPage';

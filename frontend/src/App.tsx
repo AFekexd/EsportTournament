@@ -25,6 +25,7 @@ import {
   TeacherTimePage,
   TournamentEmbedPage,
   TVDisplayPage,
+  TVRecruitmentPage,
 } from "./pages";
 import { AdminLogs } from "./components/admin/AdminLogs";
 import { PuffLoader } from "react-spinners";
@@ -98,6 +99,7 @@ function AppContent() {
           element={<TournamentEmbedPage />}
         />
         <Route path="/tv" element={<TVDisplayPage />} />
+        <Route path="/tv2" element={<TVRecruitmentPage />} />
       </Routes>
       <Toaster />
     </BrowserRouter>
