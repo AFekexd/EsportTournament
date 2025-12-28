@@ -1,8 +1,9 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import dotenv from 'dotenv';
 import { createServer } from 'http';
 import { Server } from 'socket.io'; // Socket.IO
 
@@ -10,10 +11,6 @@ import { errorHandler } from './middleware/errorHandler.js';
 import { authRouter } from './routes/auth.js';
 import { logsRouter } from './routes/logs.js';
 
-// ... other imports
-
-// Routes
-// ... other routes
 import { usersRouter } from './routes/users.js';
 
 import { teamsRouter } from './routes/teams.js';
@@ -34,7 +31,7 @@ import { setIo } from './services/socket.js';
 import { kioskRouter } from './routes/kiosk.js';
 import { adminKioskRouter } from './routes/admin-kiosk.js';
 
-dotenv.config();
+
 
 const app = express();
 const httpServer = createServer(app); // Create HTTP server for Socket.IO
