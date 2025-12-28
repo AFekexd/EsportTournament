@@ -1470,7 +1470,7 @@ namespace EsportManager
                     using (Font font = new Font("Segoe UI", 28, FontStyle.Bold))
                     using (Brush brush = new SolidBrush(Color.White))
                     {
-                        string text = $"Bejelentkezve: {username}";
+                        string text = $"Utolsó bejelentkezés: {username}";
                         if (!string.IsNullOrEmpty(omNumber))
                         {
                             text += $"\nOM: {omNumber}";

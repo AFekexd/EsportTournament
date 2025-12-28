@@ -436,14 +436,14 @@ function PromoSlide() {
           <div className="mb-8 rounded-2xl bg-white p-4 shadow-[0_0_50px_rgba(88,101,242,0.3)]">
             {/* Generate a QR code for Discord */}
             <img
-              src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://discord.gg/HWB2bAMUNP&color=000000&bgcolor=ffffff"
+              src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://discord.pollak.info&color=000000&bgcolor=ffffff"
               alt="Discord QR"
               className="h-64 w-64"
             />
           </div>
           <h3 className="mb-4 text-4xl font-bold text-white">Discord</h3>
           <p className="text-2xl text-[#5865F2] font-bold tracking-wide">
-            discord.gg/pollak
+            discord.pollak.info
           </p>
         </div>
       </div>
