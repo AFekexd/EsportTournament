@@ -86,6 +86,7 @@ export const authenticate = async (
                 },
                 (err, decoded) => {
                     if (err) {
+                        console.error('Token validation failed:', err);
                         reject(new ApiError('Érvénytelen token', 401, 'INVALID_TOKEN'));
                     } else {
                         resolve(decoded as KeycloakTokenPayload);
