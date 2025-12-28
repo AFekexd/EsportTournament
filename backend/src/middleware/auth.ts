@@ -4,7 +4,7 @@ import jwksClient from 'jwks-rsa';
 import { ApiError } from './errorHandler.js';
 import prisma from '../lib/prisma.js';
 
-const KEYCLOAK_URL = process.env.KEYCLOAK_URL || 'https://www.keycloak.pollak.info';
+const KEYCLOAK_URL = process.env.KEYCLOAK_URL || 'https://keycloak.pollak.info';
 const KEYCLOAK_REALM = process.env.KEYCLOAK_REALM || 'master';
 
 // JWKS client for Keycloak
