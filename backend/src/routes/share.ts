@@ -53,7 +53,7 @@ router.get('/tournaments/:id', async (req: Request, res: Response) => {
             tournament.description ? `📝 ${tournament.description.substring(0, 150)}${tournament.description.length > 150 ? '...' : ''}` : ''
         ].filter(Boolean).join('\n');
 
-        const imageUrl = tournament.imageUrl || tournament.game?.imageUrl || 'https://esport.afeke.com/assets/default-tournament.png';
+        const imageUrl = tournament.imageUrl || tournament.game?.imageUrl || 'https://esport.pollak.info/assets/default-tournament.png';
         const frontendUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/tournaments/${id}`;
 
         // Discord embeds use theme-color

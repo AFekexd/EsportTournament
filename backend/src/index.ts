@@ -44,7 +44,10 @@ const io = new Server(httpServer, {
       'http://localhost:5173',
       'http://localhost:4173',
       'https://esport.afeke.com',
-      'http://esport.afeke.com'
+      'http://esport.afeke.com',
+      'https://esport-backend.pollak.info',
+      'https://esport.pollak.info',
+      'http://esport.pollak.info'
     ],
     methods: ["GET", "POST"],
     credentials: true
@@ -65,7 +68,10 @@ app.use(cors({
     'http://localhost:5173',
     'http://localhost:4173',
     'https://esport.afeke.com',
-    'http://esport.afeke.com'
+    'http://esport.afeke.com',
+    'https://esport-backend.pollak.info',
+    'https://esport.pollak.info',
+    'http://esport.pollak.info'
   ],
   credentials: true,
 }));
