@@ -688,8 +688,16 @@ tournamentsRouter.post(
             throw new ApiError('A verseny nem található', 404, 'NOT_FOUND');
         }
 
-        if (tournament.entries.length < 2) {
-            throw new ApiError('Legalább 2 résztvevő szükséges', 400, 'NOT_ENOUGH_PARTICIPANTS');
+        // Filter for Qualified Players if applicable
+        let entries = tournament.entries;
+        if (tournament.hasQualifier && tournament.qualifierMinPoints) {
+            entries = entries.filter(e => (e.qualifierPoints || 0) >= (tournament.qualifierMinPoints || 0));
+            // Re-sort by qualifier points descending for seeding purposes
+            entries.sort((a, b) => (b.qualifierPoints || 0) - (a.qualifierPoints || 0));
+        }
+
+        if (entries.length < 2) {
+            throw new ApiError('Legalább 2 résztvevő szükséges (a selejtező után)', 400, 'NOT_ENOUGH_PARTICIPANTS');
         }
 
         // Delete existing matches
@@ -707,7 +715,7 @@ tournamentsRouter.post(
             // ==========================================
 
             // 1. Prepare participants array (handling odd number with dummy)
-            let participants = [...tournament.entries];
+            let participants = [...entries];
             if (participants.length % 2 !== 0) {
                 participants.push(null as any); // Dummy participant for bye
             }
@@ -754,27 +762,40 @@ tournamentsRouter.post(
             // ==========================================
             // DOUBLE ELIMINATION BRACKET
             // ==========================================
-            const numParticipants = tournament.entries.length;
+            const numParticipants = entries.length;
             const numRounds = Math.ceil(Math.log2(numParticipants));
             const bracketSize = Math.pow(2, numRounds);
 
-            const seededEntries: (typeof tournament.entries[0] | null)[] = [];
+            const seededEntries: (typeof entries[0] | null)[] = [];
             for (let i = 0; i < bracketSize; i++) {
-                seededEntries.push(tournament.entries[i] || null);
+                seededEntries.push(entries[i] || null);
             }
 
-            // Create upper bracket matches (same as single elimination)
-            // Create upper bracket matches (using standard seeding)
+            // Create upper bracket matches (using standard seeding OR sequential for qualifiers)
             const firstRoundMatches = bracketSize / 2;
-            const seeds = getStandardSeeding(bracketSize);
+            
+            // If qualifier, we assume the list is already sorted by strength (qualifier points)
+            // and we want to match 1vs2, 3vs4 etc to minimize byes and strict skill matching?
+            // OR maybe user wants 1vs2 to NOT match top players immediately? 
+            // User request: "csak egymás ellen kellene rakni őket... ignorálni az elot"
+            // -> Sounds like pure sequential pairing 1-2, 3-4 from the available list.
+            
+            let seeds: number[] = [];
+            if (tournament.hasQualifier) {
+                 // Sequential seeding: 1, 2, 3, 4, 5, 6...
+                 seeds = Array.from({length: bracketSize}, (_, i) => i + 1);
+            } else {
+                 // Standard seeding: 1, 8, 4, 5...
+                 seeds = getStandardSeeding(bracketSize);
+            }
 
             for (let i = 0; i < firstRoundMatches; i++) {
                 const seed1 = seeds[i * 2];
                 const seed2 = seeds[i * 2 + 1];
                 
-                // seed is 1-based, tournament.entries is 0-based
-                const homeEntry = (seed1 <= tournament.entries.length) ? tournament.entries[seed1 - 1] : null;
-                const awayEntry = (seed2 <= tournament.entries.length) ? tournament.entries[seed2 - 1] : null;
+                // seed is 1-based index
+                const homeEntry = (seed1 <= entries.length) ? entries[seed1 - 1] : null;
+                const awayEntry = (seed2 <= entries.length) ? entries[seed2 - 1] : null;
 
                 matches.push({
                     tournamentId: tournament.id,
@@ -851,24 +872,31 @@ tournamentsRouter.post(
             // ==========================================
             // SINGLE ELIMINATION BRACKET (default)
             // ==========================================
-            const numParticipants = tournament.entries.length;
+            const numParticipants = entries.length;
             const numRounds = Math.ceil(Math.log2(numParticipants));
             const bracketSize = Math.pow(2, numRounds);
 
-            const seededEntries: (typeof tournament.entries[0] | null)[] = [];
+            const seededEntries: (typeof entries[0] | null)[] = [];
             for (let i = 0; i < bracketSize; i++) {
-                seededEntries.push(tournament.entries[i] || null);
+                seededEntries.push(entries[i] || null);
             }
 
             const firstRoundMatches = bracketSize / 2;
-            const seeds = getStandardSeeding(bracketSize);
+            
+            let seeds: number[] = [];
+            if (tournament.hasQualifier) {
+                 // Sequential seeding
+                 seeds = Array.from({length: bracketSize}, (_, i) => i + 1);
+            } else {
+                 seeds = getStandardSeeding(bracketSize);
+            }
 
             for (let i = 0; i < firstRoundMatches; i++) {
                 const seed1 = seeds[i * 2];
                 const seed2 = seeds[i * 2 + 1];
 
-                const homeEntry = (seed1 <= tournament.entries.length) ? tournament.entries[seed1 - 1] : null;
-                const awayEntry = (seed2 <= tournament.entries.length) ? tournament.entries[seed2 - 1] : null;
+                const homeEntry = (seed1 <= entries.length) ? entries[seed1 - 1] : null;
+                const awayEntry = (seed2 <= entries.length) ? entries[seed2 - 1] : null;
 
                 matches.push({
                     tournamentId: tournament.id,
