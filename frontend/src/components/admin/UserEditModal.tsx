@@ -4,6 +4,7 @@ import { X, Edit2, Key, ImageOff } from "lucide-react";
 import { ConfirmationModal } from "../common/ConfirmationModal";
 
 import { API_URL } from "../../config";
+import { authService } from "../../lib/auth-service";
 
 interface UserEditModalProps {
   user: {
@@ -48,7 +49,6 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
   const handleSaveProfile = async () => {
     setIsLoading(true);
     try {
-      const { authService } = await import("../../lib/auth-service");
       const token = authService.keycloak?.token;
       if (!token) return;
 
@@ -85,7 +85,6 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
       onConfirm: async () => {
         setIsLoading(true);
         try {
-          const { authService } = await import("../../lib/auth-service");
           const token = authService.keycloak?.token;
           if (!token) return;
 
@@ -121,7 +120,6 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
     }
     setIsLoading(true);
     try {
-      const { authService } = await import("../../lib/auth-service");
       const token = authService.keycloak?.token;
       if (!token) return;
 
