@@ -371,7 +371,7 @@ export function TournamentDetailPage() {
   return (
     <div className="min-h-screen pb-12">
       {/* Hero Section */}
-      <div className="relative h-[400px] w-full mb-8 group">
+      <div className="relative min-h-[400px] h-auto w-full mb-8 group">
         <div className="absolute inset-0 overflow-hidden">
           {currentTournament.imageUrl ? (
             <img
@@ -391,9 +391,9 @@ export function TournamentDetailPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-[#0f1016] via-[#0f1016]/80 to-transparent" />
         </div>
 
-        <div className="container mx-auto px-4 h-full relative flex flex-col justify-end pb-12">
-          {/* Badges - Moved to bottom left */}
-          <div className="absolute bottom-8 left-4 flex flex-wrap items-center gap-3 z-10">
+        <div className="container mx-auto px-4 h-full relative flex flex-col justify-end py-12 md:pb-12">
+          {/* Badges - Desktop: Absolute bottom left */}
+          <div className="hidden md:flex absolute bottom-8 left-4 flex-wrap items-center gap-3 z-10">
             <span
               className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${
                 statusLabels[currentTournament.status]?.class ||
@@ -414,6 +414,7 @@ export function TournamentDetailPage() {
               {requiredTeamSize}v{requiredTeamSize}
             </span>
           </div>
+
           <button
             className="absolute top-8 left-4 flex items-center gap-2 text-gray-400 hover:text-white transition-colors bg-black/30 hover:bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full border border-white/5"
             onClick={() => navigate("/tournaments")}
@@ -422,8 +423,31 @@ export function TournamentDetailPage() {
             Vissza
           </button>
 
-          <div className="flex flex-col md:flex-row md:items-end gap-8">
+          <div className="flex flex-col md:flex-row md:items-end gap-8 mt-16 md:mt-0">
             <div className="flex-grow space-y-4">
+              {/* Badges - Mobile: In flow */}
+              <div className="flex md:hidden flex-wrap items-center gap-3 mb-2">
+                <span
+                  className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${
+                    statusLabels[currentTournament.status]?.class ||
+                    "bg-gray-500/20 text-gray-400 border-gray-500/50"
+                  }`}
+                >
+                  <StatusIcon size={14} />
+                  {statusLabels[currentTournament.status]?.label ||
+                    currentTournament.status}
+                </span>
+                {currentTournament.game && (
+                  <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-white border border-white/10 backdrop-blur-md">
+                    {currentTournament.game.name}
+                  </span>
+                )}
+                <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-purple-500/20 text-purple-400 border border-purple-500/50 backdrop-blur-md">
+                  <Users size={14} />
+                  {requiredTeamSize}v{requiredTeamSize}
+                </span>
+              </div>
+
               <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
                 {currentTournament.name}
               </h1>
