@@ -416,6 +416,7 @@ model Log {
   id        String   @id @default(uuid())
   type      String   // LOGIN, LOGOUT, ADD_TIME, LOCK, UNLOCK
   message   String?
+  metadata  Json?    // Structured data for detailed view
   userId    String?
   user      User?    @relation(fields: [userId], references: [id])
   adminId   String?

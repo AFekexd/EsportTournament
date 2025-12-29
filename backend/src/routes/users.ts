@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import { logSystemActivity } from '../services/logService.js';
 import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
@@ -70,6 +71,8 @@ usersRouter.delete(
             where: { id: userId },
         });
 
+        await logSystemActivity('USER_DELETE', `User ID ${userId} deleted by ${currentUser.username}`, { adminId: currentUser.id });
+
         res.json({ success: true, message: 'Felhasználó törölve' });
     })
 );
@@ -96,6 +99,8 @@ usersRouter.patch(
             where: { id: req.params.id },
             data: { role },
         });
+
+        await logSystemActivity('USER_ROLE_UPDATE', `User ${user.username} role changed to ${role} by ${currentUser.username}`, { adminId: currentUser.id, userId: user.id });
 
         res.json({ success: true, data: user });
     })
@@ -135,6 +140,30 @@ usersRouter.patch(
                 emailNotifications,
             },
         });
+
+        // Determine who did it for the log
+        const isSelf = currentUser.id === targetUserId;
+        const changes: string[] = [];
+        if (displayName !== undefined) changes.push(`Display Name ('${displayName}')`);
+        if (avatarUrl !== undefined) changes.push('Avatar');
+        if (emailNotifications !== undefined) changes.push(`Notifications (${emailNotifications})`);
+        
+        await logSystemActivity(
+            'USER_PROFILE_UPDATE',
+            `User ${updatedUser.username} profile updated by ${isSelf ? 'themselves' : currentUser.username}. Changes: ${changes.join(', ')}`,
+            { 
+                userId: updatedUser.id, 
+                adminId: isSelf ? undefined : currentUser.id,
+                metadata: {
+                    changes,
+                    updatedFields: {
+                        ...(displayName !== undefined && { displayName }),
+                        ...(avatarUrl !== undefined && { avatarUrl }),
+                        ...(emailNotifications !== undefined && { emailNotifications })
+                    }
+                }
+            }
+        );
 
         res.json({ success: true, data: updatedUser });
     })

@@ -355,53 +355,173 @@ export function AdminPage() {
       {/* Main Content Area */}
       <div className="bg-[#0f1016] border border-white/5 rounded-2xl p-6 min-h-[500px]">
         {activeTab === "overview" && (
-          <div className="animate-fade-in">
+          <div className="animate-fade-in space-y-6">
             <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
               <Settings className="text-primary" size={24} />
               Áttekintés
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="rounded-xl border border-white/5 bg-black/20 p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">
+              {/* Recent Registrations */}
+              <div className="rounded-xl border border-white/5 bg-[#161722] p-6 flex flex-col">
+                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <span className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500">
+                    <Users size={18} />
+                  </span>
                   Legutóbbi regisztrációk
                 </h3>
-                <div className="flex flex-col items-center justify-center py-12 text-muted-foreground bg-white/5 rounded-lg border border-white/5 border-dashed">
-                  <Users size={32} className="mb-2 opacity-50" />
-                  <p>Hamarosan...</p>
+                <div className="flex-1">
+                  {(() => {
+                    const allEntries = tournaments.flatMap((t) =>
+                      (t.entries || []).map((e) => ({
+                        ...e,
+                        tournamentName: t.name,
+                        gameName: t.game?.name,
+                      }))
+                    );
+                    const recentEntries = allEntries
+                      .sort(
+                        (a, b) =>
+                          new Date(b.registeredAt).getTime() -
+                          new Date(a.registeredAt).getTime()
+                      )
+                      .slice(0, 5);
+
+                    if (recentEntries.length === 0) {
+                      return (
+                        <div className="h-full flex flex-col items-center justify-center py-12 text-muted-foreground bg-white/5 rounded-lg border border-white/5 border-dashed">
+                          <Users size={32} className="mb-2 opacity-30" />
+                          <p className="text-sm">
+                            Még nincs regisztrált versenyző
+                          </p>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div className="space-y-3">
+                        {recentEntries.map((entry) => {
+                          const isSolo = !!entry.user;
+                          const name = isSolo
+                            ? entry.user?.displayName || entry.user?.username
+                            : entry.team?.name;
+                          const avatar = isSolo
+                            ? entry.user?.avatarUrl
+                            : entry.team?.logoUrl;
+
+                          return (
+                            <div
+                              key={entry.id}
+                              className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/5 hover:border-emerald-500/30 transition-all group"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-black/40 flex items-center justify-center overflow-hidden border border-white/10">
+                                  {avatar ? (
+                                    <img
+                                      src={avatar}
+                                      alt={name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  ) : (
+                                    <span className="text-xs font-bold text-gray-500">
+                                      {name?.charAt(0).toUpperCase()}
+                                    </span>
+                                  )}
+                                </div>
+                                <div>
+                                  <p className="text-sm font-medium text-white group-hover:text-emerald-400 transition-colors">
+                                    {name}
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    {entry.tournamentName}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <span className="text-xs text-gray-400 font-mono">
+                                  {new Date(
+                                    entry.registeredAt
+                                  ).toLocaleDateString("hu-HU", {
+                                    month: "short",
+                                    day: "numeric",
+                                  })}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
-              <div className="rounded-xl border border-white/5 bg-black/20 p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">
+
+              {/* Active Tournaments */}
+              <div className="rounded-xl border border-white/5 bg-[#161722] p-6 flex flex-col">
+                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <span className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500">
+                    <Trophy size={18} />
+                  </span>
                   Aktív versenyek
                 </h3>
                 {activeTournaments > 0 ? (
                   <div className="space-y-3">
                     {tournaments
                       .filter((t) => t.status === "IN_PROGRESS")
-                      .map((t) => (
-                        <div
-                          key={t.id}
-                          className="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/5 hover:border-primary/50 transition-colors"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                            <span className="font-medium text-white">
-                              {t.name}
-                            </span>
-                          </div>
-                          <Link
-                            to={`/tournaments/${t.id}`}
-                            className="p-2 rounded-lg hover:bg-white/10 text-primary transition-colors"
+                      .map((t) => {
+                        const filled =
+                          t.participantsCount || t._count?.entries || 0;
+                        const max = t.maxTeams || 16;
+                        const progress = Math.min((filled / max) * 100, 100);
+
+                        return (
+                          <div
+                            key={t.id}
+                            className="flex flex-col gap-3 p-4 rounded-lg bg-white/5 border border-white/5 hover:border-blue-500/30 hover:shadow-lg hover:shadow-blue-500/5 transition-all group"
                           >
-                            <ArrowUpRight size={18} />
-                          </Link>
-                        </div>
-                      ))}
+                            <div className="flex items-start justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shrink-0" />
+                                <div>
+                                  <h4 className="font-bold text-white group-hover:text-blue-400 transition-colors">
+                                    {t.name}
+                                  </h4>
+                                  <span className="text-xs text-gray-400 flex items-center gap-1.5">
+                                    <Gamepad2 size={12} />
+                                    {t.game?.name}
+                                  </span>
+                                </div>
+                              </div>
+                              <Link
+                                to={`/tournaments/${t.id}`}
+                                className="p-2 rounded-lg bg-white/5 hover:bg-blue-500/20 text-gray-400 hover:text-blue-400 transition-colors"
+                              >
+                                <ArrowUpRight size={18} />
+                              </Link>
+                            </div>
+
+                            {/* Progress & Info */}
+                            <div className="space-y-1.5">
+                              <div className="flex justify-between text-xs text-gray-500">
+                                <span>Résztvevők</span>
+                                <span className="text-white font-mono">
+                                  {filled} / {max}
+                                </span>
+                              </div>
+                              <div className="h-1.5 w-full bg-black/50 rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-blue-500 rounded-full transition-all duration-1000"
+                                  style={{ width: `${progress}%` }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center py-12 text-muted-foreground bg-white/5 rounded-lg border border-white/5 border-dashed">
-                    <Trophy size={32} className="mb-2 opacity-50" />
-                    <p>Nincs aktív verseny</p>
+                  <div className="h-full flex flex-col items-center justify-center py-12 text-muted-foreground bg-white/5 rounded-lg border border-white/5 border-dashed">
+                    <Trophy size={32} className="mb-2 opacity-30" />
+                    <p className="text-sm">Nincs aktív verseny</p>
                   </div>
                 )}
               </div>

@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import { logSystemActivity } from '../services/logService.js';
 import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest, getHighestRole } from '../middleware/auth.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
@@ -45,7 +46,7 @@ authRouter.post(
             update: {
                 email: userEmail,
                 username,
-                displayName: name || username,
+                // displayName: name || username, // Don't overwrite display name on sync, allow user to change it locally
                 ...roleUpdate,
             },
             create: {
@@ -56,6 +57,19 @@ authRouter.post(
                 role, // Set role from Keycloak on creation
             },
         });
+
+        // Check if we logged a login recently (throttle to prevent spam from frontend re-renders)
+        const recentLog = await prisma.log.findFirst({
+            where: {
+                userId: user.id,
+                type: 'LOGIN',
+                createdAt: { gt: new Date(Date.now() - 10 * 1000) } // 10 seconds
+            }
+        });
+
+        if (!recentLog) {
+            await logSystemActivity('LOGIN', `User ${user.username} logged in via Sync`, { userId: user.id });
+        }
 
         res.json({ success: true, data: user });
     })

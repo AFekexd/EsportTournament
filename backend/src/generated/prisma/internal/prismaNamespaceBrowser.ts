@@ -347,6 +347,7 @@ export const LogScalarFieldEnum = {
   id: 'id',
   type: 'type',
   message: 'message',
+  metadata: 'metadata',
   userId: 'userId',
   adminId: 'adminId',
   computerId: 'computerId',

@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import { logSystemActivity } from '../services/logService.js';
 import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest, requireRole, optionalAuth } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
@@ -117,6 +118,9 @@ tournamentsRouter.post(
             include: { game: true },
         });
 
+        // Log creation
+        await logSystemActivity('TOURNAMENT_CREATE', `Tournament '${tournament.name}' created by ${user.username}`, { adminId: user.id });
+
         // Notify all users (async, don't await)
         notificationService.notifyAllUsersNewTournament(tournament)
             .catch(err => console.error('Failed to broadcast tournament notification:', err));
@@ -215,6 +219,9 @@ tournamentsRouter.delete(
             where: { id: req.params.id },
         });
 
+        // Log deletion
+        await logSystemActivity('TOURNAMENT_DELETE', `Tournament ID ${req.params.id} deleted by ${user.username}`, { adminId: user.id });
+
         res.json({ success: true, message: 'Tournament deleted' });
     })
 );
@@ -297,6 +304,9 @@ tournamentsRouter.patch(
                 _count: { select: { entries: true } },
             },
         });
+
+        // Log update
+        await logSystemActivity('TOURNAMENT_UPDATE', `Tournament '${updated.name}' updated by ${user.username}`, { adminId: user.id });
 
         res.json({ success: true, data: updated });
     })

@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import { logSystemActivity } from '../services/logService.js';
 import crypto from 'crypto';
 import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest, optionalAuth } from '../middleware/auth.js';
@@ -50,6 +51,8 @@ bookingsRouter.post(
             },
         });
 
+        await logSystemActivity('COMPUTER_CREATE', `Computer ${computer.name} created by ${user.username}`, { adminId: user.id, computerId: computer.id });
+
         res.status(201).json({ success: true, data: computer });
     })
 );
@@ -70,6 +73,8 @@ bookingsRouter.delete(
         await prisma.computer.delete({
             where: { id: req.params.id },
         });
+
+        await logSystemActivity('COMPUTER_DELETE', `Computer ID ${req.params.id} deleted by ${user.username}`, { adminId: user.id });
 
         res.json({ success: true, message: 'Computer deleted' });
     })
@@ -165,6 +170,8 @@ bookingsRouter.post(
             data: { dayOfWeek, startHour, endHour },
         });
 
+        await logSystemActivity('SCHEDULE_CREATE', `Booking schedule created by ${user.username}`, { adminId: user.id });
+
         res.status(201).json({ success: true, data: schedule });
     })
 );
@@ -185,6 +192,8 @@ bookingsRouter.delete(
         await prisma.bookingSchedule.delete({
             where: { id: req.params.id },
         });
+
+        await logSystemActivity('SCHEDULE_DELETE', `Booking schedule ID ${req.params.id} deleted by ${user.username}`, { adminId: user.id });
 
         res.json({ success: true, message: 'Schedule deleted' });
     })
@@ -330,6 +339,12 @@ bookingsRouter.post(
             },
         });
 
+        await logSystemActivity(
+            'BOOKING_CREATE',
+            `Booking created for ${booking.computer?.name} on ${booking.date.toISOString().split('T')[0]} (${booking.startTime.toISOString().split('T')[1].substring(0,5)}-${booking.endTime.toISOString().split('T')[1].substring(0,5)}) by ${user.username}`,
+            { userId: user.id, computerId: computerId }
+        );
+
         // Send notification
         await BookingNotificationService.createdBooking(booking);
 
@@ -366,6 +381,12 @@ bookingsRouter.delete(
         await prisma.booking.delete({
             where: { id: req.params.id },
         });
+
+        await logSystemActivity(
+            'BOOKING_DELETE',
+            `Booking for computer ${booking.computerId} on ${booking.date.toISOString().split('T')[0]} cancelled/deleted by ${user.username}`,
+            { userId: user.id }
+        );
 
         // Check waitlist and notify users
         await BookingNotificationService.checkWaitlist(booking.computerId, booking.startTime, booking.endTime);
@@ -430,6 +451,8 @@ bookingsRouter.post(
                 user: { select: { id: true, username: true, displayName: true } },
             },
         });
+
+        await logSystemActivity('BOOKING_CHECKIN', `User ${updatedBooking.user.username} checked in via code (Admin)`, { userId: updatedBooking.userId, computerId: updatedBooking.computerId });
 
         res.json({ success: true, data: updatedBooking });
     })
@@ -609,6 +632,8 @@ bookingsRouter.post(
             },
         });
 
+        await logSystemActivity('BOOKING_CHECKIN', `User ${updatedBooking.user.username} checked in via QR`, { userId: updatedBooking.userId, computerId: updatedBooking.computerId });
+
         res.json({ success: true, data: updatedBooking });
     })
 );
@@ -700,6 +725,8 @@ bookingsRouter.post(
             },
         });
 
+        await logSystemActivity('WAITLIST_JOIN', `User ${user.username} joined waitlist for computer ${computerId}`, { userId: user.id, computerId });
+
         res.status(201).json({ success: true, data: waitlistEntry });
     })
 );
@@ -732,6 +759,8 @@ bookingsRouter.delete(
         await prisma.waitlist.delete({
             where: { id: req.params.id },
         });
+
+        await logSystemActivity('WAITLIST_LEAVE', `User ${user.username} removed from waitlist`, { userId: user.id });
 
         res.json({ success: true, message: 'Removed from waitlist' });
     })

@@ -48,6 +48,7 @@ export type LogCountAggregateOutputType = {
   id: number
   type: number
   message: number
+  metadata: number
   userId: number
   adminId: number
   computerId: number
@@ -80,6 +81,7 @@ export type LogCountAggregateInputType = {
   id?: true
   type?: true
   message?: true
+  metadata?: true
   userId?: true
   adminId?: true
   computerId?: true
@@ -163,6 +165,7 @@ export type LogGroupByOutputType = {
   id: string
   type: string
   message: string | null
+  metadata: runtime.JsonValue | null
   userId: string | null
   adminId: string | null
   computerId: string | null
@@ -194,6 +197,7 @@ export type LogWhereInput = {
   id?: Prisma.StringFilter<"Log"> | string
   type?: Prisma.StringFilter<"Log"> | string
   message?: Prisma.StringNullableFilter<"Log"> | string | null
+  metadata?: Prisma.JsonNullableFilter<"Log">
   userId?: Prisma.StringNullableFilter<"Log"> | string | null
   adminId?: Prisma.StringNullableFilter<"Log"> | string | null
   computerId?: Prisma.StringNullableFilter<"Log"> | string | null
@@ -207,6 +211,7 @@ export type LogOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   type?: Prisma.SortOrder
   message?: Prisma.SortOrderInput | Prisma.SortOrder
+  metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   adminId?: Prisma.SortOrderInput | Prisma.SortOrder
   computerId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -223,6 +228,7 @@ export type LogWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.LogWhereInput | Prisma.LogWhereInput[]
   type?: Prisma.StringFilter<"Log"> | string
   message?: Prisma.StringNullableFilter<"Log"> | string | null
+  metadata?: Prisma.JsonNullableFilter<"Log">
   userId?: Prisma.StringNullableFilter<"Log"> | string | null
   adminId?: Prisma.StringNullableFilter<"Log"> | string | null
   computerId?: Prisma.StringNullableFilter<"Log"> | string | null
@@ -236,6 +242,7 @@ export type LogOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   type?: Prisma.SortOrder
   message?: Prisma.SortOrderInput | Prisma.SortOrder
+  metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   adminId?: Prisma.SortOrderInput | Prisma.SortOrder
   computerId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -252,6 +259,7 @@ export type LogScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Log"> | string
   type?: Prisma.StringWithAggregatesFilter<"Log"> | string
   message?: Prisma.StringNullableWithAggregatesFilter<"Log"> | string | null
+  metadata?: Prisma.JsonNullableWithAggregatesFilter<"Log">
   userId?: Prisma.StringNullableWithAggregatesFilter<"Log"> | string | null
   adminId?: Prisma.StringNullableWithAggregatesFilter<"Log"> | string | null
   computerId?: Prisma.StringNullableWithAggregatesFilter<"Log"> | string | null
@@ -262,6 +270,7 @@ export type LogCreateInput = {
   id?: string
   type: string
   message?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutLogsInput
   admin?: Prisma.UserCreateNestedOneWithoutAdminLogsInput
@@ -272,6 +281,7 @@ export type LogUncheckedCreateInput = {
   id?: string
   type: string
   message?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   userId?: string | null
   adminId?: string | null
   computerId?: string | null
@@ -282,6 +292,7 @@ export type LogUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutLogsNestedInput
   admin?: Prisma.UserUpdateOneWithoutAdminLogsNestedInput
@@ -292,6 +303,7 @@ export type LogUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   computerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -302,6 +314,7 @@ export type LogCreateManyInput = {
   id?: string
   type: string
   message?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   userId?: string | null
   adminId?: string | null
   computerId?: string | null
@@ -312,6 +325,7 @@ export type LogUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -319,6 +333,7 @@ export type LogUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   computerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -339,6 +354,7 @@ export type LogCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   type?: Prisma.SortOrder
   message?: Prisma.SortOrder
+  metadata?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   adminId?: Prisma.SortOrder
   computerId?: Prisma.SortOrder
@@ -495,6 +511,7 @@ export type LogCreateWithoutUserInput = {
   id?: string
   type: string
   message?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   admin?: Prisma.UserCreateNestedOneWithoutAdminLogsInput
   computer?: Prisma.ComputerCreateNestedOneWithoutLogsInput
@@ -504,6 +521,7 @@ export type LogUncheckedCreateWithoutUserInput = {
   id?: string
   type: string
   message?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   adminId?: string | null
   computerId?: string | null
   createdAt?: Date | string
@@ -523,6 +541,7 @@ export type LogCreateWithoutAdminInput = {
   id?: string
   type: string
   message?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutLogsInput
   computer?: Prisma.ComputerCreateNestedOneWithoutLogsInput
@@ -532,6 +551,7 @@ export type LogUncheckedCreateWithoutAdminInput = {
   id?: string
   type: string
   message?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   userId?: string | null
   computerId?: string | null
   createdAt?: Date | string
@@ -570,6 +590,7 @@ export type LogScalarWhereInput = {
   id?: Prisma.StringFilter<"Log"> | string
   type?: Prisma.StringFilter<"Log"> | string
   message?: Prisma.StringNullableFilter<"Log"> | string | null
+  metadata?: Prisma.JsonNullableFilter<"Log">
   userId?: Prisma.StringNullableFilter<"Log"> | string | null
   adminId?: Prisma.StringNullableFilter<"Log"> | string | null
   computerId?: Prisma.StringNullableFilter<"Log"> | string | null
@@ -596,6 +617,7 @@ export type LogCreateWithoutComputerInput = {
   id?: string
   type: string
   message?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutLogsInput
   admin?: Prisma.UserCreateNestedOneWithoutAdminLogsInput
@@ -605,6 +627,7 @@ export type LogUncheckedCreateWithoutComputerInput = {
   id?: string
   type: string
   message?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   userId?: string | null
   adminId?: string | null
   createdAt?: Date | string
@@ -640,6 +663,7 @@ export type LogCreateManyUserInput = {
   id?: string
   type: string
   message?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   adminId?: string | null
   computerId?: string | null
   createdAt?: Date | string
@@ -649,6 +673,7 @@ export type LogCreateManyAdminInput = {
   id?: string
   type: string
   message?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   userId?: string | null
   computerId?: string | null
   createdAt?: Date | string
@@ -658,6 +683,7 @@ export type LogUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   admin?: Prisma.UserUpdateOneWithoutAdminLogsNestedInput
   computer?: Prisma.ComputerUpdateOneWithoutLogsNestedInput
@@ -667,6 +693,7 @@ export type LogUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   computerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -676,6 +703,7 @@ export type LogUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   computerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -685,6 +713,7 @@ export type LogUpdateWithoutAdminInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutLogsNestedInput
   computer?: Prisma.ComputerUpdateOneWithoutLogsNestedInput
@@ -694,6 +723,7 @@ export type LogUncheckedUpdateWithoutAdminInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   computerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -703,6 +733,7 @@ export type LogUncheckedUpdateManyWithoutAdminInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   computerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -712,6 +743,7 @@ export type LogCreateManyComputerInput = {
   id?: string
   type: string
   message?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   userId?: string | null
   adminId?: string | null
   createdAt?: Date | string
@@ -721,6 +753,7 @@ export type LogUpdateWithoutComputerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutLogsNestedInput
   admin?: Prisma.UserUpdateOneWithoutAdminLogsNestedInput
@@ -730,6 +763,7 @@ export type LogUncheckedUpdateWithoutComputerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -739,6 +773,7 @@ export type LogUncheckedUpdateManyWithoutComputerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -750,6 +785,7 @@ export type LogSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   id?: boolean
   type?: boolean
   message?: boolean
+  metadata?: boolean
   userId?: boolean
   adminId?: boolean
   computerId?: boolean
@@ -763,6 +799,7 @@ export type LogSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   id?: boolean
   type?: boolean
   message?: boolean
+  metadata?: boolean
   userId?: boolean
   adminId?: boolean
   computerId?: boolean
@@ -776,6 +813,7 @@ export type LogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   id?: boolean
   type?: boolean
   message?: boolean
+  metadata?: boolean
   userId?: boolean
   adminId?: boolean
   computerId?: boolean
@@ -789,13 +827,14 @@ export type LogSelectScalar = {
   id?: boolean
   type?: boolean
   message?: boolean
+  metadata?: boolean
   userId?: boolean
   adminId?: boolean
   computerId?: boolean
   createdAt?: boolean
 }
 
-export type LogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "message" | "userId" | "adminId" | "computerId" | "createdAt", ExtArgs["result"]["log"]>
+export type LogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "message" | "metadata" | "userId" | "adminId" | "computerId" | "createdAt", ExtArgs["result"]["log"]>
 export type LogInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Log$userArgs<ExtArgs>
   admin?: boolean | Prisma.Log$adminArgs<ExtArgs>
@@ -823,6 +862,7 @@ export type $LogPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     id: string
     type: string
     message: string | null
+    metadata: runtime.JsonValue | null
     userId: string | null
     adminId: string | null
     computerId: string | null
@@ -1256,6 +1296,7 @@ export interface LogFieldRefs {
   readonly id: Prisma.FieldRef<"Log", 'String'>
   readonly type: Prisma.FieldRef<"Log", 'String'>
   readonly message: Prisma.FieldRef<"Log", 'String'>
+  readonly metadata: Prisma.FieldRef<"Log", 'Json'>
   readonly userId: Prisma.FieldRef<"Log", 'String'>
   readonly adminId: Prisma.FieldRef<"Log", 'String'>
   readonly computerId: Prisma.FieldRef<"Log", 'String'>

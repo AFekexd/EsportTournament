@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import { logSystemActivity } from '../services/logService.js';
 import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
@@ -136,6 +137,25 @@ matchesRouter.patch(
                 awayUser: true,
             },
         });
+
+        // Log match result update
+        const p1 = match.homeUser?.username || match.homeTeam?.name || 'Home';
+        const p2 = match.awayUser?.username || match.awayTeam?.name || 'Away';
+        await logSystemActivity(
+            'MATCH_RESULT_UPDATE',
+            `Match ${p1} vs ${p2} result updated to ${homeScore}-${awayScore} by ${user.username}`,
+            { 
+                userId: user.id,
+                metadata: {
+                    matchId: match.id,
+                    homeTeam: p1,
+                    awayTeam: p2,
+                    homeScore,
+                    awayScore,
+                    winner: actualWinnerId || actualWinnerUserId || 'Draw/None'
+                }
+            } // logged by organizer/admin (user.id)
+        );
 
         // Update ELO
         if (isSoloTournament && actualWinnerUserId && match.homeUser && match.awayUser) {

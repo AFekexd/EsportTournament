@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import { logSystemActivity } from '../services/logService.js';
 import { randomBytes } from 'crypto';
 import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest, optionalAuth } from '../middleware/auth.js';
@@ -175,6 +176,9 @@ teamsRouter.post(
             },
         });
 
+        // Log team creation
+        await logSystemActivity('TEAM_CREATE', `Team '${team.name}' created by ${user.username}`, { userId: user.id });
+
         res.status(201).json({ success: true, data: team });
     })
 );
@@ -256,6 +260,29 @@ teamsRouter.patch(
             },
         });
 
+        // Log team update
+        // Log team update
+        const changes: string[] = [];
+        if (name) changes.push(`Name ('${name}')`);
+        if (description !== undefined) changes.push('Description');
+        if (processedLogoUrl !== undefined) changes.push('Logo');
+
+        await logSystemActivity(
+            'TEAM_UPDATE', 
+            `Team '${updatedTeam.name}' updated by ${user.username}. Changes: ${changes.join(', ')}`, 
+            { 
+                userId: user.id,
+                metadata: {
+                    changes,
+                    updatedFields: {
+                        ...(name && { name }),
+                        ...(description !== undefined && { description }),
+                        ...(processedLogoUrl !== undefined && { logoUrl: 'updated' })
+                    }
+                }
+            }
+        );
+
         res.json({ success: true, data: updatedTeam });
     })
 );
@@ -287,6 +314,9 @@ teamsRouter.delete(
         }
 
         await prisma.team.delete({ where: { id: req.params.id } });
+
+        // Log team deletion
+        await logSystemActivity('TEAM_DELETE', `Team '${team.name}' deleted by ${user.username}`, { userId: user.id });
 
         res.json({ success: true, message: 'Team deleted' });
     })
@@ -340,6 +370,9 @@ teamsRouter.post(
             },
         });
 
+        // Log join
+        await logSystemActivity('TEAM_JOIN', `User ${user.username} joined team '${team.name}'`, { userId: user.id });
+
         res.status(201).json({ success: true, data: member });
     })
 );
@@ -373,6 +406,9 @@ teamsRouter.post(
         await prisma.teamMember.delete({
             where: { userId_teamId: { userId: user.id, teamId: team.id } },
         });
+
+        // Log leave
+        await logSystemActivity('TEAM_LEAVE', `User ${user.username} left team '${team.name}'`, { userId: user.id });
 
         res.json({ success: true, message: 'Left team successfully' });
     })
@@ -412,6 +448,9 @@ teamsRouter.delete(
             where: { userId_teamId: { userId: req.params.memberId, teamId: team.id } },
         });
 
+        // Log kick
+        await logSystemActivity('TEAM_KICK', `Member removed from team '${team.name}' by ${user.username}`, { userId: user.id });
+
         res.json({ success: true, message: 'Member removed' });
     })
 );
@@ -438,6 +477,9 @@ teamsRouter.post(
             where: { id: req.params.id },
             data: { joinCode: generateJoinCode() },
         });
+
+        // Log code regen
+        await logSystemActivity('TEAM_CODE_UPDATE', `Join code regenerated for team '${team.name}' by ${req.user!.sub}`, { userId: team.ownerId });
 
         res.json({ success: true, data: { joinCode: updatedTeam.joinCode } });
     })

@@ -4,6 +4,7 @@ import { authenticate, AuthenticatedRequest, requireRole } from '../middleware/a
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { processImage, isBase64DataUrl, validateImageSize } from '../utils/imageProcessor.js';
 import { notificationService } from '../services/notificationService.js';
+import { logSystemActivity } from '../services/logService.js';
 
 export const gamesRouter = Router();
 
@@ -63,6 +64,9 @@ gamesRouter.post(
                 teamSize: teamSize || 1, // Default to 1v1
             },
         });
+
+        // Log capability
+        await logSystemActivity('GAME_CREATE', `Game '${game.name}' created by ${user.username}`, { adminId: user.id });
 
         // Notify all users about the new game
         notificationService.notifyAllUsersNewGame(game)
@@ -135,6 +139,9 @@ gamesRouter.patch(
             },
         });
 
+        // Log update
+        await logSystemActivity('GAME_UPDATE', `Game '${game.name}' updated by ${user.username}`, { adminId: user.id });
+
         res.json({ success: true, data: game });
     })
 );
@@ -162,6 +169,9 @@ gamesRouter.delete(
         }
 
         await prisma.game.delete({ where: { id: req.params.id } });
+
+        // Log deletion
+        await logSystemActivity('GAME_DELETE', `Game ID ${req.params.id} deleted by ${user.username}`, { adminId: user.id });
 
         res.json({ success: true, message: 'Game deleted' });
     })
