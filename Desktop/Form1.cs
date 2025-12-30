@@ -158,8 +158,16 @@ namespace EsportManager
             try
             {
                 // Check status
+                // Check status
                 string machineName = Environment.MachineName;
-                var response = await _httpClient.GetAsync($"{Services.ConfigService.Current.Api.BaseUrl}/kiosk/status/{machineName}");
+                string version = "0.0.0";
+                string versionFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "version.txt");
+                if (File.Exists(versionFile))
+                {
+                     version = File.ReadAllText(versionFile).Trim();
+                }
+
+                var response = await _httpClient.GetAsync($"{Services.ConfigService.Current.Api.BaseUrl}/kiosk/status/{machineName}?version={version}");
                 
                 string content = await response.Content.ReadAsStringAsync();
                 bool needsRegistration = false;
@@ -479,10 +487,25 @@ namespace EsportManager
                 TextAlign = ContentAlignment.MiddleCenter,
                 Font = new Font("Segoe UI", 9, FontStyle.Regular)
             };
+            
+            // Show version on UI check
+             string ver = "v0.0.0";
+             if (File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "version.txt")))
+                 ver = "v" + File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "version.txt")).Trim();
+            
+             Label versionLabel = new Label
+             {
+                 Text = ver,
+                 ForeColor = Color.Gray,
+                 Location = new Point(30, 310),
+                 Size = new Size(340, 20),
+                 TextAlign = ContentAlignment.MiddleCenter,
+                 Font = new Font("Segoe UI", 8, FontStyle.Regular)
+             };
 
             _loginPanel.Controls.AddRange(new Control[] {
                 titleLabel, usernameLabel, modernUserBox,
-                passwordLabel, modernPassBox, modernLoginBtn, _statusLabel
+                passwordLabel, modernPassBox, modernLoginBtn, _statusLabel, versionLabel
             });
 
             this.Controls.Add(_loginPanel);

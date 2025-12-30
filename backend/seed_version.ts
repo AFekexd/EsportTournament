@@ -1,0 +1,1 @@
+import { PrismaClient } from '@prisma/client'; const prisma = new PrismaClient(); async function main() { const pc = await prisma.computer.findFirst(); if(pc) { await prisma.computer.update({ where: { id: pc.id }, data: { clientVersion: '1.0.0-TEST' } }); console.log('Updated ' + pc.name); } else { console.log('No PC found'); } } main();

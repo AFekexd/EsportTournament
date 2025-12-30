@@ -365,6 +365,7 @@ model Computer {
   status          ComputerStatus  @default(AVAILABLE)
   specs           Json?           // { cpu, gpu, ram, monitor, storage }
   installedGames  String[]        // Telepített játékok listája
+  clientVersion   String?         // The current version running on this machine (e.g. "1.0.0")
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
   
@@ -453,4 +454,13 @@ model BookingSchedule {
   isActive    Boolean   @default(true)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+}
+
+// Kiosk Client Version Management
+model ClientVersion {
+  id          String   @id @default(uuid())
+  version     String   @unique // e.g., "1.0.1"
+  fileData    Bytes    // The binary content of the update ZIP
+  isActive    Boolean  @default(false) // Only one version should be active (latest)
+  createdAt   DateTime @default(now())
 }

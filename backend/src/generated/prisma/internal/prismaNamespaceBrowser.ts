@@ -69,7 +69,8 @@ export const ModelName = {
   Session: 'Session',
   Log: 'Log',
   Waitlist: 'Waitlist',
-  BookingSchedule: 'BookingSchedule'
+  BookingSchedule: 'BookingSchedule',
+  ClientVersion: 'ClientVersion'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -306,6 +307,7 @@ export const ComputerScalarFieldEnum = {
   status: 'status',
   specs: 'specs',
   installedGames: 'installedGames',
+  clientVersion: 'clientVersion',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -382,6 +384,17 @@ export const BookingScheduleScalarFieldEnum = {
 } as const
 
 export type BookingScheduleScalarFieldEnum = (typeof BookingScheduleScalarFieldEnum)[keyof typeof BookingScheduleScalarFieldEnum]
+
+
+export const ClientVersionScalarFieldEnum = {
+  id: 'id',
+  version: 'version',
+  fileData: 'fileData',
+  isActive: 'isActive',
+  createdAt: 'createdAt'
+} as const
+
+export type ClientVersionScalarFieldEnum = (typeof ClientVersionScalarFieldEnum)[keyof typeof ClientVersionScalarFieldEnum]
 
 
 export const SortOrder = {

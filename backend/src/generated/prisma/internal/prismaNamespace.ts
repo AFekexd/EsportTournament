@@ -402,7 +402,8 @@ export const ModelName = {
   Session: 'Session',
   Log: 'Log',
   Waitlist: 'Waitlist',
-  BookingSchedule: 'BookingSchedule'
+  BookingSchedule: 'BookingSchedule',
+  ClientVersion: 'ClientVersion'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -418,7 +419,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "team" | "teamMember" | "game" | "tournament" | "tournamentEntry" | "match" | "gameStats" | "rank" | "userRank" | "notification" | "event" | "discordSettings" | "computer" | "booking" | "session" | "log" | "waitlist" | "bookingSchedule"
+    modelProps: "user" | "team" | "teamMember" | "game" | "tournament" | "tournamentEntry" | "match" | "gameStats" | "rank" | "userRank" | "notification" | "event" | "discordSettings" | "computer" | "booking" | "session" | "log" | "waitlist" | "bookingSchedule" | "clientVersion"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1828,6 +1829,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ClientVersion: {
+      payload: Prisma.$ClientVersionPayload<ExtArgs>
+      fields: Prisma.ClientVersionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ClientVersionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClientVersionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ClientVersionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClientVersionPayload>
+        }
+        findFirst: {
+          args: Prisma.ClientVersionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClientVersionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ClientVersionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClientVersionPayload>
+        }
+        findMany: {
+          args: Prisma.ClientVersionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClientVersionPayload>[]
+        }
+        create: {
+          args: Prisma.ClientVersionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClientVersionPayload>
+        }
+        createMany: {
+          args: Prisma.ClientVersionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ClientVersionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClientVersionPayload>[]
+        }
+        delete: {
+          args: Prisma.ClientVersionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClientVersionPayload>
+        }
+        update: {
+          args: Prisma.ClientVersionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClientVersionPayload>
+        }
+        deleteMany: {
+          args: Prisma.ClientVersionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ClientVersionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ClientVersionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClientVersionPayload>[]
+        }
+        upsert: {
+          args: Prisma.ClientVersionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClientVersionPayload>
+        }
+        aggregate: {
+          args: Prisma.ClientVersionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateClientVersion>
+        }
+        groupBy: {
+          args: Prisma.ClientVersionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClientVersionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ClientVersionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClientVersionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2085,6 +2160,7 @@ export const ComputerScalarFieldEnum = {
   status: 'status',
   specs: 'specs',
   installedGames: 'installedGames',
+  clientVersion: 'clientVersion',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2161,6 +2237,17 @@ export const BookingScheduleScalarFieldEnum = {
 } as const
 
 export type BookingScheduleScalarFieldEnum = (typeof BookingScheduleScalarFieldEnum)[keyof typeof BookingScheduleScalarFieldEnum]
+
+
+export const ClientVersionScalarFieldEnum = {
+  id: 'id',
+  version: 'version',
+  fileData: 'fileData',
+  isActive: 'isActive',
+  createdAt: 'createdAt'
+} as const
+
+export type ClientVersionScalarFieldEnum = (typeof ClientVersionScalarFieldEnum)[keyof typeof ClientVersionScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2400,6 +2487,20 @@ export type ListEnumComputerStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
+ * Reference to a field of type 'Bytes'
+ */
+export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
+    
+
+
+/**
+ * Reference to a field of type 'Bytes[]'
+ */
+export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -2526,6 +2627,7 @@ export type GlobalOmitConfig = {
   log?: Prisma.LogOmit
   waitlist?: Prisma.WaitlistOmit
   bookingSchedule?: Prisma.BookingScheduleOmit
+  clientVersion?: Prisma.ClientVersionOmit
 }
 
 /* Types for Logging */

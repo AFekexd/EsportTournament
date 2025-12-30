@@ -29,6 +29,7 @@ import { setIo } from './services/socket.js';
 // Kiosk Routes
 import { kioskRouter } from './routes/kiosk.js';
 import { adminKioskRouter } from './routes/admin-kiosk.js';
+import { clientUpdateRouter } from './routes/clientUpdate.js';
 
 
 
@@ -101,6 +102,7 @@ app.use('/share', shareRouter);
 // Kiosk & Admin Kiosk Routes
 app.use('/api/kiosk', kioskRouter);
 app.use('/api/admin/kiosk', adminKioskRouter);
+app.use('/api/client/update', clientUpdateRouter);
 
 // Error handler
 app.use(errorHandler);

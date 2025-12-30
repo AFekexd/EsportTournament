@@ -7,7 +7,7 @@ export const kioskRouter = Router();
 
 // Start Session
 kioskRouter.post('/session/start', async (req, res) => {
-    const { username, userId, machineId } = req.body;
+    const { username, userId, machineId, version } = req.body;
     // machineId in request is actually the 'id' (hostname) sent by client
 
     try {
@@ -69,9 +69,18 @@ kioskRouter.post('/session/start', async (req, res) => {
                     name: machineId,
                     hostname: machineId,
                     row: 999,
-                    position: randomPos
+                    position: randomPos,
+                    clientVersion: version // Set initial version
                 }
             });
+        }
+
+        // Update client version if provided and different
+        if (version && machine.clientVersion !== version) {
+             await prisma.computer.update({
+                 where: { id: machine.id },
+                 data: { clientVersion: version }
+             });
         }
 
         // Check if machine is locked
@@ -204,8 +213,10 @@ kioskRouter.post('/session/end', async (req, res) => {
 });
 
 // Get Status (Heartbeat)
+// Accepts optional query param ?version=x.y.z to update DB
 kioskRouter.get('/status/:machineId', async (req, res) => {
     const { machineId } = req.params;
+    const version = req.query.version as string;
 
     try {
         let machine = await prisma.computer.findUnique({ where: { hostname: machineId } });
@@ -215,6 +226,14 @@ kioskRouter.get('/status/:machineId', async (req, res) => {
         if (!machine) {
             res.json({ Locked: false, Message: "Machine not registered" });
             return;
+        }
+
+        // Update version if changed (Fire and forget)
+        if (version && machine.clientVersion !== version) {
+             prisma.computer.update({
+                 where: { id: machine.id },
+                 data: { clientVersion: version }
+             }).catch(e => console.error("Failed to update version", e));
         }
 
         if (machine.isLocked) {

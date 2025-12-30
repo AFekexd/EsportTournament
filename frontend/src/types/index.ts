@@ -224,6 +224,7 @@ export interface Computer {
         storage?: string;
     };
     installedGames: string[];
+    clientVersion?: string;
     createdAt: string;
     updatedAt: string;
 }

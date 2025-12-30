@@ -112,3 +112,8 @@ export type Waitlist = Prisma.WaitlistModel
  * 
  */
 export type BookingSchedule = Prisma.BookingScheduleModel
+/**
+ * Model ClientVersion
+ * 
+ */
+export type ClientVersion = Prisma.ClientVersionModel

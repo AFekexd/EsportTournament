@@ -393,7 +393,7 @@ export function TournamentDetailPage() {
 
         <div className="container mx-auto px-4 h-full relative flex flex-col justify-end py-12 md:pb-12">
           {/* Badges - Desktop: Absolute bottom left */}
-          <div className="hidden md:flex absolute bottom-8 left-4 flex-wrap items-center gap-3 z-10">
+          <div className="hidden md:flex absolute bottom-4 left-4 flex-wrap items-center gap-3 z-10">
             <span
               className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${
                 statusLabels[currentTournament.status]?.class ||
@@ -416,7 +416,7 @@ export function TournamentDetailPage() {
           </div>
 
           <button
-            className="absolute top-8 left-4 flex items-center gap-2 text-gray-400 hover:text-white transition-colors bg-black/30 hover:bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full border border-white/5"
+            className="absolute top-2 md:top-8 left-5 md:left-4 flex items-center gap-2 text-gray-400 hover:text-white transition-colors bg-black/30 hover:bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full border border-white/5"
             onClick={() => navigate("/tournaments")}
           >
             <ArrowLeft size={18} />
@@ -425,10 +425,9 @@ export function TournamentDetailPage() {
 
           <div className="flex flex-col md:flex-row md:items-end gap-8 mt-16 md:mt-0">
             <div className="flex-grow space-y-4">
-              {/* Badges - Mobile: In flow */}
-              <div className="flex md:hidden flex-wrap items-center gap-3 mb-2">
+              <div className="flex md:!hidden flex-wrap items-center gap-3 mb-2">
                 <span
-                  className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${
+                  className={`flex  items-center gap-2 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${
                     statusLabels[currentTournament.status]?.class ||
                     "bg-gray-500/20 text-gray-400 border-gray-500/50"
                   }`}

@@ -46,6 +46,7 @@ export type ComputerMinAggregateOutputType = {
   isLocked: boolean | null
   isCompetitionMode: boolean | null
   status: $Enums.ComputerStatus | null
+  clientVersion: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,6 +61,7 @@ export type ComputerMaxAggregateOutputType = {
   isLocked: boolean | null
   isCompetitionMode: boolean | null
   status: $Enums.ComputerStatus | null
+  clientVersion: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -76,6 +78,7 @@ export type ComputerCountAggregateOutputType = {
   status: number
   specs: number
   installedGames: number
+  clientVersion: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -102,6 +105,7 @@ export type ComputerMinAggregateInputType = {
   isLocked?: true
   isCompetitionMode?: true
   status?: true
+  clientVersion?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -116,6 +120,7 @@ export type ComputerMaxAggregateInputType = {
   isLocked?: true
   isCompetitionMode?: true
   status?: true
+  clientVersion?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -132,6 +137,7 @@ export type ComputerCountAggregateInputType = {
   status?: true
   specs?: true
   installedGames?: true
+  clientVersion?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -235,6 +241,7 @@ export type ComputerGroupByOutputType = {
   status: $Enums.ComputerStatus
   specs: runtime.JsonValue | null
   installedGames: string[]
+  clientVersion: string | null
   createdAt: Date
   updatedAt: Date
   _count: ComputerCountAggregateOutputType | null
@@ -274,6 +281,7 @@ export type ComputerWhereInput = {
   status?: Prisma.EnumComputerStatusFilter<"Computer"> | $Enums.ComputerStatus
   specs?: Prisma.JsonNullableFilter<"Computer">
   installedGames?: Prisma.StringNullableListFilter<"Computer">
+  clientVersion?: Prisma.StringNullableFilter<"Computer"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Computer"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Computer"> | Date | string
   bookings?: Prisma.BookingListRelationFilter
@@ -294,6 +302,7 @@ export type ComputerOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   specs?: Prisma.SortOrderInput | Prisma.SortOrder
   installedGames?: Prisma.SortOrder
+  clientVersion?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   bookings?: Prisma.BookingOrderByRelationAggregateInput
@@ -318,6 +327,7 @@ export type ComputerWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumComputerStatusFilter<"Computer"> | $Enums.ComputerStatus
   specs?: Prisma.JsonNullableFilter<"Computer">
   installedGames?: Prisma.StringNullableListFilter<"Computer">
+  clientVersion?: Prisma.StringNullableFilter<"Computer"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Computer"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Computer"> | Date | string
   bookings?: Prisma.BookingListRelationFilter
@@ -338,6 +348,7 @@ export type ComputerOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   specs?: Prisma.SortOrderInput | Prisma.SortOrder
   installedGames?: Prisma.SortOrder
+  clientVersion?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ComputerCountOrderByAggregateInput
@@ -362,6 +373,7 @@ export type ComputerScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumComputerStatusWithAggregatesFilter<"Computer"> | $Enums.ComputerStatus
   specs?: Prisma.JsonNullableWithAggregatesFilter<"Computer">
   installedGames?: Prisma.StringNullableListFilter<"Computer">
+  clientVersion?: Prisma.StringNullableWithAggregatesFilter<"Computer"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Computer"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Computer"> | Date | string
 }
@@ -378,6 +390,7 @@ export type ComputerCreateInput = {
   status?: $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerCreateinstalledGamesInput | string[]
+  clientVersion?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   bookings?: Prisma.BookingCreateNestedManyWithoutComputerInput
@@ -398,6 +411,7 @@ export type ComputerUncheckedCreateInput = {
   status?: $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerCreateinstalledGamesInput | string[]
+  clientVersion?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutComputerInput
@@ -418,6 +432,7 @@ export type ComputerUpdateInput = {
   status?: Prisma.EnumComputerStatusFieldUpdateOperationsInput | $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerUpdateinstalledGamesInput | string[]
+  clientVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUpdateManyWithoutComputerNestedInput
@@ -438,6 +453,7 @@ export type ComputerUncheckedUpdateInput = {
   status?: Prisma.EnumComputerStatusFieldUpdateOperationsInput | $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerUpdateinstalledGamesInput | string[]
+  clientVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutComputerNestedInput
@@ -458,6 +474,7 @@ export type ComputerCreateManyInput = {
   status?: $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerCreateinstalledGamesInput | string[]
+  clientVersion?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -474,6 +491,7 @@ export type ComputerUpdateManyMutationInput = {
   status?: Prisma.EnumComputerStatusFieldUpdateOperationsInput | $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerUpdateinstalledGamesInput | string[]
+  clientVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -490,6 +508,7 @@ export type ComputerUncheckedUpdateManyInput = {
   status?: Prisma.EnumComputerStatusFieldUpdateOperationsInput | $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerUpdateinstalledGamesInput | string[]
+  clientVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -519,6 +538,7 @@ export type ComputerCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   specs?: Prisma.SortOrder
   installedGames?: Prisma.SortOrder
+  clientVersion?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -538,6 +558,7 @@ export type ComputerMaxOrderByAggregateInput = {
   isLocked?: Prisma.SortOrder
   isCompetitionMode?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  clientVersion?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -552,6 +573,7 @@ export type ComputerMinOrderByAggregateInput = {
   isLocked?: Prisma.SortOrder
   isCompetitionMode?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  clientVersion?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -654,6 +676,7 @@ export type ComputerCreateWithoutBookingsInput = {
   status?: $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerCreateinstalledGamesInput | string[]
+  clientVersion?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutComputerInput
@@ -673,6 +696,7 @@ export type ComputerUncheckedCreateWithoutBookingsInput = {
   status?: $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerCreateinstalledGamesInput | string[]
+  clientVersion?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutComputerInput
@@ -708,6 +732,7 @@ export type ComputerUpdateWithoutBookingsInput = {
   status?: Prisma.EnumComputerStatusFieldUpdateOperationsInput | $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerUpdateinstalledGamesInput | string[]
+  clientVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   waitlistEntries?: Prisma.WaitlistUpdateManyWithoutComputerNestedInput
@@ -727,6 +752,7 @@ export type ComputerUncheckedUpdateWithoutBookingsInput = {
   status?: Prisma.EnumComputerStatusFieldUpdateOperationsInput | $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerUpdateinstalledGamesInput | string[]
+  clientVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutComputerNestedInput
@@ -746,6 +772,7 @@ export type ComputerCreateWithoutSessionsInput = {
   status?: $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerCreateinstalledGamesInput | string[]
+  clientVersion?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   bookings?: Prisma.BookingCreateNestedManyWithoutComputerInput
@@ -765,6 +792,7 @@ export type ComputerUncheckedCreateWithoutSessionsInput = {
   status?: $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerCreateinstalledGamesInput | string[]
+  clientVersion?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutComputerInput
@@ -800,6 +828,7 @@ export type ComputerUpdateWithoutSessionsInput = {
   status?: Prisma.EnumComputerStatusFieldUpdateOperationsInput | $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerUpdateinstalledGamesInput | string[]
+  clientVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUpdateManyWithoutComputerNestedInput
@@ -819,6 +848,7 @@ export type ComputerUncheckedUpdateWithoutSessionsInput = {
   status?: Prisma.EnumComputerStatusFieldUpdateOperationsInput | $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerUpdateinstalledGamesInput | string[]
+  clientVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutComputerNestedInput
@@ -838,6 +868,7 @@ export type ComputerCreateWithoutLogsInput = {
   status?: $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerCreateinstalledGamesInput | string[]
+  clientVersion?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   bookings?: Prisma.BookingCreateNestedManyWithoutComputerInput
@@ -857,6 +888,7 @@ export type ComputerUncheckedCreateWithoutLogsInput = {
   status?: $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerCreateinstalledGamesInput | string[]
+  clientVersion?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutComputerInput
@@ -892,6 +924,7 @@ export type ComputerUpdateWithoutLogsInput = {
   status?: Prisma.EnumComputerStatusFieldUpdateOperationsInput | $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerUpdateinstalledGamesInput | string[]
+  clientVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUpdateManyWithoutComputerNestedInput
@@ -911,6 +944,7 @@ export type ComputerUncheckedUpdateWithoutLogsInput = {
   status?: Prisma.EnumComputerStatusFieldUpdateOperationsInput | $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerUpdateinstalledGamesInput | string[]
+  clientVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutComputerNestedInput
@@ -930,6 +964,7 @@ export type ComputerCreateWithoutWaitlistEntriesInput = {
   status?: $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerCreateinstalledGamesInput | string[]
+  clientVersion?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   bookings?: Prisma.BookingCreateNestedManyWithoutComputerInput
@@ -949,6 +984,7 @@ export type ComputerUncheckedCreateWithoutWaitlistEntriesInput = {
   status?: $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerCreateinstalledGamesInput | string[]
+  clientVersion?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutComputerInput
@@ -984,6 +1020,7 @@ export type ComputerUpdateWithoutWaitlistEntriesInput = {
   status?: Prisma.EnumComputerStatusFieldUpdateOperationsInput | $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerUpdateinstalledGamesInput | string[]
+  clientVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUpdateManyWithoutComputerNestedInput
@@ -1003,6 +1040,7 @@ export type ComputerUncheckedUpdateWithoutWaitlistEntriesInput = {
   status?: Prisma.EnumComputerStatusFieldUpdateOperationsInput | $Enums.ComputerStatus
   specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   installedGames?: Prisma.ComputerUpdateinstalledGamesInput | string[]
+  clientVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutComputerNestedInput
@@ -1080,6 +1118,7 @@ export type ComputerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   status?: boolean
   specs?: boolean
   installedGames?: boolean
+  clientVersion?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   bookings?: boolean | Prisma.Computer$bookingsArgs<ExtArgs>
@@ -1101,6 +1140,7 @@ export type ComputerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   status?: boolean
   specs?: boolean
   installedGames?: boolean
+  clientVersion?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["computer"]>
@@ -1117,6 +1157,7 @@ export type ComputerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   status?: boolean
   specs?: boolean
   installedGames?: boolean
+  clientVersion?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["computer"]>
@@ -1133,11 +1174,12 @@ export type ComputerSelectScalar = {
   status?: boolean
   specs?: boolean
   installedGames?: boolean
+  clientVersion?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ComputerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "hostname" | "row" | "position" | "isActive" | "isLocked" | "isCompetitionMode" | "status" | "specs" | "installedGames" | "createdAt" | "updatedAt", ExtArgs["result"]["computer"]>
+export type ComputerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "hostname" | "row" | "position" | "isActive" | "isLocked" | "isCompetitionMode" | "status" | "specs" | "installedGames" | "clientVersion" | "createdAt" | "updatedAt", ExtArgs["result"]["computer"]>
 export type ComputerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   bookings?: boolean | Prisma.Computer$bookingsArgs<ExtArgs>
   waitlistEntries?: boolean | Prisma.Computer$waitlistEntriesArgs<ExtArgs>
@@ -1168,6 +1210,7 @@ export type $ComputerPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     status: $Enums.ComputerStatus
     specs: runtime.JsonValue | null
     installedGames: string[]
+    clientVersion: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["computer"]>
@@ -1608,6 +1651,7 @@ export interface ComputerFieldRefs {
   readonly status: Prisma.FieldRef<"Computer", 'ComputerStatus'>
   readonly specs: Prisma.FieldRef<"Computer", 'Json'>
   readonly installedGames: Prisma.FieldRef<"Computer", 'String[]'>
+  readonly clientVersion: Prisma.FieldRef<"Computer", 'String'>
   readonly createdAt: Prisma.FieldRef<"Computer", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Computer", 'DateTime'>
 }
