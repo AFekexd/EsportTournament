@@ -18,6 +18,8 @@ import {
   Trash2,
   X,
   LogOut,
+  ScrollText,
+  ArrowRight,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import { useAuth } from "../hooks/useAuth";
@@ -38,6 +40,7 @@ import { TournamentBracket, MatchEditModal } from "../components/tournament";
 import type { Match } from "../types";
 import { Button } from "@/components/ui/button";
 import { ConfirmationModal } from "../components/common/ConfirmationModal";
+import { RuleAcceptanceModal } from "../components/common/RuleAcceptanceModal";
 
 const statusLabels: Record<
   string,
@@ -115,6 +118,14 @@ export function TournamentDetailPage() {
     onConfirm: () => {},
     variant: "primary",
   });
+
+  const [showRulesModal, setShowRulesModal] = useState(false);
+  const [showViewRulesModal, setShowViewRulesModal] = useState(false);
+  const [pendingRegistration, setPendingRegistration] = useState<{
+    userId?: string;
+    teamId?: string;
+    memberIds?: string[];
+  } | null>(null);
 
   const closeConfirmModal = () =>
     setConfirmModal((prev) => ({ ...prev, isOpen: false }));
@@ -231,40 +242,57 @@ export function TournamentDetailPage() {
         }
       }
 
-      if (requiredTeamSize === 1) {
-        await dispatch(
-          registerForTournament({
-            tournamentId: currentTournament.id,
-            userId: targetUserId || undefined,
-            // No teamId
-          })
-        ).unwrap();
-      } else {
-        // Team Registration
-        if (!selectedTeamId) {
-          toast.error("Válassz csapatot!");
-          return;
-        }
-        if (selectedMemberIds.length !== requiredTeamSize) {
-          toast.error(`Válassz ki pontosan ${requiredTeamSize} tagot!`);
-          return;
-        }
+      const registrationData = {
+        userId: requiredTeamSize === 1 ? targetUserId || undefined : undefined,
+        teamId: requiredTeamSize > 1 ? selectedTeamId : undefined,
+        memberIds: requiredTeamSize > 1 ? selectedMemberIds : undefined,
+      };
 
-        await dispatch(
-          registerForTournament({
-            tournamentId: currentTournament.id,
-            teamId: selectedTeamId,
-            memberIds: selectedMemberIds,
-          })
-        ).unwrap();
+      if (
+        currentTournament.game?.rules ||
+        currentTournament.game?.rulesPdfUrl
+      ) {
+        setPendingRegistration(registrationData);
+        setShowRulesModal(true);
+        return;
       }
+
+      await executeRegistration(registrationData);
+    } catch (error: any) {
+      console.error("Failed to register:", error);
+      toast.error(error.message || "Hiba történt a regisztráció során");
+    }
+  };
+
+  const executeRegistration = async (data: {
+    userId?: string;
+    teamId?: string;
+    memberIds?: string[];
+  }) => {
+    if (!currentTournament) return;
+
+    try {
+      await dispatch(
+        registerForTournament({
+          tournamentId: currentTournament.id,
+          ...data,
+        })
+      ).unwrap();
 
       toast.success("Sikeres regisztráció!");
       setShowRegisterModal(false);
+      setShowRulesModal(false);
+      setPendingRegistration(null);
       dispatch(fetchTournament(currentTournament.id));
     } catch (error: any) {
       console.error("Failed to register:", error);
       toast.error(error.message || "Hiba történt a regisztráció során");
+    }
+  };
+
+  const handleRuleAcceptance = async () => {
+    if (pendingRegistration) {
+      await executeRegistration(pendingRegistration);
     }
   };
 
@@ -651,6 +679,31 @@ export function TournamentDetailPage() {
                 </p>
                 <p className="text-lg font-bold text-white">
                   {(currentTournament as any).prizePool}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Rules Card */}
+          {(currentTournament.game?.rules ||
+            currentTournament.game?.rulesPdfUrl) && (
+            <div
+              className={`bg-[#1a1b26] p-6 rounded-xl border border-white/5 shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group cursor-pointer`}
+              onClick={() => setShowViewRulesModal(true)}
+            >
+              <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
+                <ScrollText size={24} />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">
+                  Szabályzat
+                </p>
+                <p className="text-lg font-bold text-white flex items-center gap-2">
+                  Megtekintés
+                  <ArrowRight
+                    size={16}
+                    className="group-hover:translate-x-1 transition-transform"
+                  />
                 </p>
               </div>
             </div>
@@ -1525,6 +1578,33 @@ export function TournamentDetailPage() {
         variant={confirmModal.variant}
         confirmLabel={confirmModal.confirmLabel}
       />
+
+      {showRulesModal &&
+        (currentTournament?.game?.rules ||
+          currentTournament?.game?.rulesPdfUrl) && (
+          <RuleAcceptanceModal
+            rules={currentTournament.game.rules || ""}
+            rulesPdfUrl={currentTournament.game.rulesPdfUrl || undefined}
+            gameName={currentTournament.game.name}
+            onClose={() => {
+              setShowRulesModal(false);
+              setPendingRegistration(null);
+            }}
+            onAccept={handleRuleAcceptance}
+          />
+        )}
+
+      {showViewRulesModal &&
+        (currentTournament?.game?.rules ||
+          currentTournament?.game?.rulesPdfUrl) && (
+          <RuleAcceptanceModal
+            rules={currentTournament.game.rules || ""}
+            rulesPdfUrl={currentTournament.game.rulesPdfUrl || undefined}
+            gameName={currentTournament.game.name}
+            onClose={() => setShowViewRulesModal(false)}
+            viewOnly={true}
+          />
+        )}
     </div>
   );
 }

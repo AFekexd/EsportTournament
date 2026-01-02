@@ -40,6 +40,7 @@ export type GameMinAggregateOutputType = {
   description: string | null
   imageUrl: string | null
   rules: string | null
+  rulesPdfUrl: string | null
   teamSize: number | null
   createdAt: Date | null
 }
@@ -50,6 +51,7 @@ export type GameMaxAggregateOutputType = {
   description: string | null
   imageUrl: string | null
   rules: string | null
+  rulesPdfUrl: string | null
   teamSize: number | null
   createdAt: Date | null
 }
@@ -60,6 +62,7 @@ export type GameCountAggregateOutputType = {
   description: number
   imageUrl: number
   rules: number
+  rulesPdfUrl: number
   teamSize: number
   createdAt: number
   _all: number
@@ -80,6 +83,7 @@ export type GameMinAggregateInputType = {
   description?: true
   imageUrl?: true
   rules?: true
+  rulesPdfUrl?: true
   teamSize?: true
   createdAt?: true
 }
@@ -90,6 +94,7 @@ export type GameMaxAggregateInputType = {
   description?: true
   imageUrl?: true
   rules?: true
+  rulesPdfUrl?: true
   teamSize?: true
   createdAt?: true
 }
@@ -100,6 +105,7 @@ export type GameCountAggregateInputType = {
   description?: true
   imageUrl?: true
   rules?: true
+  rulesPdfUrl?: true
   teamSize?: true
   createdAt?: true
   _all?: true
@@ -197,6 +203,7 @@ export type GameGroupByOutputType = {
   description: string | null
   imageUrl: string | null
   rules: string | null
+  rulesPdfUrl: string | null
   teamSize: number | null
   createdAt: Date
   _count: GameCountAggregateOutputType | null
@@ -230,6 +237,7 @@ export type GameWhereInput = {
   description?: Prisma.StringNullableFilter<"Game"> | string | null
   imageUrl?: Prisma.StringNullableFilter<"Game"> | string | null
   rules?: Prisma.StringNullableFilter<"Game"> | string | null
+  rulesPdfUrl?: Prisma.StringNullableFilter<"Game"> | string | null
   teamSize?: Prisma.IntNullableFilter<"Game"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Game"> | Date | string
   tournaments?: Prisma.TournamentListRelationFilter
@@ -244,6 +252,7 @@ export type GameOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   rules?: Prisma.SortOrderInput | Prisma.SortOrder
+  rulesPdfUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   teamSize?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   tournaments?: Prisma.TournamentOrderByRelationAggregateInput
@@ -261,6 +270,7 @@ export type GameWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"Game"> | string | null
   imageUrl?: Prisma.StringNullableFilter<"Game"> | string | null
   rules?: Prisma.StringNullableFilter<"Game"> | string | null
+  rulesPdfUrl?: Prisma.StringNullableFilter<"Game"> | string | null
   teamSize?: Prisma.IntNullableFilter<"Game"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Game"> | Date | string
   tournaments?: Prisma.TournamentListRelationFilter
@@ -275,6 +285,7 @@ export type GameOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   rules?: Prisma.SortOrderInput | Prisma.SortOrder
+  rulesPdfUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   teamSize?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.GameCountOrderByAggregateInput
@@ -293,6 +304,7 @@ export type GameScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"Game"> | string | null
   imageUrl?: Prisma.StringNullableWithAggregatesFilter<"Game"> | string | null
   rules?: Prisma.StringNullableWithAggregatesFilter<"Game"> | string | null
+  rulesPdfUrl?: Prisma.StringNullableWithAggregatesFilter<"Game"> | string | null
   teamSize?: Prisma.IntNullableWithAggregatesFilter<"Game"> | number | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Game"> | Date | string
 }
@@ -303,6 +315,7 @@ export type GameCreateInput = {
   description?: string | null
   imageUrl?: string | null
   rules?: string | null
+  rulesPdfUrl?: string | null
   teamSize?: number | null
   createdAt?: Date | string
   tournaments?: Prisma.TournamentCreateNestedManyWithoutGameInput
@@ -317,6 +330,7 @@ export type GameUncheckedCreateInput = {
   description?: string | null
   imageUrl?: string | null
   rules?: string | null
+  rulesPdfUrl?: string | null
   teamSize?: number | null
   createdAt?: Date | string
   tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutGameInput
@@ -331,6 +345,7 @@ export type GameUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulesPdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournaments?: Prisma.TournamentUpdateManyWithoutGameNestedInput
@@ -345,6 +360,7 @@ export type GameUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulesPdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutGameNestedInput
@@ -359,6 +375,7 @@ export type GameCreateManyInput = {
   description?: string | null
   imageUrl?: string | null
   rules?: string | null
+  rulesPdfUrl?: string | null
   teamSize?: number | null
   createdAt?: Date | string
 }
@@ -369,6 +386,7 @@ export type GameUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulesPdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -379,6 +397,7 @@ export type GameUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulesPdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -389,6 +408,7 @@ export type GameCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   rules?: Prisma.SortOrder
+  rulesPdfUrl?: Prisma.SortOrder
   teamSize?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -403,6 +423,7 @@ export type GameMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   rules?: Prisma.SortOrder
+  rulesPdfUrl?: Prisma.SortOrder
   teamSize?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -413,6 +434,7 @@ export type GameMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   rules?: Prisma.SortOrder
+  rulesPdfUrl?: Prisma.SortOrder
   teamSize?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -496,6 +518,7 @@ export type GameCreateWithoutTournamentsInput = {
   description?: string | null
   imageUrl?: string | null
   rules?: string | null
+  rulesPdfUrl?: string | null
   teamSize?: number | null
   createdAt?: Date | string
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutGameInput
@@ -509,6 +532,7 @@ export type GameUncheckedCreateWithoutTournamentsInput = {
   description?: string | null
   imageUrl?: string | null
   rules?: string | null
+  rulesPdfUrl?: string | null
   teamSize?: number | null
   createdAt?: Date | string
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutGameInput
@@ -538,6 +562,7 @@ export type GameUpdateWithoutTournamentsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulesPdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   gameStats?: Prisma.GameStatsUpdateManyWithoutGameNestedInput
@@ -551,6 +576,7 @@ export type GameUncheckedUpdateWithoutTournamentsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulesPdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutGameNestedInput
@@ -564,6 +590,7 @@ export type GameCreateWithoutGameStatsInput = {
   description?: string | null
   imageUrl?: string | null
   rules?: string | null
+  rulesPdfUrl?: string | null
   teamSize?: number | null
   createdAt?: Date | string
   tournaments?: Prisma.TournamentCreateNestedManyWithoutGameInput
@@ -577,6 +604,7 @@ export type GameUncheckedCreateWithoutGameStatsInput = {
   description?: string | null
   imageUrl?: string | null
   rules?: string | null
+  rulesPdfUrl?: string | null
   teamSize?: number | null
   createdAt?: Date | string
   tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutGameInput
@@ -606,6 +634,7 @@ export type GameUpdateWithoutGameStatsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulesPdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournaments?: Prisma.TournamentUpdateManyWithoutGameNestedInput
@@ -619,6 +648,7 @@ export type GameUncheckedUpdateWithoutGameStatsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulesPdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutGameNestedInput
@@ -632,6 +662,7 @@ export type GameCreateWithoutRanksInput = {
   description?: string | null
   imageUrl?: string | null
   rules?: string | null
+  rulesPdfUrl?: string | null
   teamSize?: number | null
   createdAt?: Date | string
   tournaments?: Prisma.TournamentCreateNestedManyWithoutGameInput
@@ -645,6 +676,7 @@ export type GameUncheckedCreateWithoutRanksInput = {
   description?: string | null
   imageUrl?: string | null
   rules?: string | null
+  rulesPdfUrl?: string | null
   teamSize?: number | null
   createdAt?: Date | string
   tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutGameInput
@@ -674,6 +706,7 @@ export type GameUpdateWithoutRanksInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulesPdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournaments?: Prisma.TournamentUpdateManyWithoutGameNestedInput
@@ -687,6 +720,7 @@ export type GameUncheckedUpdateWithoutRanksInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulesPdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutGameNestedInput
@@ -700,6 +734,7 @@ export type GameCreateWithoutUserRanksInput = {
   description?: string | null
   imageUrl?: string | null
   rules?: string | null
+  rulesPdfUrl?: string | null
   teamSize?: number | null
   createdAt?: Date | string
   tournaments?: Prisma.TournamentCreateNestedManyWithoutGameInput
@@ -713,6 +748,7 @@ export type GameUncheckedCreateWithoutUserRanksInput = {
   description?: string | null
   imageUrl?: string | null
   rules?: string | null
+  rulesPdfUrl?: string | null
   teamSize?: number | null
   createdAt?: Date | string
   tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutGameInput
@@ -742,6 +778,7 @@ export type GameUpdateWithoutUserRanksInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulesPdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournaments?: Prisma.TournamentUpdateManyWithoutGameNestedInput
@@ -755,6 +792,7 @@ export type GameUncheckedUpdateWithoutUserRanksInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulesPdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutGameNestedInput
@@ -826,6 +864,7 @@ export type GameSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   description?: boolean
   imageUrl?: boolean
   rules?: boolean
+  rulesPdfUrl?: boolean
   teamSize?: boolean
   createdAt?: boolean
   tournaments?: boolean | Prisma.Game$tournamentsArgs<ExtArgs>
@@ -841,6 +880,7 @@ export type GameSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   description?: boolean
   imageUrl?: boolean
   rules?: boolean
+  rulesPdfUrl?: boolean
   teamSize?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["game"]>
@@ -851,6 +891,7 @@ export type GameSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   description?: boolean
   imageUrl?: boolean
   rules?: boolean
+  rulesPdfUrl?: boolean
   teamSize?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["game"]>
@@ -861,11 +902,12 @@ export type GameSelectScalar = {
   description?: boolean
   imageUrl?: boolean
   rules?: boolean
+  rulesPdfUrl?: boolean
   teamSize?: boolean
   createdAt?: boolean
 }
 
-export type GameOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "imageUrl" | "rules" | "teamSize" | "createdAt", ExtArgs["result"]["game"]>
+export type GameOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "imageUrl" | "rules" | "rulesPdfUrl" | "teamSize" | "createdAt", ExtArgs["result"]["game"]>
 export type GameInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tournaments?: boolean | Prisma.Game$tournamentsArgs<ExtArgs>
   gameStats?: boolean | Prisma.Game$gameStatsArgs<ExtArgs>
@@ -890,6 +932,7 @@ export type $GamePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     description: string | null
     imageUrl: string | null
     rules: string | null
+    rulesPdfUrl: string | null
     teamSize: number | null
     createdAt: Date
   }, ExtArgs["result"]["game"]>
@@ -1324,6 +1367,7 @@ export interface GameFieldRefs {
   readonly description: Prisma.FieldRef<"Game", 'String'>
   readonly imageUrl: Prisma.FieldRef<"Game", 'String'>
   readonly rules: Prisma.FieldRef<"Game", 'String'>
+  readonly rulesPdfUrl: Prisma.FieldRef<"Game", 'String'>
   readonly teamSize: Prisma.FieldRef<"Game", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Game", 'DateTime'>
 }

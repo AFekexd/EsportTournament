@@ -51,7 +51,7 @@ const getToken = (state: RootState) => state.auth.token;
 
 export const createGame = createAsyncThunk(
     'games/createGame',
-    async (gameData: { name: string; description?: string; imageUrl?: string; rules?: string; teamSize?: number }, { getState }) => {
+    async (gameData: { name: string; description?: string; imageUrl?: string; rules?: string; rulesPdf?: string; teamSize?: number }, { getState }) => {
         const state = getState() as RootState;
         const token = getToken(state);
 
@@ -78,7 +78,7 @@ export const createGame = createAsyncThunk(
 
 export const updateGame = createAsyncThunk(
     'games/updateGame',
-    async ({ id, data }: { id: string; data: Partial<Game> }, { getState }) => {
+    async ({ id, data }: { id: string; data: Partial<Game> & { rulesPdf?: string } }, { getState }) => {
         const state = getState() as RootState;
         const token = getToken(state);
 

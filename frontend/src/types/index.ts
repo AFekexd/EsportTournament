@@ -50,6 +50,7 @@ export interface Game {
     description?: string;
     imageUrl?: string;
     rules?: string;
+    rulesPdfUrl?: string;
     teamSize: number;
     createdAt: string;
     tournaments?: Tournament[];

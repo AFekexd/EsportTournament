@@ -154,6 +154,7 @@ model Game {
   description String?
   imageUrl    String?
   rules       String?
+  rulesPdfUrl String? // Base64 encoded PDF
   teamSize    Int?     // 1, 2, 3, 5 (Optional, defaults to 1 if not set)
   createdAt   DateTime @default(now())
 

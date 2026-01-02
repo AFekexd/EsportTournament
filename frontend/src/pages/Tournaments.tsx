@@ -177,6 +177,7 @@ export function TournamentsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [gameFilter, setGameFilter] = useState<string>("");
+  const [teamSizeFilter, setTeamSizeFilter] = useState<string>("");
 
   useEffect(() => {
     dispatch(
@@ -185,9 +186,13 @@ export function TournamentsPage() {
     dispatch(fetchGames());
   }, [dispatch, statusFilter, gameFilter]);
 
-  const filteredTournaments = tournaments.filter((t: Tournament) =>
-    t.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredTournaments = tournaments.filter((t: Tournament) => {
+    const matchesSearch = t.name.toLowerCase().includes(search.toLowerCase());
+    const size = t.teamSize || t.game?.teamSize || 1;
+    const matchesTeamSize =
+      teamSizeFilter === "" || size.toString() === teamSizeFilter;
+    return matchesSearch && matchesTeamSize;
+  });
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -232,7 +237,7 @@ export function TournamentsPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="pl-4 pr-10 py-3 bg-[#1a1b26] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer min-w-[180px]"
+              className="pl-4 pr-10 py-3 bg-[#1a1b26] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer min-w-[170px]"
             >
               <option value="">Minden státusz</option>
               <option value="REGISTRATION">Regisztráció</option>
@@ -240,6 +245,18 @@ export function TournamentsPage() {
               <option value="COMPLETED">Befejezett</option>
             </select>
           </div>
+
+          <select
+            value={teamSizeFilter}
+            onChange={(e) => setTeamSizeFilter(e.target.value)}
+            className="px-4 py-3 bg-[#1a1b26] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer"
+          >
+            <option value="">Minden méret</option>
+            <option value="1">1v1</option>
+            <option value="2">2v2</option>
+            <option value="3">3v3</option>
+            <option value="5">5v5</option>
+          </select>
 
           <select
             value={gameFilter}

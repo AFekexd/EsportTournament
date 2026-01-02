@@ -3,6 +3,7 @@ import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest, requireRole } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { processImage, isBase64DataUrl, validateImageSize } from '../utils/imageProcessor.js';
+import { isBase64Pdf, validatePdfSize } from '../utils/pdfProcessor.js';
 import { notificationService } from '../services/notificationService.js';
 import { logSystemActivity } from '../services/logService.js';
 
@@ -36,7 +37,7 @@ gamesRouter.post(
             throw new ApiError('Csak adminisztrátorok és organizátorok hozhatnak létre játékokat', 403, 'FORBIDDEN');
         }
 
-        const { name, description, imageUrl, rules, teamSize } = req.body;
+        const { name, description, imageUrl, rules, rulesPdf, teamSize } = req.body;
 
         if (!name) {
             throw new ApiError('A név kötelező', 400, 'MISSING_FIELDS');
@@ -55,12 +56,25 @@ gamesRouter.post(
             processedImageUrl = await processImage(imageUrl);
         }
 
+        // Process PDF if base64
+        let processedPdfUrl = undefined;
+        if (rulesPdf) {
+            if (!isBase64Pdf(rulesPdf)) {
+                throw new ApiError('Érvénytelen PDF formátum', 400, 'INVALID_PDF');
+            }
+            if (!validatePdfSize(rulesPdf, 5)) {
+                 throw new ApiError('A PDF túl nagy (max 5MB)', 400, 'PDF_TOO_LARGE');
+            }
+            processedPdfUrl = rulesPdf;
+        }
+
         const game = await prisma.game.create({
             data: {
                 name,
                 description,
                 imageUrl: processedImageUrl,
                 rules,
+                rulesPdfUrl: processedPdfUrl,
                 teamSize: teamSize || 1, // Default to 1v1
             },
         });
@@ -113,7 +127,7 @@ gamesRouter.patch(
             throw new ApiError('Csak adminisztrátorok és organizátorok módosíthatnak játékokat', 403, 'FORBIDDEN');
         }
 
-        const { name, description, imageUrl, rules, teamSize } = req.body;
+        const { name, description, imageUrl, rules, rulesPdf, teamSize } = req.body;
 
         if (teamSize && ![1, 2, 3, 5].includes(teamSize)) {
             throw new ApiError('A csapatméretnek 1, 2, 3 vagy 5-nek kell lennie', 400, 'INVALID_TEAM_SIZE');
@@ -128,6 +142,18 @@ gamesRouter.patch(
             processedImageUrl = await processImage(imageUrl);
         }
 
+        // Process PDF if base64
+        let processedPdfUrl = undefined;
+        if (rulesPdf !== undefined) {
+             if (rulesPdf && !isBase64Pdf(rulesPdf)) {
+                 throw new ApiError('Érvénytelen PDF formátum', 400, 'INVALID_PDF');
+             }
+             if (rulesPdf && !validatePdfSize(rulesPdf, 5)) {
+                  throw new ApiError('A PDF túl nagy (max 5MB)', 400, 'PDF_TOO_LARGE');
+             }
+             processedPdfUrl = rulesPdf;
+        }
+
         const game = await prisma.game.update({
             where: { id: req.params.id },
             data: {
@@ -135,6 +161,7 @@ gamesRouter.patch(
                 ...(description !== undefined && { description }),
                 ...(processedImageUrl !== undefined && { imageUrl: processedImageUrl }),
                 ...(rules !== undefined && { rules }),
+                ...(rulesPdf !== undefined && { rulesPdfUrl: processedPdfUrl }),
                 ...(teamSize && { teamSize }),
             },
         });

@@ -139,6 +139,7 @@ export const GameScalarFieldEnum = {
   description: 'description',
   imageUrl: 'imageUrl',
   rules: 'rules',
+  rulesPdfUrl: 'rulesPdfUrl',
   teamSize: 'teamSize',
   createdAt: 'createdAt'
 } as const
