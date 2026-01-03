@@ -4,7 +4,6 @@ import {
   Clock,
   Monitor,
   Trash2,
-  QrCode,
   CheckCircle,
   AlertCircle,
   Edit2,
@@ -27,7 +26,6 @@ export function MyBookings({ onEditBooking }: MyBookingsProps) {
   const dispatch = useAppDispatch();
   const { isAuthenticated } = useAuth();
   const { myBookings, isLoading } = useAppSelector((state) => state.bookings);
-  const [showQRCode, setShowQRCode] = useState<string | null>(null);
 
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;

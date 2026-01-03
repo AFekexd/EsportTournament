@@ -433,124 +433,127 @@ export function BookingPage() {
                           key={hour}
                           className="flex border-b border-white/5 last:border-b-0"
                         >
-                        <div className="w-24 flex-shrink-0 bg-[#0f1015] border-r border-white/5 flex flex-col justify-center items-center py-4">
-                          <span className="text-lg font-bold text-white">
-                            {hour}:00
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            {hour}:00 - {hour + 1}:00
-                          </span>
-                        </div>
+                          <div className="w-24 flex-shrink-0 bg-[#0f1015] border-r border-white/5 flex flex-col justify-center items-center py-4">
+                            <span className="text-lg font-bold text-white">
+                              {hour}:00
+                            </span>
+                            <span className="text-xs text-gray-500">
+                              {hour}:00 - {hour + 1}:00
+                            </span>
+                          </div>
 
-                        <div className="flex-1 p-4 flex flex-col gap-4 overflow-x-auto">
-                          {computersByRow.map((row, rowIndex) => (
-                            <div key={rowIndex} className="flex gap-4">
-                              {row.map((computer) => {
-                                const booking = isComputerBooked(
-                                  computer.id,
-                                  hour
-                                );
-                                const isOwn = booking?.userId === user?.id;
-                                const isBooked = !!booking;
-                                const isMaintained =
-                                  computer.status === "MAINTENANCE";
-                                const isOutOfOrder =
-                                  computer.status === "OUT_OF_ORDER";
+                          <div className="flex-1 p-4 flex flex-col gap-4 overflow-x-auto">
+                            {computersByRow.map((row, rowIndex) => (
+                              <div key={rowIndex} className="flex gap-4">
+                                {row.map((computer) => {
+                                  const booking = isComputerBooked(
+                                    computer.id,
+                                    hour
+                                  );
+                                  const isOwn = booking?.userId === user?.id;
+                                  const isBooked = !!booking;
+                                  const isMaintained =
+                                    computer.status === "MAINTENANCE";
+                                  const isOutOfOrder =
+                                    computer.status === "OUT_OF_ORDER";
 
-                                // Check if slot is in the past
-                                const now = new Date();
-                                const slotTime = new Date(selectedDate);
-                                slotTime.setHours(hour, 0, 0, 0);
-                                const isPast = slotTime < now && !isBooked;
+                                  // Check if slot is in the past
+                                  const now = new Date();
+                                  const slotTime = new Date(selectedDate);
+                                  slotTime.setHours(hour, 0, 0, 0);
+                                  const isPast = slotTime < now && !isBooked;
 
-                                const isDisabled =
-                                  isBooked ||
-                                  isMaintained ||
-                                  isOutOfOrder ||
-                                  isLoading ||
-                                  isPast;
+                                  const isDisabled =
+                                    isBooked ||
+                                    isMaintained ||
+                                    isOutOfOrder ||
+                                    isLoading ||
+                                    isPast;
 
-                                return (
-                                  <div
-                                    key={computer.id}
-                                    className="flex-1 min-w-[140px] relative bg-[#0f1015] rounded-lg p-3 border border-white/5"
-                                  >
-                                    <div className="flex justify-between items-center mb-2 pb-2 border-b border-white/5">
-                                      <span className="text-sm font-semibold text-gray-300">
-                                        {computer.name}
-                                      </span>
-                                      <button
-                                        className="text-gray-500 hover:text-primary hover:bg-primary/10 p-1 rounded transition-colors"
-                                        onClick={() =>
-                                          setExpandedComputerId(
-                                            expandedComputerId ===
-                                              `${computer.id}-${hour}`
-                                              ? null
-                                              : `${computer.id}-${hour}`
-                                          )
-                                        }
-                                      >
-                                        <Info size={14} />
-                                      </button>
-                                    </div>
-
-                                    <button
-                                      className={`w-full h-12 rounded-lg flex items-center justify-center transition-all ${
-                                        isOwn
-                                          ? "bg-primary/20 text-primary border-2 border-primary cursor-pointer hover:bg-primary/30"
-                                          : isBooked
-                                          ? "bg-red-500/10 text-red-400 border-2 border-red-500/20 cursor-default"
-                                          : isMaintained || isOutOfOrder
-                                          ? "bg-gray-800/50 text-gray-600 border-2 border-gray-700/20 cursor-not-allowed opacity-50"
-                                          : isPast
-                                          ? "bg-gray-800/20 text-gray-600 border-2 border-gray-800/20 cursor-not-allowed opacity-50"
-                                          : "bg-green-500/10 text-green-400 border-2 border-green-500/20 hover:bg-green-500/20 cursor-pointer group"
-                                      }`}
-                                      onClick={() =>
-                                        handleComputerClick(computer, hour)
-                                      }
-                                      disabled={isDisabled && !isOwn}
+                                  return (
+                                    <div
+                                      key={computer.id}
+                                      className="flex-1 min-w-[140px] relative bg-[#0f1015] rounded-lg p-3 border border-white/5"
                                     >
-                                      {isOwn && <Check size={18} />}
-                                      {isBooked && !isOwn && (
-                                        <Monitor size={18} />
-                                      )}
-                                      {!isBooked &&
-                                        !isMaintained &&
-                                        !isOutOfOrder &&
-                                        !isPast && (
-                                          <Plus
-                                            size={18}
-                                            className="opacity-0 group-hover:opacity-100 transition-opacity"
-                                          />
+                                      <div className="flex justify-between items-center mb-2 pb-2 border-b border-white/5">
+                                        <span className="text-sm font-semibold text-gray-300">
+                                          {computer.name}
+                                        </span>
+                                        <button
+                                          className="text-gray-500 hover:text-primary hover:bg-primary/10 p-1 rounded transition-colors"
+                                          onClick={() =>
+                                            setExpandedComputerId(
+                                              expandedComputerId ===
+                                                `${computer.id}-${hour}`
+                                                ? null
+                                                : `${computer.id}-${hour}`
+                                            )
+                                          }
+                                        >
+                                          <Info size={14} />
+                                        </button>
+                                      </div>
+
+                                      <button
+                                        className={`w-full h-12 rounded-lg flex items-center justify-center transition-all ${
+                                          isOwn
+                                            ? "bg-primary/20 text-primary border-2 border-primary cursor-pointer hover:bg-primary/30"
+                                            : isBooked
+                                            ? "bg-red-500/10 text-red-400 border-2 border-red-500/20 cursor-default"
+                                            : isMaintained || isOutOfOrder
+                                            ? "bg-gray-800/50 text-gray-600 border-2 border-gray-700/20 cursor-not-allowed opacity-50"
+                                            : isPast
+                                            ? "bg-gray-800/20 text-gray-600 border-2 border-gray-800/20 cursor-not-allowed opacity-50"
+                                            : "bg-green-500/10 text-green-400 border-2 border-green-500/20 hover:bg-green-500/20 cursor-pointer group"
+                                        }`}
+                                        onClick={() =>
+                                          handleComputerClick(computer, hour)
+                                        }
+                                        disabled={isDisabled && !isOwn}
+                                      >
+                                        {isOwn && <Check size={18} />}
+                                        {isBooked && !isOwn && (
+                                          <Monitor size={18} />
                                         )}
-                                    </button>
+                                        {!isBooked &&
+                                          !isMaintained &&
+                                          !isOutOfOrder &&
+                                          !isPast && (
+                                            <Plus
+                                              size={18}
+                                              className="opacity-0 group-hover:opacity-100 transition-opacity"
+                                            />
+                                          )}
+                                      </button>
 
-                                    {isBooked && !isOwn && isAuthenticated && (
-                                      <div className="mt-2 pt-2 border-t border-white/5 flex justify-center">
-                                        <WaitlistButton
-                                          computerId={computer.id}
-                                          date={selectedDate}
-                                          startHour={hour}
-                                          endHour={hour + 1}
-                                        />
-                                      </div>
-                                    )}
+                                      {isBooked &&
+                                        !isOwn &&
+                                        isAuthenticated && (
+                                          <div className="mt-2 pt-2 border-t border-white/5 flex justify-center">
+                                            <WaitlistButton
+                                              computerId={computer.id}
+                                              date={selectedDate}
+                                              startHour={hour}
+                                              endHour={hour + 1}
+                                            />
+                                          </div>
+                                        )}
 
-                                    {expandedComputerId ===
-                                      `${computer.id}-${hour}` && (
-                                      <div className="absolute top-full left-0 mt-2 w-64 z-20 shadow-2xl">
-                                        <ComputerInfo computer={computer} />
-                                      </div>
-                                    )}
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          ))}
+                                      {expandedComputerId ===
+                                        `${computer.id}-${hour}` && (
+                                        <div className="absolute top-full left-0 mt-2 w-64 z-20 shadow-2xl">
+                                          <ComputerInfo computer={computer} />
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
