@@ -474,7 +474,7 @@ bookingsRouter.get(
         const bookings = await prisma.booking.findMany({
             where: {
                 userId: user.id,
-                date: { gte: new Date() }, // Only future bookings
+                endTime: { gte: new Date() }, // Active and future bookings
             },
             include: {
                 computer: true,

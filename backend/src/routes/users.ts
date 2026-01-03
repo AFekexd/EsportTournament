@@ -39,7 +39,10 @@ usersRouter.get(
                 displayName: true,
                 avatarUrl: true,
                 role: true,
-                elo: true
+                elo: true,
+                email: true,
+                createdAt: true,
+                timeBalanceSeconds: true
             }
         });
 

@@ -157,33 +157,6 @@ export function GameEditModal({ game, onClose }: GameEditModalProps) {
             maxSizeMB={15}
           />
 
-          <div>
-            <label
-              htmlFor="game-teamSize"
-              className="block text-sm font-medium text-gray-300 mb-2"
-            >
-              Csapatméret <span className="text-red-400">*</span>
-            </label>
-            <select
-              id="game-teamSize"
-              className={`w-full px-4 py-3 bg-[#0f1015] border ${
-                errors.teamSize ? "border-red-500" : "border-white/10"
-              } rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
-              value={formData.teamSize}
-              onChange={(e) =>
-                setFormData({ ...formData, teamSize: parseInt(e.target.value) })
-              }
-            >
-              <option value={1}>1v1</option>
-              <option value={2}>2v2</option>
-              <option value={3}>3v3</option>
-              <option value={5}>5v5</option>
-            </select>
-            {errors.teamSize && (
-              <p className="text-red-400 text-sm mt-1">{errors.teamSize}</p>
-            )}
-          </div>
-
           <div className="space-y-4">
             <RichTextEditor
               label="Szabályok (Szöveges)"

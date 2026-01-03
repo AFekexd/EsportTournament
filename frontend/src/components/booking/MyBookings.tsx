@@ -172,20 +172,7 @@ export function MyBookings({ onEditBooking }: MyBookingsProps) {
                 </div>
               </div>
 
-              <div className="booking-card-actions">
-                {booking.checkInCode && status !== "checked-in" && (
-                  <button
-                    className="btn-icon btn-qr"
-                    onClick={() =>
-                      setShowQRCode(
-                        showQRCode === booking.id ? null : booking.id
-                      )
-                    }
-                    title="QR kód megjelenítése"
-                  >
-                    <QrCode size={18} />
-                  </button>
-                )}
+              <div className="booking-card-actions ">
                 {status === "upcoming" && onEditBooking && (
                   <button
                     className="btn-icon btn-edit"
@@ -205,27 +192,6 @@ export function MyBookings({ onEditBooking }: MyBookingsProps) {
                   </button>
                 )}
               </div>
-
-              {showQRCode === booking.id && booking.checkInCode && (
-                <div className="qr-code-panel">
-                  <div className="qr-code-placeholder">
-                    <QrCode size={64} />
-                    <p
-                      className="qr-code-value"
-                      style={{
-                        wordBreak: "break-all",
-                        fontFamily: "monospace",
-                        fontSize: "0.85rem",
-                      }}
-                    >
-                      {booking.checkInCode}
-                    </p>
-                    <p className="qr-hint">
-                      Mutasd meg ezt a kódot a helyszínen
-                    </p>
-                  </div>
-                </div>
-              )}
             </div>
           );
         })}

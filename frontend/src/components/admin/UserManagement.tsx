@@ -344,7 +344,9 @@ export function UserManagement() {
                         </div>
                         {user.displayName && (
                           <div className="text-xs text-gray-500">
-                            @{user.username}
+                            {user.username.includes("@")
+                              ? user.username
+                              : `@${user.username}`}
                           </div>
                         )}
                       </div>

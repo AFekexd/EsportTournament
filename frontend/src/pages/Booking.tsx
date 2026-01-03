@@ -222,6 +222,13 @@ export function BookingPage() {
     }
   };
 
+  const formatBalance = (seconds: number) => {
+    if (user?.role === "ADMIN") return "Végtelen";
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    return `${hours} óra ${minutes} perc`;
+  };
+
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString("hu-HU", {
@@ -254,41 +261,53 @@ export function BookingPage() {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-4 md:py-8">
       {/* Modern Header with Gradient */}
-      <div className="mb-12 text-center relative">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-primary/20 blur-3xl rounded-full -z-10" />
-        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-primary-100 to-gray-400 bg-clip-text text-transparent mb-4">
+      <div className="mb-8 md:mb-12 text-center relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 md:w-32 md:h-32 bg-primary/20 blur-3xl rounded-full -z-10" />
+        <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-white via-primary-100 to-gray-400 bg-clip-text text-transparent mb-2 md:mb-4">
           Gépfoglalás
         </h1>
-        <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+        <p className="text-sm md:text-lg text-gray-400 max-w-2xl mx-auto mb-4 md:mb-6">
           Foglalj helyet a gaming szobában és élvezd a legjobb játékélményt!
         </p>
+
+        {user && (
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-[#1a1b26] border border-white/10 rounded-full text-xs md:text-sm font-medium text-white shadow-lg">
+            <Clock size={14} className="md:w-4 md:h-4 text-primary" />
+            <span>
+              Időegyenleg:{" "}
+              <span className="text-primary">
+                {formatBalance(user.timeBalanceSeconds)}
+              </span>
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Main Tabs */}
-      <div className="mb-8 border-b border-white/10">
-        <div className="flex gap-8">
+      <div className="mb-6 md:mb-8 border-b border-white/10 overflow-x-auto">
+        <div className="flex gap-4 md:gap-8 min-w-max">
           <button
-            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative ${
+            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${
               activeTab === "booking"
                 ? "border-primary text-primary"
                 : "border-transparent text-gray-400 hover:text-gray-300"
             }`}
             onClick={() => setActiveTab("booking")}
           >
-            <LayoutGrid size={18} />
+            <LayoutGrid size={16} className="md:w-[18px] md:h-[18px]" />
             Foglalás
           </button>
           <button
-            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative ${
+            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${
               activeTab === "my-bookings"
                 ? "border-primary text-primary"
                 : "border-transparent text-gray-400 hover:text-gray-300"
             }`}
             onClick={() => setActiveTab("my-bookings")}
           >
-            <List size={18} />
+            <List size={16} className="md:w-[18px] md:h-[18px]" />
             Saját foglalások
           </button>
         </div>
@@ -296,8 +315,8 @@ export function BookingPage() {
 
       {/* Error Display */}
       {(error || bookingError) && (
-        <div className="mb-6 flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400">
-          <AlertCircle size={20} />
+        <div className="mb-6 flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm md:text-base">
+          <AlertCircle size={20} className="flex-shrink-0" />
           <span>{error || bookingError}</span>
         </div>
       )}
@@ -309,10 +328,10 @@ export function BookingPage() {
       {activeTab === "booking" && (
         <>
           {/* View Toggle */}
-          <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
-            <div className="flex bg-[#1a1b26] p-1 rounded-xl border border-white/5">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+            <div className="flex bg-[#1a1b26] p-1 rounded-xl border border-white/5 w-full md:w-auto">
               <button
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${
                   viewMode === "daily"
                     ? "bg-[#0f1015] text-white shadow-lg"
                     : "text-gray-400 hover:text-gray-300"
@@ -323,7 +342,7 @@ export function BookingPage() {
                 Napi
               </button>
               <button
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${
                   viewMode === "weekly"
                     ? "bg-[#0f1015] text-white shadow-lg"
                     : "text-gray-400 hover:text-gray-300"
@@ -336,16 +355,16 @@ export function BookingPage() {
             </div>
 
             {viewMode === "daily" && (
-              <div className="flex items-center gap-3 bg-[#1a1b26] px-4 py-2 rounded-xl border border-white/5">
-                <Calendar size={18} className="text-primary" />
+              <div className="w-full md:w-auto flex items-center gap-3 bg-[#1a1b26] px-4 py-2 rounded-xl border border-white/5">
+                <Calendar size={18} className="text-primary flex-shrink-0" />
                 <input
                   type="date"
                   value={selectedDate}
                   onChange={(e) => dispatch(setSelectedDate(e.target.value))}
                   min={new Date().toISOString().split("T")[0]}
-                  className="bg-transparent border-none text-white font-medium cursor-pointer focus:outline-none"
+                  className="bg-transparent border-none text-white font-medium cursor-pointer focus:outline-none w-full md:w-auto"
                 />
-                <span className="text-gray-400 text-sm min-w-[140px]">
+                <span className="text-gray-400 text-sm hidden md:inline min-w-[140px]">
                   {formatDate(selectedDate)}
                 </span>
               </div>
@@ -353,16 +372,18 @@ export function BookingPage() {
           </div>
 
           {viewMode === "weekly" ? (
-            <WeeklyCalendar
-              onSlotClick={(computer, date, hour) =>
-                openCreateModal(computer, hour, date)
-              }
-              onBookingClick={(booking) => {
-                if (booking.userId === user?.id) {
-                  setEditingBooking(booking);
+            <div className="overflow-x-auto pb-4">
+              <WeeklyCalendar
+                onSlotClick={(computer, date, hour) =>
+                  openCreateModal(computer, hour, date)
                 }
-              }}
-            />
+                onBookingClick={(booking) => {
+                  if (booking.userId === user?.id) {
+                    setEditingBooking(booking);
+                  }
+                }}
+              />
+            </div>
           ) : (
             /* Daily View Content */
             <>
@@ -374,7 +395,7 @@ export function BookingPage() {
                   <h3 className="text-xl font-bold text-white mb-2">
                     Nincs elérhető időpont
                   </h3>
-                  <p className="text-gray-400">
+                  <p className="text-gray-400 text-center px-4">
                     {dayNames[dayOfWeek]} napon nincs nyitva a gaming szoba.
                   </p>
                 </div>
@@ -382,35 +403,36 @@ export function BookingPage() {
 
               {todaySchedule && (
                 <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden shadow-lg">
-                  <div className="flex justify-between items-center px-6 py-4 bg-[#0f1015] border-b border-white/5">
-                    <h2 className="flex items-center gap-3 text-xl font-semibold text-white">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center px-4 md:px-6 py-4 bg-[#0f1015] border-b border-white/5 gap-4">
+                    <h2 className="flex items-center gap-3 text-lg md:text-xl font-semibold text-white">
                       <Clock size={20} className="text-primary" />
                       Idősávok ({todaySchedule.startHour}:00 -{" "}
                       {todaySchedule.endHour}:00)
                     </h2>
 
-                    <div className="flex gap-4">
-                      <span className="flex items-center gap-2 text-sm">
+                    <div className="flex flex-wrap gap-4">
+                      <span className="flex items-center gap-2 text-xs md:text-sm">
                         <span className="w-3 h-3 rounded-full bg-green-500/20 border-2 border-green-500"></span>
                         <span className="text-gray-400">Szabad</span>
                       </span>
-                      <span className="flex items-center gap-2 text-sm">
+                      <span className="flex items-center gap-2 text-xs md:text-sm">
                         <span className="w-3 h-3 rounded-full bg-red-500/20 border-2 border-red-500"></span>
                         <span className="text-gray-400">Foglalt</span>
                       </span>
-                      <span className="flex items-center gap-2 text-sm">
+                      <span className="flex items-center gap-2 text-xs md:text-sm">
                         <span className="w-3 h-3 rounded-full bg-primary/20 border-2 border-primary"></span>
                         <span className="text-gray-400">Saját</span>
                       </span>
                     </div>
                   </div>
 
-                  <div>
-                    {availableSlots.map((hour) => (
-                      <div
-                        key={hour}
-                        className="flex border-b border-white/5 last:border-b-0"
-                      >
+                  <div className="overflow-x-auto">
+                    <div className="min-w-[800px]">
+                      {availableSlots.map((hour) => (
+                        <div
+                          key={hour}
+                          className="flex border-b border-white/5 last:border-b-0"
+                        >
                         <div className="w-24 flex-shrink-0 bg-[#0f1015] border-r border-white/5 flex flex-col justify-center items-center py-4">
                           <span className="text-lg font-bold text-white">
                             {hour}:00
@@ -435,11 +457,18 @@ export function BookingPage() {
                                 const isOutOfOrder =
                                   computer.status === "OUT_OF_ORDER";
 
+                                // Check if slot is in the past
+                                const now = new Date();
+                                const slotTime = new Date(selectedDate);
+                                slotTime.setHours(hour, 0, 0, 0);
+                                const isPast = slotTime < now && !isBooked;
+
                                 const isDisabled =
                                   isBooked ||
                                   isMaintained ||
                                   isOutOfOrder ||
-                                  isLoading;
+                                  isLoading ||
+                                  isPast;
 
                                 return (
                                   <div
@@ -473,6 +502,8 @@ export function BookingPage() {
                                           ? "bg-red-500/10 text-red-400 border-2 border-red-500/20 cursor-default"
                                           : isMaintained || isOutOfOrder
                                           ? "bg-gray-800/50 text-gray-600 border-2 border-gray-700/20 cursor-not-allowed opacity-50"
+                                          : isPast
+                                          ? "bg-gray-800/20 text-gray-600 border-2 border-gray-800/20 cursor-not-allowed opacity-50"
                                           : "bg-green-500/10 text-green-400 border-2 border-green-500/20 hover:bg-green-500/20 cursor-pointer group"
                                       }`}
                                       onClick={() =>
@@ -486,7 +517,8 @@ export function BookingPage() {
                                       )}
                                       {!isBooked &&
                                         !isMaintained &&
-                                        !isOutOfOrder && (
+                                        !isOutOfOrder &&
+                                        !isPast && (
                                           <Plus
                                             size={18}
                                             className="opacity-0 group-hover:opacity-100 transition-opacity"
@@ -578,13 +610,41 @@ export function BookingPage() {
               </div>
             </div>
 
-            <div className="mb-6 p-4 bg-primary/10 border border-primary/20 rounded-xl text-center">
-              <strong className="text-white">Foglalás időtartama:</strong>{" "}
-              <span className="text-primary font-semibold">
-                {selectedStartHour}:00 -{" "}
-                {selectedStartHour + Math.floor(selectedDuration / 60)}:
-                {(selectedDuration % 60).toString().padStart(2, "0")}
-              </span>
+            <div className="mb-6 p-4 bg-primary/10 border border-primary/20 rounded-xl space-y-3">
+              <div className="text-center">
+                <strong className="text-white block mb-1">
+                  Foglalás időtartama:
+                </strong>
+                <span className="text-primary font-semibold text-lg">
+                  {selectedStartHour}:00 -{" "}
+                  {selectedStartHour + Math.floor(selectedDuration / 60)}:
+                  {(selectedDuration % 60).toString().padStart(2, "0")}
+                </span>
+              </div>
+
+              {user && (
+                <div className="pt-3 border-t border-primary/20 flex flex-col gap-1 text-sm">
+                  <div className="flex justify-between text-gray-400">
+                    <span>Jelenlegi egyenleg:</span>
+                    <span>{formatBalance(user.timeBalanceSeconds)}</span>
+                  </div>
+                  <div className="flex justify-between font-medium text-white">
+                    <span>Foglalás után:</span>
+                    <span
+                      className={
+                        user.role !== "ADMIN" &&
+                        user.timeBalanceSeconds - selectedDuration * 60 < 0
+                          ? "text-red-400"
+                          : "text-green-400"
+                      }
+                    >
+                      {formatBalance(
+                        user.timeBalanceSeconds - selectedDuration * 60
+                      )}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {bookingError && (
