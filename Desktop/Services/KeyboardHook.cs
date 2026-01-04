@@ -22,12 +22,17 @@ namespace EsportManager.Services
 
         public void Hook()
         {
+            if (_hookID != IntPtr.Zero) return; // Already hooked
             _hookID = SetHook(_proc);
         }
 
         public void Unhook()
         {
-            UnhookWindowsHookEx(_hookID);
+            if (_hookID != IntPtr.Zero)
+            {
+                UnhookWindowsHookEx(_hookID);
+                _hookID = IntPtr.Zero;
+            }
         }
 
         private IntPtr SetHook(LowLevelKeyboardProc proc)

@@ -576,6 +576,10 @@ namespace EsportManager
             ShowLockedScreen();
 
             _isUnlocked = false;
+            
+            // Re-enable keyboard hook when locked
+            if (_keyboardHook != null) _keyboardHook.Hook();
+
             _isAdmin = false;
             UpdateAdminMenu(); // Remove admin items
             
@@ -1035,6 +1039,9 @@ namespace EsportManager
         {
             _isUnlocked = true;
             this.Hide();
+
+            // Disable keyboard hook when in tray
+            if (_keyboardHook != null) _keyboardHook.Unhook();
 
             
             // Tálca ikon megjelenítése
