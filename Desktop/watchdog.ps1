@@ -25,7 +25,7 @@ while ($true) {
 
         Write-Host "[$((Get-Date).ToString('HH:mm:ss'))] $AppName is not running. Restarting..."
         try {
-            Start-Process -FilePath $AppPath -WindowStyle Maximized
+            Start-Process -FilePath $AppPath -WorkingDirectory $ScriptDir -WindowStyle Maximized
         }
         catch {
             Write-Host "Error starting application: $_"

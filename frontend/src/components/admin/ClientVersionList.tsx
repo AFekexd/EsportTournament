@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { History, RefreshCw } from "lucide-react";
+import { History, RefreshCw, Trash2, Download } from "lucide-react";
+import { toast } from "sonner";
 
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
-import { fetchClientVersions } from "../../store/slices/kioskSlice";
+import {
+  fetchClientVersions,
+  deleteClientVersion,
+} from "../../store/slices/kioskSlice";
+import { API_URL } from "../../config";
 
 export const ClientVersionList: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -14,10 +19,32 @@ export const ClientVersionList: React.FC = () => {
     setIsRefreshing(true);
     try {
       await dispatch(fetchClientVersions()).unwrap();
+      toast.success("Verziók frissítve");
     } catch (error) {
       console.error("Failed to refresh versions:", error);
+      toast.error("Nem sikerült frissíteni a verziókat");
     } finally {
       setIsRefreshing(false);
+    }
+  };
+
+  const handleDownload = (id: string) => {
+    window.open(`${API_URL}/client/update/${id}/download`, "_blank");
+  };
+
+  const handleDelete = async (id: string, version: string) => {
+    if (
+      !window.confirm(`Biztosan törölni szeretnéd a(z) ${version} verziót?`)
+    ) {
+      return;
+    }
+
+    try {
+      await dispatch(deleteClientVersion(id)).unwrap();
+      toast.success(`${version} verzió törölve`);
+    } catch (error) {
+      console.error("Failed to delete version:", error);
+      toast.error("Nem sikerült törölni a verziót");
     }
   };
 
@@ -65,6 +92,9 @@ export const ClientVersionList: React.FC = () => {
               <th className="p-3 border-b border-white/5">Verzió</th>
               <th className="p-3 border-b border-white/5">Feltöltve</th>
               <th className="p-3 border-b border-white/5">Státusz</th>
+              <th className="p-3 border-b border-white/5 text-right">
+                Műveletek
+              </th>
             </tr>
           </thead>
           <tbody className="text-sm">
@@ -95,11 +125,31 @@ export const ClientVersionList: React.FC = () => {
                       <span className="text-gray-500 text-xs">Inaktív</span>
                     )}
                   </td>
+                  <td className="p-3 border-b border-white/5 text-right">
+                    <div className="flex justify-end gap-2">
+                      <button
+                        onClick={() => handleDownload(ver.id)}
+                        className="p-1.5 hover:bg-white/10 rounded text-blue-400 hover:text-blue-300 transition-colors"
+                        title="Letöltés"
+                      >
+                        <Download size={16} />
+                      </button>
+                      {!ver.isActive && (
+                        <button
+                          onClick={() => handleDelete(ver.id, ver.version)}
+                          className="p-1.5 hover:bg-white/10 rounded text-red-400 hover:text-red-300 transition-colors"
+                          title="Törlés"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
+                    </div>
+                  </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={3} className="p-8 text-center text-gray-500">
+                <td colSpan={4} className="p-8 text-center text-gray-500">
                   Nincs feltöltött verzió.
                 </td>
               </tr>

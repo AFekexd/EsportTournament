@@ -128,13 +128,19 @@ namespace EsportLauncher
 
         static void LaunchMainApp()
         {
-            if (File.Exists(MAIN_EXE))
+            string mainExePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, MAIN_EXE);
+            if (File.Exists(mainExePath))
             {
-                Process.Start(new ProcessStartInfo(MAIN_EXE) { UseShellExecute = true });
+                var psi = new ProcessStartInfo(mainExePath)
+                {
+                    UseShellExecute = true,
+                    WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
+                };
+                Process.Start(psi);
             }
             else
             {
-                MessageBox.Show($"Application not found: {MAIN_EXE}", "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Application not found: {mainExePath}", "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

@@ -125,6 +125,22 @@ export const fetchClientVersions = createAsyncThunk('kiosk/fetchClientVersions',
     return data as ClientVersion[];
 });
 
+export const deleteClientVersion = createAsyncThunk('kiosk/deleteClientVersion', async (id: string, { getState }) => {
+    const state = getState() as RootState;
+    const token = getToken(state);
+
+    const response = await fetch(`${API_URL}/client/update/${id}`, {
+        method: 'DELETE',
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to delete client version');
+    }
+
+    return id;
+});
+
 const kioskSlice = createSlice({
     name: 'kiosk',
     initialState,
@@ -168,6 +184,9 @@ const kioskSlice = createSlice({
             })
             .addCase(fetchClientVersions.fulfilled, (state, action) => {
                 state.clientVersions = action.payload;
+            })
+            .addCase(deleteClientVersion.fulfilled, (state, action) => {
+                state.clientVersions = state.clientVersions.filter(v => v.id !== action.payload);
             });
     },
 });

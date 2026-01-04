@@ -20,7 +20,23 @@ $newVersion = "{0}.{1}.{2}" -f $currentVersion.Major, $currentVersion.Minor, ($c
 Set-Content -Path $VersionFile -Value $newVersion
 Write-Host "Build Version: $newVersion" -ForegroundColor Cyan
 
-# 3. Build Main App
+# 3. Clean up old builds (Fix for duplicate attributes)
+Write-Host "Cleaning up old build artifacts..."
+$DirsToClean = @(
+    "$BasePath\obj",
+    "$BasePath\bin",
+    "$BasePath\Launcher\obj",
+    "$BasePath\Launcher\bin"
+)
+
+foreach ($dir in $DirsToClean) {
+    if (Test-Path $dir) {
+        Write-Host "Removing $dir..."
+        Remove-Item -Path $dir -Recurse -Force -ErrorAction SilentlyContinue
+    }
+}
+
+# 4. Build Main App
 Write-Host "Building EsportManager..."
 dotnet publish "$BasePath\EsportManager.csproj" -c Release -o $BuildDir /p:Version=$newVersion
 if ($LASTEXITCODE -ne 0) { throw "Build failed" }

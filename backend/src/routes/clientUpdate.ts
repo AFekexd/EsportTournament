@@ -43,6 +43,27 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Download specific version
+router.get('/:id/download', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const version = await prisma.clientVersion.findUnique({
+      where: { id }
+    });
+
+    if (!version) {
+      return res.status(404).json({ message: 'Version not found' });
+    }
+
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename="update-${version.version}.zip"`);
+    res.send(version.fileData);
+  } catch (error) {
+    console.error('Error downloading version:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 // Download latest version
 router.get('/download', async (req, res) => {
   try {
@@ -91,6 +112,37 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     res.json({ message: 'Version uploaded successfully', version: newVersion.version });
   } catch (error) {
     console.error('Error uploading version:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Delete version
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Check if version exists and is active
+    const version = await prisma.clientVersion.findUnique({
+      where: { id }
+    });
+
+    if (!version) {
+      return res.status(404).json({ message: 'Version not found' });
+    }
+
+    if (version.isActive) {
+        // Prevent deleting active version unless it's the only one maybe? 
+        // Or just warn frontend. For now let's allow but maybe we should activate previous?
+        // Let's just allow deletion.
+    }
+
+    await prisma.clientVersion.delete({
+      where: { id }
+    });
+
+    res.json({ message: 'Version deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting version:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
