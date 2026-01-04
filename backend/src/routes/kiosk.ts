@@ -280,7 +280,7 @@ kioskRouter.post('/register', async (req, res) => {
     const { name, hostname, row, position, adminPassword } = req.body;
 
     // Simple Admin Password Check (In production use proper auth or env secret)
-    if (adminPassword !== 'admin123') {
+    if (adminPassword !== '55pollak5565') {
         res.status(401).json({ error: 'Hibás admin jelszó' });
         return;
     }

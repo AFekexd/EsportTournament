@@ -1,6 +1,7 @@
 
 $AppName = "EsportManager"
-$AppPath = "d:\Codes\EsportTournament\Desktop\bin\Debug\net8.0-windows\EsportManager.exe" # Adjust if needed for release/published path
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
+$AppPath = Join-Path $ScriptDir "EsportLauncher.exe" # Start Launcher to check for updates
 
 Write-Host "Monitoring $AppName..."
 Write-Host "Press Ctrl+C to stop."

@@ -24,6 +24,25 @@ router.get('/latest', async (req, res) => {
   }
 });
 
+// List all versions
+router.get('/', async (req, res) => {
+  try {
+    const versions = await prisma.clientVersion.findMany({
+      select: {
+        id: true,
+        version: true,
+        isActive: true,
+        createdAt: true
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    res.json(versions);
+  } catch (error) {
+    console.error('Error listing versions:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 // Download latest version
 router.get('/download', async (req, res) => {
   try {

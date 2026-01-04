@@ -2,12 +2,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { API_URL } from '../../config';
 import type { RootState } from '../index';
-import type { Computer, Log, Session, User } from '../../types';
+import type { Computer, Log, Session, User, ClientVersion } from '../../types';
 
 interface KioskState {
     machines: Computer[];
     activeSessions: Session[];
     logs: Log[];
+    clientVersions: ClientVersion[];
     isLoading: boolean;
     error: string | null;
 }
@@ -15,7 +16,9 @@ interface KioskState {
 const initialState: KioskState = {
     machines: [],
     activeSessions: [],
+
     logs: [],
+    clientVersions: [],
     isLoading: false,
     error: null,
 };
@@ -97,6 +100,29 @@ export const fetchLogs = createAsyncThunk('kiosk/fetchLogs', async (_, { getStat
     });
     const data = await response.json();
     return data as Log[];
+    return data as Log[];
+});
+
+export const fetchClientVersions = createAsyncThunk('kiosk/fetchClientVersions', async (_, { getState }) => {
+    // Note: This endpoint might not require auth, but best practice to include token if user contexts
+    // However, previous implementation used public fetch. I'll stick to consistent auth usage if possible,
+    // or just public as it was. The user updated KioskManager to use API_URL which usually implies /api path
+    // Let's assume public access is fine or handled by cookie/server. 
+    // BUT I will use token just in case admin routes are protected.
+    const state = getState() as RootState;
+    const token = getToken(state);
+    
+    // Using fetch similar to original component
+    const response = await fetch(`${API_URL}/client/update`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch client versions');
+    }
+    
+    const data = await response.json();
+    return data as ClientVersion[];
 });
 
 const kioskSlice = createSlice({
@@ -115,7 +141,10 @@ const kioskSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(fetchMachines.pending, (state) => {
-                state.isLoading = true;
+                // Only show loading state on initial load
+                if (state.machines.length === 0) {
+                    state.isLoading = true;
+                }
             })
             .addCase(fetchMachines.fulfilled, (state, action) => {
                 state.isLoading = false;
@@ -134,7 +163,11 @@ const kioskSlice = createSlice({
                 if (index !== -1) state.machines[index] = action.payload;
             })
             .addCase(fetchLogs.fulfilled, (state, action) => {
+
                 state.logs = action.payload;
+            })
+            .addCase(fetchClientVersions.fulfilled, (state, action) => {
+                state.clientVersions = action.payload;
             });
     },
 });

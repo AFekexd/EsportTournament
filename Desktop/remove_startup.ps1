@@ -1,3 +1,7 @@
+Param(
+    [switch]$NonInteractive
+)
+
 $ErrorActionPreference = "Stop"
 
 # Self-elevate if not running as Administrator
@@ -39,5 +43,8 @@ try {
 }
 
 Write-Host "`nDONE! The application will NO LONGER start automatically." -ForegroundColor Cyan
-Write-Host "Press any key to exit..."
-$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+
+if (-not $NonInteractive) {
+    Write-Host "Press any key to exit..."
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}

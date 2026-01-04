@@ -12,7 +12,7 @@ namespace EsportLauncher
     static class Program
     {
         // CONFIG
-        const string API_BASE_URL = "http://localhost:6969/api/client/update"; // Change to production URL
+        const string API_BASE_URL = "https://esport-backend.pollak.info/api/client/update"; // Change to production URL
         const string MAIN_EXE = "EsportManager.exe";
         const string VERSION_FILE = "version.txt";
 

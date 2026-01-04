@@ -1,3 +1,7 @@
+Param(
+    [switch]$NonInteractive
+)
+
 $ErrorActionPreference = "Stop"
 
 # Self-elevate if not running as Administrator
@@ -9,7 +13,9 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 }
 
 $TaskName = "EsportManagerWatchdog"
-$VbsPath = "d:\Codes\EsportTournament\Desktop\run_watchdog.vbs"
+$ScriptDir = $PSScriptRoot
+if (-not $ScriptDir) { $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition }
+$VbsPath = Join-Path $ScriptDir "run_watchdog.vbs"
 $Description = "Starts the Esport Manager Watchdog immediately at logon."
 
 Write-Host "--- Esport Manager Startup Installer ---"
@@ -70,6 +76,19 @@ try {
 
     Write-Host "   [SUCCESS] Task '$TaskName' created successfully." -ForegroundColor Green
     
+    Write-Host "   [SUCCESS] Task '$TaskName' created successfully." -ForegroundColor Green
+    
+    # 4. Lock Down Folder Permissions (Security)
+    Write-Host "4. Securing installation directory (Preventing deletion by users)..."
+    # Reset inheritance (/inheritance:r)
+    # Grant Admins (S-1-5-32-544) -> Full Control (F)
+    # Grant SYSTEM -> Full Control (F)
+    # Grant Users (S-1-5-32-545) -> Read & Execute (RX) ONLY
+    $aclArgs = "`"$ScriptDir`" /inheritance:r /grant:r *S-1-5-32-544:(OI)(CI)F /grant:r SYSTEM:(OI)(CI)F /grant:r *S-1-5-32-545:(OI)(CI)RX /Q"
+    
+    Start-Process -FilePath "icacls.exe" -ArgumentList $aclArgs -NoNewWindow -Wait
+    Write-Host "   [OK] Folder permissions locked. Users can only Read & Execute." -ForegroundColor Green
+
     # Verify
     $taskState = (Get-ScheduledTask -TaskName $TaskName).State
     Write-Host "   [INFO] Task State: $taskState"
@@ -79,10 +98,13 @@ try {
     Write-Host "`n[ERROR] Failed to create scheduled task!" -ForegroundColor Red
     Write-Host "Error Details: $_" -ForegroundColor Red
     
+
     Write-Host "`nTroubleshooting:" -ForegroundColor Yellow
     Write-Host "- Make sure you are running this script as Administrator." -ForegroundColor Yellow
     Write-Host "- Check if the path exists: $VbsPath" -ForegroundColor Yellow
 }
 
-Write-Host "`nPress any key to exit..."
-$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+if (-not $NonInteractive) {
+    Write-Host "`nPress any key to exit..."
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}

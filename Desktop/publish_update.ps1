@@ -1,5 +1,5 @@
 param(
-    [string]$BackendUrl = "http://localhost:6969/api/client/update/upload"
+    [string]$BackendUrl = "https://esport-backend.pollak.info/api/client/update/upload"
 )
 
 $ErrorActionPreference = "Stop"

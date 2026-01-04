@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.IO;
 using Microsoft.Win32;
+using System.Linq;
 
 namespace EsportManager
 {
@@ -33,6 +34,7 @@ namespace EsportManager
         private string? _currentUserId;
         private string? _currentOmNumber;
         private string? _accessToken;
+        private bool _isAdmin = false;
         
         // UI
         private Panel _loginPanel = null!;
@@ -142,6 +144,10 @@ namespace EsportManager
                             {
                                 // Trigger registration check explicitly
                                 await CheckRegistration(force: true, silent: false);
+                                
+                                // Enable Admin Features
+                                _isAdmin = true;
+                                UpdateAdminMenu();
                             }
                         }
                     }
@@ -570,6 +576,8 @@ namespace EsportManager
             ShowLockedScreen();
 
             _isUnlocked = false;
+            _isAdmin = false;
+            UpdateAdminMenu(); // Remove admin items
             
             Console.WriteLine("[LOGOUT] Felhasználó kijelentkezett a tálca ikon segítségével");
         }
@@ -661,6 +669,7 @@ namespace EsportManager
             
             // Reset user ID
             _currentUserId = null;
+            _isAdmin = false;
 
             Console.WriteLine("\n========== BEJELENTKEZÉSI KÍSÉRLET ==========");
             Console.WriteLine($"Username: {username}");
@@ -1512,6 +1521,103 @@ namespace EsportManager
             catch (Exception ex)
             {
                 Console.WriteLine($"[WALLPAPER] Error setting wallpaper: {ex.Message}");
+            }
+        }
+        private void UpdateAdminMenu()
+        {
+            if (_contextMenuStrip.InvokeRequired)
+            {
+                _contextMenuStrip.Invoke(new Action(UpdateAdminMenu));
+                return;
+            }
+
+            // Remove existing admin items
+            var itemsToRemove = _contextMenuStrip.Items.Find("adminToolItem", true);
+            foreach (var item in itemsToRemove)
+            {
+                _contextMenuStrip.Items.Remove(item);
+            }
+            
+            var separator = _contextMenuStrip.Items.Find("adminSeparator", true).FirstOrDefault();
+            if (separator != null) _contextMenuStrip.Items.Remove(separator);
+
+            if (!_isAdmin) return;
+
+            // Add Admin Tools
+            _contextMenuStrip.Items.Add(new ToolStripSeparator { Name = "adminSeparator" });
+
+            var adminRoot = new ToolStripMenuItem("Admin Eszközök");
+            adminRoot.Name = "adminToolItem";
+
+            bool isAutoStart = IsAutoStartEnabled();
+            
+            var autoStartItem = new ToolStripMenuItem(isAutoStart ? "Automatikus indítás KIKAPCSOLÁSA" : "Automatikus indítás BEKAPCSOLÁSA");
+            autoStartItem.Click += (s, e) => 
+            {
+                SetAutoStart(!isAutoStart);
+            };
+
+            adminRoot.DropDownItems.Add(autoStartItem);
+            _contextMenuStrip.Items.Add(adminRoot);
+        }
+
+        private bool IsAutoStartEnabled()
+        {
+            try
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "schtasks",
+                    Arguments = "/query /TN \"EsportManagerWatchdog\"",
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                };
+                using (var p = Process.Start(psi))
+                {
+                    if (p != null)
+                    {
+                        p.WaitForExit();
+                        return p.ExitCode == 0;
+                    }
+                }
+            }
+            catch { }
+            return false;
+        }
+
+        private void SetAutoStart(bool enable)
+        {
+            try
+            {
+                string scriptName = enable ? "install_fast_startup.ps1" : "remove_startup.ps1";
+                string scriptPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, scriptName);
+                
+                if (!File.Exists(scriptPath))
+                {
+                    MessageBox.Show($"Nem található a script: {scriptName}", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Run PowerShell script as Admin with NonInteractive flag
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "powershell.exe",
+                    Arguments = $"-NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\" -NonInteractive",
+                    UseShellExecute = true,
+                    Verb = "runas", // Request elevation
+                    WindowStyle = ProcessWindowStyle.Normal // Show window so user sees progress
+                };
+
+                Process.Start(psi);
+                
+                // Update menu after a short delay (wait for script)
+                Task.Delay(2000).ContinueWith(t => UpdateAdminMenu());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Hiba a beállítás mentésekor: {ex.Message}", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

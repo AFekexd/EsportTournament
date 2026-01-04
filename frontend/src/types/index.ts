@@ -252,3 +252,10 @@ export interface Log {
     computer?: Computer;
     createdAt: string;
 }
+
+export interface ClientVersion {
+    id: string;
+    version: string;
+    isActive: boolean;
+    createdAt: string;
+}

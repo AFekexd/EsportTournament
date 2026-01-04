@@ -1,0 +1,15 @@
+D:\Codes\EsportTournament\Desktop\obj\Debug\net8.0-windows\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs(4,12): error CS0579: Duplicate 'global::System.Runtime.Versioning.TargetFrameworkAttribute' attribute [D:\Codes\EsportTournament\Desktop\EsportManager.csproj]
+D:\Codes\EsportTournament\Desktop\obj\Debug\net8.0-windows\EsportManager.AssemblyInfo.cs(13,12): error CS0579: Duplicate 'System.Reflection.AssemblyCompanyAttribute' attribute [D:\Codes\EsportTournament\Desktop\EsportManager.csproj]
+D:\Codes\EsportTournament\Desktop\obj\Debug\net8.0-windows\EsportManager.AssemblyInfo.cs(14,12): error CS0579: Duplicate 'System.Reflection.AssemblyConfigurationAttribute' attribute [D:\Codes\EsportTournament\Desktop\EsportManager.csproj]
+D:\Codes\EsportTournament\Desktop\obj\Debug\net8.0-windows\EsportManager.AssemblyInfo.cs(15,12): error CS0579: Duplicate 'System.Reflection.AssemblyFileVersionAttribute' attribute [D:\Codes\EsportTournament\Desktop\EsportManager.csproj]
+D:\Codes\EsportTournament\Desktop\obj\Debug\net8.0-windows\EsportManager.AssemblyInfo.cs(16,12): error CS0579: Duplicate 'System.Reflection.AssemblyInformationalVersionAttribute' attribute [D:\Codes\EsportTournament\Desktop\EsportManager.csproj]
+D:\Codes\EsportTournament\Desktop\obj\Debug\net8.0-windows\EsportManager.AssemblyInfo.cs(17,12): error CS0579: Duplicate 'System.Reflection.AssemblyProductAttribute' attribute [D:\Codes\EsportTournament\Desktop\EsportManager.csproj]
+D:\Codes\EsportTournament\Desktop\obj\Debug\net8.0-windows\EsportManager.AssemblyInfo.cs(18,12): error CS0579: Duplicate 'System.Reflection.AssemblyTitleAttribute' attribute [D:\Codes\EsportTournament\Desktop\EsportManager.csproj]
+D:\Codes\EsportTournament\Desktop\obj\Debug\net8.0-windows\EsportManager.AssemblyInfo.cs(19,12): error CS0579: Duplicate 'System.Reflection.AssemblyVersionAttribute' attribute [D:\Codes\EsportTournament\Desktop\EsportManager.csproj]
+D:\Codes\EsportTournament\Desktop\obj\Debug\net8.0-windows\EsportManager.AssemblyInfo.cs(20,12): error CS0579: Duplicate 'System.Runtime.Versioning.TargetPlatformAttribute' attribute [D:\Codes\EsportTournament\Desktop\EsportManager.csproj]
+
+Build FAILED.
+    1 Warning(s)
+    9 Error(s)
+
+Time Elapsed 00:00:00.78

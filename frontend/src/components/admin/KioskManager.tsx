@@ -7,6 +7,7 @@ import {
 } from "../../store/slices/kioskSlice";
 import { Monitor, Lock, Unlock } from "lucide-react";
 import type { Computer } from "../../types";
+import { ClientVersionList } from "./ClientVersionList";
 
 export const KioskManager: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -17,7 +18,7 @@ export const KioskManager: React.FC = () => {
     // Poll for updates every 5 seconds (or use sockets in future)
     const interval = setInterval(() => {
       dispatch(fetchMachines());
-    }, 5000);
+    }, 60000);
     return () => clearInterval(interval);
   }, [dispatch]);
 
@@ -42,10 +43,6 @@ export const KioskManager: React.FC = () => {
     );
   };
 
-  if (isLoading && machines.length === 0) {
-    return <div className="p-8 text-center text-gray-400">Betöltés...</div>;
-  }
-
   return (
     <div className="admin-section">
       <h2 className="section-title mb-6 flex items-center gap-2">
@@ -53,53 +50,67 @@ export const KioskManager: React.FC = () => {
         Gépterem Felügyelet
       </h2>
 
-      <div className="grid gap-8">
-        {machinesByRow.map((rowMachines, rowIndex) => (
-          <div key={rowIndex} className="space-y-4">
-            <h3 className="text-white/70 font-medium ml-2">
-              {rowIndex + 1}. Sor
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-              {rowMachines.length > 0 ? (
-                rowMachines.map((machine) => (
-                  <MachineCard
-                    key={machine.id}
-                    machine={machine}
-                    onLock={() => handleLockToggle(machine)}
-                    onCompetitionToggle={() => handleCompetitionToggle(machine)}
-                  />
-                ))
-              ) : (
-                <div className="col-span-full p-4 border border-dashed border-white/10 rounded-lg text-center text-muted">
-                  Nincsenek gépek ebben a sorban
+      {isLoading && machines.length === 0 ? (
+        <div className="p-12 text-center text-gray-400 border border-white/5 rounded-lg bg-white/5 animate-pulse">
+          Betöltés...
+        </div>
+      ) : (
+        <>
+          <div className="grid gap-8">
+            {machinesByRow.map((rowMachines, rowIndex) => (
+              <div key={rowIndex} className="space-y-4">
+                <h3 className="text-white/70 font-medium ml-2">
+                  {rowIndex + 1}. Sor
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                  {rowMachines.length > 0 ? (
+                    rowMachines.map((machine) => (
+                      <MachineCard
+                        key={machine.id}
+                        machine={machine}
+                        onLock={() => handleLockToggle(machine)}
+                        onCompetitionToggle={() =>
+                          handleCompetitionToggle(machine)
+                        }
+                      />
+                    ))
+                  ) : (
+                    <div className="col-span-full p-4 border border-dashed border-white/10 rounded-lg text-center text-muted">
+                      Nincsenek gépek ebben a sorban
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 p-4 bg-tertiary rounded-lg border border-white/5">
+            <h3 className="font-bold text-white mb-2">Jelmagyarázat</h3>
+            <div className="flex flex-wrap gap-4 text-sm text-gray-400">
+              <span className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-green-500"></div> Szabad
+              </span>
+              <span className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-blue-500"></div> Foglalt
+                / Aktív
+              </span>
+              <span className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-500"></div> Zárolt
+              </span>
+              <span className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-purple-500"></div>{" "}
+                Verseny Mód
+              </span>
+              <span className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-gray-600"></div> Offline
+              </span>
             </div>
           </div>
-        ))}
-      </div>
+        </>
+      )}
 
-      <div className="mt-8 p-4 bg-tertiary rounded-lg border border-white/5">
-        <h3 className="font-bold text-white mb-2">Jelmagyarázat</h3>
-        <div className="flex flex-wrap gap-4 text-sm text-gray-400">
-          <span className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-green-500"></div> Szabad
-          </span>
-          <span className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-blue-500"></div> Foglalt /
-            Aktív
-          </span>
-          <span className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div> Zárolt
-          </span>
-          <span className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-purple-500"></div> Verseny
-            Mód
-          </span>
-          <span className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-gray-600"></div> Offline
-          </span>
-        </div>
+      <div className="mt-8">
+        <ClientVersionList />
       </div>
     </div>
   );
