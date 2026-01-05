@@ -252,11 +252,10 @@ function LeaderboardsSlide() {
                   {/* Win Rate Badge */}
                   <div className="ml-4 px-4 py-1 rounded-full bg-white/5 border border-white/10">
                     <span
-                      className={`text-xl font-bold ${
-                        player.winRate >= 50
-                          ? "text-green-400"
-                          : "text-yellow-400"
-                      }`}
+                      className={`text-xl font-bold ${player.winRate >= 50
+                        ? "text-green-400"
+                        : "text-yellow-400"
+                        }`}
                     >
                       {player.winRate.toFixed(0)}% Win Rate
                     </span>
@@ -379,11 +378,10 @@ function TeamsSlide() {
 
                   <div className="ml-4 px-4 py-1 rounded-full bg-white/5 border border-white/10">
                     <span
-                      className={`text-xl font-bold ${
-                        team.winRate >= 50
-                          ? "text-green-400"
-                          : "text-yellow-400"
-                      }`}
+                      className={`text-xl font-bold ${team.winRate >= 50
+                        ? "text-green-400"
+                        : "text-yellow-400"
+                        }`}
                     >
                       {team.winRate.toFixed(0)}% Win Rate
                     </span>
@@ -530,9 +528,8 @@ export function TVDisplayPage() {
           {slides.map((_, i) => (
             <div
               key={i}
-              className={`h-2 rounded-full transition-all duration-500 ${
-                i === currentSlideIndex ? "w-16 bg-primary" : "w-4 bg-white/20"
-              }`}
+              className={`h-2 rounded-full transition-all duration-500 ${i === currentSlideIndex ? "w-16 bg-primary" : "w-4 bg-white/20"
+                }`}
             />
           ))}
         </div>
@@ -550,6 +547,12 @@ export function TVDisplayPage() {
         @keyframes progress {
           from { width: 0%; }
           to { width: 100%; }
+        }
+
+        @media (min-width: 2500px) {
+          .fixed {
+            zoom: 2;
+          }
         }
       `}</style>
     </div>

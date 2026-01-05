@@ -503,7 +503,7 @@ namespace EsportManager
              {
                  Text = ver,
                  ForeColor = Color.Gray,
-                 Location = new Point(30, 310),
+                 Location = new Point(30, 280),
                  Size = new Size(340, 20),
                  TextAlign = ContentAlignment.MiddleCenter,
                  Font = new Font("Segoe UI", 8, FontStyle.Regular)

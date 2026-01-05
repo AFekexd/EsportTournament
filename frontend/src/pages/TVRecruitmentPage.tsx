@@ -102,6 +102,12 @@ export function TVRecruitmentPage() {
           0%, 100% { transform: translateY(-5%); }
           50% { transform: translateY(5%); }
         }
+
+        @media (min-width: 2500px) {
+          .fixed {
+            zoom: 2;
+          }
+        }
       `}</style>
     </div>
   );
