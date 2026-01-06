@@ -160,29 +160,103 @@ const response = await apiFetch(url, {
 
 ## Testing Recommendations
 
-1. **Token Expiration:**
-   - Wait for token to expire naturally
-   - Verify warning notification appears
-   - Verify successful refresh notification
-   - Verify continued functionality
+### Manual Testing Guide
 
-2. **Failed Refresh:**
-   - Simulate refresh token expiration
-   - Verify error notification appears
-   - Verify automatic logout
-   - Verify redirect to login
+#### 1. Test Token Expiration Warning
+**Goal:** Verify that users get a warning when token is about to expire
 
-3. **API Calls:**
-   - Make authenticated API calls
-   - Verify automatic token refresh
-   - Verify Authorization header is added
-   - Verify 401/403 errors show notifications
+1. Log in to the application
+2. Monitor the browser console for "Token expired, attempting to refresh"
+3. Wait for the token to expire (or reduce token lifetime in Keycloak for testing)
+4. **Expected Result:** 
+   - Toast notification appears: "A munkamenet hamarosan lejár, frissítés..."
+   - Token is automatically refreshed
+   - Toast notification appears: "Munkamenet frissítve"
+   - No interruption to user activity
 
-4. **Background Refresh:**
-   - Leave application idle for 5+ minutes
-   - Verify periodic refresh occurs
-   - Verify Redux store is updated
-   - Verify no interruption to user
+#### 2. Test Failed Token Refresh
+**Goal:** Verify proper handling when token cannot be refreshed
+
+1. Log in to the application
+2. Clear browser cookies while staying on the page (to invalidate refresh token)
+3. Wait for token to expire or trigger a refresh
+4. **Expected Result:**
+   - Toast notification appears: "A munkamenet lejárt. Kérjük, jelentkezz be újra."
+   - User is automatically logged out
+   - User is redirected to login page
+
+#### 3. Test API Call with Expired Token
+**Goal:** Verify that API calls handle 401 responses correctly
+
+1. Log in to the application
+2. Use browser dev tools to set an expired token in localStorage/session
+3. Perform any action that requires authentication (e.g., update profile, create team)
+4. **Expected Result:**
+   - Toast notification appears: "A munkamenet lejárt. Kérjük, jelentkezz be újra."
+   - User is automatically logged out
+   - No failed requests are visible to the user
+
+#### 4. Test Forbidden Access (403)
+**Goal:** Verify that API calls handle 403 responses correctly
+
+1. Log in as a non-admin user
+2. Try to access admin-only functionality
+3. **Expected Result:**
+   - Toast notification appears: "Nincs jogosultságod ehhez a művelethez."
+   - User remains logged in
+   - No crash or error page
+
+#### 5. Test Background Token Refresh
+**Goal:** Verify that tokens are refreshed automatically in the background
+
+1. Log in to the application
+2. Leave the application open but idle for 6+ minutes
+3. Monitor browser console for "Token refreshed via periodic check"
+4. Perform any action that requires authentication
+5. **Expected Result:**
+   - Token is refreshed automatically every 5 minutes
+   - No user-visible notifications (silent refresh)
+   - All actions continue to work normally
+
+#### 6. Test Proactive Token Refresh
+**Goal:** Verify that tokens are refreshed before API calls
+
+1. Log in to the application
+2. Wait until token is close to expiration (< 30 seconds remaining)
+3. Perform any API action (e.g., load teams, update settings)
+4. Monitor browser console for "Token was refreshed"
+5. **Expected Result:**
+   - Token is refreshed before the API call
+   - API call succeeds
+   - No error notifications
+
+### Automated Testing (Future Enhancement)
+
+```typescript
+// Example test structure (not implemented)
+describe('Token Refresh', () => {
+  it('should refresh token before API call', async () => {
+    // Mock expired token
+    // Call apiFetch
+    // Verify token refresh was called
+    // Verify API call succeeded
+  });
+
+  it('should show error on failed refresh', async () => {
+    // Mock failed refresh
+    // Call apiFetch
+    // Verify error toast was shown
+    // Verify user was logged out
+  });
+
+  it('should handle 401 responses', async () => {
+    // Mock 401 response
+    // Call apiFetch
+    // Verify error toast was shown
+    // Verify logout was called
+  });
+});
+```
 
 ## Security Considerations
 
