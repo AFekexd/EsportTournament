@@ -3,6 +3,9 @@ import { toast } from 'sonner';
 
 /**
  * Enhanced fetch wrapper that handles token refresh and error notifications
+ * 
+ * Automatically adds Authorization header with fresh token.
+ * Note: Content-Type and other headers should still be set by the caller as needed.
  */
 export async function apiFetch(
     url: string,
@@ -59,19 +62,23 @@ export async function apiFetchJson<T = any>(
 ): Promise<T> {
     const response = await apiFetch(url, options);
     
-    if (!response.ok) {
-        let errorMessage = `HTTP error! status: ${response.status}`;
+    // Try to parse JSON response
+    try {
+        const data = await response.json();
         
-        // Try to parse error details from response
-        try {
-            const errorData = await response.json();
-            errorMessage = errorData.message || errorData.error?.message || errorMessage;
-        } catch {
-            // If JSON parsing fails, use the default error message
+        // Check if response was successful
+        if (!response.ok) {
+            const errorMessage = data.message || data.error?.message || `HTTP error! status: ${response.status}`;
+            throw new Error(errorMessage);
         }
         
-        throw new Error(errorMessage);
+        return data;
+    } catch (error) {
+        // If JSON parsing failed and response was not ok, provide generic error
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        // Re-throw other errors (like JSON parsing errors for successful responses)
+        throw error;
     }
-    
-    return response.json();
 }
