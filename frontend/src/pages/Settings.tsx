@@ -6,18 +6,20 @@ import { useAppDispatch } from "../hooks/useRedux";
 import { updateUser } from "../store/slices/authSlice";
 import { ImageUpload } from "../components/common/ImageUpload";
 import { API_URL } from "../config";
-import { authService } from "../lib/auth-service";
+import { apiFetch } from "../lib/api-client";
 
 export function SettingsPage() {
   const dispatch = useAppDispatch();
   const { user, isAuthenticated, isAdmin } = useAuth();
 
-  // Settings state
+  // Settings state - must be declared before any conditional returns
   const [displayName, setDisplayName] = useState(user?.displayName || "");
   const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || "");
   const [emailNotifications, setEmailNotifications] = useState(
     user?.emailNotifications ?? true
   );
+  const [saveLoading, setSaveLoading] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   if (!isAuthenticated) {
     return (
@@ -37,9 +39,6 @@ export function SettingsPage() {
     );
   }
 
-  const [saveLoading, setSaveLoading] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
-
   const handleSave = async () => {
     if (!user?.id) return;
 
@@ -47,17 +46,10 @@ export function SettingsPage() {
     setSaveSuccess(false);
 
     try {
-      const token = authService.keycloak?.token;
-
-      if (!token) {
-        throw new Error("Nincs bejelentkezve!");
-      }
-
-      const response = await fetch(`${API_URL}/users/${user.id}`, {
+      const response = await apiFetch(`${API_URL}/users/${user.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           displayName,

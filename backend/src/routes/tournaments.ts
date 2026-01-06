@@ -119,7 +119,19 @@ tournamentsRouter.post(
         });
 
         // Log creation
-        await logSystemActivity('TOURNAMENT_CREATE', `Tournament '${tournament.name}' created by ${user.username}`, { adminId: user.id });
+        await logSystemActivity(
+            'TOURNAMENT_CREATE',
+            `Tournament '${tournament.name}' created by ${user.username}`,
+            {
+                userId: user.id,
+                metadata: {
+                    tournamentId: tournament.id,
+                    gameId: tournament.gameId,
+                    format: tournament.format,
+                    startDate: tournament.startDate
+                }
+            }
+        );
 
         // Notify all users (async, don't await)
         notificationService.notifyAllUsersNewTournament(tournament)
@@ -173,20 +185,20 @@ tournamentsRouter.get(
 
         // Robust counting: Count unique teams (for team tournaments) or participants (for solo)
         let participantsCount = tournament._count.entries;
-        
+
         // If it's a team tournament (has teamSize > 1 or game.teamSize > 1), ensure we count unique teams
         const teamSize = tournament.teamSize ?? tournament.game?.teamSize ?? 1;
         if (teamSize > 1) {
-             const uniqueTeams = new Set(tournament.entries.map(e => e.teamId).filter(Boolean));
-             participantsCount = uniqueTeams.size;
+            const uniqueTeams = new Set(tournament.entries.map(e => e.teamId).filter(Boolean));
+            participantsCount = uniqueTeams.size;
         }
 
-        res.json({ 
-            success: true, 
+        res.json({
+            success: true,
             data: {
                 ...tournament,
                 participantsCount // Explicitly return the calculated count
-            } 
+            }
         });
     })
 );
@@ -220,7 +232,17 @@ tournamentsRouter.delete(
         });
 
         // Log deletion
-        await logSystemActivity('TOURNAMENT_DELETE', `Tournament ID ${req.params.id} deleted by ${user.username}`, { adminId: user.id });
+        await logSystemActivity(
+            'TOURNAMENT_DELETE',
+            `Tournament ID ${req.params.id} deleted by ${user.username}`,
+            {
+                userId: user.id,
+                metadata: {
+                    tournamentId: req.params.id,
+                    deletedBy: user.username
+                }
+            }
+        );
 
         res.json({ success: true, message: 'Tournament deleted' });
     })
@@ -306,7 +328,18 @@ tournamentsRouter.patch(
         });
 
         // Log update
-        await logSystemActivity('TOURNAMENT_UPDATE', `Tournament '${updated.name}' updated by ${user.username}`, { adminId: user.id });
+        await logSystemActivity(
+            'TOURNAMENT_UPDATE',
+            `Tournament '${updated.name}' updated by ${user.username}`,
+            {
+                userId: user.id,
+                metadata: {
+                    tournamentId: updated.id,
+                    changes: Object.keys(req.body).filter(k => k !== 'imageUrl'),
+                    status: updated.status
+                }
+            }
+        );
 
         res.json({ success: true, data: updated });
     })
@@ -321,10 +354,10 @@ tournamentsRouter.post(
 
         const tournament = await prisma.tournament.findUnique({
             where: { id: req.params.id },
-            include: { 
+            include: {
                 game: true,
                 entries: { select: { teamId: true, userId: true } },
-                _count: { select: { entries: true } } 
+                _count: { select: { entries: true } }
             },
         });
 
@@ -347,8 +380,8 @@ tournamentsRouter.post(
         // Robust counting check
         let currentCount = tournament._count.entries;
         if (!isSolo) {
-             const uniqueTeams = new Set(tournament.entries.map(e => e.teamId).filter(Boolean));
-             currentCount = uniqueTeams.size;
+            const uniqueTeams = new Set(tournament.entries.map(e => e.teamId).filter(Boolean));
+            currentCount = uniqueTeams.size;
         } else {
             // For solo, standard count is fine as entries map 1:1 to users usually, but let's be safe
             currentCount = tournament.entries.length;
@@ -370,11 +403,11 @@ tournamentsRouter.post(
         let registrant = currentUser;
         if (targetUserId) {
             if (!['ADMIN', 'ORGANIZER'].includes(currentUser.role)) {
-                 throw new ApiError('Csak szervezők regisztrálhatnak más felhasználókat', 403, 'FORBIDDEN');
+                throw new ApiError('Csak szervezők regisztrálhatnak más felhasználókat', 403, 'FORBIDDEN');
             }
             const target = await prisma.user.findUnique({ where: { id: targetUserId } });
             if (!target) {
-                 throw new ApiError('A célszemély nem található', 404, 'TARGET_USER_NOT_FOUND');
+                throw new ApiError('A célszemély nem található', 404, 'TARGET_USER_NOT_FOUND');
             }
             registrant = target;
         }
@@ -388,7 +421,7 @@ tournamentsRouter.post(
             // ==========================================
             // SOLO REGISTRATION (1v1)
             // ==========================================
-            
+
             // Check if already registered
             const existingEntry = await prisma.tournamentEntry.findUnique({
                 where: { tournamentId_userId: { tournamentId: req.params.id, userId: registrant.id } },
@@ -412,7 +445,7 @@ tournamentsRouter.post(
             // Prepare entry data
             entryData.userId = registrant.id;
             entryData.seed = registrant.elo; // Seed based on User ELO
-             // Connect participant directly
+            // Connect participant directly
             entryData.participants = {
                 connect: [{ id: registrant.id }]
             };
@@ -421,7 +454,7 @@ tournamentsRouter.post(
             // ==========================================
             // TEAM REGISTRATION (>1)
             // ==========================================
-            
+
             if (!teamId) {
                 throw new ApiError('Csapat azonosító szükséges a csapatversenyhez', 400, 'MISSING_TEAM_ID');
             }
@@ -429,12 +462,12 @@ tournamentsRouter.post(
             // Check if user is captain of the team OR Admin
             const team = await prisma.team.findUnique({
                 where: { id: teamId },
-                include: { 
+                include: {
                     members: {
                         include: {
                             user: true
                         }
-                    } 
+                    }
                 },
             });
 
@@ -448,7 +481,7 @@ tournamentsRouter.post(
 
             // Validate Team Size and Selected Members
             if (!memberIds || !Array.isArray(memberIds)) {
-                    throw new ApiError(`Kérlek válassz ki pontosan ${teamSize} tagot a versenyre.`, 400, 'MEMBERS_REQUIRED');
+                throw new ApiError(`Kérlek válassz ki pontosan ${teamSize} tagot a versenyre.`, 400, 'MEMBERS_REQUIRED');
             }
 
             if (memberIds.length !== teamSize) {
@@ -462,7 +495,7 @@ tournamentsRouter.post(
             if (!allMembersValid) {
                 throw new ApiError('Egy vagy több kiválasztott játékos nem tagja a csapatnak.', 400, 'INVALID_MEMBERS');
             }
-        
+
 
             // Check if already registered
             const existingEntry = await prisma.tournamentEntry.findUnique({
@@ -475,33 +508,33 @@ tournamentsRouter.post(
 
             // Validate that all members have a rank for the game if required
             if (tournament.requireRank) {
-                    // Fetch ranks for these users for this game
-                    const userRanks = await prisma.userRank.findMany({
-                        where: {
-                            userId: { in: memberIds },
-                            gameId: tournament.gameId
-                        },
-                        include: {
-                            user: true
-                        }
-                    });
-
-                    // Check if count matches
-                    if (userRanks.length !== memberIds.length) {
-                        // Identify who is missing a rank
-                        const usersWithRank = userRanks.map(ur => ur.userId);
-                        const missingRankUserId = memberIds.find((id: string) => !usersWithRank.includes(id));
-                        
-                        // Try to find the user details for the error message
-                        let missingUserName = 'Egy csapattag';
-                        if (missingRankUserId) {
-                            const missingMember = team.members.find(m => m.userId === missingRankUserId);
-                            if (missingMember?.user?.displayName) missingUserName = missingMember.user.displayName;
-                            else if (missingMember?.user?.username) missingUserName = missingMember.user.username;
-                        }
-
-                        throw new ApiError(`${missingUserName} nem rendelkezik ranggal ebben a játékban (Rank beállítása kötelező).`, 400, 'RANK_REQUIRED');
+                // Fetch ranks for these users for this game
+                const userRanks = await prisma.userRank.findMany({
+                    where: {
+                        userId: { in: memberIds },
+                        gameId: tournament.gameId
+                    },
+                    include: {
+                        user: true
                     }
+                });
+
+                // Check if count matches
+                if (userRanks.length !== memberIds.length) {
+                    // Identify who is missing a rank
+                    const usersWithRank = userRanks.map(ur => ur.userId);
+                    const missingRankUserId = memberIds.find((id: string) => !usersWithRank.includes(id));
+
+                    // Try to find the user details for the error message
+                    let missingUserName = 'Egy csapattag';
+                    if (missingRankUserId) {
+                        const missingMember = team.members.find(m => m.userId === missingRankUserId);
+                        if (missingMember?.user?.displayName) missingUserName = missingMember.user.displayName;
+                        else if (missingMember?.user?.username) missingUserName = missingMember.user.username;
+                    }
+
+                    throw new ApiError(`${missingUserName} nem rendelkezik ranggal ebben a játékban (Rank beállítása kötelező).`, 400, 'RANK_REQUIRED');
+                }
             }
 
             // Prepare entry data
@@ -514,15 +547,31 @@ tournamentsRouter.post(
 
         const entry = await prisma.tournamentEntry.create({
             data: entryData,
-            include: { 
-                team: true, 
+            include: {
+                team: true,
                 tournament: true,
-                user: { select: { id: true, username: true, displayName: true, avatarUrl: true, elo: true } }, 
+                user: { select: { id: true, username: true, displayName: true, avatarUrl: true, elo: true } },
                 participants: {
                     select: { id: true, username: true, displayName: true, avatarUrl: true }
                 }
             },
         });
+
+        // Log registration
+        await logSystemActivity(
+            'TOURNAMENT_REGISTER',
+            `Registration for tournament '${tournament.name}'`,
+            {
+                userId: currentUser.id,
+                metadata: {
+                    tournamentId: tournament.id,
+                    registeredBy: currentUser.username,
+                    isTeam: !!entry.teamId,
+                    registrantId: entry.teamId || entry.userId,
+                    participantCount: entry.participants ? entry.participants.length : 1
+                }
+            }
+        );
 
         res.status(201).json({ success: true, data: entry });
     })
@@ -564,22 +613,22 @@ tournamentsRouter.delete(
                 // Or just fall through to existing logic.
                 // Let's ignore it here and let fallback handle it or just error.
             } else {
-                 // Check Permissions for Entry ID deletion
-                 let isAllowed = false;
-                 if (['ADMIN', 'ORGANIZER'].includes(currentUser.role)) {
-                     isAllowed = true;
-                 } else if (entryById.userId === currentUser.id) {
-                     // Self unregister
-                     isAllowed = true;
-                 } else if (entryById.teamId && entryById.team?.ownerId === currentUser.id) {
-                     // Team Captain unregister
-                     isAllowed = true;
-                 }
+                // Check Permissions for Entry ID deletion
+                let isAllowed = false;
+                if (['ADMIN', 'ORGANIZER'].includes(currentUser.role)) {
+                    isAllowed = true;
+                } else if (entryById.userId === currentUser.id) {
+                    // Self unregister
+                    isAllowed = true;
+                } else if (entryById.teamId && entryById.team?.ownerId === currentUser.id) {
+                    // Team Captain unregister
+                    isAllowed = true;
+                }
 
-                 if (!isAllowed) {
-                     throw new ApiError('Nincs jogosultságod a nevezés törlésére', 403, 'FORBIDDEN');
-                 }
-                
+                if (!isAllowed) {
+                    throw new ApiError('Nincs jogosultságod a nevezés törlésére', 403, 'FORBIDDEN');
+                }
+
                 // Check Status (if not admin)
                 if (!['ADMIN', 'ORGANIZER'].includes(currentUser.role)) {
                     if (tournament.status !== 'REGISTRATION') {
@@ -588,6 +637,21 @@ tournamentsRouter.delete(
                 }
 
                 await prisma.tournamentEntry.delete({ where: { id: entryById.id } });
+
+                // Log unregister
+                await logSystemActivity(
+                    'TOURNAMENT_UNREGISTER',
+                    `Unregistration from tournament '${tournament.name}' (Entry ID)`,
+                    {
+                        userId: currentUser.id,
+                        metadata: {
+                            tournamentId: tournament.id,
+                            entryId: entryById.id,
+                            unregisteredBy: currentUser.username
+                        }
+                    }
+                );
+
                 return res.json({ success: true, message: 'Sikeres leiratkozás' });
             }
         }
@@ -613,21 +677,35 @@ tournamentsRouter.delete(
             });
 
             if (!entry) {
-                 throw new ApiError('Nem vagy regisztrálva erre a versenyre', 404, 'ENTRY_NOT_FOUND');
+                throw new ApiError('Nem vagy regisztrálva erre a versenyre', 404, 'ENTRY_NOT_FOUND');
             }
-            
+
             // Allow unregistering if DRAFT, REGISTRATION. 
             // Admins can unregister anytime? Maybe not IN_PROGRESS unless force?
             // User can only unregister during REGISTRATION.
             if (!['ADMIN', 'ORGANIZER'].includes(currentUser.role)) {
-                 if (tournament.status !== 'REGISTRATION') {
+                if (tournament.status !== 'REGISTRATION') {
                     throw new ApiError('A verseny kezdete után nem lehet leiratkozni', 400, 'CANNOT_UNREGISTER');
-                 }
+                }
             }
 
             await prisma.tournamentEntry.delete({
                 where: { id: entry.id }
             });
+
+            // Log unregister
+            await logSystemActivity(
+                'TOURNAMENT_UNREGISTER',
+                `User ${targetUserId} unregistered from tournament '${tournament.name}'`,
+                {
+                    userId: currentUser.id,
+                    metadata: {
+                        tournamentId: tournament.id,
+                        targetUserId,
+                        unregisteredBy: currentUser.username
+                    }
+                }
+            );
 
         } else {
             // ==========================================
@@ -647,24 +725,38 @@ tournamentsRouter.delete(
             if (team.ownerId !== currentUser.id && !['ADMIN', 'ORGANIZER'].includes(currentUser.role)) {
                 throw new ApiError('Csak a csapatkapitány vagy szervező törölheti a regisztrációt', 403, 'NOT_CAPTAIN');
             }
-            
+
             const entry = await prisma.tournamentEntry.findUnique({
                 where: { tournamentId_teamId: { tournamentId: req.params.id, teamId: targetTeamId } }
             });
-            
-             if (!entry) {
-                 throw new ApiError('Ez a csapat nincs regisztrálva erre a versenyre', 404, 'ENTRY_NOT_FOUND');
+
+            if (!entry) {
+                throw new ApiError('Ez a csapat nincs regisztrálva erre a versenyre', 404, 'ENTRY_NOT_FOUND');
             }
 
             if (!['ADMIN', 'ORGANIZER'].includes(currentUser.role)) {
-                 if (tournament.status !== 'REGISTRATION') {
+                if (tournament.status !== 'REGISTRATION') {
                     throw new ApiError('A verseny kezdete után nem lehet leiratkozni', 400, 'CANNOT_UNREGISTER');
-                 }
+                }
             }
 
             await prisma.tournamentEntry.delete({
                 where: { id: entry.id },
             });
+
+            // Log unregister
+            await logSystemActivity(
+                'TOURNAMENT_UNREGISTER',
+                `Team ${targetTeamId} unregistered from tournament '${tournament.name}'`,
+                {
+                    userId: currentUser.id,
+                    metadata: {
+                        tournamentId: tournament.id,
+                        targetTeamId,
+                        unregisteredBy: currentUser.username
+                    }
+                }
+            );
         }
 
         res.json({ success: true, message: 'Sikeres leiratkozás' });
@@ -709,11 +801,11 @@ tournamentsRouter.post(
             // Re-sort by qualifier points descending for seeding purposes
             entries.sort((a, b) => (b.qualifierPoints || 0) - (a.qualifierPoints || 0));
         } else if (tournament.seedingMethod === 'RANDOM') {
-             // Shuffle entries
-             entries = entries.sort(() => Math.random() - 0.5);
+            // Shuffle entries
+            entries = entries.sort(() => Math.random() - 0.5);
         } else if (tournament.seedingMethod === 'STANDARD' || tournament.seedingMethod === 'SEQUENTIAL') {
-             // Default sorting by seed handled by DB query above.
-             // If manual seeding is needed or ELO ignoring requested by other means, can be done here.
+            // Default sorting by seed handled by DB query above.
+            // If manual seeding is needed or ELO ignoring requested by other means, can be done here.
         }
 
         if (entries.length < 2) {
@@ -793,30 +885,30 @@ tournamentsRouter.post(
 
             // Create upper bracket matches (using standard seeding OR sequential for qualifiers)
             const firstRoundMatches = bracketSize / 2;
-            
+
             // If qualifier, we assume the list is already sorted by strength (qualifier points)
             // and we want to match 1vs2, 3vs4 etc to minimize byes and strict skill matching?
             // OR maybe user wants 1vs2 to NOT match top players immediately? 
             // User request: "csak egymás ellen kellene rakni őket... ignorálni az elot"
             // -> Sounds like pure sequential pairing 1-2, 3-4 from the available list.
-            
+
             let seeds: number[] = [];
             if (tournament.seedingMethod === 'SEQUENTIAL' || (tournament.hasQualifier && tournament.seedingMethod !== 'STANDARD')) {
-                 // Sequential seeding: 1, 2, 3, 4, 5, 6...
-                 // Default to sequential for qualifiers unless explicitly standard, OR if SEQUENTIAL selected.
-                 seeds = Array.from({length: bracketSize}, (_, i) => i + 1);
+                // Sequential seeding: 1, 2, 3, 4, 5, 6...
+                // Default to sequential for qualifiers unless explicitly standard, OR if SEQUENTIAL selected.
+                seeds = Array.from({ length: bracketSize }, (_, i) => i + 1);
             } else if (tournament.seedingMethod === 'RANDOM') {
-                 // Random was handled by shuffling entries, so we can use Sequential seeds [1..N] on the shuffled list
-                 seeds = Array.from({length: bracketSize}, (_, i) => i + 1);
+                // Random was handled by shuffling entries, so we can use Sequential seeds [1..N] on the shuffled list
+                seeds = Array.from({ length: bracketSize }, (_, i) => i + 1);
             } else {
-                 // Standard seeding: 1, 8, 4, 5... (1vs8, 2vs7)
-                 seeds = getStandardSeeding(bracketSize);
+                // Standard seeding: 1, 8, 4, 5... (1vs8, 2vs7)
+                seeds = getStandardSeeding(bracketSize);
             }
 
             for (let i = 0; i < firstRoundMatches; i++) {
                 const seed1 = seeds[i * 2];
                 const seed2 = seeds[i * 2 + 1];
-                
+
                 // seed is 1-based index
                 const homeEntry = (seed1 <= entries.length) ? entries[seed1 - 1] : null;
                 const awayEntry = (seed2 <= entries.length) ? entries[seed2 - 1] : null;
@@ -906,15 +998,15 @@ tournamentsRouter.post(
             }
 
             const firstRoundMatches = bracketSize / 2;
-            
+
             let seeds: number[] = [];
             if (tournament.seedingMethod === 'SEQUENTIAL' || (tournament.hasQualifier && tournament.seedingMethod !== 'STANDARD')) {
-                 // Sequential seeding
-                 seeds = Array.from({length: bracketSize}, (_, i) => i + 1);
+                // Sequential seeding
+                seeds = Array.from({ length: bracketSize }, (_, i) => i + 1);
             } else if (tournament.seedingMethod === 'RANDOM') {
-                 seeds = Array.from({length: bracketSize}, (_, i) => i + 1);
+                seeds = Array.from({ length: bracketSize }, (_, i) => i + 1);
             } else {
-                 seeds = getStandardSeeding(bracketSize);
+                seeds = getStandardSeeding(bracketSize);
             }
 
             for (let i = 0; i < firstRoundMatches; i++) {
@@ -1042,6 +1134,20 @@ tournamentsRouter.post(
             orderBy: [{ bracketType: 'asc' }, { round: 'asc' }, { position: 'asc' }],
         });
 
+        // Log bracket generation
+        await logSystemActivity(
+            'TOURNAMENT_GENERATE_BRACKET',
+            `Bracket generated for tournament '${tournament.name}' by ${user.username}`,
+            {
+                userId: user.id,
+                metadata: {
+                    tournamentId: tournament.id,
+                    matchCount: finalMatches.length,
+                    format: tournament.format
+                }
+            }
+        );
+
         res.json({ success: true, data: finalMatches });
     })
 );
@@ -1099,10 +1205,10 @@ tournamentsRouter.patch(
 // Helper function to generate standard seeding indices (1-based)
 function getStandardSeeding(size: number): number[] {
     if (size < 2) return [1];
-    
+
     let seeds = [1, 2];
     const rounds = Math.ceil(Math.log2(size));
-    
+
     for (let i = 0; i < rounds - 1; i++) {
         const nextSeeds: number[] = [];
         const currentCount = seeds.length * 2;

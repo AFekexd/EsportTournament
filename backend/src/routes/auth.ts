@@ -68,7 +68,20 @@ authRouter.post(
         });
 
         if (!recentLog) {
-            await logSystemActivity('LOGIN', `User ${user.username} logged in via Sync`, { userId: user.id });
+            await logSystemActivity(
+                'LOGIN',
+                `User ${user.username} logged in via Sync`,
+                {
+                    userId: user.id,
+                    metadata: {
+                        keycloakId: user.keycloakId,
+                        email: user.email, // PII consideration: Internal log, email is fine usually
+                        role: user.role,
+                        ip: req.ip,
+                        userAgent: req.headers['user-agent']
+                    }
+                }
+            );
         }
 
         res.json({ success: true, data: user });

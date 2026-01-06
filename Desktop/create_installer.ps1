@@ -40,8 +40,31 @@ $Scripts = @(
 foreach ($script in $Scripts) {
     Copy-Item (Join-Path $BasePath $script) $BuildDir
 }
+Copy-Item (Join-Path $BasePath "install_cert.ps1") $BuildDir
+Copy-Item (Join-Path $BasePath "EsportManager_Key.pfx") $BuildDir
 
-# 5. Create Zip
+# 5. Sign Executables
+$PfxPath = Join-Path $BasePath "EsportManager_Key.pfx"
+$CertPassword = "password123"
+
+if (Test-Path $PfxPath) {
+    Write-Host "Signing Executables..."
+    try {
+        $Cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 $PfxPath, $CertPassword
+        
+        $ExesToSign = Get-ChildItem -Path $BuildDir -Filter "*.exe" -Recurse
+        foreach ($exe in $ExesToSign) {
+            Write-Host "Signing $($exe.Name)..."
+            Set-AuthenticodeSignature -Certificate $Cert -FilePath $exe.FullName -HashAlgorithm SHA256 -TimestampServer "http://timestamp.digicert.com"
+        }
+    } catch {
+        Write-Warning "Signing failed: $_"
+    }
+} else {
+    Write-Warning "Certificate not found. Executables will NOT be signed."
+}
+
+# 6. Create Zip
 $ZipName = "EsportManager_Installer_v$version.zip"
 $ZipPath = Join-Path $BasePath $ZipName
 if (Test-Path $ZipPath) { Remove-Item $ZipPath }
@@ -49,7 +72,7 @@ if (Test-Path $ZipPath) { Remove-Item $ZipPath }
 Write-Host "Creating Zip: $ZipName"
 Compress-Archive -Path "$BuildDir\*" -DestinationPath $ZipPath
 
-# 6. Cleanup
+# 7. Cleanup
 Remove-Item $BuildDir -Recurse -Force
 
 Write-Host "`n[SUCCESS] Installer Package Created: $ZipPath" -ForegroundColor Green

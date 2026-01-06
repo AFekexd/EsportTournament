@@ -198,9 +198,11 @@ export function ProfilePage() {
   };
 
   const formatTimeBalance = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    return `${hours}h ${minutes}m`;
+    const isNegative = seconds < 0;
+    const absSeconds = Math.abs(seconds);
+    const hours = Math.floor(absSeconds / 3600);
+    const minutes = Math.floor((absSeconds % 3600) / 60);
+    return `${isNegative ? "-" : ""}${hours}h ${minutes}m`;
   };
 
   const topGameImage = getTopGameImage();
@@ -212,16 +214,15 @@ export function ProfilePage() {
         <div className="relative overflow-hidden rounded-2xl bg-[#1a1b26] border border-white/5 shadow-2xl">
           {/* Banner */}
           <div
-            className={`h-64 relative group ${
-              !topGameImage ? "bg-[#0f1015]" : ""
-            }`}
+            className={`h-64 relative group ${!topGameImage ? "bg-[#0f1015]" : ""
+              }`}
             style={
               topGameImage
                 ? {
-                    backgroundImage: `url(${topGameImage})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }
+                  backgroundImage: `url(${topGameImage})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }
                 : {}
             }
           >
@@ -236,11 +237,10 @@ export function ProfilePage() {
               </>
             )}
             <div
-              className={`absolute inset-0 ${
-                topGameImage
+              className={`absolute inset-0 ${topGameImage
                   ? "bg-black/40 backdrop-blur-[2px]"
                   : "bg-gradient-to-t from-[#1a1b26] via-transparent to-transparent"
-              }`}
+                }`}
             ></div>
 
             {isOwnProfile && (
@@ -286,15 +286,14 @@ export function ProfilePage() {
                 {/* Status Indicator */}
                 <div className="absolute bottom-3 right-3 md:bottom-5 md:right-5 z-20">
                   <div
-                    className={`w-7 h-7 rounded-full border-[5px] border-[#1a1b26] ${
-                      profileUser?.role === "ADMIN"
+                    className={`w-7 h-7 rounded-full border-[5px] border-[#1a1b26] ${profileUser?.role === "ADMIN"
                         ? "bg-red-500 box-shadow-glow-red"
                         : profileUser?.role === "ORGANIZER"
-                        ? "bg-purple-500"
-                        : profileUser?.role === "MODERATOR"
-                        ? "bg-blue-500"
-                        : "bg-green-500"
-                    }`}
+                          ? "bg-purple-500"
+                          : profileUser?.role === "MODERATOR"
+                            ? "bg-blue-500"
+                            : "bg-green-500"
+                      }`}
                     title={profileUser?.role}
                   ></div>
                 </div>
@@ -615,19 +614,18 @@ export function ProfilePage() {
                           {tournament.name}
                         </h3>
                         <span
-                          className={`text-[10px] px-2 py-0.5 rounded border uppercase tracking-wide font-bold ${
-                            tournament.status === "REGISTRATION"
+                          className={`text-[10px] px-2 py-0.5 rounded border uppercase tracking-wide font-bold ${tournament.status === "REGISTRATION"
                               ? "bg-green-500/10 text-green-500 border-green-500/20"
                               : tournament.status === "IN_PROGRESS"
-                              ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
-                              : "bg-blue-500/10 text-blue-500 border-blue-500/20"
-                          }`}
+                                ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
+                                : "bg-blue-500/10 text-blue-500 border-blue-500/20"
+                            }`}
                         >
                           {tournament.status === "REGISTRATION"
                             ? "Nevezés"
                             : tournament.status === "IN_PROGRESS"
-                            ? "Zajlik"
-                            : "Vége"}
+                              ? "Zajlik"
+                              : "Vége"}
                         </span>
                       </div>
 

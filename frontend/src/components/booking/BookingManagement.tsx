@@ -8,7 +8,9 @@ import {
   Monitor,
   Clock,
   Trash2,
+  Calendar,
 } from "lucide-react";
+import { AdminBookingList } from "./AdminBookingList";
 import { ConfirmationModal } from "../common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import {
@@ -35,7 +37,7 @@ export function BookingManagement() {
   const dispatch = useAppDispatch();
   const { schedules, computers } = useAppSelector((state) => state.bookings);
 
-  const [bookingSubTab, setBookingSubTab] = useState<"management" | "stats">(
+  const [bookingSubTab, setBookingSubTab] = useState<"management" | "stats" | "bookings">(
     "stats"
   );
   const [newSchedule, setNewSchedule] = useState({
@@ -57,7 +59,7 @@ export function BookingManagement() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => {},
+    onConfirm: () => { },
     variant: "primary",
   });
 
@@ -128,11 +130,24 @@ export function BookingManagement() {
             <Edit2 size={16} />
             Kezelés
           </Button>
+          <Button
+            variant={bookingSubTab === "bookings" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setBookingSubTab("bookings")}
+            className="gap-2"
+          >
+            <Calendar size={16} />
+            Foglalások
+          </Button>
         </div>
       </div>
 
       {bookingSubTab === "stats" ? (
         <AdminBookingStats />
+      ) : bookingSubTab === "bookings" ? (
+        <div className="animate-fade-in">
+          <AdminBookingList />
+        </div>
       ) : (
         <div className="space-y-8">
           {/* Computer Management Section */}

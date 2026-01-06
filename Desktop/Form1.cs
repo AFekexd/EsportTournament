@@ -519,13 +519,6 @@ namespace EsportManager
             // NotifyIcon és ContextMenu inicializálása
             _contextMenuStrip = new ContextMenuStrip();
             
-            var pauseResumeItem = new ToolStripMenuItem("Pause Session");
-            pauseResumeItem.Name = "pauseResumeItem";
-            pauseResumeItem.Click += PauseResumeItem_Click;
-            _contextMenuStrip.Items.Add(pauseResumeItem);
-            
-            _contextMenuStrip.Items.Add(new ToolStripSeparator());
-            
             var logoutItem = new ToolStripMenuItem("Kijelentkezés");
             logoutItem.Click += LogoutItem_Click;
             _contextMenuStrip.Items.Add(logoutItem);

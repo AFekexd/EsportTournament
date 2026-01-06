@@ -177,7 +177,17 @@ teamsRouter.post(
         });
 
         // Log team creation
-        await logSystemActivity('TEAM_CREATE', `Team '${team.name}' created by ${user.username}`, { userId: user.id });
+        await logSystemActivity(
+            'TEAM_CREATE',
+            `Team '${team.name}' created by ${user.username}`,
+            {
+                userId: user.id,
+                metadata: {
+                    teamId: team.id,
+                    teamName: team.name
+                }
+            }
+        );
 
         res.status(201).json({ success: true, data: team });
     })
@@ -268,11 +278,12 @@ teamsRouter.patch(
         if (processedLogoUrl !== undefined) changes.push('Logo');
 
         await logSystemActivity(
-            'TEAM_UPDATE', 
-            `Team '${updatedTeam.name}' updated by ${user.username}. Changes: ${changes.join(', ')}`, 
-            { 
+            'TEAM_UPDATE',
+            `Team '${updatedTeam.name}' updated by ${user.username}. Changes: ${changes.join(', ')}`,
+            {
                 userId: user.id,
                 metadata: {
+                    teamId: updatedTeam.id,
                     changes,
                     updatedFields: {
                         ...(name && { name }),
@@ -316,7 +327,18 @@ teamsRouter.delete(
         await prisma.team.delete({ where: { id: req.params.id } });
 
         // Log team deletion
-        await logSystemActivity('TEAM_DELETE', `Team '${team.name}' deleted by ${user.username}`, { userId: user.id });
+        await logSystemActivity(
+            'TEAM_DELETE',
+            `Team '${team.name}' deleted by ${user.username}`,
+            {
+                userId: user.id,
+                metadata: {
+                    teamId: team.id,
+                    teamName: team.name,
+                    deletedBy: user.username
+                }
+            }
+        );
 
         res.json({ success: true, message: 'Team deleted' });
     })
@@ -371,7 +393,17 @@ teamsRouter.post(
         });
 
         // Log join
-        await logSystemActivity('TEAM_JOIN', `User ${user.username} joined team '${team.name}'`, { userId: user.id });
+        await logSystemActivity(
+            'TEAM_JOIN',
+            `User ${user.username} joined team '${team.name}'`,
+            {
+                userId: user.id,
+                metadata: {
+                    teamId: team.id,
+                    teamName: team.name
+                }
+            }
+        );
 
         res.status(201).json({ success: true, data: member });
     })
@@ -408,7 +440,17 @@ teamsRouter.post(
         });
 
         // Log leave
-        await logSystemActivity('TEAM_LEAVE', `User ${user.username} left team '${team.name}'`, { userId: user.id });
+        await logSystemActivity(
+            'TEAM_LEAVE',
+            `User ${user.username} left team '${team.name}'`,
+            {
+                userId: user.id,
+                metadata: {
+                    teamId: team.id,
+                    teamName: team.name
+                }
+            }
+        );
 
         res.json({ success: true, message: 'Left team successfully' });
     })
@@ -449,7 +491,18 @@ teamsRouter.delete(
         });
 
         // Log kick
-        await logSystemActivity('TEAM_KICK', `Member removed from team '${team.name}' by ${user.username}`, { userId: user.id });
+        await logSystemActivity(
+            'TEAM_KICK',
+            `Member removed from team '${team.name}' by ${user.username}`,
+            {
+                userId: user.id,
+                metadata: {
+                    teamId: team.id,
+                    teamName: team.name,
+                    kickedMemberId: req.params.memberId
+                }
+            }
+        );
 
         res.json({ success: true, message: 'Member removed' });
     })
@@ -479,7 +532,16 @@ teamsRouter.post(
         });
 
         // Log code regen
-        await logSystemActivity('TEAM_CODE_UPDATE', `Join code regenerated for team '${team.name}' by ${req.user!.sub}`, { userId: team.ownerId });
+        await logSystemActivity(
+            'TEAM_CODE_UPDATE',
+            `Join code regenerated for team '${team.name}' by ${req.user!.sub}`,
+            {
+                userId: team.ownerId,
+                metadata: {
+                    teamId: team.id
+                }
+            }
+        );
 
         res.json({ success: true, data: { joinCode: updatedTeam.joinCode } });
     })

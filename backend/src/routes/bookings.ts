@@ -272,6 +272,11 @@ bookingsRouter.post(
             throw new ApiError('Érvénytelen dátum/idő formátum', 400, 'INVALID_DATE');
         }
 
+        // Check if start time is in the past (allow 5 minute grace period for clock sync/latency)
+        if (start.getTime() < Date.now() - 300000) {
+            throw new ApiError('A foglalás kezdete nem lehet a múltban', 400, 'PAST_DATE');
+        }
+
         // Validate duration (max 2 hours = 7200000 ms, min 30 min = 1800000 ms)
         const duration = end.getTime() - start.getTime();
         if (duration < 1800000) {
@@ -279,6 +284,20 @@ bookingsRouter.post(
         }
         if (duration > 7200000) {
             throw new ApiError('A maximális foglalási idő 2 óra', 400, 'DURATION_TOO_LONG');
+        }
+
+        // Check if user has sufficient time balance (Skip for ADMIN/TEACHER)
+        if (!['ADMIN', 'TEACHER'].includes(user.role)) {
+            const durationSeconds = Math.floor(duration / 1000);
+            if (user.timeBalanceSeconds < durationSeconds) {
+                const availableMinutes = Math.floor(user.timeBalanceSeconds / 60);
+                const requiredMinutes = Math.floor(durationSeconds / 60);
+                throw new ApiError(
+                    `Nincs elegendő időegyenleged. Szükséges: ${requiredMinutes} perc, Rendelkezésre áll: ${availableMinutes} perc`,
+                    403,
+                    'INSUFFICIENT_BALANCE'
+                );
+            }
         }
 
         // Check if the booking date matches the day of week with an active schedule
@@ -341,8 +360,18 @@ bookingsRouter.post(
 
         await logSystemActivity(
             'BOOKING_CREATE',
-            `Booking created for ${booking.computer?.name} on ${booking.date.toISOString().split('T')[0]} (${booking.startTime.toISOString().split('T')[1].substring(0,5)}-${booking.endTime.toISOString().split('T')[1].substring(0,5)}) by ${user.username}`,
-            { userId: user.id, computerId: computerId }
+            `Booking created for ${booking.computer?.name} on ${booking.date.toISOString().split('T')[0]} (${booking.startTime.toISOString().split('T')[1].substring(0, 5)}-${booking.endTime.toISOString().split('T')[1].substring(0, 5)}) by ${user.username}`,
+            {
+                userId: user.id,
+                computerId: computerId,
+                metadata: {
+                    bookingId: booking.id,
+                    date: booking.date,
+                    startTime: booking.startTime,
+                    endTime: booking.endTime,
+                    durationMinutes: (booking.endTime.getTime() - booking.startTime.getTime()) / 60000
+                }
+            }
         );
 
         // Send notification
@@ -373,8 +402,8 @@ bookingsRouter.delete(
             throw new ApiError('Foglalás nem található', 404, 'NOT_FOUND');
         }
 
-        // Check permission: user owns booking or is admin
-        if (booking.userId !== user.id && user.role !== 'ADMIN') {
+        // Check permission: user owns booking or is admin/teacher
+        if (booking.userId !== user.id && !['ADMIN', 'TEACHER'].includes(user.role)) {
             throw new ApiError('Nincs jogosultsága törölni ezt a foglalást', 403, 'FORBIDDEN');
         }
 
@@ -385,7 +414,20 @@ bookingsRouter.delete(
         await logSystemActivity(
             'BOOKING_DELETE',
             `Booking for computer ${booking.computerId} on ${booking.date.toISOString().split('T')[0]} cancelled/deleted by ${user.username}`,
-            { userId: user.id }
+            {
+                userId: booking.userId,
+                adminId: user.id,
+                metadata: {
+                    bookingId: booking.id,
+                    deletedBy: user.username,
+                    originalData: {
+                        computerId: booking.computerId,
+                        date: booking.date,
+                        startTime: booking.startTime,
+                        endTime: booking.endTime
+                    }
+                }
+            }
         );
 
         // Check waitlist and notify users
@@ -452,7 +494,20 @@ bookingsRouter.post(
             },
         });
 
-        await logSystemActivity('BOOKING_CHECKIN', `User ${updatedBooking.user.username} checked in via code (Admin)`, { userId: updatedBooking.userId, computerId: updatedBooking.computerId });
+        await logSystemActivity(
+            'BOOKING_CHECKIN',
+            `User ${updatedBooking.user.username} checked in via code (Admin)`,
+            {
+                userId: updatedBooking.userId,
+                computerId: updatedBooking.computerId,
+                adminId: user.id,
+                metadata: {
+                    bookingId: updatedBooking.id,
+                    checkInTime: now,
+                    method: 'ADMIN_CODE'
+                }
+            }
+        );
 
         res.json({ success: true, data: updatedBooking });
     })
@@ -541,7 +596,7 @@ bookingsRouter.patch(
             throw new ApiError('Foglalás nem található', 404, 'NOT_FOUND');
         }
 
-        if (booking.userId !== user.id && user.role !== 'ADMIN') {
+        if (booking.userId !== user.id && !['ADMIN', 'TEACHER'].includes(user.role)) {
             throw new ApiError('Nincs jogosultsága módosítani ezt a foglalást', 403, 'FORBIDDEN');
         }
 
@@ -582,6 +637,23 @@ bookingsRouter.patch(
         });
 
         res.json({ success: true, data: updatedBooking });
+
+        await logSystemActivity(
+            'BOOKING_UPDATE',
+            `Booking updated by ${user.username}`,
+            {
+                userId: booking.userId,
+                adminId: user.id,
+                metadata: {
+                    bookingId: booking.id,
+                    changes: {
+                        computerId: computerId && computerId !== booking.computerId ? `${booking.computerId} -> ${computerId}` : undefined,
+                        startTime: startTime && new Date(startTime).getTime() !== booking.startTime.getTime() ? `${booking.startTime.toISOString()} -> ${new Date(startTime).toISOString()}` : undefined,
+                        endTime: endTime && new Date(endTime).getTime() !== booking.endTime.getTime() ? `${booking.endTime.toISOString()} -> ${new Date(endTime).toISOString()}` : undefined
+                    }
+                }
+            }
+        );
     })
 );
 
@@ -632,7 +704,19 @@ bookingsRouter.post(
             },
         });
 
-        await logSystemActivity('BOOKING_CHECKIN', `User ${updatedBooking.user.username} checked in via QR`, { userId: updatedBooking.userId, computerId: updatedBooking.computerId });
+        await logSystemActivity(
+            'BOOKING_CHECKIN',
+            `User ${updatedBooking.user.username} checked in via QR`,
+            {
+                userId: updatedBooking.userId,
+                computerId: updatedBooking.computerId,
+                metadata: {
+                    bookingId: updatedBooking.id,
+                    checkInTime: now,
+                    method: 'QR_CODE'
+                }
+            }
+        );
 
         res.json({ success: true, data: updatedBooking });
     })

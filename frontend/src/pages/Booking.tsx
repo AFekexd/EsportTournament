@@ -224,9 +224,11 @@ export function BookingPage() {
 
   const formatBalance = (seconds: number) => {
     if (user?.role === "ADMIN") return "Végtelen";
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    return `${hours} óra ${minutes} perc`;
+    const isNegative = seconds < 0;
+    const absSeconds = Math.abs(seconds);
+    const hours = Math.floor(absSeconds / 3600);
+    const minutes = Math.floor((absSeconds % 3600) / 60);
+    return `${isNegative ? "-" : ""}${hours} óra ${minutes} perc`;
   };
 
   const formatDate = (dateStr: string) => {
