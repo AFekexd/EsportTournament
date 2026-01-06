@@ -144,7 +144,7 @@ matchesRouter.patch(
         await logSystemActivity(
             'MATCH_RESULT_UPDATE',
             `Match ${p1} vs ${p2} result updated to ${homeScore}-${awayScore} by ${user.username}`,
-            { 
+            {
                 userId: user.id,
                 metadata: {
                     matchId: match.id,
@@ -152,7 +152,13 @@ matchesRouter.patch(
                     awayTeam: p2,
                     homeScore,
                     awayScore,
-                    winner: actualWinnerId || actualWinnerUserId || 'Draw/None'
+                    winner: actualWinnerId || actualWinnerUserId || 'Draw/None',
+                    previous: {
+                        homeScore: match.homeScore,
+                        awayScore: match.awayScore,
+                        winnerId: match.winnerId,
+                        winnerUserId: match.winnerUserId
+                    }
                 }
             } // logged by organizer/admin (user.id)
         );
@@ -428,7 +434,24 @@ matchesRouter.patch(
         const match = await prisma.match.update({
             where: { id: req.params.id },
             data: { scheduledAt: new Date(scheduledAt) },
+            include: { homeTeam: true, awayTeam: true, homeUser: true, awayUser: true }
         });
+
+        // Log schedule update
+        const p1 = match.homeUser?.username || match.homeTeam?.name || 'Home';
+        const p2 = match.awayUser?.username || match.awayTeam?.name || 'Away';
+        await logSystemActivity(
+            'MATCH_SCHEDULE',
+            `Match ${p1} vs ${p2} scheduled to ${match.scheduledAt?.toLocaleString()} by ${user.username}`,
+            {
+                userId: user.id,
+                metadata: {
+                    matchId: match.id,
+                    scheduledAt: match.scheduledAt,
+                    tournamentId: match.tournamentId
+                }
+            }
+        );
 
         res.json({ success: true, data: match });
     })

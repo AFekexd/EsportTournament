@@ -23,12 +23,16 @@ export const KioskManager: React.FC = () => {
   }, [dispatch]);
 
   // Group machines by row
-  const rows = [0, 1]; // Assume 2 rows as per schema hints
-  const machinesByRow = rows.map((row) =>
-    machines
-      .filter((m) => m.row === row)
-      .sort((a, b) => a.position - b.position)
+  const uniqueRows = Array.from(new Set(machines.map((m) => m.row))).sort(
+    (a, b) => a - b
   );
+
+  const machinesByRow = uniqueRows.map((row) => ({
+    rowNumber: row,
+    machines: machines
+      .filter((m) => m.row === row)
+      .sort((a, b) => a.position - b.position),
+  }));
 
   const handleLockToggle = (machine: Computer) => {
     dispatch(toggleLock({ id: machine.id, locked: !machine.isLocked }));
@@ -57,14 +61,14 @@ export const KioskManager: React.FC = () => {
       ) : (
         <>
           <div className="grid gap-8">
-            {machinesByRow.map((rowMachines, rowIndex) => (
-              <div key={rowIndex} className="space-y-4">
+            {machinesByRow.map(({ rowNumber, machines }) => (
+              <div key={rowNumber} className="space-y-4">
                 <h3 className="text-white/70 font-medium ml-2">
-                  {rowIndex + 1}. Sor
+                  {rowNumber}. Sor
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                  {rowMachines.length > 0 ? (
-                    rowMachines.map((machine) => (
+                  {machines.length > 0 ? (
+                    machines.map((machine) => (
                       <MachineCard
                         key={machine.id}
                         machine={machine}
@@ -131,8 +135,13 @@ const MachineCard: React.FC<MachineCardProps> = ({
   let statusColor = "bg-gray-800 border-white/10";
   let statusDot = "bg-gray-500";
 
-  if (!machine.isActive) {
+  // Calculate if offline (no update in last 2 minutes)
+  const lastSeen = machine.updatedAt ? new Date(machine.updatedAt).getTime() : 0;
+  const isOffline = Date.now() - lastSeen > 120000; // 2 minutes
+
+  if (isOffline) {
     statusDot = "bg-gray-600"; // Offline
+    statusColor = "bg-gray-900 border-white/5 opacity-75";
   } else if (machine.isLocked) {
     statusColor = "bg-red-900/20 border-red-500/50";
     statusDot = "bg-red-500";
@@ -143,7 +152,7 @@ const MachineCard: React.FC<MachineCardProps> = ({
     statusColor = "bg-green-900/10 border-green-500/30";
     statusDot = "bg-green-500";
   } else {
-    statusColor = "bg-blue-900/20 border-blue-500/30"; // Occupied logic usually implies session check, simplified here
+    statusColor = "bg-blue-900/20 border-blue-500/30"; // Occupied logic
     statusDot = "bg-blue-500";
   }
 
@@ -179,15 +188,16 @@ const MachineCard: React.FC<MachineCardProps> = ({
         <div className="flex justify-between text-sm">
           <span className="text-gray-400">Állapot:</span>
           <span
-            className={`font-medium ${
-              machine.isLocked ? "text-red-400" : "text-gray-200"
-            }`}
+            className={`font-medium ${machine.isLocked ? "text-red-400" : "text-gray-200"
+              }`}
           >
-            {machine.isLocked
-              ? "ZÁROLT"
-              : machine.isCompetitionMode
-              ? "VERSENY MÓD"
-              : "ELÉRHETŐ"}
+            {isOffline
+              ? "OFFLINE"
+              : machine.isLocked
+                ? "ZÁROLT"
+                : machine.isCompetitionMode
+                  ? "VERSENY MÓD"
+                  : "ELÉRHETŐ"}
           </span>
         </div>
         {/* Placeholder for active user if session exists (would require session join in fetch) */}
@@ -196,11 +206,10 @@ const MachineCard: React.FC<MachineCardProps> = ({
       <div className="grid grid-cols-2 gap-2 mt-auto">
         <button
           onClick={onLock}
-          className={`btn btn-sm flex items-center justify-center gap-1 ${
-            machine.isLocked
-              ? "bg-red-500 hover:bg-red-600 text-white"
-              : "bg-white/5 hover:bg-white/10 text-gray-300"
-          }`}
+          className={`btn btn-sm flex items-center justify-center gap-1 ${machine.isLocked
+            ? "bg-red-500 hover:bg-red-600 text-white"
+            : "bg-white/5 hover:bg-white/10 text-gray-300"
+            }`}
           title={machine.isLocked ? "Feloldás" : "Zárolás"}
         >
           {machine.isLocked ? <Unlock size={14} /> : <Lock size={14} />}
@@ -208,11 +217,10 @@ const MachineCard: React.FC<MachineCardProps> = ({
         </button>
         <button
           onClick={onCompetitionToggle}
-          className={`btn btn-sm flex items-center justify-center gap-1 ${
-            machine.isCompetitionMode
-              ? "bg-purple-500 hover:bg-purple-600 text-white"
-              : "bg-white/5 hover:bg-white/10 text-gray-300"
-          }`}
+          className={`btn btn-sm flex items-center justify-center gap-1 ${machine.isCompetitionMode
+            ? "bg-purple-500 hover:bg-purple-600 text-white"
+            : "bg-white/5 hover:bg-white/10 text-gray-300"
+            }`}
           title="Verseny mód"
         >
           <TrophyIcon size={14} />

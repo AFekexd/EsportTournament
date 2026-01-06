@@ -1,5 +1,5 @@
-
 import { Router } from 'express';
+import { logSystemActivity } from '../services/logService.js';
 import prisma from '../lib/prisma.js'; // Assuming this is where prisma client is exported in new backend
 import { emitMachineUpdate, emitUserUpdate, emitSessionUpdate } from '../services/socket.js'; // Import helper from socket service
 
@@ -77,10 +77,10 @@ kioskRouter.post('/session/start', async (req, res) => {
 
         // Update client version if provided and different
         if (version && machine.clientVersion !== version) {
-             await prisma.computer.update({
-                 where: { id: machine.id },
-                 data: { clientVersion: version }
-             });
+            await prisma.computer.update({
+                where: { id: machine.id },
+                data: { clientVersion: version }
+            });
         }
 
         // Check if machine is locked
@@ -103,7 +103,7 @@ kioskRouter.post('/session/start', async (req, res) => {
             });
 
             if (!activeBooking) {
-                res.status(403).json({ error: 'Nincs érvényes foglalásod erre a gépre és időpontra.' });
+                res.status(403).json({ error: 'Nincs érvényes foglalásod erre a gépre' });
                 return;
             }
 
@@ -130,14 +130,19 @@ kioskRouter.post('/session/start', async (req, res) => {
         });
 
         // Log login
-        await prisma.log.create({
-            data: {
-                type: 'LOGIN',
-                message: `User ${user.username} logged in on ${machine.name} (${machine.hostname})`,
+        await logSystemActivity(
+            'LOGIN',
+            `User ${user.username} logged in on ${machine.name} (${machine.hostname})`,
+            {
                 userId: user.id,
-                computerId: machine.id
+                computerId: machine.id,
+                metadata: {
+                    sessionId: session.id,
+                    version: version,
+                    method: 'KIOSK_START'
+                }
             }
-        });
+        );
 
         // Emit updates
         emitMachineUpdate(machine.hostname || machine.id, { status: 'occupied', userId: user.id });
@@ -191,14 +196,19 @@ kioskRouter.post('/session/end', async (req, res) => {
             });
 
             // Log logout
-            await prisma.log.create({
-                data: {
-                    type: 'LOGOUT',
-                    message: `User ${activeSession.user.username} logged out from ${machine.name}. Duration: ${durationSeconds}s`,
+            await logSystemActivity(
+                'LOGOUT',
+                `User ${activeSession.user.username} logged out from ${machine.name}. Duration: ${durationSeconds}s`,
+                {
                     userId: activeSession.userId,
-                    computerId: machine.id
+                    computerId: machine.id,
+                    metadata: {
+                        sessionId: activeSession.id,
+                        durationSeconds,
+                        forced: false // Client initiated
+                    }
                 }
-            });
+            );
 
             // Emit updates
             emitMachineUpdate(machine.hostname || machine.id, { status: 'available' });
@@ -230,11 +240,17 @@ kioskRouter.get('/status/:machineId', async (req, res) => {
 
         // Update version if changed (Fire and forget)
         if (version && machine.clientVersion !== version) {
-             prisma.computer.update({
-                 where: { id: machine.id },
-                 data: { clientVersion: version }
-             }).catch(e => console.error("Failed to update version", e));
+            prisma.computer.update({
+                where: { id: machine.id },
+                data: { clientVersion: version }
+            }).catch(e => console.error("Failed to update version", e));
         }
+
+        // Always update 'updatedAt' (Heartbeat)
+        prisma.computer.update({
+            where: { id: machine.id },
+            data: { updatedAt: new Date() }
+        }).catch(e => console.error("Failed to update heartbeat", e));
 
         if (machine.isLocked) {
             res.json({ Locked: true, Message: "Admin locked this machine" });
@@ -311,6 +327,19 @@ kioskRouter.post('/register', async (req, res) => {
                 isActive: true
             }
         });
+
+        await logSystemActivity(
+            'COMPUTER_REGISTER',
+            `Computer ${computer.name} registered via Kiosk API`,
+            {
+                computerId: computer.id,
+                metadata: {
+                    hostname: computer.hostname,
+                    row: computer.row,
+                    position: computer.position
+                }
+            }
+        );
 
         res.json({ success: true, data: computer });
     } catch (error) {
