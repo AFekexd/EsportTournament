@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
 import { ApiError } from './errorHandler.js';
 import prisma from '../lib/prisma.js';
+import { UserRole } from '../utils/enums.js';
 
 const KEYCLOAK_URL = process.env.KEYCLOAK_URL || 'https://keycloak.pollak.info';
 const KEYCLOAK_REALM = process.env.KEYCLOAK_REALM || 'master';
@@ -46,21 +47,21 @@ export interface AuthenticatedRequest extends Request {
 }
 
 // Helper function to get the highest role from Keycloak token
-export const getHighestRole = (tokenPayload: KeycloakTokenPayload): 'ADMIN' | 'MODERATOR' | 'ORGANIZER' | 'STUDENT' => {
+export const getHighestRole = (tokenPayload: KeycloakTokenPayload): UserRole => {
     const realmRoles = tokenPayload.realm_access?.roles || [];
 
     // Check for roles in priority order
-    if (realmRoles.includes('ADMIN')) {
-        return 'ADMIN';
+    if (realmRoles.includes(UserRole.ADMIN)) {
+        return UserRole.ADMIN;
     }
-    if (realmRoles.includes('MODERATOR')) {
-        return 'MODERATOR';
+    if (realmRoles.includes(UserRole.MODERATOR)) {
+        return UserRole.MODERATOR;
     }
-    if (realmRoles.includes('ORGANIZER')) {
-        return 'ORGANIZER';
+    if (realmRoles.includes(UserRole.ORGANIZER)) {
+        return UserRole.ORGANIZER;
     }
 
-    return 'STUDENT';
+    return UserRole.STUDENT;
 };
 
 export const authenticate = async (
@@ -112,7 +113,7 @@ export const requireRole = (...roles: string[]) => {
 
         const userRoles = req.user.realm_access?.roles || [];
         // Allow if user has one of the required roles OR is an ADMIN
-        const hasRole = roles.some((role) => userRoles.includes(role)) || userRoles.includes('ADMIN');
+        const hasRole = roles.some((role) => userRoles.includes(role)) || userRoles.includes(UserRole.ADMIN);
 
         if (!hasRole) {
             return next(new ApiError('Nincs jogosultsága', 403, 'FORBIDDEN'));

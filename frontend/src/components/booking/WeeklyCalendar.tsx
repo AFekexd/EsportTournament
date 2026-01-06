@@ -11,7 +11,12 @@ import { useAuth } from "../../hooks/useAuth";
 import "./WeeklyCalendar.css";
 
 interface WeeklyCalendarProps {
-  onSlotClick?: (computer: Computer, date: string, hour: number) => void;
+  onSlotClick?: (
+    computer: Computer,
+    date: string,
+    hour: number,
+    minute: number
+  ) => void;
   onBookingClick?: (booking: Booking) => void;
 }
 
@@ -64,25 +69,46 @@ export function WeeklyCalendar({
   const getBookingForSlot = (
     computerId: string,
     dateStr: string,
-    hour: number
+    hour: number,
+    minute: number
   ): Booking | undefined => {
     return weeklyBookings.find((b) => {
       if (b.computerId !== computerId) return false;
-      const bookingDate = new Date(b.date).toISOString().split("T")[0];
-      if (bookingDate !== dateStr) return false;
+      const bookingDateStr = new Date(b.date).toISOString().split("T")[0];
+      if (bookingDateStr !== dateStr) return false;
 
-      const startHour = new Date(b.startTime).getHours();
-      const endHour = new Date(b.endTime).getHours();
-      return hour >= startHour && hour < endHour;
+      const start = new Date(b.startTime);
+      const end = new Date(b.endTime);
+
+      const slotStart = new Date(dateStr);
+      slotStart.setHours(hour, minute, 0, 0);
+      const slotEnd = new Date(slotStart);
+      slotEnd.setMinutes(slotStart.getMinutes() + 30);
+
+      // Check strictly if booking COVERS this slot
+      // We accept if BookingStart <= SlotStart AND BookingEnd > SlotStart (meaning it covers at least some of it, but usually fully)
+      // Actually, since we want 30min slots:
+      // If booking is 16:00-17:00.
+      // Slot 16:00-16:30 -> Covered.
+      // Slot 16:30-17:00 -> Covered.
+
+      return start < slotEnd && end > slotStart;
     });
   };
 
-  const isScheduleActive = (dayOfWeek: number, hour: number): boolean => {
+  const isScheduleActive = (
+    dayOfWeek: number,
+    hour: number,
+    minute: number
+  ): boolean => {
     return schedules.some(
       (s) =>
         s.isActive &&
         s.dayOfWeek === dayOfWeek &&
-        hour >= s.startHour &&
+        // Check if the slot (hour:minute) is within [startHour:00, endHour:00)
+        // Usually schedules are hourly based (e.g., 8-20).
+        // So 8:00 is fine. 19:30 is fine. 20:00 is NOT fine.
+        (hour > s.startHour || (hour === s.startHour && minute >= 0)) &&
         hour < s.endHour
     );
   };
@@ -157,84 +183,150 @@ export function WeeklyCalendar({
             </div>
 
             {timeSlots.map((hour) => (
-              <div key={hour} className="time-row">
-                <div className="grid-cell time-cell">{hour}:00</div>
-                {weekDays.map((day) => {
-                  const booking = getBookingForSlot(
-                    computer.id,
-                    day.dateStr,
-                    hour
-                  );
-                  const isActive = isScheduleActive(day.date.getDay(), hour);
+              <div key={hour} className="contents">
+                {/*  Render :00 slot */}
+                <div className="time-row">
+                  <div className="grid-cell time-cell">{hour}:00</div>
+                  {weekDays.map((day) => {
+                    const booking = getBookingForSlot(
+                      computer.id,
+                      day.dateStr,
+                      hour,
+                      0
+                    );
+                    const isActive = isScheduleActive(
+                      day.date.getDay(),
+                      hour,
+                      0
+                    );
+                    const slotTime = new Date(day.dateStr);
+                    slotTime.setHours(hour, 0, 0, 0);
+                    const now = new Date();
+                    const isPast = slotTime < now && !booking;
+                    const isOwn = booking?.userId === user?.id;
 
-                  // Check if slot is in the past
-                  const now = new Date();
-                  const slotTime = new Date(day.dateStr);
-                  slotTime.setHours(hour + 1, 0, 0, 0); // Allow booking for current hour until it fully passes? Or strictly future?
-                  // Let's say we prevent booking for passed hours.
-                  // If it's 14:30, can I book 14:00-15:00? Maybe not.
-                  // Let's set slotTime to the START of the slot.
-                  slotTime.setHours(hour, 0, 0, 0);
+                    let cellClass = "grid-cell slot-cell h-8"; // Reduced height for granular view
+                    if (!isActive) cellClass += " inactive";
+                    else if (booking)
+                      cellClass += isOwn ? " own-booking" : " booked";
+                    else if (isPast) cellClass += " past inactive";
+                    else cellClass += " available";
 
-                  // Actually, better user experience: if we are IN the hour (14:30),
-                  // we might still allow booking if policy allows. But usually "past" means start time < now.
-                  const isPast = slotTime < now && !booking; // Only disable empty past slots. Existing bookings should remain visible.
-
-                  const isOwn = booking?.userId === user?.id;
-
-                  let cellClass = "grid-cell slot-cell";
-                  if (!isActive) cellClass += " inactive";
-                  else if (booking)
-                    cellClass += isOwn ? " own-booking" : " booked";
-                  else if (isPast)
-                    cellClass +=
-                      " past inactive"; // Add 'past' class for specific styling if needed, or reuse 'inactive'
-                  else cellClass += " available";
-
-                  return (
-                    <div
-                      key={day.dateStr}
-                      className={cellClass}
-                      onClick={() => {
-                        if (booking && onBookingClick) {
-                          onBookingClick(booking);
-                        } else if (
-                          !booking &&
-                          isActive &&
-                          !isPast &&
-                          onSlotClick
-                        ) {
-                          onSlotClick(computer, day.dateStr, hour);
+                    return (
+                      <div
+                        key={`${day.dateStr}-${hour}-00`}
+                        className={cellClass}
+                        onClick={() => {
+                          if (booking && onBookingClick) {
+                            onBookingClick(booking);
+                          } else if (
+                            !booking &&
+                            isActive &&
+                            !isPast &&
+                            onSlotClick
+                          ) {
+                            onSlotClick(computer, day.dateStr, hour, 0);
+                          }
+                        }}
+                        title={
+                          booking
+                            ? `Foglalta: ${
+                                booking.user?.displayName ||
+                                booking.user?.username
+                              }`
+                            : !isActive
+                            ? "Nem elérhető"
+                            : isPast
+                            ? "Múltbeli időpont"
+                            : "Szabad (1. félidő)"
                         }
-                      }}
-                      title={
-                        booking
-                          ? `Foglalta: ${
-                              booking.user?.displayName ||
-                              booking.user?.username
-                            }`
-                          : !isActive
-                          ? "Nem elérhető"
-                          : isPast
-                          ? "Múltbeli időpont"
-                          : "Szabad"
-                      }
-                    >
-                      {booking && (
-                        <span className="booking-indicator">
-                          {isOwn ? "✓" : "●"}
-                        </span>
-                      )}
-                    </div>
-                  );
-                })}
+                      >
+                        {booking && (
+                          <span className="booking-indicator text-xs">
+                            {isOwn ? "✓" : "●"}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Render :30 slot */}
+                <div className="time-row">
+                  <div className="grid-cell time-cell text-xs text-gray-500">
+                    {hour}:30
+                  </div>
+                  {weekDays.map((day) => {
+                    const booking = getBookingForSlot(
+                      computer.id,
+                      day.dateStr,
+                      hour,
+                      30
+                    );
+                    const isActive = isScheduleActive(
+                      day.date.getDay(),
+                      hour,
+                      30
+                    );
+                    const slotTime = new Date(day.dateStr);
+                    slotTime.setHours(hour, 30, 0, 0);
+                    const now = new Date();
+                    const isPast = slotTime < now && !booking;
+                    const isOwn = booking?.userId === user?.id;
+
+                    let cellClass =
+                      "grid-cell slot-cell h-8 border-t border-white/5"; // subtle border
+                    if (!isActive) cellClass += " inactive";
+                    else if (booking)
+                      cellClass += isOwn ? " own-booking" : " booked";
+                    else if (isPast) cellClass += " past inactive";
+                    else cellClass += " available";
+
+                    return (
+                      <div
+                        key={`${day.dateStr}-${hour}-30`}
+                        className={cellClass}
+                        onClick={() => {
+                          if (booking && onBookingClick) {
+                            onBookingClick(booking);
+                          } else if (
+                            !booking &&
+                            isActive &&
+                            !isPast &&
+                            onSlotClick
+                          ) {
+                            onSlotClick(computer, day.dateStr, hour, 30);
+                          }
+                        }}
+                        title={
+                          booking
+                            ? `Foglalta: ${
+                                booking.user?.displayName ||
+                                booking.user?.username
+                              }`
+                            : !isActive
+                            ? "Nem elérhető"
+                            : isPast
+                            ? "Múltbeli időpont"
+                            : "Szabad (2. félidő)"
+                        }
+                      >
+                        {booking && (
+                          <span className="booking-indicator text-xs">
+                            {isOwn ? "✓" : "●"}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             ))}
           </div>
         ))}
       </div>
 
-      <div className="weekly-legend">
+      <div className="flex gap-2 w-full p-2 justify-evenly ">
         <div className="legend-item">
           <span className="booking-indicator available text-green-500">●</span>
           <span>Szabad</span>

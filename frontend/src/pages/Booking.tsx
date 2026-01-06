@@ -60,6 +60,7 @@ export function BookingPage() {
   const [selectedStartHour, setSelectedStartHour] = useState<number | null>(
     null
   );
+  const [selectedStartMinute, setSelectedStartMinute] = useState<number>(0);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [bookingError, setBookingError] = useState<string | null>(null);
 
@@ -161,12 +162,13 @@ export function BookingPage() {
       return;
     }
 
-    openCreateModal(computer, hour);
+    openCreateModal(computer, hour, 0);
   };
 
   const openCreateModal = (
     computer: Computer,
     hour: number,
+    minute: number = 0,
     dateStr?: string
   ) => {
     if (!isAuthenticated) {
@@ -181,6 +183,7 @@ export function BookingPage() {
 
     setSelectedComputer(computer);
     setSelectedStartHour(hour);
+    setSelectedStartMinute(minute);
     setShowBookingModal(true);
     setBookingError(null);
   };
@@ -190,7 +193,7 @@ export function BookingPage() {
 
     // Use selectedDate from state which should be set correctly for both daily/weekly via openCreateModal
     const startTime = new Date(selectedDate);
-    startTime.setHours(selectedStartHour, 0, 0, 0);
+    startTime.setHours(selectedStartHour, selectedStartMinute, 0, 0);
 
     const endTime = new Date(startTime);
     endTime.setMinutes(endTime.getMinutes() + selectedDuration);
@@ -380,8 +383,8 @@ export function BookingPage() {
           {viewMode === "weekly" ? (
             <div className="overflow-x-auto pb-4">
               <WeeklyCalendar
-                onSlotClick={(computer, date, hour) =>
-                  openCreateModal(computer, hour, date)
+                onSlotClick={(computer, date, hour, minute) =>
+                  openCreateModal(computer, hour, minute, date)
                 }
                 onBookingClick={(booking) => {
                   if (booking.userId === user?.id) {
@@ -595,7 +598,10 @@ export function BookingPage() {
               </div>
               <div className="flex items-center gap-3 text-gray-300">
                 <Clock size={18} className="text-primary" />
-                <span>{selectedStartHour}:00 kezdés</span>
+                <span>
+                  {selectedStartHour}:
+                  {selectedStartMinute.toString().padStart(2, "0")} kezdés
+                </span>
               </div>
             </div>
 
@@ -626,9 +632,18 @@ export function BookingPage() {
                   Foglalás időtartama:
                 </strong>
                 <span className="text-primary font-semibold text-lg">
-                  {selectedStartHour}:00 -{" "}
-                  {selectedStartHour + Math.floor(selectedDuration / 60)}:
-                  {(selectedDuration % 60).toString().padStart(2, "0")}
+                  {(() => {
+                    const startMin = selectedStartMinute;
+                    const totalMins = startMin + selectedDuration;
+                    const endHour =
+                      selectedStartHour + Math.floor(totalMins / 60);
+                    const endMin = totalMins % 60;
+                    return `${selectedStartHour}:${startMin
+                      .toString()
+                      .padStart(2, "0")} - ${endHour}:${endMin
+                      .toString()
+                      .padStart(2, "0")}`;
+                  })()}
                 </span>
               </div>
 

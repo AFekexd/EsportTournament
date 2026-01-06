@@ -84,6 +84,8 @@ interface BookingsState {
     viewMode: 'daily' | 'weekly';
     isLoading: boolean;
     error: string | null;
+    lastFetched: number | null;
+    lastFetchedDate: string | null;
 }
 
 const getMonday = (date: Date): string => {
@@ -107,6 +109,8 @@ const initialState: BookingsState = {
     viewMode: 'daily',
     isLoading: false,
     error: null,
+    lastFetched: null,
+    lastFetchedDate: null,
 };
 
 const getToken = (state: RootState) => state.auth.token;
@@ -185,6 +189,15 @@ export const fetchBookingsForDate = createAsyncThunk(
         const data = await response.json();
         if (!data.success) throw new Error(data.error?.message || 'Failed to fetch bookings');
         return data.data as Booking[];
+    },
+    {
+        condition: (date, { getState }) => {
+            const state = (getState() as RootState).bookings;
+            if (state.lastFetchedDate === date && state.lastFetched && Date.now() - state.lastFetched < 60000) {
+                return false; // Cancel fetch if cached
+            }
+            return true;
+        }
     }
 );
 
@@ -469,6 +482,8 @@ const bookingsSlice = createSlice({
             .addCase(fetchBookingsForDate.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.bookings = action.payload;
+                state.lastFetched = Date.now();
+                state.lastFetchedDate = action.meta.arg;
             })
             .addCase(fetchBookingsForDate.rejected, (state, action) => {
                 state.isLoading = false;

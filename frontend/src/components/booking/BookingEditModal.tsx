@@ -125,6 +125,7 @@ export function BookingEditModal({
                 className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors calendar-picker-indicator-invert"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
+                step="1800"
                 required
               />
             </div>
@@ -142,6 +143,7 @@ export function BookingEditModal({
                 className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors calendar-picker-indicator-invert"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
+                step="1800"
                 required
               />
             </div>

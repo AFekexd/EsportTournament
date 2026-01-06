@@ -3,6 +3,7 @@ import { logSystemActivity } from '../services/logService.js';
 import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
+import { UserRole } from '../utils/enums.js';
 
 export const usersRouter = Router();
 
@@ -15,7 +16,7 @@ usersRouter.get(
             where: { keycloakId: req.user!.sub },
         });
 
-        if (!currentUser || !['ADMIN', 'ORGANIZER'].includes(currentUser.role)) {
+        if (!currentUser || ![UserRole.ADMIN, UserRole.ORGANIZER].includes(currentUser.role as UserRole)) {
             throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
@@ -32,7 +33,7 @@ usersRouter.get(
         const users = await prisma.user.findMany({
             where,
             orderBy: { createdAt: 'desc' },
-            take: parseInt(limit as string),
+            take: Math.min(parseInt(limit as string), 100),
             select: {
                 id: true,
                 username: true,
@@ -89,12 +90,12 @@ usersRouter.patch(
             where: { keycloakId: req.user!.sub },
         });
 
-        if (!currentUser || currentUser.role !== 'ADMIN') {
+        if (!currentUser || currentUser.role !== UserRole.ADMIN) {
             throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
         const { role } = req.body;
-        if (!['ADMIN', 'ORGANIZER', 'MODERATOR', 'TEACHER', 'STUDENT'].includes(role)) {
+        if (!Object.values(UserRole).includes(role)) {
             throw new ApiError('Érvénytelen szerepkör', 400, 'INVALID_ROLE');
         }
 
@@ -125,13 +126,13 @@ usersRouter.patch(
         const targetUserId = req.params.id;
 
         // Allow if admin OR if updating self
-        if (currentUser.role !== 'ADMIN' && currentUser.id !== targetUserId) {
+        if (currentUser.role !== UserRole.ADMIN && currentUser.id !== targetUserId) {
             throw new ApiError('Nincs jogosultságod a profil szerkesztéséhez', 403, 'FORBIDDEN');
         }
 
         const { displayName, avatarUrl, emailNotifications } = req.body;
 
-        if (displayName && displayName !== currentUser.displayName && currentUser.role !== 'ADMIN') {
+        if (displayName && displayName !== currentUser.displayName && currentUser.role !== UserRole.ADMIN) {
              throw new ApiError('A megjelenítendő nevet csak adminisztrátor módosíthatja', 403, 'FORBIDDEN');
         }
 

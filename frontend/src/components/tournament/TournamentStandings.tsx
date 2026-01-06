@@ -8,17 +8,6 @@ interface TournamentStandingsProps {
   onMatchClick?: (match: Match) => void;
 }
 
-interface Standing {
-  id: string; // Team ID or User ID
-  name: string; // Team name or User Name
-  avatarUrl?: string;
-  played: number;
-  wins: number;
-  draws: number;
-  losses: number;
-  points: number;
-}
-
 export function TournamentStandings({
   tournament,
   onMatchClick,
@@ -29,6 +18,17 @@ export function TournamentStandings({
 
   // Calculate standings
   const standings = useMemo(() => {
+    type Standing = {
+      id: string; // Team ID or User ID
+      name: string;
+      avatarUrl?: string; // Add avatarUrl here
+      played: number;
+      wins: number;
+      draws: number;
+      losses: number;
+      points: number;
+    };
+
     const stats: Record<string, Standing> = {};
 
     // Initialize from entries

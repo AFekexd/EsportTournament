@@ -74,7 +74,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 44px; /* Taller cells */
+    min-height: 32px; /* Compat with h-8 (32px) slots */
     font-size: 0.9rem;
 }
 

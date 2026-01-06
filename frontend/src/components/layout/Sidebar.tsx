@@ -27,10 +27,10 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { to: "/", icon: <Home size={20} />, label: "Főoldal" },
-  { to: "/tournaments", icon: <Trophy size={20} />, label: "Versenyek" },
   { to: "/teams", icon: <Users size={20} />, label: "Csapatok" },
-  { to: "/games", icon: <Gamepad2 size={20} />, label: "Játékok" },
   { to: "/booking", icon: <Monitor size={20} />, label: "Gépfoglalás" },
+  { to: "/tournaments", icon: <Trophy size={20} />, label: "Versenyek" },
+  { to: "/games", icon: <Gamepad2 size={20} />, label: "Játékok" },
   { to: "/calendar", icon: <Calendar size={20} />, label: "Naptár" },
   { to: "/leaderboards", icon: <TrendingUp size={20} />, label: "Ranglisták" },
   { to: "/settings", icon: <Settings size={20} />, label: "Beállítások" },

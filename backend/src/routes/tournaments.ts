@@ -6,6 +6,8 @@ import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { getFederatedIdentities } from '../utils/keycloak-admin.js';
 import { processImage, isBase64DataUrl, validateImageSize } from '../utils/imageProcessor.js';
 import { notificationService } from '../services/notificationService.js';
+import { UserRole, TournamentStatus } from '../utils/enums.js';
+import { tournamentService } from '../services/tournamentService.js';
 
 export const tournamentsRouter = Router();
 
@@ -55,7 +57,7 @@ tournamentsRouter.post(
             where: { keycloakId: req.user!.sub },
         });
 
-        if (!user || !['ADMIN', 'ORGANIZER'].includes(user.role)) {
+        if (!user || ![UserRole.ADMIN, UserRole.ORGANIZER].includes(user.role as UserRole)) {
             throw new ApiError('Csak szervezők hozhatnak létre versenyt', 403, 'FORBIDDEN');
         }
 
@@ -110,7 +112,7 @@ tournamentsRouter.post(
                 hasQualifier: hasQualifier || false,
                 qualifierMatches: qualifierMatches ? parseInt(qualifierMatches) : undefined,
                 qualifierMinPoints: qualifierMinPoints ? parseInt(qualifierMinPoints) : undefined,
-                status: 'DRAFT',
+                status: TournamentStatus.DRAFT,
                 teamSize: teamSize ? parseInt(teamSize) : undefined,
                 requireRank: requireRank !== undefined ? requireRank : undefined,
                 seedingMethod: seedingMethod || 'STANDARD',
@@ -212,7 +214,7 @@ tournamentsRouter.delete(
             where: { keycloakId: req.user!.sub },
         });
 
-        if (!user || user.role !== 'ADMIN' && user.role !== 'ORGANIZER') {
+        if (!user || user.role !== UserRole.ADMIN && user.role !== UserRole.ORGANIZER) {
             throw new ApiError('Csak adminisztrátorok és organizátorok törölhetnek versenyt', 403, 'FORBIDDEN');
         }
 
@@ -257,7 +259,7 @@ tournamentsRouter.patch(
             where: { keycloakId: req.user!.sub },
         });
 
-        if (!user || !['ADMIN', 'ORGANIZER'].includes(user.role)) {
+        if (!user || ![UserRole.ADMIN, UserRole.ORGANIZER].includes(user.role as UserRole)) {
             throw new ApiError('Csak szervezők módosíthatnak versenyt', 403, 'FORBIDDEN');
         }
 
@@ -352,219 +354,31 @@ tournamentsRouter.post(
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
         const { teamId, memberIds, userId: targetUserId } = req.body;
 
-        const tournament = await prisma.tournament.findUnique({
-            where: { id: req.params.id },
-            include: {
-                game: true,
-                entries: { select: { teamId: true, userId: true } },
-                _count: { select: { entries: true } }
-            },
-        });
-
-        if (!tournament) {
-            throw new ApiError('A verseny nem található', 404, 'NOT_FOUND');
-        }
-
-        if (tournament.status !== 'REGISTRATION') {
-            throw new ApiError('A versenyre jelenleg nem lehet regisztrálni', 400, 'REGISTRATION_CLOSED');
-        }
-
-        if (new Date() > tournament.registrationDeadline) {
-            throw new ApiError('A verseny befejezve', 400, 'DEADLINE_PASSED');
-        }
-
-        // Determine tournament type and required size
-        const teamSize = tournament.teamSize ?? tournament.game?.teamSize ?? 1;
-        const isSolo = teamSize === 1;
-
-        // Robust counting check
-        let currentCount = tournament._count.entries;
-        if (!isSolo) {
-            const uniqueTeams = new Set(tournament.entries.map(e => e.teamId).filter(Boolean));
-            currentCount = uniqueTeams.size;
-        } else {
-            // For solo, standard count is fine as entries map 1:1 to users usually, but let's be safe
-            currentCount = tournament.entries.length;
-        }
-
-        if (currentCount >= tournament.maxTeams) {
-            throw new ApiError('A verseny megtelt', 400, 'TOURNAMENT_FULL');
-        }
-
         const currentUser = await prisma.user.findUnique({
-            where: { keycloakId: req.user!.sub },
+             where: { keycloakId: req.user!.sub },
         });
 
         if (!currentUser) {
             throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
-        // Determine the user being registered
-        let registrant = currentUser;
-        if (targetUserId) {
-            if (!['ADMIN', 'ORGANIZER'].includes(currentUser.role)) {
-                throw new ApiError('Csak szervezők regisztrálhatnak más felhasználókat', 403, 'FORBIDDEN');
-            }
-            const target = await prisma.user.findUnique({ where: { id: targetUserId } });
-            if (!target) {
-                throw new ApiError('A célszemély nem található', 404, 'TARGET_USER_NOT_FOUND');
-            }
-            registrant = target;
-        }
-
-        let entryData: any = {
+        const entry = await tournamentService.register({
             tournamentId: req.params.id,
-            registeredAt: new Date(),
-        };
-
-        if (isSolo) {
-            // ==========================================
-            // SOLO REGISTRATION (1v1)
-            // ==========================================
-
-            // Check if already registered
-            const existingEntry = await prisma.tournamentEntry.findUnique({
-                where: { tournamentId_userId: { tournamentId: req.params.id, userId: registrant.id } },
-            });
-
-            if (existingEntry) {
-                throw new ApiError('Ez a felhasználó már regisztrált erre a versenyre', 400, 'ALREADY_REGISTERED');
-            }
-
-            // Check rank requirement
-            if (tournament.requireRank) {
-                const userRank = await prisma.userRank.findUnique({
-                    where: { userId_gameId: { userId: registrant.id, gameId: tournament.gameId } }
-                });
-
-                if (!userRank) {
-                    throw new ApiError(`${registrant.displayName || registrant.username} nem rendelkezik ranggal ebben a játékban.`, 400, 'RANK_REQUIRED');
-                }
-            }
-
-            // Prepare entry data
-            entryData.userId = registrant.id;
-            entryData.seed = registrant.elo; // Seed based on User ELO
-            // Connect participant directly
-            entryData.participants = {
-                connect: [{ id: registrant.id }]
-            };
-
-        } else {
-            // ==========================================
-            // TEAM REGISTRATION (>1)
-            // ==========================================
-
-            if (!teamId) {
-                throw new ApiError('Csapat azonosító szükséges a csapatversenyhez', 400, 'MISSING_TEAM_ID');
-            }
-
-            // Check if user is captain of the team OR Admin
-            const team = await prisma.team.findUnique({
-                where: { id: teamId },
-                include: {
-                    members: {
-                        include: {
-                            user: true
-                        }
-                    }
-                },
-            });
-
-            if (!team) {
-                throw new ApiError('Csapat nem található', 404, 'TEAM_NOT_FOUND');
-            }
-
-            if (team.ownerId !== currentUser.id && !['ADMIN', 'ORGANIZER'].includes(currentUser.role)) {
-                throw new ApiError('Csak a csapatkapitány regisztrálhat versenyre', 403, 'NOT_CAPTAIN');
-            }
-
-            // Validate Team Size and Selected Members
-            if (!memberIds || !Array.isArray(memberIds)) {
-                throw new ApiError(`Kérlek válassz ki pontosan ${teamSize} tagot a versenyre.`, 400, 'MEMBERS_REQUIRED');
-            }
-
-            if (memberIds.length !== teamSize) {
-                throw new ApiError(`A versenyre pontosan ${teamSize} fő nevezése szükséges (kiválasztva: ${memberIds.length}).`, 400, 'INVALID_TEAM_SIZE');
-            }
-
-            // Verify all selected members are actually in the team
-            const teamMemberIds = team.members.map(m => m.userId);
-            const allMembersValid = memberIds.every(id => teamMemberIds.includes(id));
-
-            if (!allMembersValid) {
-                throw new ApiError('Egy vagy több kiválasztott játékos nem tagja a csapatnak.', 400, 'INVALID_MEMBERS');
-            }
-
-
-            // Check if already registered
-            const existingEntry = await prisma.tournamentEntry.findUnique({
-                where: { tournamentId_teamId: { tournamentId: req.params.id, teamId } },
-            });
-
-            if (existingEntry) {
-                throw new ApiError('A csapat már részt vett ebben a versenyben', 400, 'ALREADY_REGISTERED');
-            }
-
-            // Validate that all members have a rank for the game if required
-            if (tournament.requireRank) {
-                // Fetch ranks for these users for this game
-                const userRanks = await prisma.userRank.findMany({
-                    where: {
-                        userId: { in: memberIds },
-                        gameId: tournament.gameId
-                    },
-                    include: {
-                        user: true
-                    }
-                });
-
-                // Check if count matches
-                if (userRanks.length !== memberIds.length) {
-                    // Identify who is missing a rank
-                    const usersWithRank = userRanks.map(ur => ur.userId);
-                    const missingRankUserId = memberIds.find((id: string) => !usersWithRank.includes(id));
-
-                    // Try to find the user details for the error message
-                    let missingUserName = 'Egy csapattag';
-                    if (missingRankUserId) {
-                        const missingMember = team.members.find(m => m.userId === missingRankUserId);
-                        if (missingMember?.user?.displayName) missingUserName = missingMember.user.displayName;
-                        else if (missingMember?.user?.username) missingUserName = missingMember.user.username;
-                    }
-
-                    throw new ApiError(`${missingUserName} nem rendelkezik ranggal ebben a játékban (Rank beállítása kötelező).`, 400, 'RANK_REQUIRED');
-                }
-            }
-
-            // Prepare entry data
-            entryData.teamId = team.id;
-            entryData.seed = team.elo; // Seed based on Team ELO
-            entryData.participants = {
-                connect: memberIds.map((id: string) => ({ id }))
-            };
-        }
-
-        const entry = await prisma.tournamentEntry.create({
-            data: entryData,
-            include: {
-                team: true,
-                tournament: true,
-                user: { select: { id: true, username: true, displayName: true, avatarUrl: true, elo: true } },
-                participants: {
-                    select: { id: true, username: true, displayName: true, avatarUrl: true }
-                }
-            },
+            userId: targetUserId,
+            teamId,
+            memberIds,
+            registrantUser: currentUser
         });
 
-        // Log registration
+        // Log registration function wrapped to handle potential async issues if needed, but service handles standard logging? 
+        // Service doesn't log, so we keep logging here.
         await logSystemActivity(
             'TOURNAMENT_REGISTER',
-            `Registration for tournament '${tournament.name}'`,
+            `Registration for tournament ID '${req.params.id}'`,
             {
                 userId: currentUser.id,
                 metadata: {
-                    tournamentId: tournament.id,
+                    tournamentId: req.params.id,
                     registeredBy: currentUser.username,
                     isTeam: !!entry.teamId,
                     registrantId: entry.teamId || entry.userId,
@@ -772,7 +586,7 @@ tournamentsRouter.post(
             where: { keycloakId: req.user!.sub },
         });
 
-        if (!user || !['ADMIN', 'ORGANIZER'].includes(user.role)) {
+        if (!user || ![UserRole.ADMIN, UserRole.ORGANIZER].includes(user.role as UserRole)) {
             throw new ApiError('Csak szervezők generálhatnak ágrajzot', 403, 'FORBIDDEN');
         }
 

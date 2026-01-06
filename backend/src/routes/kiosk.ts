@@ -148,7 +148,37 @@ kioskRouter.post('/session/start', async (req, res) => {
         emitMachineUpdate(machine.hostname || machine.id, { status: 'occupied', userId: user.id });
         emitSessionUpdate({ type: 'start', session });
 
-        const remainingTime = ['ADMIN', 'TEACHER'].includes(user.role) ? -1 : user.timeBalanceSeconds;
+        // Calculate remaining time based on booking end
+        // bookingRemainingSeconds = (activeBooking.endTime - now)
+        // returned remainingTime = min(userTimeBalance, bookingRemainingSeconds)
+        
+        let remainingTime = -1;
+        
+        if (!['ADMIN', 'TEACHER'].includes(user.role)) {
+            // Re-fetch booking to be safe or use what we found
+            // We found 'activeBooking' earlier if not admin/teacher
+             const now = new Date();
+             const activeBooking = await prisma.booking.findFirst({
+                where: {
+                    userId: user.id,
+                    computerId: machine.id,
+                    startTime: { lte: now },
+                    endTime: { gte: now }
+                }
+            });
+
+            if (activeBooking) {
+                 const bookingRemainingSeconds = Math.floor((activeBooking.endTime.getTime() - now.getTime()) / 1000);
+                 remainingTime = Math.min(user.timeBalanceSeconds, bookingRemainingSeconds);
+                 
+                 // Log info
+                 console.log(`[SESSION] User balance: ${user.timeBalanceSeconds}s, Booking remaining: ${bookingRemainingSeconds}s -> Final: ${remainingTime}s`);
+            } else {
+                // Should not happen as we checked earlier, but fallback
+                remainingTime = user.timeBalanceSeconds;
+            }
+        }
+
         res.json({ success: true, session, remainingTime });
     } catch (error) {
         console.error(error);
@@ -278,6 +308,42 @@ kioskRouter.get('/status/:machineId', async (req, res) => {
                 // Time up!
                 res.json({ Locked: true, Message: "Time expired" });
             } else {
+                 // CLAMP to booking end time also in heartbeat!
+                 // If booking ends in 5 mins, but balance is 1 hour, we must return 5 mins.
+                 if (!isUnlimited) {
+                     const bookingRemaining = Math.floor((activeSession.endTime ? activeSession.endTime.getTime() : 0) - now.getTime()) / 1000; 
+                     // Wait, activeSession.endTime is null usually. We need the BOOKING info.
+                     // We need to look up the booking again because session doesn't link strictly to a booking ID in the schema (it links to user/computer).
+                     
+                     // Find the booking that covers NOW
+                     const currentBooking = await prisma.booking.findFirst({
+                        where: {
+                            userId: activeSession.userId,
+                            computerId: machine.id,
+                            startTime: { lte: now },
+                            endTime: { gte: now }
+                        }
+                     });
+
+                     if (currentBooking) {
+                         const bookingTimeLeft = Math.floor((currentBooking.endTime.getTime() - now.getTime()) / 1000);
+                         const finalRemaining = Math.min(remaining, bookingTimeLeft);
+                         
+                         if (finalRemaining <= 0) {
+                              res.json({ Locked: true, Message: "Booking time expired" });
+                              return;
+                         }
+
+                         res.json({ Locked: false, RemainingSeconds: finalRemaining });
+                         return;
+                     } else {
+                         // No active booking covers NOW? Then session should be invalid/closed?
+                         // If we are strict: yes.
+                         res.json({ Locked: true, Message: "Booking ended" });
+                         return;
+                     }
+                 }
+
                 res.json({ Locked: false, RemainingSeconds: remaining });
             }
         } else {
