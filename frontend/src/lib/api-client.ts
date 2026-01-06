@@ -11,11 +11,6 @@ export async function apiFetch(
     // Get fresh token (will refresh if needed)
     const token = await authService.getToken();
 
-    // If we couldn't get a token and auth is required, throw error
-    if (!token && !options.headers) {
-        // This is likely a public endpoint, proceed without token
-    }
-
     // Prepare headers
     const headers = new Headers(options.headers);
     if (token && !headers.has('Authorization')) {
@@ -65,8 +60,17 @@ export async function apiFetchJson<T = any>(
     const response = await apiFetch(url, options);
     
     if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        
+        // Try to parse error details from response
+        try {
+            const errorData = await response.json();
+            errorMessage = errorData.message || errorData.error?.message || errorMessage;
+        } catch {
+            // If JSON parsing fails, use the default error message
+        }
+        
+        throw new Error(errorMessage);
     }
     
     return response.json();
