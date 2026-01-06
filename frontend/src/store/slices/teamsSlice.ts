@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 import type { Team, ApiResponse } from '../../types';
 import { API_URL } from '../../config';
-import type { RootState } from '../index';
+import { apiFetch } from '../../lib/api-client';
 
 interface TeamsState {
     teams: Team[];
@@ -30,22 +30,14 @@ const initialState: TeamsState = {
     pagination: null,
 };
 
-const getToken = (state: RootState) => state.auth.token;
-
 export const fetchTeams = createAsyncThunk(
     'teams/fetchTeams',
-    async ({ page = 1, search, my }: { page?: number; search?: string; my?: boolean }, { getState }) => {
-        const state = getState() as RootState;
-        const token = getToken(state);
-
+    async ({ page = 1, search, my }: { page?: number; search?: string; my?: boolean }) => {
         const params = new URLSearchParams({ page: String(page), limit: '12' });
         if (search) params.append('search', search);
         if (my) params.append('my', 'true');
 
-        const response = await fetch(`${API_URL}/teams?${params}`, {
-            headers: token ? { Authorization: `Bearer ${token}` } : {},
-        });
-
+        const response = await apiFetch(`${API_URL}/teams?${params}`);
         const data: ApiResponse<Team[]> = await response.json();
 
         if (!data.success) {
@@ -58,16 +50,8 @@ export const fetchTeams = createAsyncThunk(
 
 export const fetchMyTeams = createAsyncThunk(
     'teams/fetchMyTeams',
-    async (_, { getState }) => {
-        const state = getState() as RootState;
-        const token = getToken(state);
-
-        if (!token) throw new Error('Nincs bejelentkezve!');
-
-        const response = await fetch(`${API_URL}/teams?my=true`, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-
+    async () => {
+        const response = await apiFetch(`${API_URL}/teams?my=true`);
         const data: ApiResponse<Team[]> = await response.json();
 
         if (!data.success) {
@@ -80,14 +64,8 @@ export const fetchMyTeams = createAsyncThunk(
 
 export const fetchTeam = createAsyncThunk(
     'teams/fetchTeam',
-    async (id: string, { getState }) => {
-        const state = getState() as RootState;
-        const token = getToken(state);
-
-        const response = await fetch(`${API_URL}/teams/${id}`, {
-            headers: token ? { Authorization: `Bearer ${token}` } : {},
-        });
-
+    async (id: string) => {
+        const response = await apiFetch(`${API_URL}/teams/${id}`);
         const data: ApiResponse<Team> = await response.json();
 
         if (!data.success) {
@@ -100,17 +78,11 @@ export const fetchTeam = createAsyncThunk(
 
 export const createTeam = createAsyncThunk(
     'teams/createTeam',
-    async (teamData: { name: string; description?: string; logoUrl?: string }, { getState }) => {
-        const state = getState() as RootState;
-        const token = getToken(state);
-
-        if (!token) throw new Error('Nincs bejelentkezve!');
-
-        const response = await fetch(`${API_URL}/teams`, {
+    async (teamData: { name: string; description?: string; logoUrl?: string }) => {
+        const response = await apiFetch(`${API_URL}/teams`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(teamData),
         });
@@ -127,17 +99,11 @@ export const createTeam = createAsyncThunk(
 
 export const joinTeam = createAsyncThunk(
     'teams/joinTeam',
-    async (code: string, { getState }) => {
-        const state = getState() as RootState;
-        const token = getToken(state);
-
-        if (!token) throw new Error('Nincs bejelentkezve!');
-
-        const response = await fetch(`${API_URL}/teams/join`, {
+    async (code: string) => {
+        const response = await apiFetch(`${API_URL}/teams/join`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({ code }),
         });
@@ -154,15 +120,9 @@ export const joinTeam = createAsyncThunk(
 
 export const leaveTeam = createAsyncThunk(
     'teams/leaveTeam',
-    async (teamId: string, { getState }) => {
-        const state = getState() as RootState;
-        const token = getToken(state);
-
-        if (!token) throw new Error('Nincs bejelentkezve!');
-
-        const response = await fetch(`${API_URL}/teams/${teamId}/leave`, {
+    async (teamId: string) => {
+        const response = await apiFetch(`${API_URL}/teams/${teamId}/leave`, {
             method: 'POST',
-            headers: { Authorization: `Bearer ${token}` },
         });
 
         const data: ApiResponse<any> = await response.json();
@@ -177,17 +137,11 @@ export const leaveTeam = createAsyncThunk(
 
 export const updateTeam = createAsyncThunk(
     'teams/updateTeam',
-    async ({ id, data }: { id: string; data: { name?: string; description?: string; logoUrl?: string } }, { getState }) => {
-        const state = getState() as RootState;
-        const token = getToken(state);
-
-        if (!token) throw new Error('Nincs bejelentkezve!');
-
-        const response = await fetch(`${API_URL}/teams/${id}`, {
+    async ({ id, data }: { id: string; data: { name?: string; description?: string; logoUrl?: string } }) => {
+        const response = await apiFetch(`${API_URL}/teams/${id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(data),
         });
@@ -204,15 +158,9 @@ export const updateTeam = createAsyncThunk(
 
 export const deleteTeam = createAsyncThunk(
     'teams/deleteTeam',
-    async (id: string, { getState }) => {
-        const state = getState() as RootState;
-        const token = getToken(state);
-
-        if (!token) throw new Error('Nincs bejelentkezve!');
-
-        const response = await fetch(`${API_URL}/teams/${id}`, {
+    async (id: string) => {
+        const response = await apiFetch(`${API_URL}/teams/${id}`, {
             method: 'DELETE',
-            headers: { Authorization: `Bearer ${token}` },
         });
 
         const result: ApiResponse<any> = await response.json();
@@ -227,15 +175,9 @@ export const deleteTeam = createAsyncThunk(
 
 export const removeMember = createAsyncThunk(
     'teams/removeMember',
-    async ({ teamId, memberId }: { teamId: string; memberId: string }, { getState }) => {
-        const state = getState() as RootState;
-        const token = getToken(state);
-
-        if (!token) throw new Error('Nincs bejelentkezve!');
-
-        const response = await fetch(`${API_URL}/teams/${teamId}/members/${memberId}`, {
+    async ({ teamId, memberId }: { teamId: string; memberId: string }) => {
+        const response = await apiFetch(`${API_URL}/teams/${teamId}/members/${memberId}`, {
             method: 'DELETE',
-            headers: { Authorization: `Bearer ${token}` },
         });
 
         const result: ApiResponse<any> = await response.json();
@@ -250,15 +192,9 @@ export const removeMember = createAsyncThunk(
 
 export const regenerateJoinCode = createAsyncThunk(
     'teams/regenerateJoinCode',
-    async (teamId: string, { getState }) => {
-        const state = getState() as RootState;
-        const token = getToken(state);
-
-        if (!token) throw new Error('Nincs bejelentkezve!');
-
-        const response = await fetch(`${API_URL}/teams/${teamId}/regenerate-code`, {
+    async (teamId: string) => {
+        const response = await apiFetch(`${API_URL}/teams/${teamId}/regenerate-code`, {
             method: 'POST',
-            headers: { Authorization: `Bearer ${token}` },
         });
 
         const result: ApiResponse<{ joinCode: string }> = await response.json();

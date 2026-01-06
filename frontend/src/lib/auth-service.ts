@@ -3,6 +3,7 @@ import { keycloakConfig, API_URL } from '../config';
 import { store } from '../store';
 import { setCredentials, clearCredentials, setError } from '../store/slices/authSlice';
 import type { User, ApiResponse } from '../types';
+import { toast } from 'sonner';
 
 class AuthService {
     private static instance: AuthService;
@@ -116,10 +117,24 @@ class AuthService {
             const refreshed = await this._keycloak.updateToken(30);
             if (refreshed) {
                 console.log('Token was refreshed');
+                // Update token in store
+                if (this._keycloak.token) {
+                    const state = store.getState();
+                    if (state.auth.user) {
+                        store.dispatch(setCredentials({
+                            user: state.auth.user,
+                            token: this._keycloak.token,
+                            refreshToken: this._keycloak.refreshToken
+                        }));
+                    }
+                }
             }
             return this._keycloak.token || null;
         } catch (error) {
             console.error('Failed to refresh token:', error);
+            toast.error('A munkamenet lejárt. Kérjük, jelentkezz be újra.', {
+                duration: 5000,
+            });
             // Token refresh failed, logout user
             await this.logout();
             return null;
@@ -135,16 +150,25 @@ class AuthService {
         // Set up token expiration handler
         this._keycloak.onTokenExpired = () => {
             console.log('Token expired, attempting to refresh');
+            toast.warning('A munkamenet hamarosan lejár, frissítés...', {
+                duration: 3000,
+            });
             this._keycloak?.updateToken(30)
                 .then((refreshed) => {
                     if (refreshed) {
                         console.log('Token refreshed successfully');
+                        toast.success('Munkamenet frissítve', {
+                            duration: 2000,
+                        });
                         // Re-sync user data with new token
                         this.syncUserWithBackend();
                     }
                 })
                 .catch((error) => {
                     console.error('Token refresh failed:', error);
+                    toast.error('A munkamenet lejárt. Kérjük, jelentkezz be újra.', {
+                        duration: 5000,
+                    });
                     this.logout();
                 });
         };
@@ -156,10 +180,25 @@ class AuthService {
                     .then((refreshed) => {
                         if (refreshed) {
                             console.log('Token refreshed via periodic check');
+                            // Update token in store
+                            if (this._keycloak?.token) {
+                                const state = store.getState();
+                                if (state.auth.user) {
+                                    store.dispatch(setCredentials({
+                                        user: state.auth.user,
+                                        token: this._keycloak.token,
+                                        refreshToken: this._keycloak.refreshToken
+                                    }));
+                                }
+                            }
                         }
                     })
                     .catch((error) => {
                         console.error('Periodic token refresh failed:', error);
+                        toast.error('A munkamenet lejárt. Kérjük, jelentkezz be újra.', {
+                            duration: 5000,
+                        });
+                        this.logout();
                     });
             }
         }, 5 * 60 * 1000); // 5 minutes
@@ -188,6 +227,15 @@ class AuthService {
                     'Authorization': `Bearer ${this._keycloak.token}`
                 }
             });
+
+            if (response.status === 401) {
+                console.error('Unauthorized during sync - token may be expired');
+                toast.error('A munkamenet lejárt. Kérjük, jelentkezz be újra.', {
+                    duration: 5000,
+                });
+                await this.logout();
+                return;
+            }
 
             if (!response.ok) {
                 const errorText = await response.text();
