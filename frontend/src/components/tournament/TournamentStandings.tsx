@@ -117,10 +117,10 @@ export function TournamentStandings({
             <img
               src={team.logoUrl}
               alt={team.name}
-              className="h-6 w-6 rounded-sm object-cover"
+              className="h-6 w-6 rounded-sm object-cover shrink-0"
             />
           ) : (
-            <div className="h-6 w-6 rounded-sm bg-primary/20" />
+            <div className="h-6 w-6 rounded-sm bg-primary/20 shrink-0" />
           )}
           <span
             className={
@@ -144,10 +144,10 @@ export function TournamentStandings({
             <img
               src={user.avatarUrl}
               alt={user.displayName}
-              className="h-6 w-6 rounded-full object-cover"
+              className="h-6 w-6 rounded-full object-cover shrink-0"
             />
           ) : (
-            <div className="h-6 w-6 rounded-full bg-primary/20" />
+            <div className="h-6 w-6 rounded-full bg-primary/20 shrink-0" />
           )}
           <span
             className={
@@ -246,10 +246,10 @@ export function TournamentStandings({
                                 <img
                                   src={team.avatarUrl}
                                   alt={team.name}
-                                  className="h-8 w-8 rounded bg-gray-800 object-cover"
+                                  className="h-8 w-8 rounded bg-gray-800 object-cover shrink-0"
                                 />
                               ) : (
-                                <div className="h-8 w-8 rounded bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                <div className="h-8 w-8 rounded bg-primary/20 flex items-center justify-center text-primary font-bold shrink-0">
                                   {team.name.charAt(0)}
                                 </div>
                               )}

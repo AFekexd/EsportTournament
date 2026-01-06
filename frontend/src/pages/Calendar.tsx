@@ -215,7 +215,7 @@ export function CalendarPage() {
             {/* Calendar Header */}
             <div className="flex items-center justify-between mb-6">
               <button
-                className="p-2 hover:bg-white/5 rounded-lg transition-colors border border-white/5 hover:border-white/10"
+                className="p-3 md:p-2 hover:bg-white/5 rounded-lg transition-colors border border-white/5 hover:border-white/10"
                 onClick={goToPreviousMonth}
               >
                 <ChevronLeft size={20} className="text-gray-400" />
@@ -224,7 +224,7 @@ export function CalendarPage() {
                 {monthName}
               </h2>
               <button
-                className="p-2 hover:bg-white/5 rounded-lg transition-colors border border-white/5 hover:border-white/10"
+                className="p-3 md:p-2 hover:bg-white/5 rounded-lg transition-colors border border-white/5 hover:border-white/10"
                 onClick={goToNextMonth}
               >
                 <ChevronRight size={20} className="text-gray-400" />
@@ -232,7 +232,7 @@ export function CalendarPage() {
             </div>
 
             {/* Calendar Grid */}
-            <div className="grid grid-cols-7 gap-px bg-white/5 rounded-lg overflow-hidden border border-white/5">
+            <div className="grid grid-cols-7 gap-2 gap-px bg-white/5 rounded-lg overflow-hidden border border-white/5">
               {/* Weekday Headers */}
               {weekDays.map((day) => (
                 <div
@@ -254,8 +254,8 @@ export function CalendarPage() {
                   <div
                     key={index}
                     className={`
-                      min-h-[50px] md:min-h-[120px] p-1 md:p-2 transition-colors relative group
-                      flex flex-col items-center md:items-start
+                      h-8 md:h-auto md:min-h-[120px] p-1 md:p-2 transition-colors relative group
+                      flex flex-col items-center justify-center md:items-start md:justify-start
                       ${
                         !day.isCurrentMonth
                           ? "bg-[#15161c] text-gray-700"
@@ -274,7 +274,7 @@ export function CalendarPage() {
                     <div className="flex justify-between items-start w-full mb-1">
                       <span
                         className={`
-                            w-6 h-6 md:w-7 md:h-7 flex items-center justify-center rounded-full text-xs md:text-sm
+                            w-8 h-8 md:w-7 md:h-7 flex items-center justify-center rounded-full text-sm
                             ${isToday ? "bg-primary text-black font-bold" : ""}
                         `}
                       >
@@ -289,7 +289,7 @@ export function CalendarPage() {
                     </div>
 
                     {/* Mobile Dots */}
-                    <div className="flex gap-1 md:hidden mt-1">
+                    <div className="flex gap-1 hidden sm:flex mt-1">
                       {day.events.slice(0, 3).map((_, i) => (
                         <div
                           key={i}

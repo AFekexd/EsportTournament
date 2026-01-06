@@ -23,10 +23,7 @@ export function RuleAcceptanceModal({
   const [accepted, setAccepted] = useState(false);
 
   return (
-    <div
-      className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div
         className={`bg-[#1a1b26] rounded-2xl w-full max-w-[95vw] md:max-w-[1400px] border border-white/10 shadow-[0_0_50px_-12px_rgba(var(--primary-rgb),0.25)] overflow-hidden animate-in fade-in zoom-in-95 duration-200`}
         onClick={(e) => e.stopPropagation()}

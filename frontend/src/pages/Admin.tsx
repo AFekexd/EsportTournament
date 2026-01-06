@@ -189,7 +189,12 @@ export function AdminPage() {
     });
   };
 
-  if (!user || (user.role !== "ADMIN" && user.role !== "ORGANIZER")) {
+  if (
+    !user ||
+    (user.role !== "ADMIN" &&
+      user.role !== "ORGANIZER" &&
+      user.role !== "TEACHER")
+  ) {
     return (
       <div className="container py-5">
         <div className="alert alert-error">
@@ -242,14 +247,20 @@ export function AdminPage() {
     );
   };
 
+  const canManageComputers = user?.role === "ADMIN" || user?.role === "TEACHER";
+
   const tabs = [
     { id: "overview", label: "Áttekintés", icon: Settings },
     { id: "users", label: "Felhasználók", icon: Users },
     { id: "teams", label: "Csapatok", icon: Shield },
     { id: "tournaments", label: "Versenyek", icon: Trophy },
     { id: "games", label: "Játékok", icon: Gamepad2 },
-    { id: "bookings", label: "Gépfoglalás", icon: Calendar },
-    { id: "kiosk", label: "Gépterem", icon: Monitor },
+    ...(canManageComputers
+      ? [
+          { id: "bookings", label: "Gépfoglalás", icon: Calendar },
+          { id: "kiosk", label: "Gépterem", icon: Monitor },
+        ]
+      : []),
   ];
 
   return (
@@ -268,7 +279,7 @@ export function AdminPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 my-8">
         <div className="relative group overflow-hidden rounded-2xl bg-[#0f1016] border border-white/5 p-6 hover:border-primary/50 transition-all duration-300">
           <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <div className="relative flex justify-between items-start">
+          <div className="relative flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-4 md:gap-0">
             <div>
               <p className="text-muted-foreground text-sm font-medium mb-1">
                 Felhasználók
@@ -283,7 +294,7 @@ export function AdminPage() {
 
         <div className="relative group overflow-hidden rounded-2xl bg-[#0f1016] border border-white/5 p-6 hover:border-blue-500/50 transition-all duration-300">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <div className="relative flex justify-between items-start">
+          <div className="relative flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-4 md:gap-0">
             <div>
               <p className="text-muted-foreground text-sm font-medium mb-1">
                 Versenyek
@@ -300,7 +311,7 @@ export function AdminPage() {
 
         <div className="relative group overflow-hidden rounded-2xl bg-[#0f1016] border border-white/5 p-6 hover:border-emerald-500/50 transition-all duration-300">
           <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <div className="relative flex justify-between items-start">
+          <div className="relative flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-4 md:gap-0">
             <div>
               <p className="text-muted-foreground text-sm font-medium mb-1">
                 Csapatok
@@ -315,7 +326,7 @@ export function AdminPage() {
 
         <div className="relative group overflow-hidden rounded-2xl bg-[#0f1016] border border-white/5 p-6 hover:border-pink-500/50 transition-all duration-300">
           <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <div className="relative flex justify-between items-start">
+          <div className="relative flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-4 md:gap-0">
             <div>
               <p className="text-muted-foreground text-sm font-medium mb-1">
                 Játékok

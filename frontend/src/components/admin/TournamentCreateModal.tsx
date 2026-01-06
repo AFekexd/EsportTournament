@@ -97,10 +97,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div
         className="bg-[#1a1b26] rounded-2xl w-full max-w-3xl border border-white/10 shadow-2xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}

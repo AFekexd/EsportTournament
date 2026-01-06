@@ -92,10 +92,7 @@ export function ComputerModal({ computer, onClose }: ComputerModalProps) {
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div
         className="bg-[#1a1b26] rounded-2xl w-full max-w-lg border border-white/10 shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}

@@ -233,12 +233,12 @@ export function LeaderboardsPage() {
                               to={`/profile/${player.id}`}
                               className="flex items-center gap-2"
                             >
-                              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-white text-sm font-bold">
+                              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-white text-sm font-bold shrink-0">
                                 {player.avatarUrl ? (
                                   <img
                                     src={player.avatarUrl}
                                     alt={player.displayName || player.username}
-                                    className="w-full h-full rounded-full object-cover "
+                                    className="w-full h-full rounded-full object-cover shrink-0"
                                   />
                                 ) : (
                                   <span className="">
@@ -285,12 +285,12 @@ export function LeaderboardsPage() {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-white text-sm font-bold">
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-white text-sm font-bold shrink-0">
                               {team.logoUrl ? (
                                 <img
                                   src={team.logoUrl}
                                   alt={team.name}
-                                  className="w-full h-full rounded-full object-cover"
+                                  className="w-full h-full rounded-full object-cover shrink-0"
                                 />
                               ) : (
                                 <span>{team.name.charAt(0).toUpperCase()}</span>
