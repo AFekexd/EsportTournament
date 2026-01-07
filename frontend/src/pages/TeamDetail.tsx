@@ -56,7 +56,7 @@ export function TeamDetailPage() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => {},
+    onConfirm: () => { },
     variant: "primary",
   });
 
@@ -182,11 +182,11 @@ export function TeamDetailPage() {
           </div>
 
           <div className="px-8 pb-8">
-            <div className="relative flex flex-col md:flex-row gap-8 items-end -mt-20">
+            <div className="relative flex  md:flex-row gap-8 items-end -mt-20">
               {/* Logo */}
-              <div className="relative shrink-0 mx-auto md:mx-0 z-10">
-                <div className="w-36 h-36 md:w-44 md:h-44 rounded-2xl p-1.5 bg-[#1a1b26] shadow-2xl relative rotate-3 hover:rotate-0 transition-transform duration-300">
-                  <div className="w-full h-full rounded-xl p-1 bg-gradient-to-br from-blue-500 to-purple-600">
+              <div className="relative shrink-0 mx-auto md:mx-0 z-10 flex items-center justify-center">
+                <div className="w-36 h-36 md:w-44 md:h-44 flex items-center justify-center rounded-2xl p-1.5 bg-[#1a1b26] shadow-2xl relative transition-transform duration-300">
+                  <div className="w-full h-full rounded-xl p-1 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                     <div className="w-full h-full rounded-lg bg-[#0f1015] overflow-hidden flex items-center justify-center relative z-10">
                       {currentTeam.logoUrl ? (
                         <img
@@ -306,11 +306,10 @@ export function TeamDetailPage() {
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
-                      activeTab === tab
-                        ? "border-primary text-primary bg-primary/5"
-                        : "border-transparent text-gray-400 hover:text-white hover:bg-white/5"
-                    }`}
+                    className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === tab
+                      ? "border-primary text-primary bg-primary/5"
+                      : "border-transparent text-gray-400 hover:text-white hover:bg-white/5"
+                      }`}
                   >
                     <Icon size={18} />
                     {labels[tab]}
@@ -330,7 +329,7 @@ export function TeamDetailPage() {
                   <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                     <Info size={20} className="text-primary" />A Csapatról
                   </h2>
-                  <div className="prose prose-invert max-w-none text-gray-300 leading-relaxed">
+                  <div className="prose prose-invert max-w-none text-gray-300 leading-relaxed max-w-[200px] break-words">
                     {currentTeam.description ? (
                       currentTeam.description
                     ) : (
@@ -430,13 +429,12 @@ export function TeamDetailPage() {
                           {entry.tournament?.name}
                         </h3>
                         <div
-                          className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border ${
-                            entry.tournament?.status === "REGISTRATION"
-                              ? "bg-green-500/10 text-green-500 border-green-500/20"
-                              : entry.tournament?.status === "IN_PROGRESS"
+                          className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border ${entry.tournament?.status === "REGISTRATION"
+                            ? "bg-green-500/10 text-green-500 border-green-500/20"
+                            : entry.tournament?.status === "IN_PROGRESS"
                               ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
                               : "bg-red-500/10 text-red-500 border-red-500/20"
-                          }`}
+                            }`}
                         >
                           {entry.tournament?.status}
                         </div>

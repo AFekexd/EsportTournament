@@ -21,7 +21,7 @@ function TeamCard({ team }: { team: Team }) {
     >
       {/* Team Avatar */}
       <div className="flex items-center gap-4 mb-4">
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg shrink-0">
           {team.logoUrl ? (
             <img
               src={team.logoUrl}
@@ -38,7 +38,7 @@ function TeamCard({ team }: { team: Team }) {
             {team.name}
           </h3>
           {team.description && (
-            <p className="text-sm text-gray-400 line-clamp-1">
+            <p className="text-sm text-gray-400 line-clamp-1 break-words max-w-[150px]">
               {team.description}
             </p>
           )}
@@ -72,7 +72,7 @@ function TeamCard({ team }: { team: Team }) {
             <Link
               key={member.id}
               to={`/profile/${member.userId}`}
-              className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 border-2 border-[#1a1b26] flex items-center justify-center text-white text-xs font-semibold hover:border-primary transition-colors cursor-pointer"
+              className="w-8 h-8 min-w-[2rem] min-h-[2rem] rounded-full bg-gradient-to-br from-gray-700 to-gray-800 border-2 border-[#1a1b26] flex items-center justify-center text-white text-xs font-semibold hover:border-primary transition-colors cursor-pointer shrink-0"
               title={member.user?.displayName || member.user?.username}
               onClick={(e) => e.stopPropagation()} // Prevent card click
             >
@@ -168,11 +168,10 @@ export function TeamsPage() {
         {isAuthenticated && (
           <div className="flex flex-wrap justify-center gap-4">
             <button
-              className={`flex items-center gap-2 px-6 py-3 border rounded-xl font-semibold transition-all ${
-                filterMyTeams
-                  ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
-                  : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border-white/10"
-              }`}
+              className={`flex items-center gap-2 px-6 py-3 border rounded-xl font-semibold transition-all ${filterMyTeams
+                ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
+                : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border-white/10"
+                }`}
               onClick={() => setFilterMyTeams(!filterMyTeams)}
             >
               <Users size={18} />
@@ -262,11 +261,10 @@ export function TeamsPage() {
           {[...Array(pagination.pages)].map((_, i) => (
             <button
               key={i}
-              className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                pagination.page === i + 1
-                  ? "bg-primary text-white shadow-lg shadow-primary/20"
-                  : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border border-white/10"
-              }`}
+              className={`px-4 py-2 rounded-lg font-medium transition-all ${pagination.page === i + 1
+                ? "bg-primary text-white shadow-lg shadow-primary/20"
+                : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border border-white/10"
+                }`}
               onClick={() =>
                 dispatch(
                   fetchTeams({

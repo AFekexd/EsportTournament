@@ -26,7 +26,7 @@ export const tournamentService = {
             if (tournament.status !== TournamentStatus.REGISTRATION) {
                 // Allow admins to override? For now, stick to strict rules or check permission before calling service
                 if (![UserRole.ADMIN, UserRole.ORGANIZER].includes(registrantUser.role)) {
-                     throw new ApiError('A versenyre jelenleg nem lehet regisztrálni', 400, 'REGISTRATION_CLOSED');
+                    throw new ApiError('A versenyre jelenleg nem lehet regisztrálni', 400, 'REGISTRATION_CLOSED');
                 }
             }
 
@@ -40,11 +40,11 @@ export const tournamentService = {
 
             // Check capacity
             let currentCount = tournament._count.entries;
-             if (!isSolo) {
+            if (!isSolo) {
                 const uniqueTeams = new Set(tournament.entries.map(e => e.teamId).filter(Boolean));
                 currentCount = uniqueTeams.size;
             } else {
-                 currentCount = tournament.entries.length;
+                currentCount = tournament.entries.length;
             }
 
             if (currentCount >= tournament.maxTeams) {
@@ -61,7 +61,7 @@ export const tournamentService = {
                 let targetUser = registrantUser;
                 // If admin is registering someone else
                 if (userId && userId !== registrantUser.id) {
-                     if (![UserRole.ADMIN, UserRole.ORGANIZER].includes(registrantUser.role)) {
+                    if (![UserRole.ADMIN, UserRole.ORGANIZER].includes(registrantUser.role)) {
                         throw new ApiError('Csak szervezők regisztrálhatnak más felhasználókat', 403, 'FORBIDDEN');
                     }
                     targetUser = await tx.user.findUnique({ where: { id: userId } });
@@ -79,7 +79,7 @@ export const tournamentService = {
                     const userRank = await tx.userRank.findUnique({
                         where: { userId_gameId: { userId: targetUser.id, gameId: tournament.gameId } }
                     });
-                     if (!userRank) {
+                    if (!userRank) {
                         throw new ApiError(`${targetUser.displayName || targetUser.username} nem rendelkezik ranggal ebben a játékban.`, 400, 'RANK_REQUIRED');
                     }
                 }
@@ -90,9 +90,9 @@ export const tournamentService = {
 
             } else {
                 // --- TEAM LOGIC ---
-                 if (!teamId) throw new ApiError('Csapat azonosító szükséges', 400, 'MISSING_TEAM_ID');
+                if (!teamId) throw new ApiError('Csapat azonosító szükséges', 400, 'MISSING_TEAM_ID');
 
-                 const team = await tx.team.findUnique({
+                const team = await tx.team.findUnique({
                     where: { id: teamId },
                     include: { members: { include: { user: true } } }
                 });
@@ -114,20 +114,50 @@ export const tournamentService = {
                 }
 
                 // Check duplicate
-                 const existingEntry = await tx.tournamentEntry.findUnique({
+                const existingEntry = await tx.tournamentEntry.findUnique({
                     where: { tournamentId_teamId: { tournamentId: tournament.id, teamId } },
                 });
                 if (existingEntry) throw new ApiError('A csapat már regisztrált', 400, 'ALREADY_REGISTERED');
 
-                 // Rank check
-                 if (tournament.requireRank) {
+                // Check if any member is already registered with another team
+                const existingMemberEntry = await tx.tournamentEntry.findFirst({
+                    where: {
+                        tournamentId: tournament.id,
+                        participants: {
+                            some: {
+                                id: { in: memberIds }
+                            }
+                        }
+                    },
+                    include: {
+                        participants: {
+                            where: {
+                                id: { in: memberIds }
+                            }
+                        },
+                        team: true
+                    }
+                });
+
+                if (existingMemberEntry) {
+                    const duplicateMember = existingMemberEntry.participants[0];
+                    const teamName = existingMemberEntry.team?.name || 'egy másik csapat';
+                    throw new ApiError(
+                        `${duplicateMember.displayName || duplicateMember.username} már regisztrált a versenyre a(z) ${teamName} csapattal.`,
+                        400,
+                        'MEMBER_ALREADY_REGISTERED'
+                    );
+                }
+
+                // Rank check
+                if (tournament.requireRank) {
                     const userRanks = await tx.userRank.findMany({
                         where: { userId: { in: memberIds }, gameId: tournament.gameId }
                     });
                     if (userRanks.length !== memberIds.length) {
                         throw new ApiError('Minden csapattagnak rendelkeznie kell ranggal.', 400, 'RANK_REQUIRED');
                     }
-                 }
+                }
 
                 entryData.teamId = team.id;
                 entryData.seed = team.elo;
