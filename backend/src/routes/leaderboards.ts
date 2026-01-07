@@ -49,6 +49,7 @@ leaderboardsRouter.get(
                     displayName: true,
                     avatarUrl: true,
                     elo: true,
+                    role: true,
                     _count: {
                         select: {
                             tournamentEntries: true,
@@ -208,6 +209,7 @@ leaderboardsRouter.get(
                 displayName: true,
                 avatarUrl: true,
                 elo: true,
+                role: true,
                 _count: {
                     select: {
                         wonMatches: true,
