@@ -76,10 +76,8 @@ export function TeacherTimePage() {
       (user.displayName?.toLowerCase().includes(searchTerm.toLowerCase()) ??
         false);
 
-    // Optional: Filter only students?
-    // const isStudent = user.role === 'STUDENT';
-    // return matchesSearch && isStudent;
-    return matchesSearch;
+    const isStudent = user.role === "STUDENT";
+    return matchesSearch && isStudent;
   });
 
   if (loading) {
@@ -89,6 +87,19 @@ export function TeacherTimePage() {
       </div>
     );
   }
+
+  const generateRole = (role: string) => {
+    switch (role) {
+      case "ADMIN":
+        return <div className="text-red-500 ">Admin</div>;
+      case "TEACHER":
+        return <div className="text-green-500 ">Tanár</div>;
+      case "STUDENT":
+        return <div className="text-blue-500 ">Diák</div>;
+      default:
+        return role;
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -129,11 +140,10 @@ export function TeacherTimePage() {
               <div className="flex items-center gap-3 min-w-0 w-full">
                 <div
                   className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center text-lg font-bold overflow-hidden
-                                    ${
-                                      user.role === "TEACHER"
-                                        ? "bg-green-500/20 text-green-400"
-                                        : "bg-primary/20 text-primary"
-                                    }`}
+                                    ${user.role === "TEACHER"
+                      ? "bg-green-500/20 text-green-400"
+                      : "bg-primary/20 text-primary"
+                    }`}
                 >
                   {user.avatarUrl ? (
                     <img
@@ -161,14 +171,13 @@ export function TeacherTimePage() {
 
             <div className="flex justify-between items-end">
               <div className="text-xs px-2 py-1 rounded bg-white/5 text-gray-400 border border-white/5">
-                {user.role}
+                {generateRole(user.role)}
               </div>
               <div
-                className={`text-xl font-mono font-bold ${
-                  user.timeBalanceSeconds < 0
-                    ? "text-red-400"
-                    : "text-green-400"
-                }`}
+                className={`text-xl font-mono font-bold ${user.timeBalanceSeconds < 0
+                  ? "text-red-400"
+                  : "text-green-400"
+                  }`}
               >
                 {["ADMIN", "TEACHER"].includes(user.role)
                   ? "∞"

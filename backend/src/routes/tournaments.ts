@@ -355,7 +355,7 @@ tournamentsRouter.post(
         const { teamId, memberIds, userId: targetUserId } = req.body;
 
         const currentUser = await prisma.user.findUnique({
-             where: { keycloakId: req.user!.sub },
+            where: { keycloakId: req.user!.sub },
         });
 
         if (!currentUser) {
@@ -574,6 +574,50 @@ tournamentsRouter.delete(
         }
 
         res.json({ success: true, message: 'Sikeres leiratkozás' });
+    })
+);
+
+// Delete bracket (organizer+)
+tournamentsRouter.delete(
+    '/:id/bracket',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user || ![UserRole.ADMIN, UserRole.ORGANIZER].includes(user.role as UserRole)) {
+            throw new ApiError('Csak szervezők törölhetik az ágrajzot', 403, 'FORBIDDEN');
+        }
+
+        const tournament = await prisma.tournament.findUnique({
+            where: { id: req.params.id },
+            include: { matches: true }
+        });
+
+        if (!tournament) {
+            throw new ApiError('A verseny nem található', 404, 'NOT_FOUND');
+        }
+
+        if (tournament.matches.length === 0) {
+            throw new ApiError('Nincs törölhető ágrajz', 400, 'NO_BRACKET_TO_DELETE');
+        }
+
+        await tournamentService.deleteBracket(req.params.id);
+
+        await logSystemActivity(
+            'BRACKET_DELETE',
+            `Bracket deleted for tournament '${tournament.name}' by ${user.username}`,
+            {
+                userId: user.id,
+                metadata: {
+                    tournamentId: tournament.id,
+                    deletedBy: user.username
+                }
+            }
+        );
+
+        res.json({ success: true, message: 'Ágrajz sikeresen törölve' });
     })
 );
 

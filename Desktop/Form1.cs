@@ -1112,6 +1112,8 @@ namespace EsportManager
                         this.Activate();
                         ShowLockedScreen();
 
+                        // Force Windows Logout
+                        RunLogoutScript(_currentUserId ?? "User");
                     }
                 }
             }
@@ -1203,7 +1205,7 @@ namespace EsportManager
 
                         
                         // Windows kijelentkeztetés
-                       // RunLogoutScript(_currentUserId ?? "User");
+                        RunLogoutScript(_currentUserId ?? "User");
                     }
                     else if (status != null && !status.Locked && _isUnlocked)
                     {

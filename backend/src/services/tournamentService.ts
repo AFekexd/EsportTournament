@@ -11,6 +11,12 @@ interface RegistrationData {
 }
 
 export const tournamentService = {
+    async deleteBracket(tournamentId: string) {
+        return await prisma.match.deleteMany({
+            where: { tournamentId }
+        });
+    },
+
     async register(data: RegistrationData) {
         const { tournamentId, userId, teamId, memberIds, registrantUser } = data;
 

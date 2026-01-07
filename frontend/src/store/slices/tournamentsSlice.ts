@@ -259,6 +259,30 @@ export const generateBracket = createAsyncThunk(
     }
 );
 
+export const deleteBracket = createAsyncThunk(
+    'tournaments/deleteBracket',
+    async (tournamentId: string) => {
+        const token = getToken();
+
+        if (!token) throw new Error('Nincs bejelentkezve!');
+
+        const response = await fetch(`${API_URL}/tournaments/${tournamentId}/bracket`, {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        const result: ApiResponse<any> = await response.json();
+
+        if (!result.success) {
+            throw new Error(result.error?.message || 'Failed to delete bracket');
+        }
+
+        return tournamentId;
+    }
+);
+
 export const updateMatch = createAsyncThunk(
     'tournaments/updateMatch',
     async ({ matchId, data }: { matchId: string; data: { homeScore?: number; awayScore?: number; winnerId?: string } }) => {
@@ -421,6 +445,21 @@ const tournamentsSlice = createSlice({
                 state.isLoading = false;
                 state.error = action.error.message || 'Failed to generate bracket';
             })
+            // Delete bracket
+            .addCase(deleteBracket.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(deleteBracket.fulfilled, (state, action) => {
+                state.isLoading = false;
+                if (state.currentTournament?.id === action.payload) {
+                    state.currentTournament.matches = [];
+                }
+            })
+            .addCase(deleteBracket.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.error.message || 'Failed to delete bracket';
+            })
             // Update match
             .addCase(updateMatch.pending, (state) => {
                 state.updateLoading = true;
@@ -452,32 +491,32 @@ const tournamentsSlice = createSlice({
             // Register
             .addCase(registerForTournament.fulfilled, (state, action) => {
                 if (state.currentTournament) {
-                     if (!state.currentTournament.entries) {
-                         state.currentTournament.entries = [];
-                     }
-                     state.currentTournament.entries.push(action.payload);
-                     // Update counts
-                     if (state.currentTournament.participantsCount !== undefined) {
-                         state.currentTournament.participantsCount++;
-                     } else if (state.currentTournament._count) {
-                         state.currentTournament._count.entries++;
-                     }
+                    if (!state.currentTournament.entries) {
+                        state.currentTournament.entries = [];
+                    }
+                    state.currentTournament.entries.push(action.payload);
+                    // Update counts
+                    if (state.currentTournament.participantsCount !== undefined) {
+                        state.currentTournament.participantsCount++;
+                    } else if (state.currentTournament._count) {
+                        state.currentTournament._count.entries++;
+                    }
                 }
             })
             // Unregister
             .addCase(unregisterFromTournament.fulfilled, (state, action) => {
-                 if (state.currentTournament && state.currentTournament.entries) {
-                     const { targetId } = action.payload;
-                     state.currentTournament.entries = state.currentTournament.entries.filter(e => 
-                         e.id !== targetId
-                     );
-                     // Update counts
-                     if (state.currentTournament.participantsCount !== undefined) {
-                         state.currentTournament.participantsCount = Math.max(0, state.currentTournament.participantsCount - 1);
-                     } else if (state.currentTournament._count) {
-                         state.currentTournament._count.entries = Math.max(0, state.currentTournament._count.entries - 1);
-                     }
-                 }
+                if (state.currentTournament && state.currentTournament.entries) {
+                    const { targetId } = action.payload;
+                    state.currentTournament.entries = state.currentTournament.entries.filter(e =>
+                        e.id !== targetId
+                    );
+                    // Update counts
+                    if (state.currentTournament.participantsCount !== undefined) {
+                        state.currentTournament.participantsCount = Math.max(0, state.currentTournament.participantsCount - 1);
+                    } else if (state.currentTournament._count) {
+                        state.currentTournament._count.entries = Math.max(0, state.currentTournament._count.entries - 1);
+                    }
+                }
             });
     },
 });

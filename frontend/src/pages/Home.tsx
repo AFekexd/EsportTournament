@@ -151,7 +151,7 @@ export function HomePage() {
           <div className="absolute left-[10%] top-[10%] w-56 animate-bounce delay-0 hover:z-10">
             <div className="glass-card rounded-2xl p-6 text-center shadow-2xl transition-all hover:scale-110 group cursor-pointer border-t border-white/10 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/20 text-primary shadow-[0_0_15px_rgba(139,92,246,0.3)] group-hover:shadow-[0_0_25px_rgba(139,92,246,0.6)] transition-shadow">
+              <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/20 text-primary transition-shadow">
                 <Trophy className="h-7 w-7" />
               </div>
               <span className="font-bold text-white relative z-10">
@@ -172,7 +172,7 @@ export function HomePage() {
             </div>
           </div>
 
-          <div className="absolute bottom-[10%] left-[20%] w-56 animate-bounce delay-1000 hover:z-10">
+          <div className="absolute bottom-[10%] left-[20%] w-56 animate-bounce delay-300 hover:z-10">
             <div className="glass-card rounded-2xl p-6 text-center shadow-2xl transition-all hover:scale-110 group cursor-pointer border-t border-white/10 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--neon-pink))]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-[hsl(var(--neon-pink))]/20 text-[hsl(var(--neon-pink))] shadow-[0_0_15px_hsla(var(--neon-pink),0.3)] group-hover:shadow-[0_0_25px_hsla(var(--neon-pink),0.6)] transition-shadow">
@@ -192,28 +192,28 @@ export function HomePage() {
         <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
           {statsLoading
             ? // Loading skeleton
-              Array.from({ length: 4 }).map((_, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col items-center justify-center border-l border-white/5 py-4 first:border-0"
-                >
-                  <Skeleton className="h-16 w-32 mb-2 bg-white/5" />
-                  <Skeleton className="h-4 w-40 bg-white/5" />
-                </div>
-              ))
+            Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center justify-center border-l border-white/5 py-4 first:border-0"
+              >
+                <Skeleton className="h-16 w-32 mb-2 bg-white/5" />
+                <Skeleton className="h-4 w-40 bg-white/5" />
+              </div>
+            ))
             : statsData.map((stat, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col items-center justify-center border-l border-white/5 py-4 first:border-0 group hover:bg-white/5 rounded-lg transition-colors"
-                >
-                  <span className="text-glow mb-2 text-5xl font-black tracking-tight text-white md:text-6xl group-hover:scale-110 transition-transform duration-300 group-hover:text-primary">
-                    {stat.value}
-                  </span>
-                  <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground group-hover:text-white transition-colors">
-                    {stat.label}
-                  </span>
-                </div>
-              ))}
+              <div
+                key={index}
+                className="flex flex-col items-center justify-center border-l border-white/5 py-4 first:border-0 group hover:bg-white/5 rounded-lg transition-colors"
+              >
+                <span className="text-glow mb-2 text-5xl font-black tracking-tight text-white md:text-6xl group-hover:scale-110 transition-transform duration-300 group-hover:text-primary">
+                  {stat.value}
+                </span>
+                <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground group-hover:text-white transition-colors">
+                  {stat.label}
+                </span>
+              </div>
+            ))}
         </div>
       </section>
 

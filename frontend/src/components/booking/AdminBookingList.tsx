@@ -232,6 +232,7 @@ export function AdminBookingList() {
                 </CardContent>
             </Card>
 
+
             {editingBooking && (
                 <BookingEditModal
                     booking={editingBooking}
