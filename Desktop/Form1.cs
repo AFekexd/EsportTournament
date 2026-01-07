@@ -407,6 +407,40 @@ namespace EsportManager
                 }
             };
 
+                }
+            };
+
+            // Real-time Clock Label
+            _clockLabel = new Label
+            {
+                Text = DateTime.Now.ToString("HH:mm"),
+                Font = new Font("Segoe UI", 36, FontStyle.Bold),
+                ForeColor = Color.White,
+                AutoSize = true,
+                BackColor = Color.Transparent,
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
+            };
+            // Position manually initially or rely on Anchor/Dock if container supports it. 
+            // Since _lockedPanel is just a Panel, we set Location. 
+            // We want it Top-Right. We'll set it in Resize event or just fixed for 1920x1080 usually, 
+            // but dynamic is better.
+            _clockLabel.Location = new Point(Screen.PrimaryScreen.Bounds.Width - 200, 30);
+            
+            _lockedPanel.Controls.Add(_clockLabel);
+
+            // Clock Timer
+            _clockTimer = new System.Windows.Forms.Timer { Interval = 1000 };
+            _clockTimer.Tick += (s, e) => 
+            {
+                if (_clockLabel != null && !_clockLabel.IsDisposed)
+                {
+                    _clockLabel.Text = DateTime.Now.ToString("HH:mm");
+                    // Re-position if needed (simple anchor might strictly work if panel resizes)
+                    _clockLabel.Location = new Point(_lockedPanel.Width - _clockLabel.Width - 50, 30);
+                }
+            };
+            _clockTimer.Start();
+
             this.Controls.Add(_lockedPanel);
 
             // Login panel (rejtve induláskor)
