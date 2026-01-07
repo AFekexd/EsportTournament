@@ -6,7 +6,7 @@ import {
   Trash2,
   CheckCircle,
   AlertCircle,
-  Edit2,
+
 } from "lucide-react";
 import { ConfirmationModal } from "../common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
@@ -18,11 +18,9 @@ import {
 import { useAuth } from "../../hooks/useAuth";
 import "./MyBookings.css";
 
-interface MyBookingsProps {
-  onEditBooking?: (booking: Booking) => void;
-}
 
-export function MyBookings({ onEditBooking }: MyBookingsProps) {
+
+export function MyBookings() {
   const dispatch = useAppDispatch();
   const { isAuthenticated } = useAuth();
   const { myBookings, isLoading } = useAppSelector((state) => state.bookings);
@@ -38,7 +36,7 @@ export function MyBookings({ onEditBooking }: MyBookingsProps) {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => {},
+    onConfirm: () => { },
     variant: "primary",
   });
 
@@ -171,15 +169,7 @@ export function MyBookings({ onEditBooking }: MyBookingsProps) {
               </div>
 
               <div className="booking-card-actions ">
-                {status === "upcoming" && onEditBooking && (
-                  <button
-                    className="btn-icon btn-edit"
-                    onClick={() => onEditBooking(booking)}
-                    title="Módosítás"
-                  >
-                    <Edit2 size={18} />
-                  </button>
-                )}
+
                 {status === "upcoming" && (
                   <button
                     className="btn-icon btn-delete"

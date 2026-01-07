@@ -30,7 +30,6 @@ import {
   MyBookings,
   WeeklyCalendar,
   ComputerInfo,
-  BookingEditModal,
   WaitlistButton,
 } from "../components/booking";
 
@@ -64,8 +63,6 @@ export function BookingPage() {
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [bookingError, setBookingError] = useState<string | null>(null);
 
-  // Booking Edit Modal State
-  const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
 
   // Computer Info Toggle State
   const [expandedComputerId, setExpandedComputerId] = useState<string | null>(
@@ -299,8 +296,8 @@ export function BookingPage() {
         <div className="flex gap-4 md:gap-8 min-w-max">
           <button
             className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${activeTab === "booking"
-                ? "border-primary text-primary"
-                : "border-transparent text-gray-400 hover:text-gray-300"
+              ? "border-primary text-primary"
+              : "border-transparent text-gray-400 hover:text-gray-300"
               }`}
             onClick={() => setActiveTab("booking")}
           >
@@ -309,8 +306,8 @@ export function BookingPage() {
           </button>
           <button
             className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${activeTab === "my-bookings"
-                ? "border-primary text-primary"
-                : "border-transparent text-gray-400 hover:text-gray-300"
+              ? "border-primary text-primary"
+              : "border-transparent text-gray-400 hover:text-gray-300"
               }`}
             onClick={() => setActiveTab("my-bookings")}
           >
@@ -329,7 +326,7 @@ export function BookingPage() {
       )}
 
       {activeTab === "my-bookings" && (
-        <MyBookings onEditBooking={setEditingBooking} />
+        <MyBookings />
       )}
 
       {activeTab === "booking" && (
@@ -339,8 +336,8 @@ export function BookingPage() {
             <div className="flex bg-[#1a1b26] p-1 rounded-xl border border-white/5 w-full md:w-auto">
               <button
                 className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${viewMode === "daily"
-                    ? "bg-[#0f1015] text-white shadow-lg"
-                    : "text-gray-400 hover:text-gray-300"
+                  ? "bg-[#0f1015] text-white shadow-lg"
+                  : "text-gray-400 hover:text-gray-300"
                   }`}
                 onClick={() => dispatch(setViewMode("daily"))}
               >
@@ -349,8 +346,8 @@ export function BookingPage() {
               </button>
               <button
                 className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${viewMode === "weekly"
-                    ? "bg-[#0f1015] text-white shadow-lg"
-                    : "text-gray-400 hover:text-gray-300"
+                  ? "bg-[#0f1015] text-white shadow-lg"
+                  : "text-gray-400 hover:text-gray-300"
                   }`}
                 onClick={() => dispatch(setViewMode("weekly"))}
               >
@@ -382,11 +379,7 @@ export function BookingPage() {
                 onSlotClick={(computer, date, hour, minute) =>
                   openCreateModal(computer, hour, minute, date)
                 }
-                onBookingClick={(booking) => {
-                  if (booking.userId === user?.id) {
-                    setEditingBooking(booking);
-                  }
-                }}
+
               />
             </div>
           ) : (
@@ -502,14 +495,14 @@ export function BookingPage() {
 
                                       <button
                                         className={`w-full h-12 rounded-lg flex items-center justify-center transition-all ${isOwn
-                                            ? "bg-primary/20 text-primary border-2 border-primary cursor-pointer hover:bg-primary/30"
-                                            : isBooked
-                                              ? "bg-red-500/10 text-red-400 border-2 border-red-500/20 cursor-default"
-                                              : isMaintained || isOutOfOrder
-                                                ? "bg-gray-800/50 text-gray-600 border-2 border-gray-700/20 cursor-not-allowed opacity-50"
-                                                : isPast
-                                                  ? "bg-gray-800/20 text-gray-600 border-2 border-gray-800/20 cursor-not-allowed opacity-50"
-                                                  : "bg-green-500/10 text-green-400 border-2 border-green-500/20 hover:bg-green-500/20 cursor-pointer group"
+                                          ? "bg-primary/20 text-primary border-2 border-primary cursor-pointer hover:bg-primary/30"
+                                          : isBooked
+                                            ? "bg-red-500/10 text-red-400 border-2 border-red-500/20 cursor-default"
+                                            : isMaintained || isOutOfOrder
+                                              ? "bg-gray-800/50 text-gray-600 border-2 border-gray-700/20 cursor-not-allowed opacity-50"
+                                              : isPast
+                                                ? "bg-gray-800/20 text-gray-600 border-2 border-gray-800/20 cursor-not-allowed opacity-50"
+                                                : "bg-green-500/10 text-green-400 border-2 border-green-500/20 hover:bg-green-500/20 cursor-pointer group"
                                           }`}
                                         onClick={() =>
                                           handleComputerClick(computer, hour)
@@ -609,8 +602,8 @@ export function BookingPage() {
                   <button
                     key={mins}
                     className={`py-3 px-2 rounded-lg border-2 font-medium transition-all ${selectedDuration === mins
-                        ? "bg-primary border-primary text-white shadow-lg shadow-primary/20"
-                        : "bg-[#0f1015] border-white/10 text-gray-400 hover:border-primary/50 hover:text-gray-300"
+                      ? "bg-primary border-primary text-white shadow-lg shadow-primary/20"
+                      : "bg-[#0f1015] border-white/10 text-gray-400 hover:border-primary/50 hover:text-gray-300"
                       }`}
                     onClick={() => setSelectedDuration(mins)}
                   >
