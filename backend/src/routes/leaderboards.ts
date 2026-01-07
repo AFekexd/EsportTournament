@@ -16,8 +16,18 @@ leaderboardsRouter.get(
         if (gameId) {
             // Filter by game - get users who have played in tournaments for this game
             //Filter not Teachers and not Admins
+            /*
+            enum Role {
+  ADMIN
+  ORGANIZER
+  MODERATOR
+  TEACHER
+  STUDENT
+}
+
+            */
             where.role = {
-                notIn: ['teacher', 'admin'],
+                notIn: ['ADMIN', 'TEACHER'],
             };
             where.tournamentEntries = {
                 some: {
@@ -178,6 +188,9 @@ leaderboardsRouter.get(
 
         const where: any = {};
         if (gameId) {
+            where.role = {
+                notIn: ['ADMIN', 'TEACHER'],
+            };
             where.tournamentEntries = {
                 some: {
                     tournament: {
