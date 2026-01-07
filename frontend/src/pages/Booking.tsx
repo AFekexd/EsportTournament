@@ -440,7 +440,7 @@ export function BookingPage() {
                             </span>
                           </div>
 
-                          <div className="flex-1 p-4 flex flex-col gap-4 overflow-x-auto">
+                          <div className={`flex-1 p-4 flex flex-col gap-4 overflow-x-auto `}>
                             {computersByRow.map((row, rowIndex) => (
                               <div key={rowIndex} className="flex gap-4">
                                 {row.map((computer) => {
@@ -469,21 +469,30 @@ export function BookingPage() {
                                     isLoading ||
                                     isPast;
 
+                                  const isExpanded =
+                                    expandedComputerId ===
+                                    `${computer.id}-${hour}`;
+
                                   return (
                                     <div
                                       key={computer.id}
-                                      className="flex-1 min-w-[140px] relative bg-[#0f1015] rounded-lg p-3 border border-white/5"
+                                      className={`flex-1 relative bg-[#0f1015] rounded-lg p-3 border border-white/5 transition-all duration-300 ${isExpanded
+                                        ? "min-w-[320px] md:min-w-[450px] z-10 shadow-xl ring-1 ring-white/10"
+                                        : "min-w-[140px]"
+                                        }`}
                                     >
                                       <div className="flex justify-between items-center mb-2 pb-2 border-b border-white/5">
-                                        <span className="text-sm font-semibold text-gray-300">
+                                        <span className="text-sm font-semibold text-gray-300 truncate pr-2">
                                           {computer.name}
                                         </span>
                                         <button
-                                          className="text-gray-500 hover:text-primary hover:bg-primary/10 p-1 rounded transition-colors"
+                                          className={`p-1 rounded transition-colors ${isExpanded
+                                            ? "text-primary bg-primary/10"
+                                            : "text-gray-500 hover:text-primary hover:bg-primary/10"
+                                            }`}
                                           onClick={() =>
                                             setExpandedComputerId(
-                                              expandedComputerId ===
-                                                `${computer.id}-${hour}`
+                                              isExpanded
                                                 ? null
                                                 : `${computer.id}-${hour}`
                                             )
@@ -495,7 +504,7 @@ export function BookingPage() {
 
                                       <button
                                         className={`w-full h-12 rounded-lg flex items-center justify-center transition-all ${isOwn
-                                          ? "bg-primary/20 text-primary border-2 border-primary cursor-pointer hover:bg-primary/30"
+                                          ? "bg-gradient-to-br from-primary/30 to-indigo-500/30 text-white border-2 border-primary/60 shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)] hover:shadow-[0_0_20px_-3px_rgba(139,92,246,0.5)] hover:border-primary cursor-pointer backdrop-blur-sm transform hover:-translate-y-0.5"
                                           : isBooked
                                             ? "bg-red-500/10 text-red-400 border-2 border-red-500/20 cursor-default"
                                             : isMaintained || isOutOfOrder
@@ -537,12 +546,11 @@ export function BookingPage() {
                                           </div>
                                         )}
 
-                                      {expandedComputerId ===
-                                        `${computer.id}-${hour}` && (
-                                          <div className="absolute top-full left-0 mt-2 w-64 z-20 shadow-2xl">
-                                            <ComputerInfo computer={computer} />
-                                          </div>
-                                        )}
+                                      {isExpanded && (
+                                        <div className="mt-4 animate-in fade-in slide-in-from-top-2">
+                                          <ComputerInfo computer={computer} />
+                                        </div>
+                                      )}
                                     </div>
                                   );
                                 })}

@@ -566,7 +566,70 @@ bookingsRouter.post(
     })
 );
 
-// Get user's own bookings
+// Get all bookings with pagination and filtering (Admin/Teacher)
+bookingsRouter.get(
+    '/admin',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user || !['ADMIN', 'TEACHER'].includes(user.role)) {
+            throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
+        }
+
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 10;
+        const skip = (page - 1) * limit;
+        const search = (req.query.search as string) || '';
+        const includeExpired = req.query.includeExpired === 'true';
+
+        // Build filter
+        const where: any = {};
+
+        // Search filter
+        if (search) {
+            where.OR = [
+                { user: { username: { contains: search, mode: 'insensitive' } } },
+                { user: { displayName: { contains: search, mode: 'insensitive' } } },
+                { computer: { name: { contains: search, mode: 'insensitive' } } },
+            ];
+        }
+
+        // Expiration filter
+        if (!includeExpired) {
+            where.endTime = { gte: new Date() };
+        }
+
+        // Execute query
+        const [bookings, total] = await Promise.all([
+            prisma.booking.findMany({
+                where,
+                include: {
+                    computer: true,
+                    user: { select: { id: true, username: true, displayName: true } },
+                },
+                orderBy: { startTime: 'asc' },
+                skip,
+                take: limit,
+            }),
+            prisma.booking.count({ where }),
+        ]);
+
+        res.json({
+            success: true,
+            data: bookings,
+            pagination: {
+                page,
+                limit,
+                total,
+                pages: Math.ceil(total / limit),
+            },
+        });
+    })
+);
+
 bookingsRouter.get(
     '/my',
     authenticate,

@@ -51,13 +51,15 @@ export function ProfilePage() {
         dispatch(fetchMyTeams());
         dispatch(fetchTournaments({ page: 1 })); // Ideally should capture my tournaments
         dispatch(fetchUserRanks());
-      } else if (id) {
-        dispatch(fetchPublicProfile(id));
       }
     }
 
+    // Fetch public profile if viewing someone else
+    if (id && !isOwnProfile) {
+      dispatch(fetchPublicProfile(id));
+    }
+
     return () => {
-      // Clear public profile when leaving page
       if (!isOwnProfile) {
         dispatch(clearCurrentProfile());
       }
@@ -238,8 +240,8 @@ export function ProfilePage() {
             )}
             <div
               className={`absolute inset-0 ${topGameImage
-                  ? "bg-black/40 backdrop-blur-[2px]"
-                  : "bg-gradient-to-t from-[#1a1b26] via-transparent to-transparent"
+                ? "bg-black/40 backdrop-blur-[2px]"
+                : "bg-gradient-to-t from-[#1a1b26] via-transparent to-transparent"
                 }`}
             ></div>
 
@@ -287,12 +289,12 @@ export function ProfilePage() {
                 <div className="absolute bottom-3 right-3 md:bottom-5 md:right-5 z-20">
                   <div
                     className={`w-7 h-7 rounded-full border-[5px] border-[#1a1b26] ${profileUser?.role === "ADMIN"
-                        ? "bg-red-500 box-shadow-glow-red"
-                        : profileUser?.role === "ORGANIZER"
-                          ? "bg-purple-500"
-                          : profileUser?.role === "MODERATOR"
-                            ? "bg-blue-500"
-                            : "bg-green-500"
+                      ? "bg-red-500 box-shadow-glow-red"
+                      : profileUser?.role === "ORGANIZER"
+                        ? "bg-purple-500"
+                        : profileUser?.role === "MODERATOR"
+                          ? "bg-blue-500"
+                          : "bg-green-500"
                       }`}
                     title={profileUser?.role}
                   ></div>
@@ -615,10 +617,10 @@ export function ProfilePage() {
                         </h3>
                         <span
                           className={`text-[10px] px-2 py-0.5 rounded border uppercase tracking-wide font-bold ${tournament.status === "REGISTRATION"
-                              ? "bg-green-500/10 text-green-500 border-green-500/20"
-                              : tournament.status === "IN_PROGRESS"
-                                ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
-                                : "bg-blue-500/10 text-blue-500 border-blue-500/20"
+                            ? "bg-green-500/10 text-green-500 border-green-500/20"
+                            : tournament.status === "IN_PROGRESS"
+                              ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
+                              : "bg-blue-500/10 text-blue-500 border-blue-500/20"
                             }`}
                         >
                           {tournament.status === "REGISTRATION"

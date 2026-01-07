@@ -1,7 +1,7 @@
 import { Router, Response } from 'express';
 import { logSystemActivity } from '../services/logService.js';
 import prisma from '../lib/prisma.js';
-import { authenticate, AuthenticatedRequest } from '../middleware/auth.js';
+import { authenticate, optionalAuth, AuthenticatedRequest } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { UserRole } from '../utils/enums.js';
 
@@ -133,7 +133,7 @@ usersRouter.patch(
         const { displayName, avatarUrl, emailNotifications } = req.body;
 
         if (displayName && displayName !== currentUser.displayName && currentUser.role !== UserRole.ADMIN) {
-             throw new ApiError('A megjelenítendő nevet csak adminisztrátor módosíthatja', 403, 'FORBIDDEN');
+            throw new ApiError('A megjelenítendő nevet csak adminisztrátor módosíthatja', 403, 'FORBIDDEN');
         }
 
         const updatedUser = await prisma.user.update({
@@ -151,12 +151,12 @@ usersRouter.patch(
         if (displayName !== undefined) changes.push(`Display Name ('${displayName}')`);
         if (avatarUrl !== undefined) changes.push('Avatar');
         if (emailNotifications !== undefined) changes.push(`Notifications (${emailNotifications})`);
-        
+
         await logSystemActivity(
             'USER_PROFILE_UPDATE',
             `User ${updatedUser.username} profile updated by ${isSelf ? 'themselves' : currentUser.username}. Changes: ${changes.join(', ')}`,
-            { 
-                userId: updatedUser.id, 
+            {
+                userId: updatedUser.id,
                 adminId: isSelf ? undefined : currentUser.id,
                 metadata: {
                     changes,
@@ -175,7 +175,7 @@ usersRouter.patch(
 // Get public user profile
 usersRouter.get(
     '/:id/public',
-    authenticate,
+    optionalAuth,
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
         const userId = req.params.id;
 

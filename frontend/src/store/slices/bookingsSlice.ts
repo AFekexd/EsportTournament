@@ -77,6 +77,13 @@ interface BookingsState {
     weeklyBookings: Booking[];
     schedules: BookingSchedule[];
     myBookings: Booking[];
+    adminBookings: Booking[];
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        pages: number;
+    };
     myWaitlist: WaitlistEntry[];
     stats: BookingStats | null;
     selectedDate: string;
@@ -100,6 +107,13 @@ const initialState: BookingsState = {
     computers: [],
     bookings: [],
     weeklyBookings: [],
+    adminBookings: [],
+    pagination: {
+        page: 1,
+        limit: 10,
+        total: 0,
+        pages: 0
+    },
     schedules: [],
     myBookings: [],
     myWaitlist: [],
@@ -136,6 +150,29 @@ export const seedComputers = createAsyncThunk('bookings/seedComputers', async (_
     if (!data.success) throw new Error(data.error?.message || 'Failed to seed computers');
     return data.data as Computer[];
 });
+
+export const fetchAdminBookings = createAsyncThunk(
+    'bookings/fetchAdminBookings',
+    async ({ page = 1, limit = 10, search = '', includeExpired = false }: { page?: number; limit?: number; search?: string; includeExpired?: boolean }, { getState }) => {
+        const state = getState() as RootState;
+        const token = getToken(state);
+        if (!token) throw new Error('Nincs bejelentkezve!');
+
+        const query = new URLSearchParams({
+            page: page.toString(),
+            limit: limit.toString(),
+            search,
+            includeExpired: includeExpired.toString(),
+        });
+
+        const response = await fetch(`${API_URL}/bookings/admin?${query}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await response.json();
+        if (!data.success) throw new Error(data.error?.message || 'Failed to fetch admin bookings');
+        return data as { data: Booking[]; pagination: BookingsState['pagination'] };
+    }
+);
 
 export const fetchSchedules = createAsyncThunk('bookings/fetchSchedules', async () => {
     const response = await fetch(`${API_URL}/bookings/schedules`);
@@ -522,6 +559,20 @@ const bookingsSlice = createSlice({
             .addCase(fetchWeeklyBookings.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.error.message || 'Failed to fetch weekly bookings';
+            })
+            // Admin Bookings
+            .addCase(fetchAdminBookings.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(fetchAdminBookings.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.adminBookings = action.payload.data;
+                state.pagination = action.payload.pagination;
+            })
+            .addCase(fetchAdminBookings.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.error.message || 'Failed to fetch admin bookings';
             })
             // Update booking
             .addCase(updateBooking.fulfilled, (state, action) => {

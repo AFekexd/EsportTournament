@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import {
-    fetchWeeklyBookings,
+    fetchAdminBookings,
     deleteBooking,
     type Booking,
 } from "../../store/slices/bookingsSlice";
 import {
-    ChevronLeft,
-    ChevronRight,
     Calendar,
     Trash2,
     Edit2,
@@ -25,20 +23,23 @@ import { Input } from "../ui/input";
 
 export function AdminBookingList() {
     const dispatch = useAppDispatch();
-    const { weeklyBookings, isLoading } = useAppSelector(
+    const { adminBookings, pagination, isLoading } = useAppSelector(
         (state) => state.bookings
     );
 
-    // Start week from Monday
-    const getMonday = (d: Date) => {
-        d = new Date(d);
-        const day = d.getDay();
-        const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-        return new Date(d.setDate(diff));
-    };
-
-    const [currentWeekStart, setCurrentWeekStart] = useState(getMonday(new Date()));
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
     const [searchTerm, setSearchTerm] = useState("");
+    const [includeExpired, setIncludeExpired] = useState(false);
+
+    // Debounce search
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+
+    useEffect(() => {
+        const timer = setTimeout(() => setDebouncedSearch(searchTerm), 500);
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
+
     const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
     const [confirmModal, setConfirmModal] = useState<{
         isOpen: boolean;
@@ -56,15 +57,16 @@ export function AdminBookingList() {
     });
 
     useEffect(() => {
-        const dateStr = currentWeekStart.toISOString().split("T")[0];
-        dispatch(fetchWeeklyBookings(dateStr));
-    }, [dispatch, currentWeekStart]);
+        dispatch(fetchAdminBookings({ page, limit, search: debouncedSearch, includeExpired }));
+    }, [dispatch, page, limit, debouncedSearch, includeExpired]);
 
-    const changeWeek = (weeks: number) => {
-        const newDate = new Date(currentWeekStart);
-        newDate.setDate(newDate.getDate() + weeks * 7);
-        setCurrentWeekStart(newDate);
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 1 && newPage <= (pagination?.pages || 1)) {
+            setPage(newPage);
+        }
     };
+
+
 
     const closeConfirmModal = () =>
         setConfirmModal((prev) => ({ ...prev, isOpen: false }));
@@ -81,8 +83,7 @@ export function AdminBookingList() {
                     await dispatch(deleteBooking(booking.id)).unwrap();
                     toast.success("Foglalás törölve");
                     // Refresh list
-                    const dateStr = currentWeekStart.toISOString().split("T")[0];
-                    dispatch(fetchWeeklyBookings(dateStr));
+                    dispatch(fetchAdminBookings({ page, limit, search: debouncedSearch, includeExpired }));
                 } catch (error) {
                     console.error("Failed to delete booking:", error);
                     toast.error("Nem sikerült törölni a foglalást");
@@ -91,52 +92,47 @@ export function AdminBookingList() {
         });
     };
 
-    const filteredBookings = weeklyBookings.filter((b) => {
-        const term = searchTerm.toLowerCase();
-        return (
-            b.user.username.toLowerCase().includes(term) ||
-            (b.user.displayName && b.user.displayName.toLowerCase().includes(term)) ||
-            b.computer.name.toLowerCase().includes(term)
-        );
-    });
 
-    // Sort by date/time
-    const sortedBookings = [...filteredBookings].sort(
-        (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-    );
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                {/* Date Navigation */}
-                <div className="flex items-center gap-4 bg-muted/30 p-2 rounded-lg border border-white/5">
-                    <Button variant="ghost" size="icon" onClick={() => changeWeek(-1)}>
-                        <ChevronLeft size={20} />
-                    </Button>
-                    <div className="flex items-center gap-2 font-medium min-w-[200px] justify-center">
-                        <Calendar size={18} className="text-primary" />
-                        <span>
-                            {currentWeekStart.toLocaleDateString("hu-HU", { month: 'short', day: 'numeric' })} -
-                            {new Date(new Date(currentWeekStart).getTime() + 6 * 24 * 60 * 60 * 1000).toLocaleDateString("hu-HU", { month: 'short', day: 'numeric' })}
-                        </span>
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-muted/30 p-4 rounded-lg border border-white/5">
+                <div className="flex items-center gap-4 w-full md:w-auto">
+                    {/* Search */}
+                    <div className="relative w-full md:w-64">
+                        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                            placeholder="Keresés (Név, Gép)..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="pl-10 h-9"
+                        />
                     </div>
-                    <Button variant="ghost" size="icon" onClick={() => changeWeek(1)}>
-                        <ChevronRight size={20} />
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => setCurrentWeekStart(getMonday(new Date()))} className="ml-2 text-xs">
-                        Ma
-                    </Button>
-                </div>
 
-                {/* Search */}
-                <div className="relative w-full md:w-64">
-                    <Search size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                        placeholder="Keresés (Név, Gép)..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10"
-                    />
+                    {/* Expired toggle */}
+                    <label className="flex items-center gap-2 cursor-pointer select-none border border-white/10 rounded-md px-3 py-1.5 hover:bg-white/5 transition-colors">
+                        <input
+                            type="checkbox"
+                            checked={includeExpired}
+                            onChange={(e) => setIncludeExpired(e.target.checked)}
+                            className="rounded border-gray-600 bg-transparent text-primary focus:ring-primary h-4 w-4"
+                        />
+                        <span className="text-sm font-medium">Lejártak mutatása</span>
+                    </label>
+
+                    {/* Limit selector */}
+                    <select
+                        value={limit}
+                        onChange={(e) => {
+                            setLimit(Number(e.target.value));
+                            setPage(1); // Reset to first page
+                        }}
+                        className="h-9 rounded-md border border-white/10 bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    >
+                        <option value={10}>10 / oldal</option>
+                        <option value={20}>20 / oldal</option>
+                        <option value={50}>50 / oldal</option>
+                    </select>
                 </div>
             </div>
 
@@ -144,10 +140,10 @@ export function AdminBookingList() {
                 <CardContent className="p-0">
                     {isLoading ? (
                         <div className="p-8 text-center text-muted-foreground">Betöltés...</div>
-                    ) : sortedBookings.length === 0 ? (
+                    ) : adminBookings.length === 0 ? (
                         <div className="p-12 text-center flex flex-col items-center text-muted-foreground">
                             <Calendar size={48} className="mb-4 opacity-20" />
-                            <p>Nincs foglalás erre a hétre</p>
+                            <p>Nincs a feltételeknek megfelelő foglalás</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
@@ -162,7 +158,7 @@ export function AdminBookingList() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-white/5">
-                                    {sortedBookings.map((booking) => {
+                                    {adminBookings.map((booking) => {
                                         const startDate = new Date(booking.startTime);
                                         const endDate = new Date(booking.endTime);
                                         const isPast = endDate < new Date();
@@ -211,16 +207,14 @@ export function AdminBookingList() {
                                                     )}
                                                 </td>
                                                 <td className="p-4 text-right">
-                                                    {!isPast && (
-                                                        <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                            <Button variant="ghost" size="sm" onClick={() => setEditingBooking(booking)} title="Szerkesztés">
-                                                                <Edit2 size={16} className="text-blue-400" />
-                                                            </Button>
-                                                            <Button variant="ghost" size="sm" onClick={() => handleDeleteBooking(booking)} title="Törlés">
-                                                                <Trash2 size={16} className="text-red-400" />
-                                                            </Button>
-                                                        </div>
-                                                    )}
+                                                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <Button variant="ghost" size="sm" onClick={() => setEditingBooking(booking)} title="Szerkesztés">
+                                                            <Edit2 size={16} className="text-blue-400" />
+                                                        </Button>
+                                                        <Button variant="ghost" size="sm" onClick={() => handleDeleteBooking(booking)} title="Törlés">
+                                                            <Trash2 size={16} className="text-red-400" />
+                                                        </Button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         );
@@ -233,6 +227,31 @@ export function AdminBookingList() {
             </Card>
 
 
+            {/* Pagination */}
+            {pagination && pagination.pages > 1 && (
+                <div className="flex justify-center gap-2 mt-4">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={page <= 1}
+                        onClick={() => handlePageChange(page - 1)}
+                    >
+                        Előző
+                    </Button>
+                    <span className="flex items-center px-4 text-sm text-muted-foreground">
+                        {page} / {pagination.pages}
+                    </span>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={page >= pagination.pages}
+                        onClick={() => handlePageChange(page + 1)}
+                    >
+                        Következő
+                    </Button>
+                </div>
+            )}
+
             {editingBooking && (
                 <BookingEditModal
                     booking={editingBooking}
@@ -240,8 +259,7 @@ export function AdminBookingList() {
                     onClose={() => {
                         setEditingBooking(null);
                         // Refresh
-                        const dateStr = currentWeekStart.toISOString().split("T")[0];
-                        dispatch(fetchWeeklyBookings(dateStr));
+                        dispatch(fetchAdminBookings({ page, limit, search: debouncedSearch, includeExpired }));
                     }}
                 />
             )}
