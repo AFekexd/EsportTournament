@@ -272,12 +272,12 @@ bookingsRouter.post(
             throw new ApiError('Érvénytelen dátum/idő formátum', 400, 'INVALID_DATE');
         }
 
-        // Check if start time is in the past (allow 5 minute grace period for clock sync/latency)
+        // Check if start time is in the past (allow 5 minute grace period)
         if (start.getTime() < Date.now() - 300000) {
             throw new ApiError('A foglalás kezdete nem lehet a múltban', 400, 'PAST_DATE');
         }
 
-        // Validate duration (max 2 hours = 7200000 ms, min 30 min = 1800000 ms)
+        // Validate duration
         const duration = end.getTime() - start.getTime();
         if (duration < 1800000) {
             throw new ApiError('A minimális foglalási idő 30 perc', 400, 'DURATION_TOO_SHORT');
@@ -286,21 +286,12 @@ bookingsRouter.post(
             throw new ApiError('A maximális foglalási idő 2 óra', 400, 'DURATION_TOO_LONG');
         }
 
-        // Check if user has sufficient time balance (Skip for ADMIN/TEACHER)
-        if (!['ADMIN', 'TEACHER'].includes(user.role)) {
-            const durationSeconds = Math.floor(duration / 1000);
-            if (user.timeBalanceSeconds < durationSeconds) {
-                const availableMinutes = Math.floor(user.timeBalanceSeconds / 60);
-                const requiredMinutes = Math.floor(durationSeconds / 60);
-                throw new ApiError(
-                    `Nincs elegendő időegyenleged. Szükséges: ${requiredMinutes} perc, Rendelkezésre áll: ${availableMinutes} perc`,
-                    403,
-                    'INSUFFICIENT_BALANCE'
-                );
-            }
-        }
+        const startOfDay = new Date(bookingDate);
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date(bookingDate);
+        endOfDay.setHours(23, 59, 59, 999);
 
-        // Check if the booking date matches the day of week with an active schedule
+        // Check schedule (read-only, can be outside transaction usually, but safer inside if schedules change dynamically)
         const dayOfWeek = bookingDate.getDay();
         const schedule = await prisma.bookingSchedule.findFirst({
             where: {
@@ -315,47 +306,109 @@ bookingsRouter.post(
             throw new ApiError('Nincs elérhető foglalási időpont', 400, 'NO_SCHEDULE');
         }
 
-        // Check for overlapping bookings
-        const startOfDay = new Date(bookingDate);
-        startOfDay.setHours(0, 0, 0, 0);
-        const endOfDay = new Date(bookingDate);
-        endOfDay.setHours(23, 59, 59, 999);
+        // EXECUTE TRANSACTION
+        const booking = await prisma.$transaction(async (tx) => {
+            // 1. Check User Double Booking (User cannot be in two places at once)
+            const userOverlap = await tx.booking.findFirst({
+                where: {
+                    userId: user.id,
+                    // Check logic: (StartA < EndB) and (EndA > StartB)
+                    startTime: { lt: end },
+                    endTime: { gt: start },
+                    // Make sure we only check active bookings if we have a cancelled status later, currently deletion handles cancellation
+                }
+            });
 
-        const overlapping = await prisma.booking.findFirst({
-            where: {
-                computerId,
-                date: {
-                    gte: startOfDay,
-                    lte: endOfDay,
-                },
-                OR: [
-                    {
-                        startTime: { lt: end },
-                        endTime: { gt: start },
+            if (userOverlap) {
+                throw new ApiError('Már van foglalásod erre az időpontra egy másik gépen.', 400, 'USER_ALREADY_BOOKED');
+            }
+
+            // 2. Advanced Balance Check (Account for ALL future bookings)
+            if (!['ADMIN', 'TEACHER'].includes(user.role)) {
+                // Get all active future bookings for user (including the one we are about to make effectively)
+                // Actually we just query all future bookings from NOW
+                const futureBookings = await tx.booking.findMany({
+                    where: {
+                        userId: user.id,
+                        endTime: { gt: new Date() } // All bookings that haven't finished yet
+                    }
+                });
+
+                // Calculate total "reserved" time
+                const futureReservedMs = futureBookings.reduce((sum, b) => {
+                    // If booking started in past but ends in future, count remaining? 
+                    // Or just count full duration? 
+                    // "Logic 1": Count full duration of all strictly future bookings??
+                    // Better Logic: Count full duration of pending bookings.
+                    // For simplicity and safety: Sum (endTime - startTime) of all found bookings.
+                    return sum + (b.endTime.getTime() - b.startTime.getTime());
+                }, 0);
+
+                const totalRequiredMs = futureReservedMs + duration;
+                const balanceMs = user.timeBalanceSeconds * 1000;
+
+                if (balanceMs < totalRequiredMs) {
+                    const requiredMinutes = Math.floor(totalRequiredMs / 60000);
+                    const availableMinutes = Math.floor(balanceMs / 60000);
+                    throw new ApiError(
+                        `Nincs elegendő időegyenleged a jövőbeli foglalásokat is figyelembe véve. Szükséges (összesen): ${requiredMinutes} perc, Egyenleg: ${availableMinutes} perc`,
+                        403,
+                        'INSUFFICIENT_FUTURE_BALANCE'
+                    );
+                }
+
+                // 3. Daily Limit Check (2 hours)
+                const dailyBookings = await tx.booking.findMany({
+                    where: {
+                        userId: user.id,
+                        date: { gte: startOfDay, lte: endOfDay },
                     },
-                ],
-            },
-        });
+                });
 
-        if (overlapping) {
-            throw new ApiError('Ez az időpont már foglalt', 400, 'SLOT_TAKEN');
-        }
+                const dailyTotalMs = dailyBookings.reduce((sum, b) => sum + (b.endTime.getTime() - b.startTime.getTime()), 0);
+                const newDailyTotalMs = dailyTotalMs + duration;
 
-        // Create booking with check-in code
-        const checkInCode = crypto.randomBytes(16).toString('hex');
-        const booking = await prisma.booking.create({
-            data: {
-                computerId,
-                userId: user.id,
-                date: bookingDate,
-                startTime: start,
-                endTime: end,
-                checkInCode,
-            },
-            include: {
-                computer: true,
-                user: { select: { id: true, username: true, displayName: true } },
-            },
+                if (newDailyTotalMs > 7200000) {
+                    const remainingMs = Math.max(0, 7200000 - dailyTotalMs);
+                    const remainingMinutes = Math.floor(remainingMs / 60000);
+                    throw new ApiError(
+                        `Naponta maximum 2 óra foglalható. Még foglalható: ${remainingMinutes} perc.`,
+                        400,
+                        'DAILY_LIMIT_EXCEEDED'
+                    );
+                }
+            }
+
+            // 4. Check Computer Availability (Race Condition Protection)
+            const computerOverlap = await tx.booking.findFirst({
+                where: {
+                    computerId,
+                    date: { gte: startOfDay, lte: endOfDay },
+                    startTime: { lt: end },
+                    endTime: { gt: start },
+                },
+            });
+
+            if (computerOverlap) {
+                throw new ApiError('Ez az időpont már foglalt', 400, 'SLOT_TAKEN');
+            }
+
+            // 5. Create Booking
+            const checkInCode = crypto.randomBytes(16).toString('hex');
+            return await tx.booking.create({
+                data: {
+                    computerId,
+                    userId: user.id,
+                    date: bookingDate,
+                    startTime: start,
+                    endTime: end,
+                    checkInCode,
+                },
+                include: {
+                    computer: true,
+                    user: { select: { id: true, username: true, displayName: true } },
+                },
+            });
         });
 
         await logSystemActivity(
@@ -751,11 +804,15 @@ bookingsRouter.patch(
             throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
-        const { specs, installedGames, status, isActive } = req.body;
+        console.log('Update computer request:', req.body);
+        const { specs, installedGames, status, isActive, name, row, position } = req.body;
 
         const computer = await prisma.computer.update({
             where: { id: req.params.id },
             data: {
+                ...(name !== undefined && { name }),
+                ...(row !== undefined && { row }),
+                ...(position !== undefined && { position }),
                 ...(specs !== undefined && { specs }),
                 ...(installedGames !== undefined && { installedGames }),
                 ...(status !== undefined && { status }),

@@ -479,7 +479,7 @@ export function BookingPage() {
                                           {computer.name}
                                         </span>
                                         <button
-                                          className="hidden text-gray-500 hover:text-primary hover:bg-primary/10 p-1 rounded transition-colors"
+                                          className="text-gray-500 hover:text-primary hover:bg-primary/10 p-1 rounded transition-colors"
                                           onClick={() =>
                                             setExpandedComputerId(
                                               expandedComputerId ===

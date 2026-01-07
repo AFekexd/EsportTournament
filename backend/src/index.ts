@@ -138,6 +138,7 @@ io.on('connection', (socket) => {
 httpServer.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`🔌 WebSocket server ready`);
+  console.log(`Backend restart forced at ${new Date().toISOString()}`);
 });
 
 export default app;

@@ -402,7 +402,16 @@ export const fetchBookingStats = createAsyncThunk(
 export const updateComputer = createAsyncThunk(
     'bookings/updateComputer',
     async (
-        { id, ...updateData }: { id: string; specs?: ComputerSpecs; installedGames?: string[]; status?: ComputerStatus; isActive?: boolean },
+        { id, ...updateData }: {
+            id: string;
+            name?: string;
+            row?: number;
+            position?: number;
+            specs?: ComputerSpecs;
+            installedGames?: string[];
+            status?: ComputerStatus;
+            isActive?: boolean
+        },
         { getState }
     ) => {
         const state = getState() as RootState;

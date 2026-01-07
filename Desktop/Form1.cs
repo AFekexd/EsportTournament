@@ -45,6 +45,8 @@ namespace EsportManager
         private Panel _lockedPanel = null!;
         private NotifyIcon _notifyIcon = null!;
         private ContextMenuStrip _contextMenuStrip = null!;
+        private Label _clockLabel = null!;
+        private System.Windows.Forms.Timer _clockTimer = null!;
         
         // Session
         private System.Windows.Forms.Timer _sessionTimer = null!;
@@ -407,9 +409,6 @@ namespace EsportManager
                 }
             };
 
-                }
-            };
-
             // Real-time Clock Label
             _clockLabel = new Label
             {
@@ -420,11 +419,8 @@ namespace EsportManager
                 BackColor = Color.Transparent,
                 Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
-            // Position manually initially or rely on Anchor/Dock if container supports it. 
-            // Since _lockedPanel is just a Panel, we set Location. 
-            // We want it Top-Right. We'll set it in Resize event or just fixed for 1920x1080 usually, 
-            // but dynamic is better.
-            _clockLabel.Location = new Point(Screen.PrimaryScreen.Bounds.Width - 200, 30);
+            
+            _clockLabel.Location = new Point(Screen.PrimaryScreen?.Bounds.Width ?? 1920 - 200, 30);
             
             _lockedPanel.Controls.Add(_clockLabel);
 
@@ -435,7 +431,6 @@ namespace EsportManager
                 if (_clockLabel != null && !_clockLabel.IsDisposed)
                 {
                     _clockLabel.Text = DateTime.Now.ToString("HH:mm");
-                    // Re-position if needed (simple anchor might strictly work if panel resizes)
                     _clockLabel.Location = new Point(_lockedPanel.Width - _clockLabel.Width - 50, 30);
                 }
             };
@@ -448,6 +443,7 @@ namespace EsportManager
             {
                 Size = new Size(400, 320),
                 BackColor = EsportManager.Controls.UiColors.Card,
+
                 Visible = false
             };
             
@@ -770,7 +766,7 @@ namespace EsportManager
             {
                 Console.WriteLine($"[LOGIN] ✗ EXCEPTION: {ex.GetType().Name}: {ex.Message}");
                 Console.WriteLine($"[LOGIN] StackTrace: {ex.StackTrace}");
-                _statusLabel.Text = $"Hiba: {ex.Message}";
+                _statusLabel.Text = $"Hiba: {ex.Message == ""}";
                 _statusLabel.ForeColor = Color.Red;
                 _loginButton.Enabled = true;
             }

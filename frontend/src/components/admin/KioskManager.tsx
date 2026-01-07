@@ -1,17 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import {
   fetchMachines,
   toggleLock,
   toggleCompetitionMode,
 } from "../../store/slices/kioskSlice";
-import { Monitor, Lock, Unlock } from "lucide-react";
+import { Monitor, Lock, Unlock, Edit2 } from "lucide-react";
 import type { Computer } from "../../types";
 import { ClientVersionList } from "./ClientVersionList";
+import { MachineEditModal } from "./MachineEditModal";
 
 export const KioskManager: React.FC = () => {
   const dispatch = useAppDispatch();
   const { machines, isLoading } = useAppSelector((state) => state.kiosk);
+  const [editingMachine, setEditingMachine] = useState<Computer | null>(null);
 
   useEffect(() => {
     dispatch(fetchMachines());
@@ -76,6 +78,7 @@ export const KioskManager: React.FC = () => {
                         onCompetitionToggle={() =>
                           handleCompetitionToggle(machine)
                         }
+                        onEdit={() => setEditingMachine(machine)}
                       />
                     ))
                   ) : (
@@ -116,6 +119,14 @@ export const KioskManager: React.FC = () => {
       <div className="mt-8">
         <ClientVersionList />
       </div>
+
+      {editingMachine && (
+        <MachineEditModal
+          computer={editingMachine}
+          isOpen={!!editingMachine}
+          onClose={() => setEditingMachine(null)}
+        />
+      )}
     </div>
   );
 };
@@ -124,12 +135,14 @@ interface MachineCardProps {
   machine: Computer;
   onLock: () => void;
   onCompetitionToggle: () => void;
+  onEdit: () => void;
 }
 
 const MachineCard: React.FC<MachineCardProps> = ({
   machine,
   onLock,
   onCompetitionToggle,
+  onEdit,
 }) => {
   // Determine status color
   let statusColor = "bg-gray-800 border-white/10";
@@ -160,6 +173,19 @@ const MachineCard: React.FC<MachineCardProps> = ({
     <div
       className={`card ${statusColor} p-4 transition-all hover:shadow-lg relative group flex flex-col h-full`}
     >
+      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onEdit();
+          }}
+          className="p-1.5 rounded-lg bg-black/50 hover:bg-black/70 text-gray-300 hover:text-white transition-colors border border-white/10"
+          title="Szerkesztés"
+        >
+          <Edit2 size={14} />
+        </button>
+      </div>
+
       <div className="flex justify-between items-start mb-2">
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
@@ -201,6 +227,19 @@ const MachineCard: React.FC<MachineCardProps> = ({
           </span>
         </div>
         {/* Placeholder for active user if session exists (would require session join in fetch) */}
+        {(machine.specs || (machine.installedGames && machine.installedGames.length > 0)) && (
+          <div className="text-[10px] text-gray-500 mt-2 pt-2 border-t border-white/5">
+            {machine.installedGames && machine.installedGames.length > 0 && (
+              <div className="flex gap-1 flex-wrap mb-1">
+                {machine.installedGames.slice(0, 3).map((g, i) => (
+                  <span key={i} className="px-1 py-0.5 bg-white/5 rounded">{g}</span>
+                ))}
+                {machine.installedGames.length > 3 && <span>+{machine.installedGames.length - 3}</span>}
+              </div>
+            )}
+            {machine.specs?.gpu && <div title="GPU">{machine.specs.gpu}</div>}
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-2 mt-auto">

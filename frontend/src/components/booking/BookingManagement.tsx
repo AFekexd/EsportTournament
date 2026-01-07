@@ -19,7 +19,7 @@ import {
   fetchComputers,
 } from "../../store/slices/bookingsSlice";
 import { AdminBookingStats } from "./AdminBookingStats";
-import { ComputerModal } from "../admin/ComputerModal";
+import { MachineEditModal } from "../admin/MachineEditModal";
 import { authService } from "../../lib/auth-service";
 import { API_URL } from "../../config";
 import {
@@ -45,7 +45,7 @@ export function BookingManagement() {
     startHour: 14,
     endHour: 18,
   });
-  const [showComputerModal, setShowComputerModal] = useState(false);
+  const [showMachineEditModal, setShowMachineEditModal] = useState(false);
   const [editingComputer, setEditingComputer] = useState<any>(null);
 
   const [confirmModal, setConfirmModal] = useState<{
@@ -158,7 +158,10 @@ export function BookingManagement() {
                 Gépek kezelése
               </h3>
               <Button
-                onClick={() => setShowComputerModal(true)}
+                onClick={() => {
+                  setEditingComputer(null);
+                  setShowMachineEditModal(true);
+                }}
                 className="gap-2"
               >
                 <Plus size={16} />
@@ -177,7 +180,10 @@ export function BookingManagement() {
                     Adj hozzá új gépeket a rendszerhez.
                   </p>
                   <Button
-                    onClick={() => setShowComputerModal(true)}
+                    onClick={() => {
+                      setEditingComputer(null);
+                      setShowMachineEditModal(true);
+                    }}
                     variant="outline"
                   >
                     Új gép hozzáadása
@@ -225,14 +231,14 @@ export function BookingManagement() {
                           </div>
                         )}
 
-                        <div className="flex gap-2 pt-2 opacity-60 group-hover:opacity-100 transition-opacity">
+                        <div className="flex gap-2 pt-2 opacity-60 group-hover:opacity-100 transition-opacity flex-wrap">
                           <Button
                             variant="secondary"
                             size="sm"
-                            className="flex-1 gap-2 h-8"
+                            className="flex-1 gap-2 h-8 min-w-[80px]"
                             onClick={() => {
                               setEditingComputer(computer);
-                              setShowComputerModal(true);
+                              setShowMachineEditModal(true);
                             }}
                           >
                             <Edit2 size={14} /> Szerkesztés
@@ -240,7 +246,7 @@ export function BookingManagement() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="text-red-400 hover:text-red-300 hover:bg-red-900/20 h-8 w-8 p-0"
+                            className="text-red-400 hover:text-red-300 hover:bg-red-900/20 h-8 w-8 p-0 shrink-0"
                             onClick={() => handleDeleteComputer(computer.id)}
                           >
                             <Trash2 size={14} />
@@ -338,7 +344,7 @@ export function BookingManagement() {
               </Card>
 
               {/* List */}
-              <Card className="lg:col-span-2">
+              <Card className="lg:col-span-2 border-primary/20 bg-primary/5">
                 <CardHeader>
                   <CardTitle className="text-base">
                     Jelenlegi nyitvatartás
@@ -346,7 +352,7 @@ export function BookingManagement() {
                 </CardHeader>
                 <CardContent>
                   {schedules.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg">
+                    <div className="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg bg-primary/10">
                       <Clock className="mx-auto h-8 w-8 mb-2 opacity-50" />
                       <p>Még nincs nyitvatartás beállítva.</p>
                     </div>
@@ -403,12 +409,12 @@ export function BookingManagement() {
         </div>
       )}
 
-      {/* Computer Modal */}
-      {showComputerModal && (
-        <ComputerModal
+      {showMachineEditModal && (
+        <MachineEditModal
           computer={editingComputer}
+          isOpen={showMachineEditModal}
           onClose={() => {
-            setShowComputerModal(false);
+            setShowMachineEditModal(false);
             setEditingComputer(null);
           }}
         />

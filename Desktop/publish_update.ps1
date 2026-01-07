@@ -5,7 +5,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 # 1. Determine Paths
-$BasePath = "d:\Codes\EsportTournament\Desktop"
+$BasePath = "d:\Fa\EsportTournament\Desktop"
 $VersionFile = Join-Path $BasePath "version.txt"
 $BuildDir = Join-Path $BasePath "bin\Release\net8.0-windows"
 $ZipPath = Join-Path $BasePath "update.zip"
@@ -50,12 +50,34 @@ Compress-Archive -Path "$BuildDir\*" -DestinationPath $ZipPath -Force
 Write-Host "Uploading to $BackendUrl..."
 
 try {
-    $form = @{
-        version = $newVersion
-        file = Get-Item -Path $ZipPath
+    Add-Type -AssemblyName System.Net.Http
+    $httpClient = New-Object System.Net.Http.HttpClient
+    $httpClient.Timeout = [TimeSpan]::FromMinutes(5)
+
+    $multipartContent = New-Object System.Net.Http.MultipartFormDataContent
+
+    # Add Version
+    $versionContent = New-Object System.Net.Http.StringContent($newVersion)
+    $multipartContent.Add($versionContent, "version")
+
+    # Add File
+    $fileStream = [System.IO.File]::OpenRead($ZipPath)
+    $streamContent = New-Object System.Net.Http.StreamContent($fileStream)
+    $streamContent.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::Parse("application/zip")
+    $multipartContent.Add($streamContent, "file", "update.zip")
+
+    # Post
+    $result = $httpClient.PostAsync($BackendUrl, $multipartContent).Result
+    
+    $fileStream.Close()
+
+    if ($result.IsSuccessStatusCode) {
+        Write-Host "SUCCESS! Version $newVersion deployed." -ForegroundColor Green
+    } else {
+        $errorBody = $result.Content.ReadAsStringAsync().Result
+        throw "Status: $($result.StatusCode), Message: $errorBody"
     }
-    Invoke-RestMethod -Uri $BackendUrl -Method Post -Form $form
-    Write-Host "SUCCESS! Version $newVersion deployed." -ForegroundColor Green
 } catch {
     Write-Error "Upload failed: $_"
+    if ($fileStream) { $fileStream.Dispose() }
 }

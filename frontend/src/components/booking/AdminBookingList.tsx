@@ -130,7 +130,7 @@ export function AdminBookingList() {
 
                 {/* Search */}
                 <div className="relative w-full md:w-64">
-                    <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                    <Search size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                     <Input
                         placeholder="Keresés (Név, Gép)..."
                         value={searchTerm}
