@@ -11,11 +11,13 @@ import {
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import { createTeam } from "../store/slices/teamsSlice";
+import { ImageUpload } from "../components/common/ImageUpload";
 
 interface TeamFormData {
   name: string;
   description: string;
   logoUrl: string;
+  coverUrl: string;
 }
 
 const STEPS = [
@@ -24,7 +26,7 @@ const STEPS = [
     id: 2,
     title: "Megjelenés",
     icon: ImageIcon,
-    description: "Logó és stílus",
+    description: "Logó és Borítókép",
   },
   { id: 3, title: "Összegzés", icon: Check, description: "Ellenőrzés" },
 ];
@@ -39,6 +41,7 @@ export function TeamCreatePage() {
     name: "",
     description: "",
     logoUrl: "",
+    coverUrl: "",
   });
   const [errors, setErrors] = useState<Partial<TeamFormData>>({});
 
@@ -77,6 +80,7 @@ export function TeamCreatePage() {
           name: formData.name,
           description: formData.description || undefined,
           logoUrl: formData.logoUrl || undefined,
+          coverUrl: formData.coverUrl || undefined,
         })
       ).unwrap();
 
@@ -117,9 +121,8 @@ export function TeamCreatePage() {
                     <input
                       id="name"
                       type="text"
-                      className={`w-full bg-transparent text-white border-0 rounded-xl px-4 py-4 placeholder-gray-600 focus:ring-0 focus:outline-none transition-all ${
-                        errors.name ? "text-red-400" : ""
-                      }`}
+                      className={`w-full bg-transparent text-white border-0 rounded-xl px-4 py-4 placeholder-gray-600 focus:ring-0 focus:outline-none transition-all ${errors.name ? "text-red-400" : ""
+                        }`}
                       value={formData.name}
                       onChange={(e) =>
                         setFormData({ ...formData, name: e.target.value })
@@ -177,69 +180,58 @@ export function TeamCreatePage() {
                 Csapat megjelenése
               </h2>
               <p className="text-gray-400 text-lg">
-                Adj hozzá logót, hogy kitűnjetek a tömegből.
+                Tölts fel egy logót és egy borítóképet, hogy egyedi legyen a csapatod.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-[2fr,1fr] gap-8 items-start">
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <label
-                    htmlFor="logoUrl"
-                    className="text-sm font-medium text-gray-300 ml-1"
-                  >
-                    Logó URL (opcionális)
+            <div className="grid grid-cols-1 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Logo Upload */}
+                <div>
+                  <label className="block text-lg font-medium text-gray-300 mb-4 flex items-center gap-2">
+                    <ImageIcon size={20} className="text-primary" />
+                    Csapat Logó
                   </label>
-                  <div className="relative group">
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-purple-600 rounded-xl blur opacity-20 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
-                    <div className="relative bg-[#1a1b26] rounded-xl flex items-center">
-                      <div className="pl-4 text-gray-500 mr-2">
-                        <ImageIcon size={20} />
-                      </div>
-                      <input
-                        id="logoUrl"
-                        type="url"
-                        className="w-full bg-transparent text-white border-0 rounded-xl px-4 py-4 placeholder-gray-600 focus:ring-0 focus:outline-none transition-all"
-                        value={formData.logoUrl}
-                        onChange={(e) =>
-                          setFormData({ ...formData, logoUrl: e.target.value })
-                        }
-                        placeholder="https://imgur.com/..."
-                        autoFocus
-                      />
-                    </div>
-                  </div>
-                  <p className="text-xs text-gray-500 ml-1">
-                    Illessz be egy direkt linket a logódhoz (pl. Imgur, Discord
-                    CDN).
+                  <ImageUpload
+                    value={formData.logoUrl}
+                    onChange={(val) => setFormData({ ...formData, logoUrl: val })}
+                    label=""
+                    placeholder="https://imgur.com/logo.png"
+                    aspect="square"
+                    className="w-full"
+                  />
+                </div>
+
+                {/* Preview / Info */}
+                <div className="flex flex-col justify-center space-y-4 text-gray-400 bg-white/5 p-6 rounded-2xl border border-white/5">
+                  <h4 className="font-bold text-white flex items-center gap-2">
+                    <Sparkles size={18} className="text-yellow-400" />
+                    Tipp
+                  </h4>
+                  <p className="text-sm">
+                    A logó megjelenik a ranglistákon, meccseknél és a csapat profilján.
+                    Használj <span className="text-white">500x500px</span> vagy nagyobb felbontású, négyzetes képet.
+                    PNG formátum ajánlott az átlátszó háttér miatt.
                   </p>
                 </div>
               </div>
 
-              <div className="flex flex-col items-center justify-center space-y-4">
-                <span className="text-sm font-medium text-gray-400">
-                  Előnézet
-                </span>
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-tr from-primary to-purple-500 rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity" />
-                  <div className="relative w-40 h-40 rounded-full bg-[#1a1b26] border-2 border-dashed border-white/10 flex items-center justify-center overflow-hidden group-hover:border-primary/50 transition-colors">
-                    {formData.logoUrl ? (
-                      <img
-                        src={formData.logoUrl}
-                        alt="Logo preview"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = "none";
-                        }}
-                      />
-                    ) : (
-                      <div className="flex flex-col items-center gap-2 text-gray-600">
-                        <ImageIcon className="w-10 h-10" />
-                        <span className="text-xs">Nincs logó</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
+              <div className="border-t border-white/10 pt-8">
+                <label className="block text-lg font-medium text-gray-300 mb-4 flex items-center gap-2">
+                  <ImageIcon size={20} className="text-purple-400" />
+                  Borítókép (Opcionális)
+                </label>
+                <ImageUpload
+                  value={formData.coverUrl}
+                  onChange={(val) => setFormData({ ...formData, coverUrl: val })}
+                  label=""
+                  placeholder="https://imgur.com/cover.jpg"
+                  aspect="video"
+                  className="w-full"
+                />
+                <p className="text-sm text-gray-500 mt-2">
+                  A borítókép a csapat profiljának tetején jelenik meg. Ajánlott méret: <span className="text-gray-400">1920x1080px</span>.
+                </p>
               </div>
             </div>
           </div>
@@ -257,13 +249,23 @@ export function TeamCreatePage() {
               </p>
             </div>
 
-            <div className="bg-[#1a1b26]/80 rounded-2xl border border-white/10 p-8 space-y-6 backdrop-blur-sm relative overflow-hidden group hover:border-white/20 transition-colors">
-              <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-primary/20 blur-3xl rounded-full group-hover:bg-primary/30 transition-all" />
+            <div className="bg-[#1a1b26]/80 rounded-2xl border border-white/10 overflow-hidden backdrop-blur-sm relative group hover:border-white/20 transition-colors">
+              {/* Cover Image Banner */}
+              <div className="h-40 w-full relative bg-black/40 overflow-hidden">
+                {formData.coverUrl ? (
+                  <img src={formData.coverUrl} alt="Cover" className="w-full h-full object-cover opacity-80" />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-r from-gray-900 to-black opacity-50 flex items-center justify-center text-gray-600 text-sm">
+                    Nincs borítókép
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1a1b26] to-transparent" />
+              </div>
 
-              <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
-                <div className="relative">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary to-purple-600 rounded-full blur opacity-20" />
-                  <div className="w-32 h-32 relative rounded-full bg-black/40 border-2 border-white/10 overflow-hidden flex-shrink-0 shadow-2xl">
+              <div className="px-8 pb-8 -mt-16 relative z-10 flex flex-col md:flex-row items-end gap-6">
+                <div className="relative group-logo">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-primary to-purple-600 rounded-full blur opacity-50 group-hover:opacity-75 transition duration-500" />
+                  <div className="w-32 h-32 relative rounded-full bg-black border-4 border-[#1a1b26] overflow-hidden flex-shrink-0 shadow-2xl">
                     {formData.logoUrl ? (
                       <img
                         src={formData.logoUrl}
@@ -374,13 +376,12 @@ export function TeamCreatePage() {
                       <div
                         className={`
                                                 w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-500 border-2 relative
-                                                ${
-                                                  isActive
-                                                    ? "bg-[#1a1b26] border-primary text-white shadow-[0_0_20px_rgba(139,92,246,0.5)] scale-110 z-20"
-                                                    : isCompleted
-                                                    ? "bg-primary border-primary text-white z-20"
-                                                    : "bg-[#0E0F15] border-white/10 text-gray-500 z-10 group-hover:border-white/20"
-                                                }
+                                                ${isActive
+                            ? "bg-[#1a1b26] border-primary text-white shadow-[0_0_20px_rgba(139,92,246,0.5)] scale-110 z-20"
+                            : isCompleted
+                              ? "bg-primary border-primary text-white z-20"
+                              : "bg-[#0E0F15] border-white/10 text-gray-500 z-10 group-hover:border-white/20"
+                          }
                                             `}
                       >
                         {isCompleted ? (
@@ -395,13 +396,12 @@ export function TeamCreatePage() {
 
                       <div className="text-center absolute -bottom-8 w-32">
                         <span
-                          className={`text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${
-                            isActive
-                              ? "text-white"
-                              : isCompleted
+                          className={`text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${isActive
+                            ? "text-white"
+                            : isCompleted
                               ? "text-gray-300"
                               : "text-gray-600"
-                          }`}
+                            }`}
                         >
                           {step.title}
                         </span>
@@ -426,11 +426,10 @@ export function TeamCreatePage() {
             <div className="p-8 border-t border-white/5 bg-[#0E0F15]/50 flex items-center justify-between backdrop-blur-sm sticky bottom-0 z-20">
               <button
                 onClick={handleBack}
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-medium transition-all ${
-                  currentStep > 1
-                    ? "text-gray-400 hover:text-white hover:bg-white/5"
-                    : "opacity-0 pointer-events-none"
-                }`}
+                className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-medium transition-all ${currentStep > 1
+                  ? "text-gray-400 hover:text-white hover:bg-white/5"
+                  : "opacity-0 pointer-events-none"
+                  }`}
               >
                 <ArrowLeft size={18} />
                 Vissza

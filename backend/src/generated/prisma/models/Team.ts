@@ -39,6 +39,7 @@ export type TeamMinAggregateOutputType = {
   name: string | null
   description: string | null
   logoUrl: string | null
+  coverUrl: string | null
   joinCode: string | null
   ownerId: string | null
   elo: number | null
@@ -51,6 +52,7 @@ export type TeamMaxAggregateOutputType = {
   name: string | null
   description: string | null
   logoUrl: string | null
+  coverUrl: string | null
   joinCode: string | null
   ownerId: string | null
   elo: number | null
@@ -63,6 +65,7 @@ export type TeamCountAggregateOutputType = {
   name: number
   description: number
   logoUrl: number
+  coverUrl: number
   joinCode: number
   ownerId: number
   elo: number
@@ -85,6 +88,7 @@ export type TeamMinAggregateInputType = {
   name?: true
   description?: true
   logoUrl?: true
+  coverUrl?: true
   joinCode?: true
   ownerId?: true
   elo?: true
@@ -97,6 +101,7 @@ export type TeamMaxAggregateInputType = {
   name?: true
   description?: true
   logoUrl?: true
+  coverUrl?: true
   joinCode?: true
   ownerId?: true
   elo?: true
@@ -109,6 +114,7 @@ export type TeamCountAggregateInputType = {
   name?: true
   description?: true
   logoUrl?: true
+  coverUrl?: true
   joinCode?: true
   ownerId?: true
   elo?: true
@@ -208,6 +214,7 @@ export type TeamGroupByOutputType = {
   name: string
   description: string | null
   logoUrl: string | null
+  coverUrl: string | null
   joinCode: string
   ownerId: string
   elo: number
@@ -243,6 +250,7 @@ export type TeamWhereInput = {
   name?: Prisma.StringFilter<"Team"> | string
   description?: Prisma.StringNullableFilter<"Team"> | string | null
   logoUrl?: Prisma.StringNullableFilter<"Team"> | string | null
+  coverUrl?: Prisma.StringNullableFilter<"Team"> | string | null
   joinCode?: Prisma.StringFilter<"Team"> | string
   ownerId?: Prisma.StringFilter<"Team"> | string
   elo?: Prisma.IntFilter<"Team"> | number
@@ -261,6 +269,7 @@ export type TeamOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   joinCode?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   elo?: Prisma.SortOrder
@@ -283,6 +292,7 @@ export type TeamWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.TeamWhereInput | Prisma.TeamWhereInput[]
   description?: Prisma.StringNullableFilter<"Team"> | string | null
   logoUrl?: Prisma.StringNullableFilter<"Team"> | string | null
+  coverUrl?: Prisma.StringNullableFilter<"Team"> | string | null
   ownerId?: Prisma.StringFilter<"Team"> | string
   elo?: Prisma.IntFilter<"Team"> | number
   createdAt?: Prisma.DateTimeFilter<"Team"> | Date | string
@@ -300,6 +310,7 @@ export type TeamOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   joinCode?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   elo?: Prisma.SortOrder
@@ -320,6 +331,7 @@ export type TeamScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Team"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Team"> | string | null
   logoUrl?: Prisma.StringNullableWithAggregatesFilter<"Team"> | string | null
+  coverUrl?: Prisma.StringNullableWithAggregatesFilter<"Team"> | string | null
   joinCode?: Prisma.StringWithAggregatesFilter<"Team"> | string
   ownerId?: Prisma.StringWithAggregatesFilter<"Team"> | string
   elo?: Prisma.IntWithAggregatesFilter<"Team"> | number
@@ -332,6 +344,7 @@ export type TeamCreateInput = {
   name: string
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   joinCode: string
   elo?: number
   createdAt?: Date | string
@@ -349,6 +362,7 @@ export type TeamUncheckedCreateInput = {
   name: string
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   joinCode: string
   ownerId: string
   elo?: number
@@ -366,6 +380,7 @@ export type TeamUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -383,6 +398,7 @@ export type TeamUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   elo?: Prisma.IntFieldUpdateOperationsInput | number
@@ -400,6 +416,7 @@ export type TeamCreateManyInput = {
   name: string
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   joinCode: string
   ownerId: string
   elo?: number
@@ -412,6 +429,7 @@ export type TeamUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -423,6 +441,7 @@ export type TeamUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   elo?: Prisma.IntFieldUpdateOperationsInput | number
@@ -445,6 +464,7 @@ export type TeamCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
+  coverUrl?: Prisma.SortOrder
   joinCode?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   elo?: Prisma.SortOrder
@@ -461,6 +481,7 @@ export type TeamMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
+  coverUrl?: Prisma.SortOrder
   joinCode?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   elo?: Prisma.SortOrder
@@ -473,6 +494,7 @@ export type TeamMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
+  coverUrl?: Prisma.SortOrder
   joinCode?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   elo?: Prisma.SortOrder
@@ -619,6 +641,7 @@ export type TeamCreateWithoutOwnerInput = {
   name: string
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   joinCode: string
   elo?: number
   createdAt?: Date | string
@@ -635,6 +658,7 @@ export type TeamUncheckedCreateWithoutOwnerInput = {
   name: string
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   joinCode: string
   elo?: number
   createdAt?: Date | string
@@ -680,6 +704,7 @@ export type TeamScalarWhereInput = {
   name?: Prisma.StringFilter<"Team"> | string
   description?: Prisma.StringNullableFilter<"Team"> | string | null
   logoUrl?: Prisma.StringNullableFilter<"Team"> | string | null
+  coverUrl?: Prisma.StringNullableFilter<"Team"> | string | null
   joinCode?: Prisma.StringFilter<"Team"> | string
   ownerId?: Prisma.StringFilter<"Team"> | string
   elo?: Prisma.IntFilter<"Team"> | number
@@ -692,6 +717,7 @@ export type TeamCreateWithoutMembersInput = {
   name: string
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   joinCode: string
   elo?: number
   createdAt?: Date | string
@@ -708,6 +734,7 @@ export type TeamUncheckedCreateWithoutMembersInput = {
   name: string
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   joinCode: string
   ownerId: string
   elo?: number
@@ -740,6 +767,7 @@ export type TeamUpdateWithoutMembersInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -756,6 +784,7 @@ export type TeamUncheckedUpdateWithoutMembersInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   elo?: Prisma.IntFieldUpdateOperationsInput | number
@@ -772,6 +801,7 @@ export type TeamCreateWithoutTournamentEntriesInput = {
   name: string
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   joinCode: string
   elo?: number
   createdAt?: Date | string
@@ -788,6 +818,7 @@ export type TeamUncheckedCreateWithoutTournamentEntriesInput = {
   name: string
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   joinCode: string
   ownerId: string
   elo?: number
@@ -820,6 +851,7 @@ export type TeamUpdateWithoutTournamentEntriesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -836,6 +868,7 @@ export type TeamUncheckedUpdateWithoutTournamentEntriesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   elo?: Prisma.IntFieldUpdateOperationsInput | number
@@ -852,6 +885,7 @@ export type TeamCreateWithoutHomeMatchesInput = {
   name: string
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   joinCode: string
   elo?: number
   createdAt?: Date | string
@@ -868,6 +902,7 @@ export type TeamUncheckedCreateWithoutHomeMatchesInput = {
   name: string
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   joinCode: string
   ownerId: string
   elo?: number
@@ -889,6 +924,7 @@ export type TeamCreateWithoutAwayMatchesInput = {
   name: string
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   joinCode: string
   elo?: number
   createdAt?: Date | string
@@ -905,6 +941,7 @@ export type TeamUncheckedCreateWithoutAwayMatchesInput = {
   name: string
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   joinCode: string
   ownerId: string
   elo?: number
@@ -926,6 +963,7 @@ export type TeamCreateWithoutWonMatchesInput = {
   name: string
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   joinCode: string
   elo?: number
   createdAt?: Date | string
@@ -942,6 +980,7 @@ export type TeamUncheckedCreateWithoutWonMatchesInput = {
   name: string
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   joinCode: string
   ownerId: string
   elo?: number
@@ -974,6 +1013,7 @@ export type TeamUpdateWithoutHomeMatchesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -990,6 +1030,7 @@ export type TeamUncheckedUpdateWithoutHomeMatchesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   elo?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1017,6 +1058,7 @@ export type TeamUpdateWithoutAwayMatchesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1033,6 +1075,7 @@ export type TeamUncheckedUpdateWithoutAwayMatchesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   elo?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1060,6 +1103,7 @@ export type TeamUpdateWithoutWonMatchesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1076,6 +1120,7 @@ export type TeamUncheckedUpdateWithoutWonMatchesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   elo?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1092,6 +1137,7 @@ export type TeamCreateManyOwnerInput = {
   name: string
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   joinCode: string
   elo?: number
   createdAt?: Date | string
@@ -1103,6 +1149,7 @@ export type TeamUpdateWithoutOwnerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1119,6 +1166,7 @@ export type TeamUncheckedUpdateWithoutOwnerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1135,6 +1183,7 @@ export type TeamUncheckedUpdateManyWithoutOwnerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1213,6 +1262,7 @@ export type TeamSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   name?: boolean
   description?: boolean
   logoUrl?: boolean
+  coverUrl?: boolean
   joinCode?: boolean
   ownerId?: boolean
   elo?: boolean
@@ -1232,6 +1282,7 @@ export type TeamSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   description?: boolean
   logoUrl?: boolean
+  coverUrl?: boolean
   joinCode?: boolean
   ownerId?: boolean
   elo?: boolean
@@ -1245,6 +1296,7 @@ export type TeamSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   description?: boolean
   logoUrl?: boolean
+  coverUrl?: boolean
   joinCode?: boolean
   ownerId?: boolean
   elo?: boolean
@@ -1258,6 +1310,7 @@ export type TeamSelectScalar = {
   name?: boolean
   description?: boolean
   logoUrl?: boolean
+  coverUrl?: boolean
   joinCode?: boolean
   ownerId?: boolean
   elo?: boolean
@@ -1265,7 +1318,7 @@ export type TeamSelectScalar = {
   updatedAt?: boolean
 }
 
-export type TeamOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "logoUrl" | "joinCode" | "ownerId" | "elo" | "createdAt" | "updatedAt", ExtArgs["result"]["team"]>
+export type TeamOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "logoUrl" | "coverUrl" | "joinCode" | "ownerId" | "elo" | "createdAt" | "updatedAt", ExtArgs["result"]["team"]>
 export type TeamInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   members?: boolean | Prisma.Team$membersArgs<ExtArgs>
@@ -1297,6 +1350,7 @@ export type $TeamPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     name: string
     description: string | null
     logoUrl: string | null
+    coverUrl: string | null
     joinCode: string
     ownerId: string
     elo: number
@@ -1735,6 +1789,7 @@ export interface TeamFieldRefs {
   readonly name: Prisma.FieldRef<"Team", 'String'>
   readonly description: Prisma.FieldRef<"Team", 'String'>
   readonly logoUrl: Prisma.FieldRef<"Team", 'String'>
+  readonly coverUrl: Prisma.FieldRef<"Team", 'String'>
   readonly joinCode: Prisma.FieldRef<"Team", 'String'>
   readonly ownerId: Prisma.FieldRef<"Team", 'String'>
   readonly elo: Prisma.FieldRef<"Team", 'Int'>

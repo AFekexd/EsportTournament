@@ -129,7 +129,7 @@ teamsRouter.post(
     '/',
     authenticate,
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-        const { name, description, logoUrl } = req.body;
+        const { name, description, logoUrl, coverUrl } = req.body;
 
         if (!name || name.length < 3) {
             throw new ApiError('A csapatnévnek legalább 3 karakternek kell lennie', 400, 'INVALID_NAME');
@@ -152,11 +152,21 @@ teamsRouter.post(
             processedLogoUrl = await processImage(logoUrl);
         }
 
+        // Process cover image if base64
+        let processedCoverUrl = coverUrl;
+        if (coverUrl && isBase64DataUrl(coverUrl)) {
+            if (!validateImageSize(coverUrl, 150)) {
+                throw new ApiError('A borítókép túl nagy (max 150MB)', 400, 'IMAGE_TOO_LARGE');
+            }
+            processedCoverUrl = await processImage(coverUrl);
+        }
+
         const team = await prisma.team.create({
             data: {
                 name,
                 description,
                 logoUrl: processedLogoUrl,
+                coverUrl: processedCoverUrl,
                 joinCode: generateJoinCode(),
                 ownerId: user.id,
                 members: {
@@ -250,7 +260,7 @@ teamsRouter.patch(
             throw new ApiError('Only team owner or admin can update team', 403, 'FORBIDDEN');
         }
 
-        const { name, description, logoUrl } = req.body;
+        const { name, description, logoUrl, coverUrl } = req.body;
 
         // Process logo image if base64
         let processedLogoUrl = logoUrl;
@@ -261,12 +271,22 @@ teamsRouter.patch(
             processedLogoUrl = await processImage(logoUrl);
         }
 
+        // Process cover image if base64
+        let processedCoverUrl = coverUrl;
+        if (coverUrl && isBase64DataUrl(coverUrl)) {
+            if (!validateImageSize(coverUrl, 150)) {
+                throw new ApiError('A borítókép túl nagy (max 150MB)', 400, 'IMAGE_TOO_LARGE');
+            }
+            processedCoverUrl = await processImage(coverUrl);
+        }
+
         const updatedTeam = await prisma.team.update({
             where: { id: req.params.id },
             data: {
                 ...(name && { name }),
                 ...(description !== undefined && { description }),
                 ...(processedLogoUrl !== undefined && { logoUrl: processedLogoUrl }),
+                ...(processedCoverUrl !== undefined && { coverUrl: processedCoverUrl }),
             },
         });
 
@@ -276,6 +296,7 @@ teamsRouter.patch(
         if (name) changes.push(`Name ('${name}')`);
         if (description !== undefined) changes.push('Description');
         if (processedLogoUrl !== undefined) changes.push('Logo');
+        if (processedCoverUrl !== undefined) changes.push('Cover');
 
         await logSystemActivity(
             'TEAM_UPDATE',
@@ -288,7 +309,8 @@ teamsRouter.patch(
                     updatedFields: {
                         ...(name && { name }),
                         ...(description !== undefined && { description }),
-                        ...(processedLogoUrl !== undefined && { logoUrl: 'updated' })
+                        ...(processedLogoUrl !== undefined && { logoUrl: 'updated' }),
+                        ...(processedCoverUrl !== undefined && { coverUrl: 'updated' })
                     }
                 }
             }

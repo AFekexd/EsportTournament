@@ -138,9 +138,9 @@ export function SettingsPage() {
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
                   disabled={!isAdmin}
-                  className={`w-full px-5 py-4 bg-[#0a0a0f]/50 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-lg ${
-                    !isAdmin ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                  maxLength={50}
+                  className={`w-full px-5 py-4 bg-[#0a0a0f]/50 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-lg ${!isAdmin ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                   placeholder="pl. GamerPro123"
                 />
                 {!isAdmin && (
@@ -149,11 +149,14 @@ export function SettingsPage() {
                   </div>
                 )}
               </div>
-              {!isAdmin && (
-                <p className="text-xs text-gray-500 ml-1">
-                  Biztonsági okokból a nevedet csak adminisztrátor módosíthatja.
-                </p>
-              )}
+              <div className="flex justify-between items-center mt-1 ml-1">
+                {!isAdmin ? (
+                  <p className="text-xs text-gray-500">
+                    Biztonsági okokból a nevedet csak adminisztrátor módosíthatja.
+                  </p>
+                ) : <span></span>}
+                {isAdmin && <span className="text-xs text-gray-500">{displayName.length}/50</span>}
+              </div>
             </div>
           </div>
         </div>
@@ -226,11 +229,10 @@ export function SettingsPage() {
             >
               <div className="flex items-center gap-4">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
-                    emailNotifications
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${emailNotifications
                       ? "bg-primary/20 text-primary"
                       : "bg-gray-800 text-gray-500"
-                  }`}
+                    }`}
                 >
                   <Mail size={20} />
                 </div>
@@ -243,14 +245,12 @@ export function SettingsPage() {
               </div>
 
               <div
-                className={`w-12 h-7 rounded-full p-1 transition-colors relative ${
-                  emailNotifications ? "bg-primary" : "bg-gray-700"
-                }`}
+                className={`w-12 h-7 rounded-full p-1 transition-colors relative ${emailNotifications ? "bg-primary" : "bg-gray-700"
+                  }`}
               >
                 <div
-                  className={`w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${
-                    emailNotifications ? "translate-x-5" : "translate-x-0"
-                  }`}
+                  className={`w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${emailNotifications ? "translate-x-5" : "translate-x-0"
+                    }`}
                 />
               </div>
             </div>
@@ -264,11 +264,10 @@ export function SettingsPage() {
           <button
             onClick={handleSave}
             disabled={saveLoading}
-            className={`flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg transform hover:-translate-y-1 ${
-              saveSuccess
+            className={`flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg transform hover:-translate-y-1 ${saveSuccess
                 ? "bg-green-500 hover:bg-green-600 shadow-green-500/25 text-white"
                 : "bg-gradient-to-r from-primary to-neon-pink hover:brightness-110 shadow-primary/25 text-white"
-            } ${saveLoading ? "opacity-75 cursor-wait" : ""}`}
+              } ${saveLoading ? "opacity-75 cursor-wait" : ""}`}
           >
             {saveLoading ? (
               <>

@@ -6,7 +6,7 @@ import { authService } from '../../lib/auth-service';
 export interface Notification {
     id: string;
     userId: string;
-    type: 'TOURNAMENT_INVITE' | 'TEAM_INVITE' | 'MATCH_SCHEDULED' | 'MATCH_RESULT' | 'SYSTEM';
+    type: 'TOURNAMENT_INVITE' | 'TEAM_INVITE' | 'MATCH_SCHEDULED' | 'MATCH_RESULT' | 'SYSTEM' | 'BOOKING_CONFIRMED' | 'BOOKING_REMINDER' | 'WAITLIST_AVAILABLE';
     title: string;
     message: string;
     link?: string;

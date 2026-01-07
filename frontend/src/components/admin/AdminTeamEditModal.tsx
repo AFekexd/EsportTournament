@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { updateTeam, removeMember } from "../../store/slices/teamsSlice";
 import type { Team } from "../../types";
 import { toast } from "sonner";
+import { ImageUpload } from "../common/ImageUpload";
 
 interface AdminTeamEditModalProps {
   team: Team;
@@ -24,6 +25,7 @@ export function AdminTeamEditModal({
     name: team.name,
     description: team.description || "",
     logoUrl: team.logoUrl || "",
+    coverUrl: team.coverUrl || "",
   });
 
   const [localMembers, setLocalMembers] = useState(team.members || []);
@@ -40,7 +42,7 @@ export function AdminTeamEditModal({
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => {},
+    onConfirm: () => { },
     variant: "primary",
   });
 
@@ -71,6 +73,7 @@ export function AdminTeamEditModal({
             name: formData.name,
             description: formData.description || undefined,
             logoUrl: formData.logoUrl || undefined,
+            coverUrl: formData.coverUrl || undefined,
           },
         })
       ).unwrap();
@@ -139,20 +142,20 @@ export function AdminTeamEditModal({
                 </label>
                 <input
                   type="text"
-                  className={`w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors ${
-                    errors.name ? "border-red-500/50" : ""
-                  }`}
+                  className={`w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors ${errors.name ? "border-red-500/50" : ""
+                    }`}
                   value={formData.name}
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
                   maxLength={50}
                 />
-                {errors.name && (
-                  <span className="text-red-400 text-xs mt-1">
-                    {errors.name}
-                  </span>
-                )}
+                <div className="flex justify-between items-center mt-1">
+                  {errors.name ? (
+                    <span className="text-red-400 text-xs">{errors.name}</span>
+                  ) : <span></span>}
+                  <span className="text-xs text-gray-500">{formData.name.length}/50</span>
+                </div>
               </div>
 
               <div className="form-group">
@@ -168,20 +171,40 @@ export function AdminTeamEditModal({
                   rows={4}
                   maxLength={500}
                 />
+                <div className="text-right mt-1">
+                  <span className="text-xs text-gray-500">{formData.description.length}/500</span>
+                </div>
               </div>
 
-              <div className="form-group">
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Logó URL
-                </label>
-                <input
-                  type="url"
-                  className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
-                  value={formData.logoUrl}
-                  onChange={(e) =>
-                    setFormData({ ...formData, logoUrl: e.target.value })
-                  }
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">
+                    Logó
+                  </label>
+                  <ImageUpload
+                    value={formData.logoUrl}
+                    onChange={(val) =>
+                      setFormData({ ...formData, logoUrl: val })
+                    }
+                    aspect="square"
+                    label=""
+                    placeholder="Logó URL..."
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">
+                    Borítókép
+                  </label>
+                  <ImageUpload
+                    value={formData.coverUrl}
+                    onChange={(val) =>
+                      setFormData({ ...formData, coverUrl: val })
+                    }
+                    aspect="video"
+                    label=""
+                    placeholder="Borítókép URL..."
+                  />
+                </div>
               </div>
 
               <div className="pt-4">

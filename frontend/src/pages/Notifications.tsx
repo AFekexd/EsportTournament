@@ -20,6 +20,29 @@ const getNotificationIcon = (type: Notification['type']) => {
     }
 };
 
+const generateTitle = (title: Notification['title']) => {
+    switch (title) {
+        case 'TOURNAMENT_INVITE':
+            return 'Tournament Invite';
+        case 'MATCH_SCHEDULED':
+            return 'Match Scheduled';
+        case 'MATCH_RESULT':
+            return 'Match Result';
+        case 'TEAM_INVITE':
+            return 'Team Invite';
+        case 'SYSTEM':
+            return 'System';
+        case 'BOOKING_CONFIRMED':
+            return 'Booking Confirmed';
+        case 'BOOKING_REMINDER':
+            return 'Booking Reminder';
+        case 'WAITLIST_AVAILABLE':
+            return 'Waitlist Available';
+        default:
+            return 'Notification';
+    }
+};
+
 const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -86,7 +109,7 @@ export function NotificationsPage() {
                         >
                             <div className="text-2xl shrink-0 w-12 h-12 flex items-center justify-center bg-secondary rounded-lg">{getNotificationIcon(notification.type)}</div>
                             <div className="flex-1 min-w-0">
-                                <h3 className={`text-base font-semibold mb-2 ${!notification.read ? 'text-primary' : 'text-foreground'}`}>{notification.title}</h3>
+                                <h3 className={`text-base font-semibold mb-2 ${!notification.read ? 'text-primary' : 'text-foreground'}`}>{generateTitle(notification.title)}</h3>
                                 <p className="text-sm text-secondary-foreground mb-2 leading-relaxed">{notification.message}</p>
                                 <span className="text-xs text-muted-foreground">{formatDate(notification.createdAt)}</span>
                             </div>

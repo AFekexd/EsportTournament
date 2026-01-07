@@ -38,7 +38,7 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => {},
+    onConfirm: () => { },
     variant: "primary",
   });
 
@@ -193,7 +193,11 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
                 onChange={(e) => setDisplayName(e.target.value)}
                 className="w-full bg-transparent border-b border-white/10 focus:border-blue-500 outline-none py-1 text-white font-medium"
                 placeholder="Név megadása"
+                maxLength={50}
               />
+              <div className="text-right mt-1">
+                <span className="text-xs text-gray-500">{displayName.length}/50</span>
+              </div>
             </div>
           </div>
 
@@ -203,11 +207,10 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
             <button
               onClick={handleResetAvatar}
               disabled={!user.avatarUrl || isLoading}
-              className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${
-                !user.avatarUrl
+              className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${!user.avatarUrl
                   ? "opacity-50 cursor-not-allowed border-white/5"
                   : "hover:bg-red-500/10 border-white/10 hover:border-red-500/30"
-              }`}
+                }`}
             >
               <div className="flex items-center gap-3">
                 <ImageOff

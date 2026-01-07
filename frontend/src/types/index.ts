@@ -21,6 +21,7 @@ export interface Team {
     name: string;
     description?: string;
     logoUrl?: string;
+    coverUrl?: string;
     joinCode: string;
     ownerId: string;
     owner?: User;

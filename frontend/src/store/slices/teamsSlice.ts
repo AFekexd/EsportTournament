@@ -78,7 +78,7 @@ export const fetchTeam = createAsyncThunk(
 
 export const createTeam = createAsyncThunk(
     'teams/createTeam',
-    async (teamData: { name: string; description?: string; logoUrl?: string }) => {
+    async (teamData: { name: string; description?: string; logoUrl?: string; coverUrl?: string }) => {
         const response = await apiFetch(`${API_URL}/teams`, {
             method: 'POST',
             headers: {
@@ -137,7 +137,7 @@ export const leaveTeam = createAsyncThunk(
 
 export const updateTeam = createAsyncThunk(
     'teams/updateTeam',
-    async ({ id, data }: { id: string; data: { name?: string; description?: string; logoUrl?: string } }) => {
+    async ({ id, data }: { id: string; data: { name?: string; description?: string; logoUrl?: string; coverUrl?: string } }) => {
         const response = await apiFetch(`${API_URL}/teams/${id}`, {
             method: 'PATCH',
             headers: {

@@ -120,6 +120,7 @@ model Team {
   name        String   @unique
   description String?
   logoUrl     String?
+  coverUrl    String?
   joinCode    String   @unique
   ownerId     String
   owner       User     @relation("TeamOwner", fields: [ownerId], references: [id])

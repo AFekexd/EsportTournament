@@ -1965,6 +1965,7 @@ export const TeamScalarFieldEnum = {
   name: 'name',
   description: 'description',
   logoUrl: 'logoUrl',
+  coverUrl: 'coverUrl',
   joinCode: 'joinCode',
   ownerId: 'ownerId',
   elo: 'elo',

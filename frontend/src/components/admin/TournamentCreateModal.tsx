@@ -129,9 +129,8 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
               <input
                 id="tournament-name"
                 type="text"
-                className={`w-full px-4 py-3 bg-[#0f1015] border ${
-                  errors.name ? "border-red-500" : "border-white/10"
-                } rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors`}
+                className={`w-full px-4 py-3 bg-[#0f1015] border ${errors.name ? "border-red-500" : "border-white/10"
+                  } rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors`}
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
@@ -139,9 +138,12 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                 placeholder="Pl: Tavaszi CS2 Kupa"
                 maxLength={100}
               />
-              {errors.name && (
-                <p className="text-red-400 text-sm mt-1">{errors.name}</p>
-              )}
+              <div className="flex justify-between items-center mt-1">
+                {errors.name ? (
+                  <p className="text-red-400 text-sm">{errors.name}</p>
+                ) : <span></span>}
+                <span className="text-xs text-gray-500">{formData.name.length}/100</span>
+              </div>
             </div>
 
             <div>
@@ -153,9 +155,8 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
               </label>
               <select
                 id="tournament-game"
-                className={`w-full px-4 py-3 bg-[#0f1015] border ${
-                  errors.gameId ? "border-red-500" : "border-white/10"
-                } rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
+                className={`w-full px-4 py-3 bg-[#0f1015] border ${errors.gameId ? "border-red-500" : "border-white/10"
+                  } rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
                 value={formData.gameId}
                 onChange={(e) =>
                   setFormData({ ...formData, gameId: e.target.value })
@@ -189,11 +190,10 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                       participationType: "INDIVIDUAL",
                     })
                   }
-                  className={`px-4 py-3 rounded-xl border font-medium transition-all ${
-                    formData.participationType === "INDIVIDUAL"
+                  className={`px-4 py-3 rounded-xl border font-medium transition-all ${formData.participationType === "INDIVIDUAL"
                       ? "bg-primary/20 border-primary text-primary"
                       : "bg-[#0f1015] border-white/10 text-gray-400 hover:border-white/20"
-                  }`}
+                    }`}
                 >
                   Egyéni (1v1)
                 </button>
@@ -202,11 +202,10 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                   onClick={() =>
                     setFormData({ ...formData, participationType: "TEAM" })
                   }
-                  className={`px-4 py-3 rounded-xl border font-medium transition-all ${
-                    formData.participationType === "TEAM"
+                  className={`px-4 py-3 rounded-xl border font-medium transition-all ${formData.participationType === "TEAM"
                       ? "bg-primary/20 border-primary text-primary"
                       : "bg-[#0f1015] border-white/10 text-gray-400 hover:border-white/20"
-                  }`}
+                    }`}
                 >
                   Csapat
                 </button>
@@ -261,6 +260,9 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
               rows={3}
               maxLength={500}
             />
+            <div className="text-right mt-1">
+              <span className="text-xs text-gray-500">{formData.description.length}/500</span>
+            </div>
           </div>
 
           {/* Image Upload */}
@@ -310,9 +312,8 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
               <input
                 id="tournament-maxTeams"
                 type="number"
-                className={`w-full px-4 py-3 bg-[#0f1015] border ${
-                  errors.maxTeams ? "border-red-500" : "border-white/10"
-                } rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
+                className={`w-full px-4 py-3 bg-[#0f1015] border ${errors.maxTeams ? "border-red-500" : "border-white/10"
+                  } rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
                 value={formData.maxTeams}
                 onChange={(e) =>
                   setFormData({
@@ -341,11 +342,10 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
               <input
                 id="tournament-regDeadline"
                 type="datetime-local"
-                className={`w-full px-4 py-3 bg-[#0f1015] border ${
-                  errors.registrationDeadline
+                className={`w-full px-4 py-3 bg-[#0f1015] border ${errors.registrationDeadline
                     ? "border-red-500"
                     : "border-white/10"
-                } rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
+                  } rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
                 value={formData.registrationDeadline}
                 onChange={(e) =>
                   setFormData({
@@ -372,9 +372,8 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
               <input
                 id="tournament-startDate"
                 type="datetime-local"
-                className={`w-full px-4 py-3 bg-[#0f1015] border ${
-                  errors.startDate ? "border-red-500" : "border-white/10"
-                } rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
+                className={`w-full px-4 py-3 bg-[#0f1015] border ${errors.startDate ? "border-red-500" : "border-white/10"
+                  } rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
                 value={formData.startDate}
                 onChange={(e) =>
                   setFormData({ ...formData, startDate: e.target.value })
@@ -401,14 +400,12 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                     hasQualifier: !formData.hasQualifier,
                   })
                 }
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#0f1015] ${
-                  formData.hasQualifier ? "bg-primary" : "bg-gray-700"
-                }`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#0f1015] ${formData.hasQualifier ? "bg-primary" : "bg-gray-700"
+                  }`}
               >
                 <span
-                  className={`${
-                    formData.hasQualifier ? "translate-x-6" : "translate-x-1"
-                  } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                  className={`${formData.hasQualifier ? "translate-x-6" : "translate-x-1"
+                    } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
                 />
               </button>
               <div>
@@ -489,14 +486,12 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                     requireRank: !formData.requireRank,
                   })
                 }
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#0f1015] ${
-                  formData.requireRank ? "bg-primary" : "bg-gray-700"
-                }`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#0f1015] ${formData.requireRank ? "bg-primary" : "bg-gray-700"
+                  }`}
               >
                 <span
-                  className={`${
-                    formData.requireRank ? "translate-x-6" : "translate-x-1"
-                  } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                  className={`${formData.requireRank ? "translate-x-6" : "translate-x-1"
+                    } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
                 />
               </button>
               <div>

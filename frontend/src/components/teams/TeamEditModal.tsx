@@ -3,6 +3,8 @@ import { X, Save } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { updateTeam } from "../../store/slices/teamsSlice";
 import type { Team } from "../../types";
+import { ImageUpload } from "../common/ImageUpload";
+import { Button } from "../ui/button";
 
 interface TeamEditModalProps {
   team: Team;
@@ -17,6 +19,7 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
     name: team.name,
     description: team.description || "",
     logoUrl: team.logoUrl || "",
+    coverUrl: team.coverUrl || "",
   });
 
   const [errors, setErrors] = useState<{ name?: string }>({});
@@ -40,6 +43,7 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
             name: formData.name,
             description: formData.description || undefined,
             logoUrl: formData.logoUrl || undefined,
+            coverUrl: formData.coverUrl || undefined,
           },
         })
       ).unwrap();
@@ -53,7 +57,7 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[1000] p-4">
       <div
-        className="bg-card border border-border rounded-2xl max-w-[600px] w-full max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.5)] max-md:max-h-[95vh]"
+        className="bg-[#1a1b26]  border border-border rounded-2xl max-w-[600px] w-full max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.5)] max-md:max-h-[95vh]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center p-6 border-b border-border max-md:p-4">
@@ -83,9 +87,12 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
               }
               maxLength={50}
             />
-            {errors.name && (
-              <span className="error-message">{errors.name}</span>
-            )}
+            <div className="flex justify-between items-center mt-1">
+              {errors.name ? (
+                <span className="error-message">{errors.name}</span>
+              ) : <span></span>}
+              <span className="text-xs text-gray-500">{formData.name.length}/50</span>
+            </div>
           </div>
 
           <div className="form-group">
@@ -94,7 +101,8 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
             </label>
             <textarea
               id="edit-description"
-              className="input textarea"
+              className="input textarea max-h-[150px] min-h-[50px]"
+              placeholder="Rövid leírás a csapatról..."
               value={formData.description}
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
@@ -102,34 +110,45 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
               rows={4}
               maxLength={500}
             />
+            <div className="text-right mt-1">
+              <span className="text-xs text-gray-500">{formData.description.length}/500</span>
+            </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="edit-logoUrl" className="form-label">
-              Logó URL
-            </label>
-            <input
-              id="edit-logoUrl"
-              type="url"
-              className="input"
-              value={formData.logoUrl}
-              onChange={(e) =>
-                setFormData({ ...formData, logoUrl: e.target.value })
-              }
-            />
+          <div className="form-group grid grid-cols-2 gap-4">
+            <div>
+              <label className="form-label">Logó</label>
+              <ImageUpload
+                value={formData.logoUrl}
+                onChange={(val) => setFormData({ ...formData, logoUrl: val })}
+                aspect="square"
+                label=""
+                placeholder="Logó URL..."
+              />
+            </div>
+            <div>
+              <label className="form-label">Borítókép</label>
+              <ImageUpload
+                value={formData.coverUrl}
+                onChange={(val) => setFormData({ ...formData, coverUrl: val })}
+                aspect="video"
+                label=""
+                placeholder="Borítókép URL..."
+              />
+            </div>
           </div>
 
           <div className="flex justify-end gap-3 pt-6 border-t border-border">
-            <button
+            <Button
               type="button"
               className="btn btn-secondary"
               onClick={onClose}
             >
               Mégse
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              className="btn btn-primary"
+              className="btn "
               disabled={updateLoading}
             >
               {updateLoading ? (
@@ -143,7 +162,7 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
                   Mentés
                 </>
               )}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

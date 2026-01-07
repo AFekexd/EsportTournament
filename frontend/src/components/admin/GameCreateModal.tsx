@@ -85,9 +85,8 @@ export function GameCreateModal({ onClose }: GameCreateModalProps) {
             <input
               id="game-name"
               type="text"
-              className={`w-full px-4 py-3 bg-[#0f1015] border ${
-                errors.name ? "border-red-500" : "border-white/10"
-              } rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors`}
+              className={`w-full px-4 py-3 bg-[#0f1015] border ${errors.name ? "border-red-500" : "border-white/10"
+                } rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors`}
               value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
@@ -95,9 +94,12 @@ export function GameCreateModal({ onClose }: GameCreateModalProps) {
               placeholder="Pl: League of Legends"
               maxLength={100}
             />
-            {errors.name && (
-              <p className="text-red-400 text-sm mt-1">{errors.name}</p>
-            )}
+            <div className="flex justify-between items-center mt-1">
+              {errors.name ? (
+                <p className="text-red-400 text-sm">{errors.name}</p>
+              ) : <span></span>}
+              <span className="text-xs text-gray-500">{formData.name.length}/100</span>
+            </div>
           </div>
 
           <div>
@@ -118,6 +120,9 @@ export function GameCreateModal({ onClose }: GameCreateModalProps) {
               rows={3}
               maxLength={500}
             />
+            <div className="text-right mt-1">
+              <span className="text-xs text-gray-500">{formData.description.length}/500</span>
+            </div>
           </div>
 
           {/* Image Upload */}

@@ -163,10 +163,21 @@ export function TeamDetailPage() {
         {/* Team Header Card */}
         <div className="relative overflow-hidden rounded-2xl bg-[#1a1b26] border border-white/5 shadow-2xl">
           {/* Banner */}
-          <div className="h-48 relative group">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-900/40 via-blue-900/40 to-primary/40"></div>
+          <div className="h-48 md:h-64 relative group">
+            {currentTeam.coverUrl ? (
+              <>
+                <img
+                  src={currentTeam.coverUrl}
+                  alt="Cover"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1a1b26] via-[#1a1b26]/50 to-transparent"></div>
+              </>
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-900/40 via-blue-900/40 to-primary/40"></div>
+            )}
             <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]"></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-[#1a1b26] to-transparent"></div>
+            {!currentTeam.coverUrl && <div className="absolute inset-0 bg-gradient-to-t from-[#1a1b26] to-transparent"></div>}
 
             {isOwner && (
               <div className="absolute top-6 right-6 flex gap-3 z-20">
