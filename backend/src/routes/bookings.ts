@@ -434,6 +434,47 @@ bookingsRouter.post(
     })
 );
 
+// Bulk delete bookings (Admin only)
+bookingsRouter.post(
+    '/bulk-delete',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user || user.role !== 'ADMIN') {
+            throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
+        }
+
+        const { bookingIds } = req.body;
+
+        if (!Array.isArray(bookingIds) || bookingIds.length === 0) {
+            throw new ApiError('Nincs kiválasztva törlendő foglalás', 400, 'NO_IDS_PROVIDED');
+        }
+
+        const deleteResult = await prisma.booking.deleteMany({
+            where: {
+                id: { in: bookingIds }
+            }
+        });
+
+        await logSystemActivity(
+            'BOOKING_BULK_DELETE',
+            `${deleteResult.count} bookings deleted by ${user.username}`,
+            {
+                adminId: user.id,
+                metadata: {
+                    count: deleteResult.count,
+                    ids: bookingIds
+                }
+            }
+        );
+
+        res.json({ success: true, message: `${deleteResult.count} foglalás törölve`, count: deleteResult.count });
+    })
+);
+
 // Delete booking (user can delete their own, admin can delete any)
 bookingsRouter.delete(
     '/:id',

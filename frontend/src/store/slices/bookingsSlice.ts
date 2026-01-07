@@ -292,6 +292,27 @@ export const deleteBooking = createAsyncThunk(
     }
 );
 
+export const bulkDeleteBookings = createAsyncThunk(
+    'bookings/bulkDeleteBookings',
+    async (bookingIds: string[], { getState }) => {
+        const state = getState() as RootState;
+        const token = getToken(state);
+        if (!token) throw new Error('Nincs bejelentkezve!');
+
+        const response = await fetch(`${API_URL}/bookings/bulk-delete`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({ bookingIds }),
+        });
+        const data = await response.json();
+        if (!data.success) throw new Error(data.error?.message || 'Failed to bulk delete bookings');
+        return bookingIds;
+    }
+);
+
 // New async thunks for enhanced booking features
 
 export const fetchWeeklyBookings = createAsyncThunk(
@@ -545,6 +566,12 @@ const bookingsSlice = createSlice({
             .addCase(deleteBooking.fulfilled, (state, action) => {
                 state.bookings = state.bookings.filter((b) => b.id !== action.payload);
                 state.myBookings = state.myBookings.filter((b) => b.id !== action.payload);
+                state.adminBookings = state.adminBookings.filter((b) => b.id !== action.payload);
+            })
+            .addCase(bulkDeleteBookings.fulfilled, (state, action) => {
+                state.bookings = state.bookings.filter((b) => !action.payload.includes(b.id));
+                state.myBookings = state.myBookings.filter((b) => !action.payload.includes(b.id));
+                state.adminBookings = state.adminBookings.filter((b) => !action.payload.includes(b.id));
             })
             // Weekly bookings
             .addCase(fetchWeeklyBookings.pending, (state) => {

@@ -15,6 +15,10 @@ leaderboardsRouter.get(
         const where: any = {};
         if (gameId) {
             // Filter by game - get users who have played in tournaments for this game
+            //Filter not Teachers and not Admins
+            where.role = {
+                notIn: ['teacher', 'admin'],
+            };
             where.tournamentEntries = {
                 some: {
                     tournament: {

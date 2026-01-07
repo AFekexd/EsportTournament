@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import {
     fetchAdminBookings,
     deleteBooking,
+    bulkDeleteBookings,
     type Booking,
 } from "../../store/slices/bookingsSlice";
 import {
@@ -34,6 +35,7 @@ export function AdminBookingList() {
 
     // Debounce search
     const [debouncedSearch, setDebouncedSearch] = useState("");
+    const [selectedBookingIds, setSelectedBookingIds] = useState<string[]>([]);
 
     useEffect(() => {
         const timer = setTimeout(() => setDebouncedSearch(searchTerm), 500);
@@ -60,10 +62,53 @@ export function AdminBookingList() {
         dispatch(fetchAdminBookings({ page, limit, search: debouncedSearch, includeExpired }));
     }, [dispatch, page, limit, debouncedSearch, includeExpired]);
 
+    // Reset selection on page change or filter change
+    useEffect(() => {
+        setSelectedBookingIds([]);
+    }, [page, limit, debouncedSearch, includeExpired]);
+
     const handlePageChange = (newPage: number) => {
         if (newPage >= 1 && newPage <= (pagination?.pages || 1)) {
             setPage(newPage);
         }
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedBookingIds.length === adminBookings.length) {
+            setSelectedBookingIds([]);
+        } else {
+            setSelectedBookingIds(adminBookings.map((b) => b.id));
+        }
+    };
+
+    const toggleSelectBooking = (id: string) => {
+        if (selectedBookingIds.includes(id)) {
+            setSelectedBookingIds(selectedBookingIds.filter((existingId) => existingId !== id));
+        } else {
+            setSelectedBookingIds([...selectedBookingIds, id]);
+        }
+    };
+
+    const handleBulkDelete = () => {
+        setConfirmModal({
+            isOpen: true,
+            title: "Tömeges törlés",
+            message: `Biztosan törölni szeretnéd a kijelölt ${selectedBookingIds.length} foglalást?`,
+            variant: "danger",
+            confirmLabel: "Törlés",
+            onConfirm: async () => {
+                try {
+                    await dispatch(bulkDeleteBookings(selectedBookingIds)).unwrap();
+                    toast.success(`${selectedBookingIds.length} foglalás törölve`);
+                    setSelectedBookingIds([]);
+                    // Refresh
+                    dispatch(fetchAdminBookings({ page, limit, search: debouncedSearch, includeExpired }));
+                } catch (error) {
+                    console.error("Failed to bulk delete:", error);
+                    toast.error("Nem sikerült törölni a foglalásokat");
+                }
+            },
+        });
     };
 
 
@@ -100,7 +145,7 @@ export function AdminBookingList() {
                 <div className="flex items-center gap-4 w-full md:w-auto">
                     {/* Search */}
                     <div className="relative w-full md:w-64">
-                        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                        <Search size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground w" />
                         <Input
                             placeholder="Keresés (Név, Gép)..."
                             value={searchTerm}
@@ -120,19 +165,20 @@ export function AdminBookingList() {
                         <span className="text-sm font-medium">Lejártak mutatása</span>
                     </label>
 
-                    {/* Limit selector */}
-                    <select
-                        value={limit}
-                        onChange={(e) => {
-                            setLimit(Number(e.target.value));
-                            setPage(1); // Reset to first page
-                        }}
-                        className="h-9 rounded-md border border-white/10 bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                    >
-                        <option value={10}>10 / oldal</option>
-                        <option value={20}>20 / oldal</option>
-                        <option value={50}>50 / oldal</option>
-                    </select>
+                    {/* Bulk Delete Button */}
+                    {selectedBookingIds.length > 0 && (
+                        <Button
+                            variant="destructive"
+                            size="sm"
+                            className="bg-red-500 hover:bg-red-600 text-white animate-in fade-in"
+                            onClick={handleBulkDelete}
+                        >
+                            <Trash2 size={14} className="mr-2" />
+                            Kijelöltek törlése ({selectedBookingIds.length})
+                        </Button>
+                    )}
+
+
                 </div>
             </div>
 
@@ -150,6 +196,14 @@ export function AdminBookingList() {
                             <table className="w-full text-left border-collapse">
                                 <thead>
                                     <tr className="border-b border-white/5 text-muted-foreground text-xs uppercase tracking-wider bg-white/5">
+                                        <th className="p-4 w-[40px]">
+                                            <input
+                                                type="checkbox"
+                                                checked={adminBookings.length > 0 && selectedBookingIds.length === adminBookings.length}
+                                                onChange={toggleSelectAll}
+                                                className="rounded border-gray-600 bg-transparent text-primary focus:ring-primary h-4 w-4"
+                                            />
+                                        </th>
                                         <th className="p-4 font-semibold">Időpont</th>
                                         <th className="p-4 font-semibold">Felhasználó</th>
                                         <th className="p-4 font-semibold">Gép</th>
@@ -165,7 +219,15 @@ export function AdminBookingList() {
                                         const isLive = startDate <= new Date() && endDate >= new Date();
 
                                         return (
-                                            <tr key={booking.id} className="group hover:bg-white/5 transition-colors">
+                                            <tr key={booking.id} className={`group hover:bg-white/5 transition-colors ${selectedBookingIds.includes(booking.id) ? "bg-primary/5" : ""}`}>
+                                                <td className="p-4">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedBookingIds.includes(booking.id)}
+                                                        onChange={() => toggleSelectBooking(booking.id)}
+                                                        className="rounded border-gray-600 bg-transparent text-primary focus:ring-primary h-4 w-4"
+                                                    />
+                                                </td>
                                                 <td className="p-4">
                                                     <div className="flex flex-col">
                                                         <span className="font-medium text-white flex items-center gap-2">
@@ -229,26 +291,42 @@ export function AdminBookingList() {
 
             {/* Pagination */}
             {pagination && pagination.pages > 1 && (
-                <div className="flex justify-center gap-2 mt-4">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={page <= 1}
-                        onClick={() => handlePageChange(page - 1)}
+                <div className="flex justify-evenly items-center sticky bottom-0 pb-3  backdrop-blur w-full z-50">
+                    <div className="flex justify-center gap-2 mt-4">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={page <= 1}
+                            onClick={() => handlePageChange(page - 1)}
+                        >
+                            Előző
+                        </Button>
+                        <span className="flex items-center px-4 text-sm text-muted-foreground">
+                            {page} / {pagination.pages}
+                        </span>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={page >= pagination.pages}
+                            onClick={() => handlePageChange(page + 1)}
+                        >
+                            Következő
+                        </Button>
+
+                    </div>
+                    {/* Limit selector */}
+                    <select
+                        value={limit}
+                        onChange={(e) => {
+                            setLimit(Number(e.target.value));
+                            setPage(1); // Reset to first page
+                        }}
+                        className="!w-[40%] mt-4"
                     >
-                        Előző
-                    </Button>
-                    <span className="flex items-center px-4 text-sm text-muted-foreground">
-                        {page} / {pagination.pages}
-                    </span>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={page >= pagination.pages}
-                        onClick={() => handlePageChange(page + 1)}
-                    >
-                        Következő
-                    </Button>
+                        <option value={10}>10 / oldal</option>
+                        <option value={20}>20 / oldal</option>
+                        <option value={50}>50 / oldal</option>
+                    </select>
                 </div>
             )}
 
