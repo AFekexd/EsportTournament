@@ -13,22 +13,14 @@ leaderboardsRouter.get(
         const { gameId, limit = '50', page = '1' } = req.query;
 
         const where: any = {};
-        if (gameId) {
-            // Filter by game - get users who have played in tournaments for this game
-            //Filter not Teachers and not Admins
-            /*
-            enum Role {
-  ADMIN
-  ORGANIZER
-  MODERATOR
-  TEACHER
-  STUDENT
-}
 
-            */
-            where.role = {
-                notIn: ['ADMIN', 'TEACHER'],
-            };
+        // Always exclude ADMIN and TEACHER roles
+        where.role = {
+            notIn: ['ADMIN', 'TEACHER'],
+        };
+
+        if (gameId) {
+            // Filter by game
             where.tournamentEntries = {
                 some: {
                     tournament: {
@@ -188,10 +180,13 @@ leaderboardsRouter.get(
         const { gameId } = req.query;
 
         const where: any = {};
+
+        // Always exclude ADMIN and TEACHER roles
+        where.role = {
+            notIn: ['ADMIN', 'TEACHER'],
+        };
+
         if (gameId) {
-            where.role = {
-                notIn: ['ADMIN', 'TEACHER'],
-            };
             where.tournamentEntries = {
                 some: {
                     tournament: {
