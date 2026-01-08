@@ -5,10 +5,10 @@ param(
 $ErrorActionPreference = "Stop"
 
 # 1. Determine Paths
-$BasePath = "d:\Fa\EsportTournament\Desktop"
+$BasePath = Split-Path -Parent $PSScriptRoot
 $VersionFile = Join-Path $BasePath "version.txt"
 $BuildDir = Join-Path $BasePath "bin\Release\net8.0-windows"
-$ZipPath = Join-Path $BasePath "update.zip"
+$ZipPath = Join-Path $BasePath "Installers\update.zip"
 
 # 2. Increment Version
 if (-not (Test-Path $VersionFile)) {

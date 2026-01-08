@@ -7,9 +7,9 @@ Write-Host "Monitoring $AppName..."
 Write-Host "Press Ctrl+C to stop."
 
 while ($true) {
-    if (Test-Path "$env:TEMP\EsportManager_Stop.signal") {
+    if (Test-Path "$env:ProgramData\EsportManager_Stop.signal") {
         Write-Host "Stop signal detected. Exiting watchdog."
-        Remove-Item "$env:TEMP\EsportManager_Stop.signal" -ErrorAction SilentlyContinue
+        Remove-Item "$env:ProgramData\EsportManager_Stop.signal" -ErrorAction SilentlyContinue
         break
     }
 
@@ -17,9 +17,9 @@ while ($true) {
 
     if (-not $process) {
         # Check again in case it was created just as app closed
-        if (Test-Path "$env:TEMP\EsportManager_Stop.signal") {
+        if (Test-Path "$env:ProgramData\EsportManager_Stop.signal") {
             Write-Host "Stop signal detected. Exiting watchdog."
-            Remove-Item "$env:TEMP\EsportManager_Stop.signal" -ErrorAction SilentlyContinue
+            Remove-Item "$env:ProgramData\EsportManager_Stop.signal" -ErrorAction SilentlyContinue
             break
         }
 

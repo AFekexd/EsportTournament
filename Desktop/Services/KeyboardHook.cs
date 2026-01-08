@@ -60,13 +60,10 @@ namespace EsportManager.Services
                     return (IntPtr)1; // Handled
                 }
 
-                // Block Windows Keys (Left & Right) - KIKAPCSOLVA: User kérésére engedélyezve
-                /*
                 if (key == Keys.LWin || key == Keys.RWin)
                 {
                     return (IntPtr)1;
                 }
-                */
                 
                 // Block Ctrl+Esc (Start Menu)
                 if ((Control.ModifierKeys & Keys.Control) != 0 && key == Keys.Escape)

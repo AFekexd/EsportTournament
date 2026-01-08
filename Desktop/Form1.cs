@@ -91,7 +91,6 @@ namespace EsportManager
 
             // HttpClient inicializálása - SSL ellenőrzés kikapcsolása fejlesztéshez
             var handler = new HttpClientHandler();
-            handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true;
             _httpClient = new HttpClient(handler);
             
             // UI létrehozása
@@ -318,7 +317,7 @@ namespace EsportManager
             }
             
             // Ha véletlenül bezáródna, tálcára küldjük inkább (kivéve ha épp zárolva van)
-            if (_isUnlocked)
+            if (_isUnlocked && !_allowClose)
             {
                 UnlockAndHide();
                 e.Cancel = true; // Megakadályozza a bezárást
@@ -1384,26 +1383,33 @@ namespace EsportManager
 
                 if (failsafeForm.ShowDialog() == DialogResult.OK)
                 {
-                    if (textBox.Text == FailSafePassword)
+                    // Compute Hash of input
+                    using (var sha256 = System.Security.Cryptography.SHA256.Create())
                     {
-                        // Kilépés
-                        try 
+                        var bytes = System.Text.Encoding.UTF8.GetBytes(textBox.Text);
+                        var hash = BitConverter.ToString(sha256.ComputeHash(bytes)).Replace("-", "").ToLower();
+                        
+                        if (hash == FailSafePassword.ToLower())
                         {
-                            File.Create(Path.Combine(Path.GetTempPath(), "EsportManager_Stop.signal")).Close();
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"[FAILSAFE] Could not create stop signal: {ex.Message}");
-                        }
+                            // Kilépés
+                            try 
+                            {
+                                File.Create(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "EsportManager_Stop.signal")).Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"[FAILSAFE] Could not create stop signal: {ex.Message}");
+                            }
 
-                        _allowClose = true;
-                        _timer.Stop();
-                        if (_notifyIcon != null) _notifyIcon.Visible = false;
-                        Application.Exit();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Hibás jelszó!", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            _allowClose = true;
+                            _timer.Stop();
+                            if (_notifyIcon != null) _notifyIcon.Visible = false;
+                            Application.Exit();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Hibás jelszó!", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
             }
@@ -1644,7 +1650,7 @@ namespace EsportManager
             try
             {
                 string scriptName = enable ? "install_fast_startup.ps1" : "remove_startup.ps1";
-                string scriptPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, scriptName);
+                string scriptPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", scriptName);
                 
                 if (!File.Exists(scriptPath))
                 {
