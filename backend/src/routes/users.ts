@@ -20,7 +20,11 @@ usersRouter.get(
             throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
-        const { search, limit = '20' } = req.query;
+        const { search, page = '1', limit = '20' } = req.query;
+        const pageNum = Math.max(1, parseInt(page as string));
+        const limitNum = Math.min(Math.max(1, parseInt(limit as string)), 100);
+        const skip = (pageNum - 1) * limitNum;
+
         const where: any = {};
 
         if (search) {
@@ -30,24 +34,37 @@ usersRouter.get(
             ];
         }
 
-        const users = await prisma.user.findMany({
-            where,
-            orderBy: { createdAt: 'desc' },
-            take: Math.min(parseInt(limit as string), 100),
-            select: {
-                id: true,
-                username: true,
-                displayName: true,
-                avatarUrl: true,
-                role: true,
-                elo: true,
-                email: true,
-                createdAt: true,
-                timeBalanceSeconds: true
+        const [users, total] = await prisma.$transaction([
+            prisma.user.findMany({
+                where,
+                orderBy: { createdAt: 'desc' },
+                take: limitNum,
+                skip,
+                select: {
+                    id: true,
+                    username: true,
+                    displayName: true,
+                    avatarUrl: true,
+                    role: true,
+                    elo: true,
+                    email: true,
+                    createdAt: true,
+                    timeBalanceSeconds: true
+                }
+            }),
+            prisma.user.count({ where })
+        ]);
+
+        res.json({
+            success: true,
+            data: users,
+            meta: {
+                total,
+                page: pageNum,
+                limit: limitNum,
+                totalPages: Math.ceil(total / limitNum)
             }
         });
-
-        res.json({ success: true, data: users });
     })
 );
 
