@@ -151,30 +151,54 @@ kioskRouter.post('/session/start', async (req, res) => {
         // Calculate remaining time based on booking end
         // bookingRemainingSeconds = (activeBooking.endTime - now)
         // returned remainingTime = min(userTimeBalance, bookingRemainingSeconds)
-        
+
         let remainingTime = -1;
-        
+
         if (!['ADMIN', 'TEACHER'].includes(user.role)) {
-            // Re-fetch booking to be safe or use what we found
-            // We found 'activeBooking' earlier if not admin/teacher
-             const now = new Date();
-             const activeBooking = await prisma.booking.findFirst({
+            // Find active booking chain
+            const now = new Date();
+
+            // Get all future bookings for this user on this machine
+            const futureBookings = await prisma.booking.findMany({
                 where: {
                     userId: user.id,
                     computerId: machine.id,
-                    startTime: { lte: now },
-                    endTime: { gte: now }
-                }
+                    endTime: { gt: now }
+                },
+                orderBy: { startTime: 'asc' }
             });
 
-            if (activeBooking) {
-                 const bookingRemainingSeconds = Math.floor((activeBooking.endTime.getTime() - now.getTime()) / 1000);
-                 remainingTime = Math.min(user.timeBalanceSeconds, bookingRemainingSeconds);
-                 
-                 // Log info
-                 console.log(`[SESSION] User balance: ${user.timeBalanceSeconds}s, Booking remaining: ${bookingRemainingSeconds}s -> Final: ${remainingTime}s`);
+            // Find the active one (starts before now)
+            let currentBookingIndex = futureBookings.findIndex(b => b.startTime <= now && b.endTime >= now);
+
+            if (currentBookingIndex !== -1) {
+                // We have an active booking. Now check for consecutive bookings.
+                let chainEndTime = futureBookings[currentBookingIndex].endTime;
+
+                // Look ahead
+                for (let i = currentBookingIndex + 1; i < futureBookings.length; i++) {
+                    const nextBooking = futureBookings[i];
+                    // If next booking starts within 1 minute of current chain end, consider it consecutive
+                    // (Allowing small gap for system buffers)
+                    if (nextBooking.startTime.getTime() <= chainEndTime.getTime() + 60000) {
+                        chainEndTime = nextBooking.endTime;
+                    } else {
+                        break; // Chain broken
+                    }
+                }
+
+                const bookingRemainingSeconds = Math.floor((chainEndTime.getTime() - now.getTime()) / 1000);
+
+                // Use the booked time directly! User balance is NOT a hard limit for the session duration here.
+                // The desktop app uses this to show a countdown.
+                remainingTime = bookingRemainingSeconds;
+
+                console.log(`[SESSION] User balance: ${user.timeBalanceSeconds}s, Booking chain end: ${chainEndTime.toISOString()} -> Remaining: ${remainingTime}s`);
             } else {
-                // Should not happen as we checked earlier, but fallback
+                // No active booking. Fallback to balance
+                // Or deny? Original logic allowed fallback to balance if no booking found? 
+                // Ah, above we returned 403 if no active booking found in strict mode.
+                // But let's keep the balance fallback for safety if the first check passed but somehow this failed (unlikely).
                 remainingTime = user.timeBalanceSeconds;
             }
         }
@@ -308,41 +332,72 @@ kioskRouter.get('/status/:machineId', async (req, res) => {
                 // Time up!
                 res.json({ Locked: true, Message: "Time expired" });
             } else {
-                 // CLAMP to booking end time also in heartbeat!
-                 // If booking ends in 5 mins, but balance is 1 hour, we must return 5 mins.
-                 if (!isUnlimited) {
-                     const bookingRemaining = Math.floor((activeSession.endTime ? activeSession.endTime.getTime() : 0) - now.getTime()) / 1000; 
-                     // Wait, activeSession.endTime is null usually. We need the BOOKING info.
-                     // We need to look up the booking again because session doesn't link strictly to a booking ID in the schema (it links to user/computer).
-                     
-                     // Find the booking that covers NOW
-                     const currentBooking = await prisma.booking.findFirst({
+                // CLAMP to booking end time (CHAINED)
+                // If booking ends in 5 mins, but balance is 1 hour, we must return 5 mins.
+                if (!isUnlimited) {
+                    // Find active booking chain
+                    const futureBookings = await prisma.booking.findMany({
                         where: {
                             userId: activeSession.userId,
                             computerId: machine.id,
-                            startTime: { lte: now },
-                            endTime: { gte: now }
+                            endTime: { gt: now }
+                        },
+                        orderBy: { startTime: 'asc' }
+                    });
+
+                    // Find the active one
+                    // Note: activeSession doesn't have a bookingId, so we match by time
+                    let currentBookingIndex = futureBookings.findIndex(b => b.startTime <= now && b.endTime >= now);
+
+                    if (currentBookingIndex !== -1) {
+                        let chainEndTime = futureBookings[currentBookingIndex].endTime;
+
+                        // Look ahead for consecutive bookings
+                        for (let i = currentBookingIndex + 1; i < futureBookings.length; i++) {
+                            const nextBooking = futureBookings[i];
+                            if (nextBooking.startTime.getTime() <= chainEndTime.getTime() + 60000) {
+                                chainEndTime = nextBooking.endTime;
+                            } else {
+                                break;
+                            }
                         }
-                     });
 
-                     if (currentBooking) {
-                         const bookingTimeLeft = Math.floor((currentBooking.endTime.getTime() - now.getTime()) / 1000);
-                         const finalRemaining = Math.min(remaining, bookingTimeLeft);
-                         
-                         if (finalRemaining <= 0) {
-                              res.json({ Locked: true, Message: "Booking time expired" });
-                              return;
-                         }
+                        const bookingTimeLeft = Math.floor((chainEndTime.getTime() - now.getTime()) / 1000);
 
-                         res.json({ Locked: false, RemainingSeconds: finalRemaining });
-                         return;
-                     } else {
-                         // No active booking covers NOW? Then session should be invalid/closed?
-                         // If we are strict: yes.
-                         res.json({ Locked: true, Message: "Booking ended" });
-                         return;
-                     }
-                 }
+                        // Determine final remaining time.
+                        // Logic change: If there is a booking, we strictly follow the booking time.
+                        // Only if balance runs out DO WE CARE? User aid "User max time ELYETT a lefoglalt időt".
+                        // This implies we prioritize booking time.
+
+                        // However, if the user has NO balance left at all (0 or neg), we probably shouldn't let them play?
+                        // But maybe they paid for the booking separately? 
+                        // For now, let's use the booking time as the primary source for the countdown.
+
+                        const finalRemaining = bookingTimeLeft;
+
+                        if (finalRemaining <= 0) {
+                            res.json({ Locked: true, Message: "Booking time expired" });
+                            return;
+                        }
+
+                        res.json({ Locked: false, RemainingSeconds: finalRemaining });
+                        return;
+                    } else {
+                        // No active booking covers NOW? 
+                        // If we require bookings, then lock.
+                        // If we allow ad-hoc usage (if implemented), check balance.
+
+                        // Based on the Context: "Check if user has time & booking" was in StartSession. 
+                        // If we are here, a session is active.
+
+                        // If we rely on the session being valid:
+                        // Original logic: res.json({ Locked: false, RemainingSeconds: remaining });
+
+                        // But if we want to enforce booking times:
+                        res.json({ Locked: true, Message: "No active booking found" });
+                        return;
+                    }
+                }
 
                 res.json({ Locked: false, RemainingSeconds: remaining });
             }
