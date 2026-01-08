@@ -316,6 +316,18 @@ namespace EsportManager
             {
                 _keyboardHook.Unhook();
             }
+            
+            // Ha véletlenül bezáródna, tálcára küldjük inkább (kivéve ha épp zárolva van)
+            if (_isUnlocked)
+            {
+                UnlockAndHide();
+                e.Cancel = true; // Megakadályozza a bezárást
+            }
+            
+            // Cleanup: Enable Task Manager on exit
+            SetTaskMgrEnabled(true);
+            
+            base.OnFormClosing(e);
         }
 
         private void CreateUI()
@@ -569,6 +581,9 @@ namespace EsportManager
                 _notificationOverlay.Hide(); 
                 _notificationHideTimer.Stop(); 
             };
+
+            // Disable Task Manager on startup
+            SetTaskMgrEnabled(false);
         }
 
         private async void LogoutItem_Click(object? sender, EventArgs e)
@@ -661,6 +676,18 @@ namespace EsportManager
             if (_lockedPanel != null) _lockedPanel.Visible = true;
             _loginPanel.Visible = false;
             _isUnlocked = false;
+
+            // Reset state
+            _statusLabel.Text = "";
+            _usernameTextBox.Text = "";
+            _passwordTextBox.Text = "";
+            _loginButton.Enabled = true;
+
+            // Start clock
+            _clockTimer.Start();
+            
+            // Disable Task Manager (Lockdown)
+            SetTaskMgrEnabled(false);
         }
 
         private void ShowLoginScreen()
@@ -741,6 +768,9 @@ namespace EsportManager
                         
                         // Alkalmazás elrejtése
                         UnlockAndHide();
+                        
+                        // Enable Task Manager for user
+                        SetTaskMgrEnabled(true);
                     }
                     else
                     {
@@ -1080,6 +1110,9 @@ namespace EsportManager
             }
             _sessionTimer.Start();
             UpdateTrayIconText();
+
+            // Enable Task Manager for user
+            SetTaskMgrEnabled(true);
         }
 
         private async void SessionTimer_Tick(object? sender, EventArgs e)
@@ -1387,19 +1420,6 @@ namespace EsportManager
             }
         }
 
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            // Bezárás megakadályozása, kivéve ha _allowClose = true
-            if (!_allowClose)
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                base.OnFormClosing(e);
-            }
-        }
-
         // Model osztályok
         private class ServerStatus
         {
@@ -1650,6 +1670,31 @@ namespace EsportManager
             catch (Exception ex)
             {
                 MessageBox.Show($"Hiba a beállítás mentésekor: {ex.Message}", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void SetTaskMgrEnabled(bool enabled)
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Policies\System"))
+                {
+                    if (key != null)
+                    {
+                        if (enabled)
+                        {
+                            key.DeleteValue("DisableTaskMgr", false);
+                        }
+                        else
+                        {
+                            key.SetValue("DisableTaskMgr", 1, RegistryValueKind.DWord);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[REGISTRY] Failed to set TaskMgr status (enabled={enabled}): {ex.Message}");
             }
         }
     }
