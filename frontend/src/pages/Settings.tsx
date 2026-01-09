@@ -279,7 +279,14 @@ export function SettingsPage() {
               </div>
 
               <div className="mt-2 text-xs text-center text-gray-600">
-                Ezek az adatok biztonsági okokból nem módosíthatók.
+
+                Ezek az adatok biztonsági okokból nem módosíthatók ezen az oldalon.
+                <br />
+                Ha szeretnéd módosítani, menj fel az alábbi oldalra:
+                {" "}
+                <a href="https://keycloak.pollak.info/realms/master/account/?referrer=security-admin-console" className="text-primary hover:underline font-bold ">
+                  Profil
+                </a>
               </div>
             </div>
           </div>

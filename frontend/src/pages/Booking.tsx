@@ -274,8 +274,12 @@ export function BookingPage() {
         <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-white via-primary-100 to-gray-400 bg-clip-text text-transparent mb-2 md:mb-4">
           Gépfoglalás
         </h1>
-        <p className="text-sm md:text-lg text-gray-400 max-w-2xl mx-auto mb-4 md:mb-6">
+        <p className="text-sm md:text-lg text-gray-400 max-w-2xl mx-auto mb-4 md:mb-2">
           Foglalj helyet a gaming szobában és élvezd a legjobb játékélményt!
+        </p>
+
+        <p className="text-xs md:text-sm !text-gray-400 max-w-2xl mx-auto mb-2 md:mb-2 italic">
+          Note: Bejelentkezni csak Felhasználónév és Jelszó segítségével lehetséges!
         </p>
 
         {user && (
