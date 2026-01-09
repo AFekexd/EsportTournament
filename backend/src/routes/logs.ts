@@ -37,11 +37,13 @@ logsRouter.get(
         }
 
         if (search) {
-             where.OR = [
-                 { message: { contains: search, mode: 'insensitive' } },
-                 { user: { username: { contains: search, mode: 'insensitive' } } },
-                 { user: { displayName: { contains: search, mode: 'insensitive' } } }
-             ];
+            where.OR = [
+                { message: { contains: search, mode: 'insensitive' } },
+                { user: { username: { contains: search, mode: 'insensitive' } } },
+                { user: { displayName: { contains: search, mode: 'insensitive' } } },
+                { admin: { username: { contains: search, mode: 'insensitive' } } },
+                { admin: { displayName: { contains: search, mode: 'insensitive' } } }
+            ];
         }
 
         const [logs, total] = await Promise.all([

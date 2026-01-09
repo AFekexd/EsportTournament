@@ -27,6 +27,9 @@ import { TournamentSchedulerService } from './services/TournamentSchedulerServic
 import { setIo } from './services/socket.js';
 
 // Kiosk Routes
+import { steamRouter } from './routes/steam.js';
+
+// Kiosk Routes
 import { kioskRouter } from './routes/kiosk.js';
 import { adminKioskRouter } from './routes/admin-kiosk.js';
 import { clientUpdateRouter } from './routes/clientUpdate.js';
@@ -97,6 +100,7 @@ app.use('/api/leaderboards', leaderboardsRouter);
 app.use('/api/discord', discordRouter);
 app.use('/api/bookings', bookingsRouter);
 app.use('/api/logs', logsRouter);
+app.use('/api/steam', steamRouter);
 app.use('/share', shareRouter);
 
 // Kiosk & Admin Kiosk Routes

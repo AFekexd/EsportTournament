@@ -8,6 +8,7 @@ import {
   Gamepad2,
   Trash2,
 } from "lucide-react";
+import DOMPurify from "dompurify";
 import { ConfirmationModal } from "../components/common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import {
@@ -37,7 +38,7 @@ export function GameDetailPage() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => {},
+    onConfirm: () => { },
     variant: "primary",
   });
 
@@ -156,7 +157,12 @@ export function GameDetailPage() {
         <div className="game-section card">
           <h2 className="section-title">Szabályok</h2>
           <div className="rules-content">
-            <p>{currentGame.rules}</p>
+            <div
+              className="rules-content"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(currentGame.rules),
+              }}
+            />
           </div>
         </div>
       )}
@@ -200,10 +206,10 @@ export function GameDetailPage() {
                   {tournament.status === "REGISTRATION"
                     ? "Regisztráció"
                     : tournament.status === "IN_PROGRESS"
-                    ? "Folyamatban"
-                    : tournament.status === "COMPLETED"
-                    ? "Befejezett"
-                    : tournament.status}
+                      ? "Folyamatban"
+                      : tournament.status === "COMPLETED"
+                        ? "Befejezett"
+                        : tournament.status}
                 </span>
               </Link>
             ))}

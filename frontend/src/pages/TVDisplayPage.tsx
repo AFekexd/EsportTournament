@@ -9,7 +9,7 @@ import { API_URL } from "../config";
 /*                                    TYPES                                   */
 /* -------------------------------------------------------------------------- */
 
-type SlideType = "TOURNAMENTS" | "LEADERBOARDS" | "TEAMS" | "PROMO";
+type SlideType = "TOURNAMENTS" | "LEADERBOARDS" | "TEAMS" | "STEAM" | "PROMO";
 
 interface LeaderboardPlayer {
   id: string;
@@ -405,6 +405,113 @@ function TeamsSlide() {
   );
 }
 
+function SteamSlide() {
+  const [topPlayers, setTopPlayers] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch(`${API_URL}/leaderboards/steam/top?limit=3`)
+      .then((res) => res.json())
+      .then((data) => setTopPlayers(data.data || []))
+      .catch(console.error);
+  }, []);
+
+  const getRankStyle = (rank: number) => {
+    if (rank === 1)
+      return {
+        bg: "bg-gradient-to-r from-blue-500/20 to-cyan-500/5",
+        border: "border-cyan-500/50",
+        text: "text-cyan-400",
+        shadow: "shadow-[0_0_30px_rgba(34,211,238,0.2)]",
+      };
+    if (rank === 2)
+      return {
+        bg: "bg-gradient-to-r from-teal-400/20 to-teal-500/5",
+        border: "border-teal-400/50",
+        text: "text-teal-300",
+        shadow: "shadow-[0_0_30px_rgba(45,212,191,0.2)]",
+      };
+    if (rank === 3)
+      return {
+        bg: "bg-gradient-to-r from-indigo-500/20 to-indigo-600/5",
+        border: "border-indigo-500/50",
+        text: "text-indigo-400",
+        shadow: "shadow-[0_0_30px_rgba(99,102,241,0.2)]",
+      };
+    return {
+      bg: "bg-[#1a1b26]/80",
+      border: "border-white/5",
+      text: "text-white",
+      shadow: "shadow-xl",
+    };
+  };
+
+  return (
+    <div className="flex h-full flex-col px-12 pt-12 pb-32 animate-in slide-in-from-bottom duration-700">
+      <div className="mb-12 flex items-center gap-6">
+        <Trophy className="h-16 w-16 text-cyan-400" />
+        <h2 className="text-6xl font-black uppercase tracking-tight text-white">
+          Platinum Mesterek
+        </h2>
+      </div>
+      <p className="text-2xl text-gray-400 mb-8 -mt-6 ml-24">
+        100%-ra teljesített játékok száma (Steam)
+      </p>
+
+      <div className="flex flex-col gap-6 flex-1 justify-center">
+        {topPlayers.slice(0, 3).map((player) => {
+          const style = getRankStyle(player.rank);
+
+          return (
+            <div
+              key={player.id}
+              className={`flex items-center gap-8 rounded-3xl p-8 backdrop-blur-md border transition-all duration-500 ${style.bg} ${style.border} ${style.shadow}`}
+            >
+              <div
+                className={`flex h-24 w-24 items-center justify-center rounded-full text-5xl font-black ${style.text} bg-black/40 border border-white/10`}
+              >
+                #{player.rank}
+              </div>
+
+              <div className="h-28 w-28 rounded-full bg-gray-700 overflow-hidden border-4 border-white/10 shadow-2xl">
+                {player.avatarUrl ? (
+                  <img
+                    src={player.avatarUrl}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-4xl font-bold text-white bg-gradient-to-br from-cyan-600 to-blue-800">
+                    {(player.displayName || player.username)
+                      .charAt(0)
+                      .toUpperCase()}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex-1">
+                <h3 className={`text-5xl font-black mb-3 ${style.text}`}>
+                  {player.displayName || player.username}
+                </h3>
+
+              </div>
+
+              <div className="text-right px-8 flex items-center gap-4">
+                <div className="text-lg font-bold uppercase tracking-[0.2em] text-cyan-500 mr-4">
+                  PLATINUM
+                </div>
+                <div className="text-7xl font-black text-white drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]">
+                  {player.perfectGamesCount}
+                </div>
+                <Trophy size={48} className="text-cyan-400" />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function PromoSlide() {
   return (
     <div className="flex h-full flex-col items-center justify-center px-12 pt-12 pb-32 text-center animate-in fade-in duration-1000">
@@ -458,7 +565,7 @@ export function TVDisplayPage() {
   const { tournaments } = useAppSelector((state) => state.tournaments);
 
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const slides: SlideType[] = ["TOURNAMENTS", "LEADERBOARDS", "TEAMS", "PROMO"];
+  const slides: SlideType[] = ["TOURNAMENTS", "LEADERBOARDS", "TEAMS", "STEAM", "PROMO"];
 
   // Data fetching
   useEffect(() => {
@@ -492,6 +599,8 @@ export function TVDisplayPage() {
         return <LeaderboardsSlide />;
       case "TEAMS":
         return <TeamsSlide />;
+      case "STEAM":
+        return <SteamSlide />;
       case "PROMO":
         return <PromoSlide />;
       default:

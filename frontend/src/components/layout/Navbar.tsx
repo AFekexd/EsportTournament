@@ -73,7 +73,7 @@ export function Navbar() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => {},
+    onConfirm: () => { },
     variant: "primary",
   });
 
@@ -138,9 +138,8 @@ export function Navbar() {
       <div className="relative flex h-16 items-center justify-between border-b border-white/5 bg-background/60 px-6 backdrop-blur-xl supports-[backdrop-filter]:bg-background/20">
         <div className="flex items-center gap-4">
           <button
-            className={`ml-auto flex md:invisible  h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-white/10 hover:text-white ${
-              !isOpen && "mx-auto"
-            }`}
+            className={`ml-auto flex md:invisible  h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-white/10 hover:text-white ${!isOpen && "mx-auto"
+              }`}
             onClick={() => dispatch(toggleSidebar())}
             aria-label={isOpen ? "Collapse sidebar" : "Expand sidebar"}
           >
@@ -196,9 +195,8 @@ export function Navbar() {
                           {notifications.slice(0, 5).map((notification) => (
                             <div
                               key={notification.id}
-                              className={`relative group transition-colors hover:bg-white/5 ${
-                                !notification.read ? "bg-primary/5" : ""
-                              }`}
+                              className={`relative group transition-colors hover:bg-white/5 ${!notification.read ? "bg-primary/5" : ""
+                                }`}
                             >
                               <Link
                                 to={notification.link || "/notifications"}
@@ -212,19 +210,17 @@ export function Navbar() {
                               >
                                 <div className="flex gap-3">
                                   <div
-                                    className={`mt-1 h-2 w-2 flex-shrink-0 rounded-full ${
-                                      !notification.read
-                                        ? "bg-primary"
-                                        : "bg-gray-600"
-                                    }`}
+                                    className={`mt-1 h-2 w-2 flex-shrink-0 rounded-full ${!notification.read
+                                      ? "bg-primary"
+                                      : "bg-gray-600"
+                                      }`}
                                   />
                                   <div className="flex-1 min-w-0">
                                     <p
-                                      className={`text-sm ${
-                                        !notification.read
-                                          ? "text-white font-medium"
-                                          : "text-gray-400"
-                                      } pr-6 break-words`}
+                                      className={`text-sm ${!notification.read
+                                        ? "text-white font-medium"
+                                        : "text-gray-400"
+                                        } pr-6 break-words`}
                                     >
                                       {notification.message}
                                     </p>
@@ -290,7 +286,7 @@ export function Navbar() {
                       </span>
                     )}
                   </div>
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-primary to-accent p-[2px] shadow-lg shadow-primary/20">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-tr from-primary to-accent p-[2px] shadow-lg shadow-primary/20">
                     <div className="h-full w-full overflow-hidden rounded-full bg-background">
                       {user.avatarUrl ? (
                         <img

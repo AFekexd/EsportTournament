@@ -161,8 +161,11 @@ export function TeamsPage() {
         <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-primary-100 to-gray-400 bg-clip-text text-transparent mb-4">
           Csapatok
         </h1>
-        <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-6">
+        <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-1">
           Böngészd a csapatokat vagy hozz létre sajátot és versenyezz együtt!
+        </p>
+        <p className="text-sm text-gray-400 max-w-2xl mx-auto mb-6">
+          <span className="font-bold">Note:</span> Egynél több csapatot is létrehozhatsz és szerepelhetsz is bennük, de <span className="font-bold">egy versenyben csak egy csapatban versenyezhetsz.</span>
         </p>
 
         {isAuthenticated && (

@@ -14,6 +14,8 @@ export interface User {
     ownedTeams?: Team[];
     emailNotifications?: boolean;
     ranks?: UserRank[];
+    steamId?: string;
+    perfectGamesCount?: number;
 }
 
 export interface Team {

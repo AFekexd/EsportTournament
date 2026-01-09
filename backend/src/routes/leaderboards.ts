@@ -238,3 +238,34 @@ leaderboardsRouter.get(
         res.json({ success: true, data: rankedPlayers });
     })
 );
+
+// Get top steam players
+leaderboardsRouter.get(
+    '/steam/top',
+    optionalAuth,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const { limit = '10' } = req.query;
+
+        const players = await prisma.user.findMany({
+            where: {
+                perfectGamesCount: { gt: 0 },
+            },
+            select: {
+                id: true,
+                username: true,
+                displayName: true,
+                avatarUrl: true,
+                steamId: true,
+                perfectGamesCount: true,
+            },
+            orderBy: {
+                perfectGamesCount: 'desc'
+            },
+            take: parseInt(limit as string)
+        });
+
+        const ranked = players.map((p, i) => ({ ...p, rank: i + 1 }));
+
+        res.json({ success: true, data: ranked });
+    })
+);

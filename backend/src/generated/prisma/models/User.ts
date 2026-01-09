@@ -29,11 +29,13 @@ export type AggregateUser = {
 export type UserAvgAggregateOutputType = {
   elo: number | null
   timeBalanceSeconds: number | null
+  perfectGamesCount: number | null
 }
 
 export type UserSumAggregateOutputType = {
   elo: number | null
   timeBalanceSeconds: number | null
+  perfectGamesCount: number | null
 }
 
 export type UserMinAggregateOutputType = {
@@ -47,6 +49,8 @@ export type UserMinAggregateOutputType = {
   elo: number | null
   timeBalanceSeconds: number | null
   emailNotifications: boolean | null
+  steamId: string | null
+  perfectGamesCount: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -62,6 +66,8 @@ export type UserMaxAggregateOutputType = {
   elo: number | null
   timeBalanceSeconds: number | null
   emailNotifications: boolean | null
+  steamId: string | null
+  perfectGamesCount: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -77,6 +83,8 @@ export type UserCountAggregateOutputType = {
   elo: number
   timeBalanceSeconds: number
   emailNotifications: number
+  steamId: number
+  perfectGamesCount: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -86,11 +94,13 @@ export type UserCountAggregateOutputType = {
 export type UserAvgAggregateInputType = {
   elo?: true
   timeBalanceSeconds?: true
+  perfectGamesCount?: true
 }
 
 export type UserSumAggregateInputType = {
   elo?: true
   timeBalanceSeconds?: true
+  perfectGamesCount?: true
 }
 
 export type UserMinAggregateInputType = {
@@ -104,6 +114,8 @@ export type UserMinAggregateInputType = {
   elo?: true
   timeBalanceSeconds?: true
   emailNotifications?: true
+  steamId?: true
+  perfectGamesCount?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -119,6 +131,8 @@ export type UserMaxAggregateInputType = {
   elo?: true
   timeBalanceSeconds?: true
   emailNotifications?: true
+  steamId?: true
+  perfectGamesCount?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -134,6 +148,8 @@ export type UserCountAggregateInputType = {
   elo?: true
   timeBalanceSeconds?: true
   emailNotifications?: true
+  steamId?: true
+  perfectGamesCount?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -236,6 +252,8 @@ export type UserGroupByOutputType = {
   elo: number
   timeBalanceSeconds: number
   emailNotifications: boolean
+  steamId: string | null
+  perfectGamesCount: number
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -274,6 +292,8 @@ export type UserWhereInput = {
   elo?: Prisma.IntFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntFilter<"User"> | number
   emailNotifications?: Prisma.BoolFilter<"User"> | boolean
+  steamId?: Prisma.StringNullableFilter<"User"> | string | null
+  perfectGamesCount?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   teamMemberships?: Prisma.TeamMemberListRelationFilter
@@ -305,6 +325,8 @@ export type UserOrderByWithRelationInput = {
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
   emailNotifications?: Prisma.SortOrder
+  steamId?: Prisma.SortOrderInput | Prisma.SortOrder
+  perfectGamesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   teamMemberships?: Prisma.TeamMemberOrderByRelationAggregateInput
@@ -330,6 +352,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   keycloakId?: string
   email?: string
   username?: string
+  steamId?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
@@ -339,6 +362,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   elo?: Prisma.IntFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntFilter<"User"> | number
   emailNotifications?: Prisma.BoolFilter<"User"> | boolean
+  perfectGamesCount?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   teamMemberships?: Prisma.TeamMemberListRelationFilter
@@ -357,7 +381,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   logs?: Prisma.LogListRelationFilter
   adminLogs?: Prisma.LogListRelationFilter
   ranks?: Prisma.UserRankListRelationFilter
-}, "id" | "keycloakId" | "email" | "username">
+}, "id" | "keycloakId" | "email" | "username" | "steamId">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -370,6 +394,8 @@ export type UserOrderByWithAggregationInput = {
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
   emailNotifications?: Prisma.SortOrder
+  steamId?: Prisma.SortOrderInput | Prisma.SortOrder
+  perfectGamesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -393,6 +419,8 @@ export type UserScalarWhereWithAggregatesInput = {
   elo?: Prisma.IntWithAggregatesFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntWithAggregatesFilter<"User"> | number
   emailNotifications?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  steamId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  perfectGamesCount?: Prisma.IntWithAggregatesFilter<"User"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -408,6 +436,8 @@ export type UserCreateInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -439,6 +469,8 @@ export type UserUncheckedCreateInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -470,6 +502,8 @@ export type UserUpdateInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -501,6 +535,8 @@ export type UserUncheckedUpdateInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -532,6 +568,8 @@ export type UserCreateManyInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -547,6 +585,8 @@ export type UserUpdateManyMutationInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -562,6 +602,8 @@ export type UserUncheckedUpdateManyInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -577,6 +619,8 @@ export type UserCountOrderByAggregateInput = {
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
   emailNotifications?: Prisma.SortOrder
+  steamId?: Prisma.SortOrder
+  perfectGamesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -584,6 +628,7 @@ export type UserCountOrderByAggregateInput = {
 export type UserAvgOrderByAggregateInput = {
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
+  perfectGamesCount?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -597,6 +642,8 @@ export type UserMaxOrderByAggregateInput = {
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
   emailNotifications?: Prisma.SortOrder
+  steamId?: Prisma.SortOrder
+  perfectGamesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -612,6 +659,8 @@ export type UserMinOrderByAggregateInput = {
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
   emailNotifications?: Prisma.SortOrder
+  steamId?: Prisma.SortOrder
+  perfectGamesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -619,6 +668,7 @@ export type UserMinOrderByAggregateInput = {
 export type UserSumOrderByAggregateInput = {
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
+  perfectGamesCount?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -940,6 +990,8 @@ export type UserCreateWithoutOwnedTeamsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -970,6 +1022,8 @@ export type UserUncheckedCreateWithoutOwnedTeamsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1016,6 +1070,8 @@ export type UserUpdateWithoutOwnedTeamsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -1046,6 +1102,8 @@ export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1076,6 +1134,8 @@ export type UserCreateWithoutTeamMembershipsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
@@ -1106,6 +1166,8 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
@@ -1152,6 +1214,8 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
@@ -1182,6 +1246,8 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1212,6 +1278,8 @@ export type UserCreateWithoutTournamentEntriesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -1242,6 +1310,8 @@ export type UserUncheckedCreateWithoutTournamentEntriesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1277,6 +1347,8 @@ export type UserCreateWithoutParticipatingEntriesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -1307,6 +1379,8 @@ export type UserUncheckedCreateWithoutParticipatingEntriesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1353,6 +1427,8 @@ export type UserUpdateWithoutTournamentEntriesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -1383,6 +1459,8 @@ export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1432,6 +1510,8 @@ export type UserScalarWhereInput = {
   elo?: Prisma.IntFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntFilter<"User"> | number
   emailNotifications?: Prisma.BoolFilter<"User"> | boolean
+  steamId?: Prisma.StringNullableFilter<"User"> | string | null
+  perfectGamesCount?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
 }
@@ -1447,6 +1527,8 @@ export type UserCreateWithoutHomeMatchesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -1477,6 +1559,8 @@ export type UserUncheckedCreateWithoutHomeMatchesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1512,6 +1596,8 @@ export type UserCreateWithoutAwayMatchesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -1542,6 +1628,8 @@ export type UserUncheckedCreateWithoutAwayMatchesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1577,6 +1665,8 @@ export type UserCreateWithoutWonMatchesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -1607,6 +1697,8 @@ export type UserUncheckedCreateWithoutWonMatchesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1653,6 +1745,8 @@ export type UserUpdateWithoutHomeMatchesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -1683,6 +1777,8 @@ export type UserUncheckedUpdateWithoutHomeMatchesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1724,6 +1820,8 @@ export type UserUpdateWithoutAwayMatchesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -1754,6 +1852,8 @@ export type UserUncheckedUpdateWithoutAwayMatchesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1795,6 +1895,8 @@ export type UserUpdateWithoutWonMatchesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -1825,6 +1927,8 @@ export type UserUncheckedUpdateWithoutWonMatchesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1855,6 +1959,8 @@ export type UserCreateWithoutGameStatsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -1885,6 +1991,8 @@ export type UserUncheckedCreateWithoutGameStatsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1931,6 +2039,8 @@ export type UserUpdateWithoutGameStatsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -1961,6 +2071,8 @@ export type UserUncheckedUpdateWithoutGameStatsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1991,6 +2103,8 @@ export type UserCreateWithoutRanksInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -2021,6 +2135,8 @@ export type UserUncheckedCreateWithoutRanksInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2067,6 +2183,8 @@ export type UserUpdateWithoutRanksInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -2097,6 +2215,8 @@ export type UserUncheckedUpdateWithoutRanksInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2127,6 +2247,8 @@ export type UserCreateWithoutNotificationsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -2157,6 +2279,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2203,6 +2327,8 @@ export type UserUpdateWithoutNotificationsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -2233,6 +2359,8 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2263,6 +2391,8 @@ export type UserCreateWithoutDiscordSettingsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -2293,6 +2423,8 @@ export type UserUncheckedCreateWithoutDiscordSettingsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2339,6 +2471,8 @@ export type UserUpdateWithoutDiscordSettingsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -2369,6 +2503,8 @@ export type UserUncheckedUpdateWithoutDiscordSettingsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2399,6 +2535,8 @@ export type UserCreateWithoutBookingsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -2429,6 +2567,8 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2475,6 +2615,8 @@ export type UserUpdateWithoutBookingsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -2505,6 +2647,8 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2535,6 +2679,8 @@ export type UserCreateWithoutSessionsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -2565,6 +2711,8 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2611,6 +2759,8 @@ export type UserUpdateWithoutSessionsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -2641,6 +2791,8 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2671,6 +2823,8 @@ export type UserCreateWithoutLogsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -2701,6 +2855,8 @@ export type UserUncheckedCreateWithoutLogsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2736,6 +2892,8 @@ export type UserCreateWithoutAdminLogsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -2766,6 +2924,8 @@ export type UserUncheckedCreateWithoutAdminLogsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2812,6 +2972,8 @@ export type UserUpdateWithoutLogsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -2842,6 +3004,8 @@ export type UserUncheckedUpdateWithoutLogsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2883,6 +3047,8 @@ export type UserUpdateWithoutAdminLogsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -2913,6 +3079,8 @@ export type UserUncheckedUpdateWithoutAdminLogsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2943,6 +3111,8 @@ export type UserCreateWithoutWaitlistEntriesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
@@ -2973,6 +3143,8 @@ export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  steamId?: string | null
+  perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
@@ -3019,6 +3191,8 @@ export type UserUpdateWithoutWaitlistEntriesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -3049,6 +3223,8 @@ export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -3079,6 +3255,8 @@ export type UserUpdateWithoutParticipatingEntriesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
@@ -3109,6 +3287,8 @@ export type UserUncheckedUpdateWithoutParticipatingEntriesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -3139,6 +3319,8 @@ export type UserUncheckedUpdateManyWithoutParticipatingEntriesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -3311,6 +3493,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   elo?: boolean
   timeBalanceSeconds?: boolean
   emailNotifications?: boolean
+  steamId?: boolean
+  perfectGamesCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
@@ -3343,6 +3527,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   elo?: boolean
   timeBalanceSeconds?: boolean
   emailNotifications?: boolean
+  steamId?: boolean
+  perfectGamesCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -3358,6 +3544,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   elo?: boolean
   timeBalanceSeconds?: boolean
   emailNotifications?: boolean
+  steamId?: boolean
+  perfectGamesCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -3373,11 +3561,13 @@ export type UserSelectScalar = {
   elo?: boolean
   timeBalanceSeconds?: boolean
   emailNotifications?: boolean
+  steamId?: boolean
+  perfectGamesCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "keycloakId" | "email" | "username" | "displayName" | "avatarUrl" | "role" | "elo" | "timeBalanceSeconds" | "emailNotifications" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "keycloakId" | "email" | "username" | "displayName" | "avatarUrl" | "role" | "elo" | "timeBalanceSeconds" | "emailNotifications" | "steamId" | "perfectGamesCount" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
   ownedTeams?: boolean | Prisma.User$ownedTeamsArgs<ExtArgs>
@@ -3431,6 +3621,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     elo: number
     timeBalanceSeconds: number
     emailNotifications: boolean
+    steamId: string | null
+    perfectGamesCount: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -3882,6 +4074,8 @@ export interface UserFieldRefs {
   readonly elo: Prisma.FieldRef<"User", 'Int'>
   readonly timeBalanceSeconds: Prisma.FieldRef<"User", 'Int'>
   readonly emailNotifications: Prisma.FieldRef<"User", 'Boolean'>
+  readonly steamId: Prisma.FieldRef<"User", 'String'>
+  readonly perfectGamesCount: Prisma.FieldRef<"User", 'Int'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

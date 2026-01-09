@@ -9,6 +9,7 @@ import {
   Edit,
   Shield,
   Loader2,
+  GraduationCap,
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
@@ -288,16 +289,26 @@ export function ProfilePage() {
                 {/* Status Indicator */}
                 <div className="absolute bottom-3 right-3 md:bottom-5 md:right-5 z-20">
                   <div
-                    className={`w-7 h-7 rounded-full border-[5px] border-[#1a1b26] ${profileUser?.role === "ADMIN"
-                      ? "bg-red-500 box-shadow-glow-red"
-                      : profileUser?.role === "ORGANIZER"
-                        ? "bg-purple-500"
-                        : profileUser?.role === "MODERATOR"
-                          ? "bg-blue-500"
-                          : "bg-green-500"
+                    className={`w-8 h-8 rounded-full border-[4px] border-[#1a1b26] flex items-center justify-center ${profileUser?.role === "ADMIN"
+                        ? "bg-red-500 text-white"
+                        : profileUser?.role === "ORGANIZER"
+                          ? "bg-purple-500 text-white"
+                          : profileUser?.role === "MODERATOR"
+                            ? "bg-blue-500 text-white"
+                            : "bg-gray-600 text-gray-200"
                       }`}
-                    title={profileUser?.role}
-                  ></div>
+                    title={getRoleLabel(profileUser?.role)}
+                  >
+                    {profileUser?.role === "ADMIN" ? (
+                      <Shield size={14} className="fill-current" />
+                    ) : profileUser?.role === "ORGANIZER" ? (
+                      <Trophy size={14} className="fill-current" />
+                    ) : profileUser?.role === "MODERATOR" ? (
+                      <Shield size={14} />
+                    ) : (
+                      <GraduationCap size={14} />
+                    )}
+                  </div>
                 </div>
               </div>
 

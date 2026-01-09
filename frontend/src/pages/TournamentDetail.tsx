@@ -480,7 +480,7 @@ export function TournamentDetailPage() {
             Vissza
           </button>
 
-          <div className="flex flex-col md:flex-row md:items-end gap-8 mt-16 md:mt-0">
+          <div className="flex flex-col md:flex-row md:items-end gap-8 mt-16 md:mt-4">
             <div className="flex-grow space-y-4">
               <div className="flex md:!hidden flex-wrap items-center gap-3 mb-2">
                 <span

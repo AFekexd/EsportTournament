@@ -25,7 +25,8 @@ import {
   ListTodo,
 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
-import { authService } from "../../lib/auth-service";
+import { apiFetch } from "../../lib/api-client";
+import { API_URL } from "../../config";
 
 interface Log {
   id: string;
@@ -75,7 +76,6 @@ export function AdminLogs() {
   const fetchLogs = async () => {
     try {
       setLoading(true);
-      const token = authService.keycloak?.token;
       const queryParams = new URLSearchParams({
         page: page.toString(),
         limit: "20",
@@ -84,16 +84,7 @@ export function AdminLogs() {
       if (filterType) queryParams.append("type", filterType);
       if (debouncedSearch) queryParams.append("search", debouncedSearch);
 
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_API_URL || "http://localhost:3000/api"
-        }/logs?${queryParams.toString()}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await apiFetch(`${API_URL}/logs?${queryParams.toString()}`);
 
       const data = await response.json();
       if (data.success) {
@@ -380,9 +371,8 @@ export function AdminLogs() {
                   <>
                     <tr
                       key={log.id}
-                      className={`group hover:bg-white/5 transition-colors text-sm cursor-pointer ${
-                        expandedLogId === log.id ? "bg-white/5" : ""
-                      }`}
+                      className={`group hover:bg-white/5 transition-colors text-sm cursor-pointer ${expandedLogId === log.id ? "bg-white/5" : ""
+                        }`}
                       onClick={() =>
                         setExpandedLogId(
                           expandedLogId === log.id ? null : log.id

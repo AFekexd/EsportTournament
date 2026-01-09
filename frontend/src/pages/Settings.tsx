@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 import { useState } from "react";
-import { Save, Bell, Lock, User, Shield, Mail, AtSign } from "lucide-react";
+import { Save, Bell, Lock, User, Shield, Mail, AtSign, RefreshCw } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useAppDispatch } from "../hooks/useRedux";
 import { updateUser } from "../store/slices/authSlice";
@@ -20,6 +20,42 @@ export function SettingsPage() {
   );
   const [saveLoading, setSaveLoading] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [steamId, setSteamId] = useState(user?.steamId || "");
+  const [syncLoading, setSyncLoading] = useState(false);
+
+  const handleSteamSync = async () => {
+    if (!steamId) return;
+    setSyncLoading(true);
+    try {
+      // First save the Steam ID if it changed
+      if (steamId !== user?.steamId) {
+        await apiFetch(`${API_URL}/users/${user?.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ steamId }),
+        });
+        // Update local user state roughly
+        dispatch(updateUser({ ...user!, steamId }));
+      }
+
+      const response = await apiFetch(`${API_URL}/steam/sync`, {
+        method: "POST",
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success(`Sikeres szinkronizálás! ${data.count} tökéletes játék.`);
+        dispatch(updateUser({ ...user!, steamId, perfectGamesCount: data.count }));
+      } else {
+        toast.error(data.message || "Hiba a szinkronizáláskor");
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error("Hiba történt");
+    } finally {
+      setSyncLoading(false);
+    }
+  };
 
   if (!isAuthenticated) {
     return (
@@ -158,6 +194,45 @@ export function SettingsPage() {
                 {isAdmin && <span className="text-xs text-gray-500">{displayName.length}/50</span>}
               </div>
             </div>
+
+            {/* Steam ID Section */}
+            <div className="space-y-2 pt-4 border-t border-white/5">
+              <label
+                htmlFor="steamId"
+                className="text-sm font-medium text-gray-300 ml-1 flex items-center justify-between"
+              >
+                <span>Steam ID (64-bit)</span>
+                <a
+                  href="https://steamid.io/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[10px] text-primary hover:underline flex items-center gap-1"
+                >
+                  ID Keresése
+                </a>
+              </label>
+              <div className="flex gap-2">
+                <input
+                  id="steamId"
+                  type="text"
+                  value={steamId}
+                  onChange={(e) => setSteamId(e.target.value)}
+                  className="flex-1 px-5 py-4 bg-[#0a0a0f]/50 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
+                  placeholder="76561198..."
+                />
+                <button
+                  onClick={handleSteamSync}
+                  disabled={!steamId || syncLoading}
+                  className="px-4 py-2 bg-[#0f1015] border border-white/10 rounded-xl hover:bg-primary/20 hover:border-primary/50 hover:text-white transition-all text-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Játékok szinkronizálása"
+                >
+                  <RefreshCw size={24} className={syncLoading ? "animate-spin text-primary" : ""} />
+                </button>
+              </div>
+              <p className="text-xs text-gray-500 ml-1">
+                Add meg a Steam ID-dat a Platinum játékok megjelenítéséhez. (Privát profil nem működik!)
+              </p>
+            </div>
           </div>
         </div>
 
@@ -230,8 +305,8 @@ export function SettingsPage() {
               <div className="flex items-center gap-4">
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${emailNotifications
-                      ? "bg-primary/20 text-primary"
-                      : "bg-gray-800 text-gray-500"
+                    ? "bg-primary/20 text-primary"
+                    : "bg-gray-800 text-gray-500"
                     }`}
                 >
                   <Mail size={20} />
@@ -265,8 +340,8 @@ export function SettingsPage() {
             onClick={handleSave}
             disabled={saveLoading}
             className={`flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg transform hover:-translate-y-1 ${saveSuccess
-                ? "bg-green-500 hover:bg-green-600 shadow-green-500/25 text-white"
-                : "bg-gradient-to-r from-primary to-neon-pink hover:brightness-110 shadow-primary/25 text-white"
+              ? "bg-green-500 hover:bg-green-600 shadow-green-500/25 text-white"
+              : "bg-gradient-to-r from-primary to-neon-pink hover:brightness-110 shadow-primary/25 text-white"
               } ${saveLoading ? "opacity-75 cursor-wait" : ""}`}
           >
             {saveLoading ? (

@@ -1953,6 +1953,8 @@ export const UserScalarFieldEnum = {
   elo: 'elo',
   timeBalanceSeconds: 'timeBalanceSeconds',
   emailNotifications: 'emailNotifications',
+  steamId: 'steamId',
+  perfectGamesCount: 'perfectGamesCount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
