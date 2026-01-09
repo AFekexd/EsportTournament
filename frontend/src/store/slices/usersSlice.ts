@@ -13,6 +13,7 @@ interface PublicProfile {
   steamAvatar?: string;
   steamUrl?: string;
   steamLevel?: number;
+  steamPersonaname?: string;
   steamCreatedAt?: string;
   perfectGamesCount?: number;
   teams: any[];

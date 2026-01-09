@@ -1957,6 +1957,7 @@ export const UserScalarFieldEnum = {
   steamAvatar: 'steamAvatar',
   steamUrl: 'steamUrl',
   steamLevel: 'steamLevel',
+  steamPersonaname: 'steamPersonaname',
   steamCreatedAt: 'steamCreatedAt',
   perfectGamesCount: 'perfectGamesCount',
   createdAt: 'createdAt',

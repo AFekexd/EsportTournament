@@ -93,6 +93,7 @@ model User {
   steamAvatar   String?
   steamUrl      String?
   steamLevel    Int?
+  steamPersonaname String?
   steamCreatedAt DateTime?
   perfectGamesCount Int  @default(0)
   createdAt     DateTime @default(now())

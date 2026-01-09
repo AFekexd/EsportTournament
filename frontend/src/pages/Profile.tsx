@@ -128,6 +128,7 @@ export function ProfilePage() {
           steamAvatar: data.steamAvatar,
           steamUrl: data.steamUrl,
           steamLevel: data.steamLevel,
+          steamPersonaname: data.steamPersonaname,
           steamCreatedAt: data.steamCreatedAt
         }));
       } else {
@@ -688,7 +689,7 @@ export function ProfilePage() {
 
                       <div className="space-y-2">
                         <div className="text-3xl font-bold text-white tracking-tight">
-                          {isOwnProfile ? user?.username : (profileUser as any)?.username}
+                          {isOwnProfile ? (user?.steamPersonaname || user?.username) : ((profileUser as any)?.steamPersonaname || (profileUser as any)?.username)}
                         </div>
                         <a
                           href={isOwnProfile ? user?.steamUrl || "#" : (profileUser as any)?.steamUrl || "#"}

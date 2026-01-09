@@ -26,6 +26,7 @@ export class SteamService {
         let steamUrl = null;
         let steamCreatedAt = null;
         let steamLevel = null;
+        let steamPersonaname = null;
 
         // 0. Get Player Summary (Avatar, URL, CreatedAt)
         try {
@@ -37,6 +38,7 @@ export class SteamService {
             if (player) {
                 steamAvatar = player.avatarfull;
                 steamUrl = player.profileurl;
+                steamPersonaname = player.personaname;
                 if (player.timecreated) {
                     steamCreatedAt = new Date(player.timecreated * 1000);
                 }
@@ -115,7 +117,8 @@ export class SteamService {
                 steamAvatar,
                 steamUrl,
                 steamCreatedAt,
-                steamLevel
+                steamLevel,
+                steamPersonaname
             }
         });
 
@@ -124,7 +127,8 @@ export class SteamService {
             steamAvatar,
             steamUrl,
             steamCreatedAt,
-            steamLevel
+            steamLevel,
+            steamPersonaname
         };
     }
 }

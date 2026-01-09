@@ -55,6 +55,7 @@ export type UserMinAggregateOutputType = {
   steamAvatar: string | null
   steamUrl: string | null
   steamLevel: number | null
+  steamPersonaname: string | null
   steamCreatedAt: Date | null
   perfectGamesCount: number | null
   createdAt: Date | null
@@ -76,6 +77,7 @@ export type UserMaxAggregateOutputType = {
   steamAvatar: string | null
   steamUrl: string | null
   steamLevel: number | null
+  steamPersonaname: string | null
   steamCreatedAt: Date | null
   perfectGamesCount: number | null
   createdAt: Date | null
@@ -97,6 +99,7 @@ export type UserCountAggregateOutputType = {
   steamAvatar: number
   steamUrl: number
   steamLevel: number
+  steamPersonaname: number
   steamCreatedAt: number
   perfectGamesCount: number
   createdAt: number
@@ -134,6 +137,7 @@ export type UserMinAggregateInputType = {
   steamAvatar?: true
   steamUrl?: true
   steamLevel?: true
+  steamPersonaname?: true
   steamCreatedAt?: true
   perfectGamesCount?: true
   createdAt?: true
@@ -155,6 +159,7 @@ export type UserMaxAggregateInputType = {
   steamAvatar?: true
   steamUrl?: true
   steamLevel?: true
+  steamPersonaname?: true
   steamCreatedAt?: true
   perfectGamesCount?: true
   createdAt?: true
@@ -176,6 +181,7 @@ export type UserCountAggregateInputType = {
   steamAvatar?: true
   steamUrl?: true
   steamLevel?: true
+  steamPersonaname?: true
   steamCreatedAt?: true
   perfectGamesCount?: true
   createdAt?: true
@@ -284,6 +290,7 @@ export type UserGroupByOutputType = {
   steamAvatar: string | null
   steamUrl: string | null
   steamLevel: number | null
+  steamPersonaname: string | null
   steamCreatedAt: Date | null
   perfectGamesCount: number
   createdAt: Date
@@ -328,6 +335,7 @@ export type UserWhereInput = {
   steamAvatar?: Prisma.StringNullableFilter<"User"> | string | null
   steamUrl?: Prisma.StringNullableFilter<"User"> | string | null
   steamLevel?: Prisma.IntNullableFilter<"User"> | number | null
+  steamPersonaname?: Prisma.StringNullableFilter<"User"> | string | null
   steamCreatedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   perfectGamesCount?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -365,6 +373,7 @@ export type UserOrderByWithRelationInput = {
   steamAvatar?: Prisma.SortOrderInput | Prisma.SortOrder
   steamUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   steamLevel?: Prisma.SortOrderInput | Prisma.SortOrder
+  steamPersonaname?: Prisma.SortOrderInput | Prisma.SortOrder
   steamCreatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   perfectGamesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -405,6 +414,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   steamAvatar?: Prisma.StringNullableFilter<"User"> | string | null
   steamUrl?: Prisma.StringNullableFilter<"User"> | string | null
   steamLevel?: Prisma.IntNullableFilter<"User"> | number | null
+  steamPersonaname?: Prisma.StringNullableFilter<"User"> | string | null
   steamCreatedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   perfectGamesCount?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -442,6 +452,7 @@ export type UserOrderByWithAggregationInput = {
   steamAvatar?: Prisma.SortOrderInput | Prisma.SortOrder
   steamUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   steamLevel?: Prisma.SortOrderInput | Prisma.SortOrder
+  steamPersonaname?: Prisma.SortOrderInput | Prisma.SortOrder
   steamCreatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   perfectGamesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -471,6 +482,7 @@ export type UserScalarWhereWithAggregatesInput = {
   steamAvatar?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   steamUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   steamLevel?: Prisma.IntNullableWithAggregatesFilter<"User"> | number | null
+  steamPersonaname?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   steamCreatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   perfectGamesCount?: Prisma.IntWithAggregatesFilter<"User"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -492,6 +504,7 @@ export type UserCreateInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -529,6 +542,7 @@ export type UserUncheckedCreateInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -566,6 +580,7 @@ export type UserUpdateInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -603,6 +618,7 @@ export type UserUncheckedUpdateInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -640,6 +656,7 @@ export type UserCreateManyInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -661,6 +678,7 @@ export type UserUpdateManyMutationInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -682,6 +700,7 @@ export type UserUncheckedUpdateManyInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -703,6 +722,7 @@ export type UserCountOrderByAggregateInput = {
   steamAvatar?: Prisma.SortOrder
   steamUrl?: Prisma.SortOrder
   steamLevel?: Prisma.SortOrder
+  steamPersonaname?: Prisma.SortOrder
   steamCreatedAt?: Prisma.SortOrder
   perfectGamesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -731,6 +751,7 @@ export type UserMaxOrderByAggregateInput = {
   steamAvatar?: Prisma.SortOrder
   steamUrl?: Prisma.SortOrder
   steamLevel?: Prisma.SortOrder
+  steamPersonaname?: Prisma.SortOrder
   steamCreatedAt?: Prisma.SortOrder
   perfectGamesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -752,6 +773,7 @@ export type UserMinOrderByAggregateInput = {
   steamAvatar?: Prisma.SortOrder
   steamUrl?: Prisma.SortOrder
   steamLevel?: Prisma.SortOrder
+  steamPersonaname?: Prisma.SortOrder
   steamCreatedAt?: Prisma.SortOrder
   perfectGamesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -1100,6 +1122,7 @@ export type UserCreateWithoutOwnedTeamsInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -1136,6 +1159,7 @@ export type UserUncheckedCreateWithoutOwnedTeamsInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -1188,6 +1212,7 @@ export type UserUpdateWithoutOwnedTeamsInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1224,6 +1249,7 @@ export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1260,6 +1286,7 @@ export type UserCreateWithoutTeamMembershipsInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -1296,6 +1323,7 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -1348,6 +1376,7 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1384,6 +1413,7 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1420,6 +1450,7 @@ export type UserCreateWithoutTournamentEntriesInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -1456,6 +1487,7 @@ export type UserUncheckedCreateWithoutTournamentEntriesInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -1497,6 +1529,7 @@ export type UserCreateWithoutParticipatingEntriesInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -1533,6 +1566,7 @@ export type UserUncheckedCreateWithoutParticipatingEntriesInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -1585,6 +1619,7 @@ export type UserUpdateWithoutTournamentEntriesInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1621,6 +1656,7 @@ export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1676,6 +1712,7 @@ export type UserScalarWhereInput = {
   steamAvatar?: Prisma.StringNullableFilter<"User"> | string | null
   steamUrl?: Prisma.StringNullableFilter<"User"> | string | null
   steamLevel?: Prisma.IntNullableFilter<"User"> | number | null
+  steamPersonaname?: Prisma.StringNullableFilter<"User"> | string | null
   steamCreatedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   perfectGamesCount?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -1697,6 +1734,7 @@ export type UserCreateWithoutHomeMatchesInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -1733,6 +1771,7 @@ export type UserUncheckedCreateWithoutHomeMatchesInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -1774,6 +1813,7 @@ export type UserCreateWithoutAwayMatchesInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -1810,6 +1850,7 @@ export type UserUncheckedCreateWithoutAwayMatchesInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -1851,6 +1892,7 @@ export type UserCreateWithoutWonMatchesInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -1887,6 +1929,7 @@ export type UserUncheckedCreateWithoutWonMatchesInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -1939,6 +1982,7 @@ export type UserUpdateWithoutHomeMatchesInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1975,6 +2019,7 @@ export type UserUncheckedUpdateWithoutHomeMatchesInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2022,6 +2067,7 @@ export type UserUpdateWithoutAwayMatchesInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2058,6 +2104,7 @@ export type UserUncheckedUpdateWithoutAwayMatchesInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2105,6 +2152,7 @@ export type UserUpdateWithoutWonMatchesInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2141,6 +2189,7 @@ export type UserUncheckedUpdateWithoutWonMatchesInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2177,6 +2226,7 @@ export type UserCreateWithoutGameStatsInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -2213,6 +2263,7 @@ export type UserUncheckedCreateWithoutGameStatsInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -2265,6 +2316,7 @@ export type UserUpdateWithoutGameStatsInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2301,6 +2353,7 @@ export type UserUncheckedUpdateWithoutGameStatsInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2337,6 +2390,7 @@ export type UserCreateWithoutRanksInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -2373,6 +2427,7 @@ export type UserUncheckedCreateWithoutRanksInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -2425,6 +2480,7 @@ export type UserUpdateWithoutRanksInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2461,6 +2517,7 @@ export type UserUncheckedUpdateWithoutRanksInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2497,6 +2554,7 @@ export type UserCreateWithoutNotificationsInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -2533,6 +2591,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -2585,6 +2644,7 @@ export type UserUpdateWithoutNotificationsInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2621,6 +2681,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2657,6 +2718,7 @@ export type UserCreateWithoutDiscordSettingsInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -2693,6 +2755,7 @@ export type UserUncheckedCreateWithoutDiscordSettingsInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -2745,6 +2808,7 @@ export type UserUpdateWithoutDiscordSettingsInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2781,6 +2845,7 @@ export type UserUncheckedUpdateWithoutDiscordSettingsInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2817,6 +2882,7 @@ export type UserCreateWithoutBookingsInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -2853,6 +2919,7 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -2905,6 +2972,7 @@ export type UserUpdateWithoutBookingsInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2941,6 +3009,7 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2977,6 +3046,7 @@ export type UserCreateWithoutSessionsInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -3013,6 +3083,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -3065,6 +3136,7 @@ export type UserUpdateWithoutSessionsInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3101,6 +3173,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3137,6 +3210,7 @@ export type UserCreateWithoutLogsInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -3173,6 +3247,7 @@ export type UserUncheckedCreateWithoutLogsInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -3214,6 +3289,7 @@ export type UserCreateWithoutAdminLogsInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -3250,6 +3326,7 @@ export type UserUncheckedCreateWithoutAdminLogsInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -3302,6 +3379,7 @@ export type UserUpdateWithoutLogsInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3338,6 +3416,7 @@ export type UserUncheckedUpdateWithoutLogsInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3385,6 +3464,7 @@ export type UserUpdateWithoutAdminLogsInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3421,6 +3501,7 @@ export type UserUncheckedUpdateWithoutAdminLogsInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3457,6 +3538,7 @@ export type UserCreateWithoutWaitlistEntriesInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -3493,6 +3575,7 @@ export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
   steamAvatar?: string | null
   steamUrl?: string | null
   steamLevel?: number | null
+  steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
   createdAt?: Date | string
@@ -3545,6 +3628,7 @@ export type UserUpdateWithoutWaitlistEntriesInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3581,6 +3665,7 @@ export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3617,6 +3702,7 @@ export type UserUpdateWithoutParticipatingEntriesInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3653,6 +3739,7 @@ export type UserUncheckedUpdateWithoutParticipatingEntriesInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3689,6 +3776,7 @@ export type UserUncheckedUpdateManyWithoutParticipatingEntriesInput = {
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3867,6 +3955,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   steamAvatar?: boolean
   steamUrl?: boolean
   steamLevel?: boolean
+  steamPersonaname?: boolean
   steamCreatedAt?: boolean
   perfectGamesCount?: boolean
   createdAt?: boolean
@@ -3905,6 +3994,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   steamAvatar?: boolean
   steamUrl?: boolean
   steamLevel?: boolean
+  steamPersonaname?: boolean
   steamCreatedAt?: boolean
   perfectGamesCount?: boolean
   createdAt?: boolean
@@ -3926,6 +4016,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   steamAvatar?: boolean
   steamUrl?: boolean
   steamLevel?: boolean
+  steamPersonaname?: boolean
   steamCreatedAt?: boolean
   perfectGamesCount?: boolean
   createdAt?: boolean
@@ -3947,13 +4038,14 @@ export type UserSelectScalar = {
   steamAvatar?: boolean
   steamUrl?: boolean
   steamLevel?: boolean
+  steamPersonaname?: boolean
   steamCreatedAt?: boolean
   perfectGamesCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "keycloakId" | "email" | "username" | "displayName" | "avatarUrl" | "role" | "elo" | "timeBalanceSeconds" | "emailNotifications" | "steamId" | "steamAvatar" | "steamUrl" | "steamLevel" | "steamCreatedAt" | "perfectGamesCount" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "keycloakId" | "email" | "username" | "displayName" | "avatarUrl" | "role" | "elo" | "timeBalanceSeconds" | "emailNotifications" | "steamId" | "steamAvatar" | "steamUrl" | "steamLevel" | "steamPersonaname" | "steamCreatedAt" | "perfectGamesCount" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
   ownedTeams?: boolean | Prisma.User$ownedTeamsArgs<ExtArgs>
@@ -4011,6 +4103,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     steamAvatar: string | null
     steamUrl: string | null
     steamLevel: number | null
+    steamPersonaname: string | null
     steamCreatedAt: Date | null
     perfectGamesCount: number
     createdAt: Date
@@ -4468,6 +4561,7 @@ export interface UserFieldRefs {
   readonly steamAvatar: Prisma.FieldRef<"User", 'String'>
   readonly steamUrl: Prisma.FieldRef<"User", 'String'>
   readonly steamLevel: Prisma.FieldRef<"User", 'Int'>
+  readonly steamPersonaname: Prisma.FieldRef<"User", 'String'>
   readonly steamCreatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly perfectGamesCount: Prisma.FieldRef<"User", 'Int'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
