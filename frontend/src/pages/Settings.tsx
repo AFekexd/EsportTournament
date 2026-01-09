@@ -203,7 +203,7 @@ export function SettingsPage() {
               >
                 <span>Steam ID (64-bit)</span>
                 <a
-                  href="https://steamid.io/"
+                  href="https://steamid.xyz/"
                   target="_blank"
                   rel="noreferrer"
                   className="text-[10px] text-primary hover:underline flex items-center gap-1"

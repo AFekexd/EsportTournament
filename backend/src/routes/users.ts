@@ -147,7 +147,7 @@ usersRouter.patch(
             throw new ApiError('Nincs jogosultságod a profil szerkesztéséhez', 403, 'FORBIDDEN');
         }
 
-        const { displayName, avatarUrl, emailNotifications } = req.body;
+        const { displayName, avatarUrl, emailNotifications, steamId } = req.body;
 
         if (displayName && displayName !== currentUser.displayName && currentUser.role !== UserRole.ADMIN) {
             throw new ApiError('A megjelenítendő nevet csak adminisztrátor módosíthatja', 403, 'FORBIDDEN');
@@ -159,6 +159,7 @@ usersRouter.patch(
                 displayName,
                 avatarUrl,
                 emailNotifications,
+                steamId,
             },
         });
 
@@ -168,6 +169,7 @@ usersRouter.patch(
         if (displayName !== undefined) changes.push(`Display Name ('${displayName}')`);
         if (avatarUrl !== undefined) changes.push('Avatar');
         if (emailNotifications !== undefined) changes.push(`Notifications (${emailNotifications})`);
+        if (steamId !== undefined) changes.push(`Steam ID ('${steamId}')`);
 
         await logSystemActivity(
             'USER_PROFILE_UPDATE',
@@ -180,7 +182,8 @@ usersRouter.patch(
                     updatedFields: {
                         ...(displayName !== undefined && { displayName }),
                         ...(avatarUrl !== undefined && { avatarUrl }),
-                        ...(emailNotifications !== undefined && { emailNotifications })
+                        ...(emailNotifications !== undefined && { emailNotifications }),
+                        ...(steamId !== undefined && { steamId })
                     }
                 }
             }
