@@ -448,14 +448,6 @@ export type GameScalarRelationFilter = {
   isNot?: Prisma.GameWhereInput
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type GameCreateNestedOneWithoutTournamentsInput = {
   create?: Prisma.XOR<Prisma.GameCreateWithoutTournamentsInput, Prisma.GameUncheckedCreateWithoutTournamentsInput>
   connectOrCreate?: Prisma.GameCreateOrConnectWithoutTournamentsInput

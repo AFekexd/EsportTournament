@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Link, useParams } from "react-router-dom";
 import {
@@ -10,7 +10,11 @@ import {
   Shield,
   Loader2,
   GraduationCap,
+  RefreshCw,
 } from "lucide-react";
+import { updateUser } from "../store/slices/authSlice";
+import { apiFetch } from "../lib/api-client";
+import { API_URL } from "../config";
 import { useAuth } from "../hooks/useAuth";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import {
@@ -40,6 +44,14 @@ export function ProfilePage() {
     (state) => state.users
   );
   const myTeamsList = useAppSelector((state) => state.teams.myTeams);
+  const [syncLoading, setSyncLoading] = useState(false);
+  const [localSteamId, setLocalSteamId] = useState("");
+
+  useEffect(() => {
+    if (user?.steamId) {
+      setLocalSteamId(user.steamId);
+    }
+  }, [user?.steamId]);
 
   const isOwnProfile = !id || (user && user.id === id);
 
@@ -85,6 +97,47 @@ export function ProfilePage() {
     } catch (error) {
       console.error("Failed to update rank", error);
       toast.error("Hiba történt a rang frissítésekor");
+    }
+  };
+
+  const handleSteamSync = async () => {
+    if (!localSteamId) return;
+    setSyncLoading(true);
+    try {
+      // First save the Steam ID if it changed
+      if (localSteamId !== user?.steamId) {
+        await apiFetch(`${API_URL}/users/${user?.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ steamId: localSteamId }),
+        });
+        dispatch(updateUser({ ...user!, steamId: localSteamId }));
+      }
+
+      const response = await apiFetch(`${API_URL}/steam/sync`, {
+        method: "POST",
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success(`Sikeres szinkronizálás! ${data.count} tökéletes játék.`);
+        dispatch(updateUser({
+          ...user!,
+          steamId: localSteamId,
+          perfectGamesCount: data.count,
+          steamAvatar: data.steamAvatar,
+          steamUrl: data.steamUrl,
+          steamLevel: data.steamLevel,
+          steamCreatedAt: data.steamCreatedAt
+        }));
+      } else {
+        toast.error(data.message || "Hiba a szinkronizáláskor");
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error("Hiba történt");
+    } finally {
+      setSyncLoading(false);
     }
   };
 
@@ -290,12 +343,12 @@ export function ProfilePage() {
                 <div className="absolute bottom-3 right-3 md:bottom-5 md:right-5 z-20">
                   <div
                     className={`w-8 h-8 rounded-full border-[4px] border-[#1a1b26] flex items-center justify-center ${profileUser?.role === "ADMIN"
-                        ? "bg-red-500 text-white"
-                        : profileUser?.role === "ORGANIZER"
-                          ? "bg-purple-500 text-white"
-                          : profileUser?.role === "MODERATOR"
-                            ? "bg-blue-500 text-white"
-                            : "bg-gray-600 text-gray-200"
+                      ? "bg-red-500 text-white"
+                      : profileUser?.role === "ORGANIZER"
+                        ? "bg-purple-500 text-white"
+                        : profileUser?.role === "MODERATOR"
+                          ? "bg-blue-500 text-white"
+                          : "bg-gray-600 text-gray-200"
                       }`}
                     title={getRoleLabel(profileUser?.role)}
                   >
@@ -588,9 +641,154 @@ export function ProfilePage() {
                 )}
               </div>
             </div>
-          </div>
+            {/* Steam Integration Card - Redesigned */}
+            <div className="bg-[#171a21] rounded-xl border border-[#1b2838] overflow-hidden shadow-2xl relative group">
+              {/* Background decorative elements */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#66c0f4] rounded-full filter blur-[100px] opacity-[0.05] group-hover:opacity-[0.1] transition-opacity"></div>
 
-          {/* Sidebar / Right Column */}
+              <div className="p-6 border-b border-white/5 flex justify-between items-center bg-[#171a21] relative z-10">
+                <h2 className="text-xl font-bold text-[#c7d5e0] flex items-center gap-3">
+                  <div className="w-8 h-8 flex items-center justify-center bg-gradient-to-br from-[#1b2838] to-[#2a475e] rounded-lg shadow-inner">
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-[#66c0f4]">
+                      <path d="M11.979 0C5.362 0 0 5.383 0 11.971c0 3.256 1.3 6.22 3.42 8.353l3.65-5.32c-.522-.728-.84-1.61-.84-2.583 0-2.482 1.992-4.482 4.473-4.482 2.474 0 4.474 2.008 4.474 4.482 0 2.482-2.008 4.49-4.474 4.49-.66 0-1.282-.136-1.848-.375L5.753 21.61c1.864 1.488 4.212 2.39 6.758 2.39 6.632 0 12-5.375 12-12.029C23.987 5.375 18.611 0 11.979 0zM8.336 12.42c0-1.12.92-2.032 2.04-2.032 1.128 0 2.04.912 2.04 2.032 0 1.12-.912 2.04-2.04 2.04-1.12 0-2.04-.92-2.04-2.04zm6.04-3.64c0 .6.471 1.087 1.054 1.087.6 0 1.063-.487 1.063-1.087 0-.608-.471-1.095-1.063-1.095-.575 0-1.054.487-1.054 1.095z" />
+                    </svg>
+                  </div>
+                  Steam Profil
+                </h2>
+                {isOwnProfile && (
+                  <button
+                    onClick={handleSteamSync}
+                    disabled={syncLoading || !user?.steamId}
+                    className="p-2 bg-[#2a475e] hover:bg-[#66c0f4] text-white rounded-lg transition-all shadow-lg hover:shadow-cyan-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                    title="Adatok Szinkronizálása"
+                  >
+                    <RefreshCw size={18} className={syncLoading ? "animate-spin" : ""} />
+                  </button>
+                )}
+              </div>
+
+              <div className="p-6 relative z-10">
+                {(isOwnProfile ? user?.steamId : (profileUser as any)?.steamId) ? (
+                  <div className="space-y-6">
+                    {/* Header with Avatar and Basic Info */}
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
+                      <div className="relative">
+                        <div className="w-24 h-24 rounded-lg p-1 bg-gradient-to-br from-[#66c0f4] to-[#1b2838] shadow-2xl">
+                          <img
+                            src={isOwnProfile ? (user?.steamAvatar || "https://avatars.akamai.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg") : ((profileUser as any)?.steamAvatar || "https://avatars.akamai.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg")}
+                            alt="Steam Avatar"
+                            className="w-full h-full rounded bg-black object-cover"
+                          />
+                        </div>
+                        {/* Level Badge */}
+                        <div className="absolute -bottom-3 -right-3 w-10 h-10 rounded-full border-4 border-[#171a21] bg-[#1b2838] flex items-center justify-center text-white font-bold text-sm shadow-xl z-20">
+                          {isOwnProfile ? user?.steamLevel || "0" : (profileUser as any)?.steamLevel || "0"}
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="text-3xl font-bold text-white tracking-tight">
+                          {isOwnProfile ? user?.username : (profileUser as any)?.username}
+                        </div>
+                        <a
+                          href={isOwnProfile ? user?.steamUrl || "#" : (profileUser as any)?.steamUrl || "#"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#66c0f4] text-sm hover:underline flex items-center justify-center sm:justify-start gap-1"
+                        >
+                          Steam Profil Megtekintése
+                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        </a>
+                        <div className="text-xs text-gray-500 font-mono bg-[#0f1015] px-2 py-1 rounded inline-block">
+                          ID: {isOwnProfile ? user?.steamId : (profileUser as any)?.steamId}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mt-6">
+                      {/* Perfect Games Stat */}
+                      <div className="bg-gradient-to-br from-[#1b2838] to-[#171a21] p-4 rounded-xl border border-white/5 relative overflow-hidden group/stat">
+                        <div className="absolute top-0 right-0 p-2 opacity-10 group-hover/stat:opacity-20 transition-opacity">
+                          <Trophy size={48} />
+                        </div>
+                        <div className="text-[#66c0f4] text-xs font-bold uppercase tracking-widest mb-1">
+                          Tökéletes Játékok
+                        </div>
+                        <div className="text-3xl font-black text-white">
+                          {isOwnProfile ? user?.perfectGamesCount || 0 : (profileUser as any)?.perfectGamesCount || 0}
+                        </div>
+                        <div className="text-[10px] text-gray-500 mt-1">
+                          100% Achievement
+                        </div>
+                      </div>
+
+                      {/* Account Age Stat */}
+                      <div className="bg-gradient-to-br from-[#1b2838] to-[#171a21] p-4 rounded-xl border border-white/5 relative overflow-hidden group/stat">
+                        <div className="absolute top-0 right-0 p-2 opacity-10 group-hover/stat:opacity-20 transition-opacity">
+                          <Calendar size={48} />
+                        </div>
+                        <div className="text-[#66c0f4] text-xs font-bold uppercase tracking-widest mb-1">
+                          Fiók Létrehozva
+                        </div>
+                        <div className="text-md font-bold text-white mt-2">
+                          {isOwnProfile
+                            ? (user?.steamCreatedAt ? new Date(user.steamCreatedAt).getFullYear() : "-")
+                            : ((profileUser as any)?.steamCreatedAt ? new Date((profileUser as any).steamCreatedAt).getFullYear() : "-")
+                          }
+                        </div>
+                        <div className="text-[10px] text-gray-500 mt-1">
+                          {(isOwnProfile && user?.steamCreatedAt) ? new Date(user.steamCreatedAt).toLocaleDateString() : ""}
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <div className="w-16 h-16 bg-[#1b2838] rounded-full flex items-center justify-center mx-auto mb-4 text-[#66c0f4] shadow-lg animate-pulse">
+                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
+                        <path d="M11.979 0C5.362 0 0 5.383 0 11.971c0 3.256 1.3 6.22 3.42 8.353l3.65-5.32c-.522-.728-.84-1.61-.84-2.583 0-2.482 1.992-4.482 4.473-4.482 2.474 0 4.474 2.008 4.474 4.482 0 2.482-2.008 4.49-4.474 4.49-.66 0-1.282-.136-1.848-.375L5.753 21.61c1.864 1.488 4.212 2.39 6.758 2.39 6.632 0 12-5.375 12-12.029C23.987 5.375 18.611 0 11.979 0zM8.336 12.42c0-1.12.92-2.032 2.04-2.032 1.128 0 2.04.912 2.04 2.032 0 1.12-.912 2.04-2.04 2.04-1.12 0-2.04-.92-2.04-2.04zm6.04-3.64c0 .6.471 1.087 1.054 1.087.6 0 1.063-.487 1.063-1.087 0-.608-.471-1.095-1.063-1.095-.575 0-1.054.487-1.054 1.095z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-white font-bold text-lg mb-2">Még nincs összekapcsolva</h3>
+                    <p className="text-gray-400 text-sm mb-6 max-w-xs mx-auto">
+                      {isOwnProfile ? "Kapcsold össze Steam fiókodat, hogy megjelenjenek a statisztikáid és jelvényeid." : "Ez a felhasználó még nem aktiválta a Steam integrációt."}
+                    </p>
+
+                    {isOwnProfile && (
+                      <div className="flex flex-col gap-3">
+                        <input
+                          type="text"
+                          value={localSteamId}
+                          onChange={(e) => setLocalSteamId(e.target.value)}
+                          placeholder="Steam ID64 beillesztése..."
+                          className="bg-[#0f1015] border border-white/10 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#66c0f4] transition-colors w-full text-center"
+                        />
+                        <button
+                          onClick={handleSteamSync}
+                          disabled={!localSteamId || syncLoading}
+                          className="w-full py-3 bg-gradient-to-r from-[#2a475e] to-[#66c0f4] hover:from-[#1b2838] hover:to-[#2a475e] text-white rounded-lg font-bold shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        >
+                          {syncLoading ? (
+                            <>
+                              <RefreshCw size={18} className="animate-spin" /> Szinkronizálás...
+                            </>
+                          ) : (
+                            <>
+                              <span className="uppercase tracking-wide text-xs">Fiók Csatolása</span>
+                            </>
+                          )}
+                        </button>
+                        <a href="https://steamid.io/" target="_blank" rel="noreferrer" className="text-[#66c0f4] text-xs opacity-60 hover:opacity-100 hover:underline">
+                          Mi az a Steam ID64?
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
           <div className="space-y-6">
             {/* Recent Tournaments */}
             <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden h-full">
@@ -661,6 +859,8 @@ export function ProfilePage() {
                 )}
               </div>
             </div>
+
+
           </div>
         </div>
       </div>

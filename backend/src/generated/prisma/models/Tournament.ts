@@ -822,10 +822,6 @@ export type EnumTournamentStatusFieldUpdateOperationsInput = {
   set?: $Enums.TournamentStatus
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type EnumSeedingMethodFieldUpdateOperationsInput = {
   set?: $Enums.SeedingMethod
 }

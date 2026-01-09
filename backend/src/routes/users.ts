@@ -207,6 +207,12 @@ usersRouter.get(
                 displayName: true,
                 avatarUrl: true,
                 role: true,
+                steamId: true,
+                steamAvatar: true,
+                steamUrl: true,
+                steamLevel: true,
+                steamCreatedAt: true,
+                perfectGamesCount: true,
                 createdAt: true,
                 teamMemberships: {
                     include: {
@@ -233,6 +239,12 @@ usersRouter.get(
             displayName: user?.displayName,
             avatarUrl: user?.avatarUrl,
             role: user.role,
+            steamId: user.steamId,
+            steamAvatar: user.steamAvatar,
+            steamUrl: user.steamUrl,
+            steamLevel: user.steamLevel,
+            steamCreatedAt: user.steamCreatedAt,
+            perfectGamesCount: user.perfectGamesCount,
             createdAt: user.createdAt,
             teams: user.teamMemberships.map(tm => tm.team),
             ranks: user.ranks.map(ur => ({

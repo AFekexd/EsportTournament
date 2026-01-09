@@ -9,6 +9,12 @@ interface PublicProfile {
   avatarUrl: string | null;
   role: string;
   createdAt: string;
+  steamId?: string;
+  steamAvatar?: string;
+  steamUrl?: string;
+  steamLevel?: number;
+  steamCreatedAt?: string;
+  perfectGamesCount?: number;
   teams: any[];
   ranks: {
     id: string;
@@ -40,7 +46,7 @@ export const fetchPublicProfile = createAsyncThunk(
   async (userId: string, { getState }) => {
     const state = getState() as RootState;
     const token = getToken(state);
-    
+
     const response = await fetch(`${API_URL}/users/${userId}/public`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });

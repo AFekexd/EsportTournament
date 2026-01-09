@@ -15,6 +15,10 @@ export interface User {
     emailNotifications?: boolean;
     ranks?: UserRank[];
     steamId?: string;
+    steamAvatar?: string;
+    steamUrl?: string;
+    steamLevel?: number;
+    steamCreatedAt?: string;
     perfectGamesCount?: number;
 }
 

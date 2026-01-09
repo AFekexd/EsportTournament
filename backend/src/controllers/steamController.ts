@@ -23,9 +23,9 @@ export const syncSteam = async (req: AuthenticatedRequest, res: Response) => {
             return res.status(400).json({ success: false, message: "Steam ID not set" });
         }
 
-        const count = await steamService.syncUserPerfectGames(user.id, user.steamId);
+        const stats = await steamService.syncUserPerfectGames(user.id, user.steamId);
 
-        res.json({ success: true, count });
+        res.json({ success: true, ...stats });
     } catch (error: any) {
         console.error("Steam sync error:", error);
         res.status(500).json({ success: false, message: error.message });

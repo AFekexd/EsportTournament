@@ -90,6 +90,10 @@ model User {
   timeBalanceSeconds Int @default(0) // Kiosk time balance
   emailNotifications Boolean @default(true)
   steamId       String?
+  steamAvatar   String?
+  steamUrl      String?
+  steamLevel    Int?
+  steamCreatedAt DateTime?
   perfectGamesCount Int  @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
