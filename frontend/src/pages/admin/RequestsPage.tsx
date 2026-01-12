@@ -5,7 +5,7 @@ import { API_URL } from "../../config";
 import { apiFetch } from "../../lib/api-client";
 import { format } from "date-fns";
 import { hu } from "date-fns/locale";
-import { Check, X, ArrowRight, User, Shield } from "lucide-react";
+import { Check, X, User, Shield } from "lucide-react";
 import dict from "../../lib/dict";
 import { toast } from "sonner";
 import { ConfirmationModal } from "../../components/common/ConfirmationModal";
@@ -31,7 +31,7 @@ export default function RequestsPage() {
     const [requests, setRequests] = useState<ChangeRequest[]>([]);
     const [loading, setLoading] = useState(true);
     const { user } = useAppSelector((state) => state.auth);
-
+    console.log(user);
     const [confirmModal, setConfirmModal] = useState<{
         isOpen: boolean;
         title: string;
