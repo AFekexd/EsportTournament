@@ -143,8 +143,9 @@ class DiscordService {
 
         try {
             // Find user by OM ID
-            const user = await prisma.user.findUnique({
-                where: { omId: omId } as any
+            // using findFirst because omId might not be unique in Prisma schema (though it should be logically)
+            const user = await prisma.user.findFirst({
+                where: { omId: omId }
             });
 
             if (!user) {
