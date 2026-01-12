@@ -14,9 +14,10 @@ RUN npm install
 
 
 # Generate Prisma Client
-RUN npx prisma generate
-
 COPY . .
+
+# Generate Prisma Client
+RUN npx prisma generate
 
 # Build TypeScript
 RUN npm run build
