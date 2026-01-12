@@ -90,6 +90,18 @@ authRouter.post(
 
         // Trigger Discord Sync (Fire and forget, or await if critical)
         try {
+            // If user is not linked to Discord, try to find them by username (Auto-link for pre-existing members)
+            if (!user.discordId) {
+                const foundDiscordId = await discordService.findDiscordIdByUsername(user.username);
+                if (foundDiscordId) {
+                    await prisma.user.update({
+                        where: { id: user.id },
+                        data: { discordId: foundDiscordId }
+                    });
+                    console.log(`🔗 Automatically linked user ${user.username} to Discord ID ${foundDiscordId}`);
+                }
+            }
+
             // We catch errors here to not fail the login if Discord bot is down or user not in guild
             await discordService.syncUser(user.id).catch(err => console.error('Discord sync failed:', err));
         } catch (error) {

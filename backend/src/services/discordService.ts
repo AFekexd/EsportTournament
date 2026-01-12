@@ -501,6 +501,39 @@ class DiscordService {
         }
     }
 
+    /**
+     * Attempts to find a Discord member ID by username (for auto-linking)
+     */
+    async findDiscordIdByUsername(username: string): Promise<string | null> {
+        if (!this.isReady) return null;
+
+        try {
+            const guild = await this.client.guilds.fetch(this.guildId);
+            if (!guild) return null;
+
+            // Search by username
+            // Note: This is a fuzzy search, so we must verify exact match
+            const members = await guild.members.search({ query: username, limit: 5 });
+            
+            // Find exact match on username (ignoring case usually safe for auto-link if names are unique enough)
+            // Modern Discord usernames are lowercase.
+            const match = members.find(m => 
+                m.user.username.toLowerCase() === username.toLowerCase() || 
+                m.user.globalName?.toLowerCase() === username.toLowerCase()
+            );
+
+            if (match) {
+                console.log(`✅ Found Discord match for username "${username}": ${match.user.tag} (${match.id})`);
+                return match.id;
+            }
+
+            return null;
+        } catch (error) {
+            console.error('Failed to find discord member by username:', error);
+            return null;
+        }
+    }
+
     // --- Specific Notification Methods ---
 
     async sendTournamentAnnouncement(tournament: { name: string; game: string; startDate: Date; maxTeams: number; id: string; imageUrl?: string | null }, channelId?: string) {
