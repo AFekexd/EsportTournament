@@ -79,7 +79,7 @@ namespace EsportManager.Services
 
     public class SecurityConfig
     {
-        public string FailSafePassword { get; set; } = "55pollak5565";
+        public string FailSafePassword { get; set; } = "25487c1b7dae15d895fcb2be6c08b9140fe0e1913925dcf4c6059b385a74058c";
         public bool DisableTaskManager { get; set; } = true;
     }
 
