@@ -32,6 +32,11 @@ authRouter.post(
 
         const role = getHighestRole(req.user!);
 
+        // Explicitly log the full token payload as requested
+        console.log('\n=== FULL KEYCLOAK TOKEN PAYLOAD ===');
+        console.log(JSON.stringify(req.user, null, 2));
+        console.log('===================================\n');
+
         console.log('Syncing user:', {
             keycloakId,
             email: userEmail,
@@ -41,8 +46,7 @@ authRouter.post(
             omSource: userPayload.OM ? 'OM' : (userPayload.om ? 'om' : (userPayload.omId ? 'omId' : 'NOT_FOUND')),
             originalEmail: email,
             originalUsername: preferred_username,
-            realmRoles: req.user!.realm_access?.roles,
-            fullTokenPayload: req.user // Debug: Log full payload
+            realmRoles: req.user!.realm_access?.roles
         });
 
         // Only update role from Keycloak if it's a privileged role
@@ -55,7 +59,7 @@ authRouter.post(
                 email: userEmail,
                 username,
                 // displayName: name || username, // Don't overwrite display name on sync, allow user to change it locally
-                omId: OM || null,
+                omId: OM ? String(OM) : null,
                 ...roleUpdate,
             },
             create: {
@@ -63,7 +67,7 @@ authRouter.post(
                 email: userEmail,
                 username,
                 displayName: name || username,
-                omId: OM || null,
+                omId: OM ? String(OM) : null,
                 role, // Set role from Keycloak on creation
             },
         });
