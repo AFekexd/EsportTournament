@@ -12,7 +12,11 @@ authRouter.post(
     '/sync',
     authenticate,
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-        const { sub: keycloakId, email, preferred_username, name, OM } = req.user!;
+        const { sub: keycloakId, email, preferred_username, name } = req.user!;
+        // Try to find OM ID with case-insensitive property check
+        // Keycloak mapper might be 'OM', 'om', 'omId' etc.
+        const userPayload = req.user as any;
+        const OM = userPayload.OM || userPayload.om || userPayload.omId || userPayload.OM_AZONOSITO;
 
         if (!keycloakId) {
             return res.status(400).json({
@@ -33,10 +37,12 @@ authRouter.post(
             email: userEmail,
             username,
             role,
-            omId: OM,
+            omId: OM, // Log the found value
+            omSource: userPayload.OM ? 'OM' : (userPayload.om ? 'om' : (userPayload.omId ? 'omId' : 'NOT_FOUND')),
             originalEmail: email,
             originalUsername: preferred_username,
-            realmRoles: req.user!.realm_access?.roles
+            realmRoles: req.user!.realm_access?.roles,
+            fullTokenPayload: req.user // Debug: Log full payload
         });
 
         // Only update role from Keycloak if it's a privileged role
