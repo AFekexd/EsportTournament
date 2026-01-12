@@ -298,6 +298,7 @@ class DiscordService {
             let checkedCount = 0;
             let unverifiedCount = 0;
             let updatedCount = 0;
+            let failedCount = 0;
 
             for (const [_, member] of members) {
                 if (member.user.bot) continue;
@@ -310,13 +311,24 @@ class DiscordService {
                     unverifiedCount++;
                     // If not verified, ensure they have Guest role
                     if (!member.roles.cache.has(guestRole.id)) {
-                        await member.roles.add(guestRole).catch(console.error);
-                        updatedCount++;
+                        try {
+                            await member.roles.add(guestRole);
+                            updatedCount++;
+                        } catch (err) {
+                            console.error(`Failed to add role to ${member.user.tag}:`, err);
+                            failedCount++;
+                        }
                     }
                 }
             }
 
-            await interaction.editReply(`✅ **Ellenőrzés kész!**\n\n👥 Összes tag: ${checkedCount}\n❓ Nem hitelesített: ${unverifiedCount}\n➕ Vendég rang kiosztva: ${updatedCount}`);
+            let replyMessage = `✅ **Ellenőrzés kész!**\n\n👥 Összes tag: ${checkedCount}\n❓ Nem hitelesített: ${unverifiedCount}\n➕ Vendég rang kiosztva: ${updatedCount}`;
+            
+            if (failedCount > 0) {
+                replyMessage += `\n⚠️ **Sikertelen:** ${failedCount} (Jogosultság hiba? Ellenőrizd a bot rangjának sorrendjét!)`;
+            }
+
+            await interaction.editReply(replyMessage);
 
         } catch (error) {
             console.error('Recheck error:', error);
