@@ -52,6 +52,7 @@ usersRouter.get(
                     role: true,
                     elo: true,
                     email: true,
+                    omId: true,
                     createdAt: true,
                     timeBalanceSeconds: true
                 }

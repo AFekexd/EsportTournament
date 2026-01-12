@@ -87,7 +87,11 @@ class DiscordService {
                 .addStringOption(option =>
                     option.setName('azonosito')
                         .setDescription('A 11 jegyű oktatási azonosítód')
-                        .setRequired(true))
+                        .setRequired(true)),
+            new SlashCommandBuilder()
+                .setName('recheck')
+                .setDescription('Jogosultságok újraellenőrzése (Admin)')
+                .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
         ];
 
         try {
@@ -114,6 +118,8 @@ class DiscordService {
             if (interaction.isChatInputCommand()) {
                 if (interaction.commandName === 'om') {
                     await this.handleOmCommand(interaction);
+                } else if (interaction.commandName === 'recheck') {
+                    await this.handleRecheckCommand(interaction);
                 }
             }
         });
@@ -165,11 +171,16 @@ class DiscordService {
             });
 
             // Sync User (Nickname + Roles)
-            const success = await this.syncUser(user.id);
-            if (success) {
-                await interaction.editReply(`✅ Sikeres hitelesítés! Üdvözöllek, **${user.displayName}**! A rangjaid frissítve lettek.`);
+            // Sync User (Nickname + Roles)
+            const result = await this.syncUser(user.id);
+            if (result.success) {
+                if (result.nicknameUpdated) {
+                    await interaction.editReply(`✅ Sikeres hitelesítés! Üdvözöllek, **${user.displayName}**! A rangjaid és a neved frissítve lett.`);
+                } else {
+                    await interaction.editReply(`✅ Sikeres hitelesítés, de a nevedet nem tudtam módosítani (jogosultság). A rangjaid frissítve lettek.`);
+                }
             } else {
-                 await interaction.editReply(`✅ Sikeres hitelesítés, de a rangok frissítése közben hiba történt. Kérlek szólj egy adminnak.`);
+                 await interaction.editReply(`✅ Sikeres hitelesítés, de a szinkronizáció (rang/név) közben hiba történt: ${result.message || 'Ismeretlen hiba'}.`);
             }
 
         } catch (error) {
@@ -178,22 +189,37 @@ class DiscordService {
         }
     }
 
-    public async syncUser(userId: string): Promise<boolean> {
-        if (!this.isReady) return false;
+    public async syncUser(userId: string): Promise<{ success: boolean; nicknameUpdated: boolean; message?: string }> {
+        if (!this.isReady) return { success: false, nicknameUpdated: false, message: 'Bot not ready' };
 
         try {
             const user = await prisma.user.findUnique({ where: { id: userId } });
-            if (!user || !user.discordId) return false;
+            if (!user || !user.discordId) return { success: false, nicknameUpdated: false, message: 'User or Discord ID missing' };
 
             const guild = await this.client.guilds.fetch(this.guildId);
-            if (!guild) return false;
+            if (!guild) return { success: false, nicknameUpdated: false, message: 'Guild not found' };
 
             const member = await guild.members.fetch(user.discordId).catch(() => null);
-            if (!member) return false;
+            if (!member) return { success: false, nicknameUpdated: false, message: 'Member not found in guild' };
+
+            let nicknameUpdated = false;
 
             // 1. Update Nickname
-            if (member.manageable && user.displayName) {
-                await member.setNickname(user.displayName).catch(err => console.error('Failed to set nickname:', err));
+            if (user.displayName && member.displayName !== user.displayName) {
+                if (member.manageable) {
+                    try {
+                        await member.setNickname(user.displayName);
+                        console.log(`✅ Updated nickname for ${member.user.tag} to "${user.displayName}"`);
+                        nicknameUpdated = true;
+                    } catch (err) {
+                        console.error('Failed to set nickname:', err);
+                        // Don't fail the whole sync, just note it
+                    }
+                } else {
+                    console.warn(`Cannot manage nickname for user ${member.user.tag} (Role hierarchy or owner)`);
+                }
+            } else if (member.displayName === user.displayName) {
+                nicknameUpdated = true; // Already correct
             }
 
             // 2. Manage Roles
@@ -213,9 +239,7 @@ class DiscordService {
                 if (role) {
                      await member.roles.add(role).catch(err => console.error(`Failed to add role ${roleName}:`, err));
                 } else {
-                     // Optionally create role if missing? For now just log
                      console.warn(`Role ${roleName} not found in guild.`);
-                     // await this.ensureRoleExists(roleName); // Could auto-create
                 }
             }
 
@@ -227,11 +251,76 @@ class DiscordService {
                 }
             }
 
-            return true;
+            return { success: true, nicknameUpdated };
+
+        } catch (error: any) {
+            console.error('Sync user error:', error);
+            return { success: false, nicknameUpdated: false, message: error.message };
+        }
+    }
+
+    private async handleRecheckCommand(interaction: ChatInputCommandInteraction) {
+        // Double check admin permission just in case
+        if (!interaction.memberPermissions?.has(PermissionsBitField.Flags.Administrator)) {
+            await interaction.reply({ content: '❌ Nincs jogosultságod ehhez a parancshoz.', ephemeral: true });
+            return;
+        }
+
+        await interaction.deferReply({ ephemeral: true });
+
+        try {
+            const guild = await this.client.guilds.fetch(this.guildId);
+            if (!guild) {
+                await interaction.editReply('❌ Nem találtam a szervert.');
+                return;
+            }
+
+            await interaction.editReply('🔄 Felhasználók ellenőrzése folyamatban... Ez eltarthat egy ideig.');
+
+            const members = await guild.members.fetch(); // Fetch all members
+            const allRoles = await guild.roles.fetch();
+            
+            // Define roles that count as "Verified"
+            const verifiedRoleNames = [...BASE_VERIFIED_ROLES, ...Object.values(DISCORD_ROLE_MAP)];
+            const verifiedRoleIds = allRoles
+                .filter(r => verifiedRoleNames.some(vr => vr.toLowerCase() === r.name.toLowerCase()))
+                .map(r => r.id);
+
+            // Define Guest role
+            const guestRoleName = GUEST_ROLES[0] || 'Vendég';
+            const guestRole = allRoles.find(r => r.name.toLowerCase() === guestRoleName.toLowerCase());
+
+            if (!guestRole) {
+                await interaction.editReply(`❌ Nem találom a(z) "${guestRoleName}" rangot a szerveren.`);
+                return;
+            }
+
+            let checkedCount = 0;
+            let unverifiedCount = 0;
+            let updatedCount = 0;
+
+            for (const [_, member] of members) {
+                if (member.user.bot) continue;
+                checkedCount++;
+
+                // Check if user has ANY verified role
+                const isVerified = member.roles.cache.some(r => verifiedRoleIds.includes(r.id));
+
+                if (!isVerified) {
+                    unverifiedCount++;
+                    // If not verified, ensure they have Guest role
+                    if (!member.roles.cache.has(guestRole.id)) {
+                        await member.roles.add(guestRole).catch(console.error);
+                        updatedCount++;
+                    }
+                }
+            }
+
+            await interaction.editReply(`✅ **Ellenőrzés kész!**\n\n👥 Összes tag: ${checkedCount}\n❓ Nem hitelesített: ${unverifiedCount}\n➕ Vendég rang kiosztva: ${updatedCount}`);
 
         } catch (error) {
-            console.error('Sync user error:', error);
-            return false;
+            console.error('Recheck error:', error);
+            await interaction.editReply('❌ Hiba történt az ellenőrzés során.');
         }
     }
 

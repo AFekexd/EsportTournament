@@ -21,6 +21,7 @@ export interface User {
     steamPersonaname?: string;
     steamCreatedAt?: string;
     perfectGamesCount?: number;
+    omId?: string | null;
 }
 
 export interface Team {

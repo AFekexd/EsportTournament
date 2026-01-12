@@ -18,6 +18,7 @@ interface User {
   role: "ADMIN" | "ORGANIZER" | "MODERATOR" | "TEACHER" | "STUDENT";
   elo: number;
   timeBalanceSeconds: number;
+  omId: string | null;
   createdAt: string;
 }
 
@@ -47,7 +48,7 @@ export function UserManagement() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => { },
+    onConfirm: () => {},
     variant: "primary",
   });
 
@@ -61,7 +62,7 @@ export function UserManagement() {
         const token = authService.keycloak?.token;
         if (!token) return;
         const res = await fetch(`${API_URL}/stats`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
         setStats(data);
@@ -81,14 +82,14 @@ export function UserManagement() {
         page: page.toString(),
         limit: limit.toString(),
       });
-      // We are client-side searching for now based on implementation below, 
+      // We are client-side searching for now based on implementation below,
       // but to get ALL users for client-side search we would need to fetch all?
       // Wait, the backend SEARCH logic is server side.
       // But the frontend currently filters `users.filter(...)`.
       // If we move to pagination, we MUST rely on server-side search.
 
       // Let's check the previous code logic:
-      // It was fetching ALL (limited to 100 by backend) and then filtering client side? 
+      // It was fetching ALL (limited to 100 by backend) and then filtering client side?
       // The old backend logic: take: min(limit, 100).
       // The old frontend logic: fetch all passed, filter client side.
 
@@ -201,11 +202,11 @@ export function UserManagement() {
   // To verify this: check `users.ts`: `const where: any = {}; if (search) ...`
   // So server-side role filtering is NOT implemented.
 
-  // Implication: If I use server-side pagination, I can't effectively filter by role client-side 
+  // Implication: If I use server-side pagination, I can't effectively filter by role client-side
   // without losing results that are on other pages.
   // But for now, to satisfy the immediate "pagination" request, I will just filter what we have.
   // This is a limitation, but acceptable for a quick fix unless I update backend for role too.
-  // ... Actually, the user just said "pagination". 
+  // ... Actually, the user just said "pagination".
 
   // Filter logic is now server-side
   const filteredUsers = users;
@@ -341,35 +342,37 @@ export function UserManagement() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div
           className="bg-[#0f1015] rounded-xl border border-white/5 p-4 cursor-pointer hover:border-primary/50 transition-colors"
-          onClick={() => setSelectedRole('ALL')}
+          onClick={() => setSelectedRole("ALL")}
         >
-          <div className="text-2xl font-bold text-white">{stats?.registeredUsers || '-'}</div>
+          <div className="text-2xl font-bold text-white">
+            {stats?.registeredUsers || "-"}
+          </div>
           <div className="text-sm text-gray-400">Összes felhasználó</div>
         </div>
         <div
           className="bg-[#0f1015] rounded-xl border border-white/5 p-4 cursor-pointer hover:border-red-500/50 transition-colors"
-          onClick={() => setSelectedRole('ADMIN')}
+          onClick={() => setSelectedRole("ADMIN")}
         >
           <div className="text-2xl font-bold text-red-400">
-            {stats?.usersByRole?.['ADMIN'] || 0}
+            {stats?.usersByRole?.["ADMIN"] || 0}
           </div>
           <div className="text-sm text-gray-400">Admin</div>
         </div>
         <div
           className="bg-[#0f1015] rounded-xl border border-white/5 p-4 cursor-pointer hover:border-green-500/50 transition-colors"
-          onClick={() => setSelectedRole('TEACHER')}
+          onClick={() => setSelectedRole("TEACHER")}
         >
           <div className="text-2xl font-bold text-green-400">
-            {stats?.usersByRole?.['TEACHER'] || 0}
+            {stats?.usersByRole?.["TEACHER"] || 0}
           </div>
           <div className="text-sm text-gray-400">Tanár</div>
         </div>
         <div
           className="bg-[#0f1015] rounded-xl border border-white/5 p-4 cursor-pointer hover:border-blue-500/50 transition-colors"
-          onClick={() => setSelectedRole('MODERATOR')}
+          onClick={() => setSelectedRole("MODERATOR")}
         >
           <div className="text-2xl font-bold text-blue-400">
-            {stats?.usersByRole?.['MODERATOR'] || 0}
+            {stats?.usersByRole?.["MODERATOR"] || 0}
           </div>
           <div className="text-sm text-gray-400">Moderátor</div>
         </div>
@@ -382,6 +385,7 @@ export function UserManagement() {
             <tr className="border-b border-white/10 text-muted text-sm uppercase">
               <th className="p-3">Felhasználó</th>
               <th className="p-3">Email</th>
+              <th className="p-3">OM Azonosító</th>
               <th className="p-3">Szerep</th>
               <th className="p-3 text-center">Időkeret</th>
               <th className="p-3 text-center">ELO</th>
@@ -435,12 +439,16 @@ export function UserManagement() {
                     </Link>
                   </td>
                   <td className="p-3 text-muted">{user.email}</td>
+                  <td className="p-3 font-mono text-sm text-gray-400">
+                    {user.omId || "-"}
+                  </td>
                   <td className="p-3">{getRoleBadge(user.role)}</td>
                   <td
-                    className={`p-3 text-center font-mono text-sm ${user.timeBalanceSeconds < 0
-                      ? "text-red-400"
-                      : "text-green-400"
-                      }`}
+                    className={`p-3 text-center font-mono text-sm ${
+                      user.timeBalanceSeconds < 0
+                        ? "text-red-400"
+                        : "text-green-400"
+                    }`}
                   >
                     {["ADMIN", "TEACHER"].includes(user.role)
                       ? "∞"
@@ -495,12 +503,16 @@ export function UserManagement() {
       <div className="flex items-center justify-between mt-4 px-2">
         <div className="text-sm text-gray-400">
           {totalUsers > 0 && <span>Összesen: {totalUsers} találat</span>}
-          {totalPages > 1 && <span className="ml-2">• Oldal: {page} / {totalPages}</span>}
+          {totalPages > 1 && (
+            <span className="ml-2">
+              • Oldal: {page} / {totalPages}
+            </span>
+          )}
         </div>
         <div className="flex gap-1">
           <button
             className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-sm text-white disabled:opacity-30 hover:bg-white/10 transition-colors"
-            onClick={() => setPage(p => Math.max(1, p - 1))}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
           >
             Előző
@@ -517,10 +529,11 @@ export function UserManagement() {
                   <button
                     key={p}
                     onClick={() => setPage(p)}
-                    className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors mx-0.5 ${page === p
-                      ? 'bg-primary text-white'
-                      : 'bg-white/5 text-gray-400 hover:bg-white/10'
-                      }`}
+                    className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors mx-0.5 ${
+                      page === p
+                        ? "bg-primary text-white"
+                        : "bg-white/5 text-gray-400 hover:bg-white/10"
+                    }`}
                   >
                     {p}
                   </button>
@@ -531,7 +544,7 @@ export function UserManagement() {
           </div>
           <button
             className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-sm text-white disabled:opacity-30 hover:bg-white/10 transition-colors"
-            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
           >
             Következő
@@ -539,39 +552,33 @@ export function UserManagement() {
         </div>
       </div>
 
-      {
-        roleModalUser && (
-          <RoleChangeModal
-            user={roleModalUser}
-            onClose={() => setRoleModalUser(null)}
-            onSave={handleRoleUpdate}
-          />
-        )
-      }
+      {roleModalUser && (
+        <RoleChangeModal
+          user={roleModalUser}
+          onClose={() => setRoleModalUser(null)}
+          onSave={handleRoleUpdate}
+        />
+      )}
 
-      {
-        timeModalUser && (
-          <UserTimeModal
-            user={timeModalUser}
-            onClose={() => setTimeModalUser(null)}
-            onSuccess={() => {
-              fetchUsers(); // Refresh to show new balance
-            }}
-          />
-        )
-      }
+      {timeModalUser && (
+        <UserTimeModal
+          user={timeModalUser}
+          onClose={() => setTimeModalUser(null)}
+          onSuccess={() => {
+            fetchUsers(); // Refresh to show new balance
+          }}
+        />
+      )}
 
-      {
-        editModalUser && (
-          <UserEditModal
-            user={editModalUser}
-            onClose={() => setEditModalUser(null)}
-            onSuccess={() => {
-              fetchUsers(); // Refresh to show new name/avatar
-            }}
-          />
-        )
-      }
+      {editModalUser && (
+        <UserEditModal
+          user={editModalUser}
+          onClose={() => setEditModalUser(null)}
+          onSuccess={() => {
+            fetchUsers(); // Refresh to show new name/avatar
+          }}
+        />
+      )}
 
       <ConfirmationModal
         isOpen={confirmModal.isOpen}
