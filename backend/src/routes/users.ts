@@ -5,7 +5,7 @@ import { authenticate, optionalAuth, AuthenticatedRequest } from '../middleware/
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { UserRole } from '../utils/enums.js';
 
-export const usersRouter = Router();
+export const usersRouter: Router = Router();
 
 // Get all users (Admin/Organizer only) or Search users
 usersRouter.get(

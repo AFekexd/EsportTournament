@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Router } from 'express';
 import prisma from '../lib/prisma.js';
 import multer from 'multer';
 
@@ -147,4 +147,4 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-export const clientUpdateRouter = router;
+export const clientUpdateRouter: Router = router;

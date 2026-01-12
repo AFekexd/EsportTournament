@@ -3,7 +3,7 @@ import { logSystemActivity } from '../services/logService.js';
 import prisma from '../lib/prisma.js'; // Assuming this is where prisma client is exported in new backend
 import { emitMachineUpdate, emitUserUpdate, emitSessionUpdate } from '../services/socket.js'; // Import helper from socket service
 
-export const kioskRouter = Router();
+export const kioskRouter: Router = Router();
 
 // Start Session
 kioskRouter.post('/session/start', async (req, res) => {

@@ -3,7 +3,7 @@ import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 
-export const logsRouter = Router();
+export const logsRouter: Router = Router();
 
 // Get logs with filtering and pagination (Admin only)
 logsRouter.get(

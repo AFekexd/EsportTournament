@@ -37,7 +37,7 @@ import { clientUpdateRouter } from './routes/clientUpdate.js';
 
 
 
-const app = express();
+const app: express.Express = express();
 const httpServer = createServer(app); // Create HTTP server for Socket.IO
 const io = new Server(httpServer, {
   cors: {

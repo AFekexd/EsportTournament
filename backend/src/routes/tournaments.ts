@@ -9,7 +9,7 @@ import { notificationService } from '../services/notificationService.js';
 import { UserRole, TournamentStatus } from '../utils/enums.js';
 import { tournamentService } from '../services/tournamentService.js';
 
-export const tournamentsRouter = Router();
+export const tournamentsRouter: Router = Router();
 
 // Get all tournaments
 tournamentsRouter.get(

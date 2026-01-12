@@ -6,7 +6,7 @@ import { authenticate, AuthenticatedRequest, optionalAuth } from '../middleware/
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { processImage, isBase64DataUrl, validateImageSize } from '../utils/imageProcessor.js';
 
-export const teamsRouter = Router();
+export const teamsRouter: Router = Router();
 
 // Generate unique join code
 function generateJoinCode(): string {

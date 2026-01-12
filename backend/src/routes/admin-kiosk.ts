@@ -5,7 +5,7 @@ import { emitMachineUpdate } from '../services/socket.js';
 import { authenticate, requireRole } from '../middleware/auth.js';
 import { notificationService } from '../services/notificationService.js';
 
-export const adminKioskRouter = Router();
+export const adminKioskRouter: Router = Router();
 
 // Get all machines
 adminKioskRouter.get('/machines', async (req, res) => {

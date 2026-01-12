@@ -4,7 +4,7 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 import { discordService } from '../services/discordService.js';
 import prisma from '../lib/prisma.js';
 
-export const discordRouter = Router();
+export const discordRouter: Router = Router();
 
 // Get available Discord channels
 discordRouter.get(

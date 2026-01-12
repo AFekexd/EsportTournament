@@ -5,7 +5,7 @@ import { discordService } from '../services/discordService.js';
 import { authenticate, AuthenticatedRequest, getHighestRole } from '../middleware/auth.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 
-export const authRouter = Router();
+export const authRouter: Router = Router();
 
 // Sync user from Keycloak to database
 authRouter.post(

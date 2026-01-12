@@ -5,7 +5,7 @@ import prisma from '../lib/prisma.js';
 const router = express.Router();
 
 // GET /share/tournaments/:id
-router.get('/tournaments/:id', async (req: Request, res: Response) => {
+router.get('/tournaments/:id', async (req: Request<{ id: string }>, res: Response) => {
     try {
         const { id } = req.params;
         const tournament = await prisma.tournament.findUnique({
@@ -103,4 +103,4 @@ router.get('/tournaments/:id', async (req: Request, res: Response) => {
     }
 });
 
-export const shareRouter = router;
+export const shareRouter: express.Router = router;

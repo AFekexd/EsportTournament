@@ -7,7 +7,7 @@ import { isBase64Pdf, validatePdfSize } from '../utils/pdfProcessor.js';
 import { notificationService } from '../services/notificationService.js';
 import { logSystemActivity } from '../services/logService.js';
 
-export const gamesRouter = Router();
+export const gamesRouter: Router = Router();
 
 // Get all games
 gamesRouter.get(
@@ -95,7 +95,7 @@ gamesRouter.get(
     '/:id',
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
         const game = await prisma.game.findUnique({
-            where: { id: req.params.id },
+            where: { id: req.params.id as string},
             include: {
                 tournaments: {
                     where: { status: { in: ['REGISTRATION', 'IN_PROGRESS'] } },
@@ -155,7 +155,7 @@ gamesRouter.patch(
         }
 
         const game = await prisma.game.update({
-            where: { id: req.params.id },
+            where: { id: req.params.id as string },
             data: {
                 ...(name && { name }),
                 ...(description !== undefined && { description }),
@@ -188,14 +188,14 @@ gamesRouter.delete(
 
         // Check for existing tournaments
         const tournamentCount = await prisma.tournament.count({
-            where: { gameId: req.params.id },
+            where: { gameId: req.params.id as string },
         });
 
         if (tournamentCount > 0) {
             throw new ApiError('Nem lehet törölni olyan játékot, amelyhez versenyek tartoznak', 400, 'HAS_TOURNAMENTS');
         }
 
-        await prisma.game.delete({ where: { id: req.params.id } });
+        await prisma.game.delete({ where: { id: req.params.id as string } });
 
         // Log deletion
         await logSystemActivity('GAME_DELETE', `Game ID ${req.params.id} deleted by ${user.username}`, { adminId: user.id });
@@ -209,7 +209,7 @@ gamesRouter.get(
     '/:id/ranks',
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
         const ranks = await prisma.rank.findMany({
-            where: { gameId: req.params.id },
+            where: { gameId: req.params.id as string },
             orderBy: { order: 'asc' },
         });
 
@@ -238,7 +238,7 @@ gamesRouter.post(
 
         const rank = await prisma.rank.create({
             data: {
-                gameId: req.params.id,
+                gameId: req.params.id as string,
                 name,
                 value: Number(value),
                 image,
@@ -264,7 +264,7 @@ gamesRouter.delete(
         }
 
         await prisma.rank.delete({
-            where: { id: req.params.rankId },
+            where: { id: req.params.rankId as string },
         });
 
         res.json({ success: true, message: 'Rank deleted' });

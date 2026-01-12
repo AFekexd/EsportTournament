@@ -3,7 +3,7 @@ import { optionalAuth, AuthenticatedRequest } from '../middleware/auth.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import prisma from '../lib/prisma.js';
 
-export const leaderboardsRouter = Router();
+export const leaderboardsRouter: Router = Router();
 
 // Get global player leaderboard
 leaderboardsRouter.get(

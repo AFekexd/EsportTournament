@@ -4,7 +4,7 @@ import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { notificationService } from '../services/notificationService.js';
 import prisma from '../lib/prisma.js';
 
-export const notificationsRouter = Router();
+export const notificationsRouter: Router = Router();
 
 // Get user notifications
 notificationsRouter.get(

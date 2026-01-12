@@ -6,7 +6,7 @@ import { authenticate, AuthenticatedRequest, optionalAuth } from '../middleware/
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { BookingNotificationService } from '../services/BookingNotificationService.js';
 
-export const bookingsRouter = Router();
+export const bookingsRouter: Router = Router();
 
 // Get all computers
 bookingsRouter.get(
@@ -71,7 +71,7 @@ bookingsRouter.delete(
         }
 
         await prisma.computer.delete({
-            where: { id: req.params.id },
+            where: { id: req.params.id as string },
         });
 
         await logSystemActivity('COMPUTER_DELETE', `Computer ID ${req.params.id} deleted by ${user.username}`, { adminId: user.id });
@@ -190,7 +190,7 @@ bookingsRouter.delete(
         }
 
         await prisma.bookingSchedule.delete({
-            where: { id: req.params.id },
+            where: { id: req.params.id as string },
         });
 
         await logSystemActivity('SCHEDULE_DELETE', `Booking schedule ID ${req.params.id} deleted by ${user.username}`, { adminId: user.id });
@@ -205,7 +205,7 @@ bookingsRouter.get(
     optionalAuth,
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
         const dateStr = req.params.date; // Format: YYYY-MM-DD
-        const date = new Date(dateStr);
+        const date = new Date(dateStr as string);
 
         if (isNaN(date.getTime())) {
             throw new ApiError('Érvénytelen dátum formátum. Használd: ÉÉÉÉ-HH-NN', 400, 'INVALID_DATE');
@@ -489,7 +489,7 @@ bookingsRouter.delete(
         }
 
         const booking = await prisma.booking.findUnique({
-            where: { id: req.params.id },
+            where: { id: req.params.id as string },
         });
 
         if (!booking) {
@@ -502,7 +502,7 @@ bookingsRouter.delete(
         }
 
         await prisma.booking.delete({
-            where: { id: req.params.id },
+            where: { id: req.params.id as string },
         });
 
         await logSystemActivity(
@@ -703,7 +703,7 @@ bookingsRouter.get(
     '/week/:startDate',
     optionalAuth,
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-        const startDate = new Date(req.params.startDate);
+        const startDate = new Date(req.params.startDate as string);
         if (isNaN(startDate.getTime())) {
             throw new ApiError('Érvénytelen dátum formátum. Használd: ÉÉÉÉ-HH-NN', 400, 'INVALID_DATE');
         }
@@ -746,7 +746,7 @@ bookingsRouter.patch(
         }
 
         const booking = await prisma.booking.findUnique({
-            where: { id: req.params.id },
+            where: { id: req.params.id as string },
         });
 
         if (!booking) {
@@ -781,7 +781,7 @@ bookingsRouter.patch(
         }
 
         const updatedBooking = await prisma.booking.update({
-            where: { id: req.params.id },
+            where: { id: req.params.id as string },
             data: {
                 computerId: targetComputerId,
                 startTime: start,
@@ -826,7 +826,7 @@ bookingsRouter.post(
 
         const booking = await prisma.booking.findFirst({
             where: {
-                id: req.params.id,
+                id: req.params.id as string,
                 checkInCode,
             },
         });
@@ -884,7 +884,7 @@ bookingsRouter.get(
     '/computers/:id',
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
         const computer = await prisma.computer.findUnique({
-            where: { id: req.params.id },
+            where: { id: req.params.id as string },
         });
 
         if (!computer) {
@@ -912,7 +912,7 @@ bookingsRouter.patch(
         const { specs, installedGames, status, isActive, name, row, position } = req.body;
 
         const computer = await prisma.computer.update({
-            where: { id: req.params.id },
+            where: { id: req.params.id as string },
             data: {
                 ...(name !== undefined && { name }),
                 ...(row !== undefined && { row }),
@@ -990,7 +990,7 @@ bookingsRouter.delete(
         }
 
         const entry = await prisma.waitlist.findUnique({
-            where: { id: req.params.id },
+            where: { id: req.params.id as string },
         });
 
         if (!entry) {
@@ -1002,7 +1002,7 @@ bookingsRouter.delete(
         }
 
         await prisma.waitlist.delete({
-            where: { id: req.params.id },
+            where: { id: req.params.id as string },
         });
 
         await logSystemActivity('WAITLIST_LEAVE', `User ${user.username} removed from waitlist`, { userId: user.id });

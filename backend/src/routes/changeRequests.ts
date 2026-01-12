@@ -6,7 +6,7 @@ import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { logSystemActivity } from '../services/logService.js';
 import { UserRole } from '../utils/enums.js';
 
-export const changeRequestsRouter = Router();
+export const changeRequestsRouter: Router = Router();
 
 // Get all pending requests (Admin/Organizer/Moderator only)
 changeRequestsRouter.get(
@@ -85,7 +85,7 @@ changeRequestsRouter.post(
             throw new ApiError('Nincs jogosultságod a kérelem jóváhagyásához', 403, 'FORBIDDEN');
         }
 
-        const request = await prisma.changeRequest.findUnique({ where: { id: req.params.id } });
+        const request = await prisma.changeRequest.findUnique({ where: { id: req.params.id as string } });
 
         if (!request) {
             throw new ApiError('A kérelem nem található', 404, 'NOT_FOUND');
@@ -152,7 +152,7 @@ changeRequestsRouter.post(
             throw new ApiError('Nincs jogosultságod a kérelem elutasításához', 403, 'FORBIDDEN');
         }
 
-        const request = await prisma.changeRequest.findUnique({ where: { id: req.params.id } });
+        const request = await prisma.changeRequest.findUnique({ where: { id: req.params.id as string } });
 
         if (!request) {
             throw new ApiError('A kérelem nem található', 404, 'NOT_FOUND');

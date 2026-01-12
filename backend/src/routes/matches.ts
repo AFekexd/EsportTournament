@@ -4,7 +4,7 @@ import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 
-export const matchesRouter = Router();
+export const matchesRouter: Router = Router();
 
 // ELO calculation constants
 const K_FACTOR = 32;

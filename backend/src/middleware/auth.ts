@@ -43,7 +43,16 @@ export interface KeycloakTokenPayload {
     };
 }
 
-export interface AuthenticatedRequest extends Request {
+export interface StrictParams {
+    [key: string]: string;
+}
+
+export interface AuthenticatedRequest<
+    P = StrictParams,
+    ResBody = any,
+    ReqBody = any,
+    ReqQuery = any
+> extends Request<P, ResBody, ReqBody, ReqQuery> {
     user?: KeycloakTokenPayload;
 }
 
