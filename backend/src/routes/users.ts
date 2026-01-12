@@ -151,7 +151,12 @@ usersRouter.patch(
             throw new ApiError('Nincs jogosultságod a profil szerkesztéséhez', 403, 'FORBIDDEN');
         }
 
-        const { displayName, avatarUrl, emailNotifications, steamId } = req.body;
+        const { displayName, avatarUrl, emailNotifications, steamId } = req.body as {
+            displayName?: string;
+            avatarUrl?: string;
+            emailNotifications?: boolean;
+            steamId?: string;
+        };
 
         if (displayName && displayName !== currentUser.displayName && currentUser.role !== UserRole.ADMIN) {
             throw new ApiError('A megjelenítendő nevet csak adminisztrátor módosíthatja', 403, 'FORBIDDEN');
@@ -252,12 +257,14 @@ usersRouter.get(
                 perfectGamesCount: true,
                 createdAt: true,
                 teamMemberships: {
-                    include: {
+                    select: {
                         team: true
                     }
                 },
                 ranks: {
-                    include: {
+                    select: {
+                        id: true,
+                        gameId: true,
                         rank: true,
                         game: true
                     }
