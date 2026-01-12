@@ -119,6 +119,7 @@ model User {
   adminLogs         Log[]              @relation("LogAdmin")
 
   ranks             UserRank[]
+  changeRequests    ChangeRequest[]
 }
 
 // Csapat
@@ -472,4 +473,31 @@ model ClientVersion {
   fileData    Bytes    // The binary content of the update ZIP
   isActive    Boolean  @default(false) // Only one version should be active (latest)
   createdAt   DateTime @default(now())
+}
+
+// ============================================
+// CHANGE REQUESTS
+// ============================================
+
+enum ChangeType {
+  USER_PROFILE
+  TEAM_PROFILE
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model ChangeRequest {
+  id          String        @id @default(uuid())
+  type        ChangeType
+  entityId    String        // ID of the User or Team
+  requesterId String        // User ID who made the request
+  requester   User          @relation(fields: [requesterId], references: [id])
+  data        Json          // The requested changes (e.g. { name: "New", logoUrl: "..." })
+  status      RequestStatus @default(PENDING)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }

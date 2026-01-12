@@ -14,6 +14,7 @@ router.get('/', async (req, res, next) => {
       registeredUsersCount,
       createdTeamsCount,
       playedMatchesCount,
+      usersByRole,
     ] = await Promise.all([
       // Count active tournaments (REGISTRATION or IN_PROGRESS)
       prisma.tournament.count({
@@ -36,13 +37,26 @@ router.get('/', async (req, res, next) => {
           ]
         },
       }),
+      // Count users by role
+      prisma.user.groupBy({
+        by: ['role'],
+        _count: {
+          role: true
+        }
+      })
     ]);
+
+    const roleCounts = usersByRole.reduce((acc, curr) => {
+      acc[curr.role] = curr._count.role;
+      return acc;
+    }, {} as Record<string, number>);
 
     res.json({
       activeTournaments: activeTournamentsCount,
       registeredUsers: registeredUsersCount,
       createdTeams: createdTeamsCount,
       playedMatches: playedMatchesCount,
+      usersByRole: roleCounts
     });
   } catch (error) {
     next(error);

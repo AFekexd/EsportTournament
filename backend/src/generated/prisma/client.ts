@@ -139,3 +139,8 @@ export type BookingSchedule = Prisma.BookingScheduleModel
  * 
  */
 export type ClientVersion = Prisma.ClientVersionModel
+/**
+ * Model ChangeRequest
+ * 
+ */
+export type ChangeRequest = Prisma.ChangeRequestModel

@@ -280,6 +280,30 @@ teamsRouter.patch(
             processedCoverUrl = await processImage(coverUrl);
         }
 
+        // If not Admin/Organizer, create Change Request instead of immediate update
+        if (!['ADMIN', 'ORGANIZER', 'MODERATOR'].includes(user.role)) {
+            await prisma.changeRequest.create({
+                data: {
+                    type: 'TEAM_PROFILE',
+                    entityId: req.params.id,
+                    requesterId: user.id,
+                    data: {
+                        ...(name && { name }),
+                        ...(description !== undefined && { description }),
+                        ...(processedLogoUrl !== undefined && { logoUrl: processedLogoUrl }),
+                        ...(processedCoverUrl !== undefined && { coverUrl: processedCoverUrl }),
+                    }
+                }
+            });
+
+            res.status(202).json({
+                success: true,
+                message: 'A változtatások jóváhagyásra várnak.',
+                data: team // Return current data
+            });
+            return;
+        }
+
         const updatedTeam = await prisma.team.update({
             where: { id: req.params.id },
             data: {

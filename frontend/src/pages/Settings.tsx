@@ -100,6 +100,11 @@ export function SettingsPage() {
         throw new Error(data.message || "Failed to update profile");
       }
 
+      if (response.status === 202) {
+        toast.info(data.message || "A változtatások jóváhagyásra várnak.");
+        return;
+      }
+
       setSaveSuccess(true);
       dispatch(updateUser(data.data));
       toast.success("Beállítások sikeresen mentve!");

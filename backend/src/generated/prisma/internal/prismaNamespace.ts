@@ -403,7 +403,8 @@ export const ModelName = {
   Log: 'Log',
   Waitlist: 'Waitlist',
   BookingSchedule: 'BookingSchedule',
-  ClientVersion: 'ClientVersion'
+  ClientVersion: 'ClientVersion',
+  ChangeRequest: 'ChangeRequest'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -419,7 +420,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "team" | "teamMember" | "game" | "tournament" | "tournamentEntry" | "match" | "gameStats" | "rank" | "userRank" | "notification" | "event" | "discordSettings" | "computer" | "booking" | "session" | "log" | "waitlist" | "bookingSchedule" | "clientVersion"
+    modelProps: "user" | "team" | "teamMember" | "game" | "tournament" | "tournamentEntry" | "match" | "gameStats" | "rank" | "userRank" | "notification" | "event" | "discordSettings" | "computer" | "booking" | "session" | "log" | "waitlist" | "bookingSchedule" | "clientVersion" | "changeRequest"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1903,6 +1904,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ChangeRequest: {
+      payload: Prisma.$ChangeRequestPayload<ExtArgs>
+      fields: Prisma.ChangeRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChangeRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChangeRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.ChangeRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChangeRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeRequestPayload>
+        }
+        findMany: {
+          args: Prisma.ChangeRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeRequestPayload>[]
+        }
+        create: {
+          args: Prisma.ChangeRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeRequestPayload>
+        }
+        createMany: {
+          args: Prisma.ChangeRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChangeRequestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeRequestPayload>[]
+        }
+        delete: {
+          args: Prisma.ChangeRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeRequestPayload>
+        }
+        update: {
+          args: Prisma.ChangeRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.ChangeRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChangeRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChangeRequestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeRequestPayload>[]
+        }
+        upsert: {
+          args: Prisma.ChangeRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.ChangeRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChangeRequest>
+        }
+        groupBy: {
+          args: Prisma.ChangeRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChangeRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChangeRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChangeRequestCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2259,6 +2334,20 @@ export const ClientVersionScalarFieldEnum = {
 export type ClientVersionScalarFieldEnum = (typeof ClientVersionScalarFieldEnum)[keyof typeof ClientVersionScalarFieldEnum]
 
 
+export const ChangeRequestScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  entityId: 'entityId',
+  requesterId: 'requesterId',
+  data: 'data',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChangeRequestScalarFieldEnum = (typeof ChangeRequestScalarFieldEnum)[keyof typeof ChangeRequestScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2273,6 +2362,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -2510,6 +2606,34 @@ export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMode
 
 
 /**
+ * Reference to a field of type 'ChangeType'
+ */
+export type EnumChangeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChangeType'>
+    
+
+
+/**
+ * Reference to a field of type 'ChangeType[]'
+ */
+export type ListEnumChangeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChangeType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'RequestStatus'
+ */
+export type EnumRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RequestStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'RequestStatus[]'
+ */
+export type ListEnumRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RequestStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -2637,6 +2761,7 @@ export type GlobalOmitConfig = {
   waitlist?: Prisma.WaitlistOmit
   bookingSchedule?: Prisma.BookingScheduleOmit
   clientVersion?: Prisma.ClientVersionOmit
+  changeRequest?: Prisma.ChangeRequestOmit
 }
 
 /* Types for Logging */

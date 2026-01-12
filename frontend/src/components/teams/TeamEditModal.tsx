@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 import { X, Save } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { updateTeam } from "../../store/slices/teamsSlice";
@@ -36,17 +37,23 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
     }
 
     try {
-      await dispatch(
+      const result = await dispatch(
         updateTeam({
           id: team.id,
           data: {
             name: formData.name,
             description: formData.description || undefined,
-            logoUrl: formData.logoUrl || undefined,
-            coverUrl: formData.coverUrl || undefined,
+            logoUrl: formData.logoUrl === "" ? null : formData.logoUrl,
+            coverUrl: formData.coverUrl === "" ? null : formData.coverUrl,
           },
         })
       ).unwrap();
+
+      if ((result as any)._status === 202) {
+        toast.info((result as any)._message || "A változtatások jóváhagyásra várnak.");
+      } else {
+        toast.success("Csapat sikeresen frissítve");
+      }
 
       onClose();
     } catch (err) {

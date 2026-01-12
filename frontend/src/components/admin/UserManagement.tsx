@@ -29,6 +29,8 @@ export function UserManagement() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [limit] = useState(20);
+  const [totalUsers, setTotalUsers] = useState(0); // From meta.total (filtered)
+  const [stats, setStats] = useState<any>(null); // From /api/stats
 
   const [roleModalUser, setRoleModalUser] = useState<User | null>(null);
   const [timeModalUser, setTimeModalUser] = useState<User | null>(null);
@@ -53,9 +55,21 @@ export function UserManagement() {
     setConfirmModal((prev) => ({ ...prev, isOpen: false }));
 
   useEffect(() => {
-    // Initial fetch handled by other effects now
-    // But we need to make sure we don't double fetch.
-    // The [page] dependency below will trigger usage.
+    // Initial fetch of global stats
+    const fetchStats = async () => {
+      try {
+        const token = authService.keycloak?.token;
+        if (!token) return;
+        const res = await fetch(`${API_URL}/stats`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        setStats(data);
+      } catch (err) {
+        console.error("Failed to fetch stats", err);
+      }
+    };
+    fetchStats();
   }, []);
 
   const fetchUsers = async () => {
@@ -85,6 +99,10 @@ export function UserManagement() {
         params.append("search", searchTerm);
       }
 
+      if (selectedRole !== "ALL") {
+        params.append("role", selectedRole);
+      }
+
       const response = await fetch(`${API_URL}/users?${params.toString()}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -96,6 +114,7 @@ export function UserManagement() {
         setUsers(data.data);
         if (data.meta) {
           setTotalPages(data.meta.totalPages);
+          setTotalUsers(data.meta.total);
         }
       }
     } catch (error) {
@@ -112,7 +131,7 @@ export function UserManagement() {
       fetchUsers();
     }, 500);
     return () => clearTimeout(timer);
-  }, [searchTerm]);
+  }, [searchTerm, selectedRole]); // Trigger on role change too
 
   // Refetch when page changes
   useEffect(() => {
@@ -188,14 +207,8 @@ export function UserManagement() {
   // This is a limitation, but acceptable for a quick fix unless I update backend for role too.
   // ... Actually, the user just said "pagination". 
 
-  const filteredUsers = users.filter((user) => {
-    // Search is handled by server, but we can double check or just skip
-    // Actually, server search might be slightly different or we keep client side filter as backup?
-    // No, server returns the page matching the search.
-    // So we just filter by role here.
-    const matchesRole = selectedRole === "ALL" || user.role === selectedRole;
-    return matchesRole;
-  });
+  // Filter logic is now server-side
+  const filteredUsers = users;
 
   const handleDeleteUser = (userId: string) => {
     setConfirmModal({
@@ -326,25 +339,37 @@ export function UserManagement() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-[#0f1015] rounded-xl border border-white/5 p-4">
-          <div className="text-2xl font-bold text-white">{users.length}</div>
+        <div
+          className="bg-[#0f1015] rounded-xl border border-white/5 p-4 cursor-pointer hover:border-primary/50 transition-colors"
+          onClick={() => setSelectedRole('ALL')}
+        >
+          <div className="text-2xl font-bold text-white">{stats?.registeredUsers || '-'}</div>
           <div className="text-sm text-gray-400">Összes felhasználó</div>
         </div>
-        <div className="bg-[#0f1015] rounded-xl border border-white/5 p-4">
+        <div
+          className="bg-[#0f1015] rounded-xl border border-white/5 p-4 cursor-pointer hover:border-red-500/50 transition-colors"
+          onClick={() => setSelectedRole('ADMIN')}
+        >
           <div className="text-2xl font-bold text-red-400">
-            {users.filter((u) => u.role === "ADMIN").length}
+            {stats?.usersByRole?.['ADMIN'] || 0}
           </div>
           <div className="text-sm text-gray-400">Admin</div>
         </div>
-        <div className="bg-[#0f1015] rounded-xl border border-white/5 p-4">
+        <div
+          className="bg-[#0f1015] rounded-xl border border-white/5 p-4 cursor-pointer hover:border-green-500/50 transition-colors"
+          onClick={() => setSelectedRole('TEACHER')}
+        >
           <div className="text-2xl font-bold text-green-400">
-            {users.filter((u) => u.role === "TEACHER").length}
+            {stats?.usersByRole?.['TEACHER'] || 0}
           </div>
           <div className="text-sm text-gray-400">Tanár</div>
         </div>
-        <div className="bg-[#0f1015] rounded-xl border border-white/5 p-4">
+        <div
+          className="bg-[#0f1015] rounded-xl border border-white/5 p-4 cursor-pointer hover:border-blue-500/50 transition-colors"
+          onClick={() => setSelectedRole('MODERATOR')}
+        >
           <div className="text-2xl font-bold text-blue-400">
-            {users.filter((u) => u.role === "MODERATOR").length}
+            {stats?.usersByRole?.['MODERATOR'] || 0}
           </div>
           <div className="text-sm text-gray-400">Moderátor</div>
         </div>
@@ -469,18 +494,43 @@ export function UserManagement() {
       {/* Pagination Controls */}
       <div className="flex items-center justify-between mt-4 px-2">
         <div className="text-sm text-gray-400">
-          {totalPages > 1 && `Oldal: ${page} / ${totalPages}`}
+          {totalUsers > 0 && <span>Összesen: {totalUsers} találat</span>}
+          {totalPages > 1 && <span className="ml-2">• Oldal: {page} / {totalPages}</span>}
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-1">
           <button
-            className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-sm text-white disabled:opacity-50 hover:bg-white/10"
+            className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-sm text-white disabled:opacity-30 hover:bg-white/10 transition-colors"
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page === 1}
           >
             Előző
           </button>
+          <div className="flex items-center px-1">
+            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+              // Simple logic to show a window of pages around current page
+              let p = page - 2 + i;
+              if (page < 3) p = i + 1;
+              if (page > totalPages - 2) p = totalPages - 4 + i;
+
+              if (p > 0 && p <= totalPages) {
+                return (
+                  <button
+                    key={p}
+                    onClick={() => setPage(p)}
+                    className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors mx-0.5 ${page === p
+                      ? 'bg-primary text-white'
+                      : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                      }`}
+                  >
+                    {p}
+                  </button>
+                );
+              }
+              return null;
+            })}
+          </div>
           <button
-            className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-sm text-white disabled:opacity-50 hover:bg-white/10"
+            className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-sm text-white disabled:opacity-30 hover:bg-white/10 transition-colors"
             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
           >

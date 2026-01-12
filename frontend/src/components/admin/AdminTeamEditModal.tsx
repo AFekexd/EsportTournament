@@ -72,8 +72,8 @@ export function AdminTeamEditModal({
           data: {
             name: formData.name,
             description: formData.description || undefined,
-            logoUrl: formData.logoUrl || undefined,
-            coverUrl: formData.coverUrl || undefined,
+            logoUrl: formData.logoUrl === "" ? null : formData.logoUrl,
+            coverUrl: formData.coverUrl === "" ? null : formData.coverUrl,
           },
         })
       ).unwrap();

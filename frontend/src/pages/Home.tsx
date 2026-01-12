@@ -66,10 +66,10 @@ export function HomePage() {
   }, [dispatch]);
 
   const statsData = [
-    { value: stats?.activeTournaments ?? 0, label: "Aktív Versenyek" },
+    { value: stats?.activeTournaments ?? 0, label: "Versenyek" },
     { value: stats?.registeredUsers ?? 0, label: "Regisztrált Játékosok" },
     { value: stats?.createdTeams ?? 0, label: "Létrehozott Csapatok" },
-    { value: stats?.playedMatches ?? 0, label: "Lejátszott Meccsek" },
+    { value: stats?.playedMatches ?? 0, label: "Meccsek" },
   ];
 
   return (

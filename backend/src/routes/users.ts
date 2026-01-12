@@ -20,12 +20,16 @@ usersRouter.get(
             throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
-        const { search, page = '1', limit = '20' } = req.query;
+        const { search, page = '1', limit = '20', role } = req.query;
         const pageNum = Math.max(1, parseInt(page as string));
         const limitNum = Math.min(Math.max(1, parseInt(limit as string)), 100);
         const skip = (pageNum - 1) * limitNum;
 
         const where: any = {};
+
+        if (role && role !== 'ALL') {
+            where.role = role;
+        }
 
         if (search) {
             where.OR = [
@@ -151,6 +155,38 @@ usersRouter.patch(
 
         if (displayName && displayName !== currentUser.displayName && currentUser.role !== UserRole.ADMIN) {
             throw new ApiError('A megjelenítendő nevet csak adminisztrátor módosíthatja', 403, 'FORBIDDEN');
+        }
+
+        // If not Admin/Organizer, create Change Request instead of immediate update
+        // We only require approval for profile data (name, avatar, steam), not settings like notifications
+        if (![UserRole.ADMIN, UserRole.ORGANIZER, UserRole.MODERATOR].includes(currentUser.role as UserRole)) {
+            // Check if only updating settings (safe fields)
+            const isOnlySettings = !displayName && !avatarUrl && !steamId && emailNotifications !== undefined;
+
+            if (!isOnlySettings) {
+                await prisma.changeRequest.create({
+                    data: {
+                        type: 'USER_PROFILE',
+                        entityId: targetUserId,
+                        requesterId: currentUser.id,
+                        data: {
+                            ...(displayName !== undefined && { displayName }),
+                            ...(avatarUrl !== undefined && { avatarUrl }),
+                            ...(steamId !== undefined && { steamId }),
+                            // We might want to include notifications too if they are part of the payload, but usually they are separate.
+                            // For simplicity storing everything from payload.
+                            ...(emailNotifications !== undefined && { emailNotifications })
+                        }
+                    }
+                });
+
+                res.status(202).json({
+                    success: true,
+                    message: 'A változtatások jóváhagyásra várnak.',
+                    data: currentUser // Return current data, client should handle the "pending" state UI
+                });
+                return;
+            }
         }
 
         const updatedUser = await prisma.user.update({

@@ -137,7 +137,7 @@ export const leaveTeam = createAsyncThunk(
 
 export const updateTeam = createAsyncThunk(
     'teams/updateTeam',
-    async ({ id, data }: { id: string; data: { name?: string; description?: string; logoUrl?: string; coverUrl?: string } }) => {
+    async ({ id, data }: { id: string; data: { name?: string; description?: string; logoUrl?: string | null; coverUrl?: string | null } }) => {
         const response = await apiFetch(`${API_URL}/teams/${id}`, {
             method: 'PATCH',
             headers: {
@@ -152,7 +152,7 @@ export const updateTeam = createAsyncThunk(
             throw new Error(result.error?.message || 'Failed to update team');
         }
 
-        return result.data!;
+        return { ...result.data!, _status: response.status, _message: (result as any).message };
     }
 );
 

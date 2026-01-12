@@ -356,6 +356,7 @@ export type UserWhereInput = {
   logs?: Prisma.LogListRelationFilter
   adminLogs?: Prisma.LogListRelationFilter
   ranks?: Prisma.UserRankListRelationFilter
+  changeRequests?: Prisma.ChangeRequestListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -394,6 +395,7 @@ export type UserOrderByWithRelationInput = {
   logs?: Prisma.LogOrderByRelationAggregateInput
   adminLogs?: Prisma.LogOrderByRelationAggregateInput
   ranks?: Prisma.UserRankOrderByRelationAggregateInput
+  changeRequests?: Prisma.ChangeRequestOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -435,6 +437,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   logs?: Prisma.LogListRelationFilter
   adminLogs?: Prisma.LogListRelationFilter
   ranks?: Prisma.UserRankListRelationFilter
+  changeRequests?: Prisma.ChangeRequestListRelationFilter
 }, "id" | "keycloakId" | "email" | "username">
 
 export type UserOrderByWithAggregationInput = {
@@ -525,6 +528,7 @@ export type UserCreateInput = {
   logs?: Prisma.LogCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -563,6 +567,7 @@ export type UserUncheckedCreateInput = {
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUpdateInput = {
@@ -601,6 +606,7 @@ export type UserUpdateInput = {
   logs?: Prisma.LogUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -639,6 +645,7 @@ export type UserUncheckedUpdateInput = {
   logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -1107,6 +1114,20 @@ export type UserUpdateOneRequiredWithoutWaitlistEntriesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWaitlistEntriesInput, Prisma.UserUpdateWithoutWaitlistEntriesInput>, Prisma.UserUncheckedUpdateWithoutWaitlistEntriesInput>
 }
 
+export type UserCreateNestedOneWithoutChangeRequestsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChangeRequestsInput, Prisma.UserUncheckedCreateWithoutChangeRequestsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChangeRequestsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutChangeRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChangeRequestsInput, Prisma.UserUncheckedCreateWithoutChangeRequestsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChangeRequestsInput
+  upsert?: Prisma.UserUpsertWithoutChangeRequestsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutChangeRequestsInput, Prisma.UserUpdateWithoutChangeRequestsInput>, Prisma.UserUncheckedUpdateWithoutChangeRequestsInput>
+}
+
 export type UserCreateWithoutOwnedTeamsInput = {
   id?: string
   keycloakId: string
@@ -1142,6 +1163,7 @@ export type UserCreateWithoutOwnedTeamsInput = {
   logs?: Prisma.LogCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutOwnedTeamsInput = {
@@ -1179,6 +1201,7 @@ export type UserUncheckedCreateWithoutOwnedTeamsInput = {
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutOwnedTeamsInput = {
@@ -1232,6 +1255,7 @@ export type UserUpdateWithoutOwnedTeamsInput = {
   logs?: Prisma.LogUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
@@ -1269,6 +1293,7 @@ export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
   logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateWithoutTeamMembershipsInput = {
@@ -1306,6 +1331,7 @@ export type UserCreateWithoutTeamMembershipsInput = {
   logs?: Prisma.LogCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutTeamMembershipsInput = {
@@ -1343,6 +1369,7 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutTeamMembershipsInput = {
@@ -1396,6 +1423,7 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   logs?: Prisma.LogUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
@@ -1433,6 +1461,7 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateWithoutTournamentEntriesInput = {
@@ -1470,6 +1499,7 @@ export type UserCreateWithoutTournamentEntriesInput = {
   logs?: Prisma.LogCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutTournamentEntriesInput = {
@@ -1507,6 +1537,7 @@ export type UserUncheckedCreateWithoutTournamentEntriesInput = {
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutTournamentEntriesInput = {
@@ -1549,6 +1580,7 @@ export type UserCreateWithoutParticipatingEntriesInput = {
   logs?: Prisma.LogCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutParticipatingEntriesInput = {
@@ -1586,6 +1618,7 @@ export type UserUncheckedCreateWithoutParticipatingEntriesInput = {
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutParticipatingEntriesInput = {
@@ -1639,6 +1672,7 @@ export type UserUpdateWithoutTournamentEntriesInput = {
   logs?: Prisma.LogUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
@@ -1676,6 +1710,7 @@ export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
   logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUpsertWithWhereUniqueWithoutParticipatingEntriesInput = {
@@ -1754,6 +1789,7 @@ export type UserCreateWithoutHomeMatchesInput = {
   logs?: Prisma.LogCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutHomeMatchesInput = {
@@ -1791,6 +1827,7 @@ export type UserUncheckedCreateWithoutHomeMatchesInput = {
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutHomeMatchesInput = {
@@ -1833,6 +1870,7 @@ export type UserCreateWithoutAwayMatchesInput = {
   logs?: Prisma.LogCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutAwayMatchesInput = {
@@ -1870,6 +1908,7 @@ export type UserUncheckedCreateWithoutAwayMatchesInput = {
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutAwayMatchesInput = {
@@ -1912,6 +1951,7 @@ export type UserCreateWithoutWonMatchesInput = {
   logs?: Prisma.LogCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutWonMatchesInput = {
@@ -1949,6 +1989,7 @@ export type UserUncheckedCreateWithoutWonMatchesInput = {
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutWonMatchesInput = {
@@ -2002,6 +2043,7 @@ export type UserUpdateWithoutHomeMatchesInput = {
   logs?: Prisma.LogUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutHomeMatchesInput = {
@@ -2039,6 +2081,7 @@ export type UserUncheckedUpdateWithoutHomeMatchesInput = {
   logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUpsertWithoutAwayMatchesInput = {
@@ -2087,6 +2130,7 @@ export type UserUpdateWithoutAwayMatchesInput = {
   logs?: Prisma.LogUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAwayMatchesInput = {
@@ -2124,6 +2168,7 @@ export type UserUncheckedUpdateWithoutAwayMatchesInput = {
   logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUpsertWithoutWonMatchesInput = {
@@ -2172,6 +2217,7 @@ export type UserUpdateWithoutWonMatchesInput = {
   logs?: Prisma.LogUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWonMatchesInput = {
@@ -2209,6 +2255,7 @@ export type UserUncheckedUpdateWithoutWonMatchesInput = {
   logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateWithoutGameStatsInput = {
@@ -2246,6 +2293,7 @@ export type UserCreateWithoutGameStatsInput = {
   logs?: Prisma.LogCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutGameStatsInput = {
@@ -2283,6 +2331,7 @@ export type UserUncheckedCreateWithoutGameStatsInput = {
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutGameStatsInput = {
@@ -2336,6 +2385,7 @@ export type UserUpdateWithoutGameStatsInput = {
   logs?: Prisma.LogUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGameStatsInput = {
@@ -2373,6 +2423,7 @@ export type UserUncheckedUpdateWithoutGameStatsInput = {
   logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateWithoutRanksInput = {
@@ -2410,6 +2461,7 @@ export type UserCreateWithoutRanksInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   logs?: Prisma.LogCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutRanksInput = {
@@ -2447,6 +2499,7 @@ export type UserUncheckedCreateWithoutRanksInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutRanksInput = {
@@ -2500,6 +2553,7 @@ export type UserUpdateWithoutRanksInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   logs?: Prisma.LogUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRanksInput = {
@@ -2537,6 +2591,7 @@ export type UserUncheckedUpdateWithoutRanksInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -2574,6 +2629,7 @@ export type UserCreateWithoutNotificationsInput = {
   logs?: Prisma.LogCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -2611,6 +2667,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -2664,6 +2721,7 @@ export type UserUpdateWithoutNotificationsInput = {
   logs?: Prisma.LogUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -2701,6 +2759,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateWithoutDiscordSettingsInput = {
@@ -2738,6 +2797,7 @@ export type UserCreateWithoutDiscordSettingsInput = {
   logs?: Prisma.LogCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutDiscordSettingsInput = {
@@ -2775,6 +2835,7 @@ export type UserUncheckedCreateWithoutDiscordSettingsInput = {
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutDiscordSettingsInput = {
@@ -2828,6 +2889,7 @@ export type UserUpdateWithoutDiscordSettingsInput = {
   logs?: Prisma.LogUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDiscordSettingsInput = {
@@ -2865,6 +2927,7 @@ export type UserUncheckedUpdateWithoutDiscordSettingsInput = {
   logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateWithoutBookingsInput = {
@@ -2902,6 +2965,7 @@ export type UserCreateWithoutBookingsInput = {
   logs?: Prisma.LogCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutBookingsInput = {
@@ -2939,6 +3003,7 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutBookingsInput = {
@@ -2992,6 +3057,7 @@ export type UserUpdateWithoutBookingsInput = {
   logs?: Prisma.LogUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBookingsInput = {
@@ -3029,6 +3095,7 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -3066,6 +3133,7 @@ export type UserCreateWithoutSessionsInput = {
   logs?: Prisma.LogCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -3103,6 +3171,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -3156,6 +3225,7 @@ export type UserUpdateWithoutSessionsInput = {
   logs?: Prisma.LogUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -3193,6 +3263,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateWithoutLogsInput = {
@@ -3230,6 +3301,7 @@ export type UserCreateWithoutLogsInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutLogsInput = {
@@ -3267,6 +3339,7 @@ export type UserUncheckedCreateWithoutLogsInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutLogsInput = {
@@ -3309,6 +3382,7 @@ export type UserCreateWithoutAdminLogsInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   logs?: Prisma.LogCreateNestedManyWithoutUserInput
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutAdminLogsInput = {
@@ -3346,6 +3420,7 @@ export type UserUncheckedCreateWithoutAdminLogsInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutAdminLogsInput = {
@@ -3399,6 +3474,7 @@ export type UserUpdateWithoutLogsInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLogsInput = {
@@ -3436,6 +3512,7 @@ export type UserUncheckedUpdateWithoutLogsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUpsertWithoutAdminLogsInput = {
@@ -3484,6 +3561,7 @@ export type UserUpdateWithoutAdminLogsInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   logs?: Prisma.LogUpdateManyWithoutUserNestedInput
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAdminLogsInput = {
@@ -3521,6 +3599,7 @@ export type UserUncheckedUpdateWithoutAdminLogsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateWithoutWaitlistEntriesInput = {
@@ -3558,6 +3637,7 @@ export type UserCreateWithoutWaitlistEntriesInput = {
   logs?: Prisma.LogCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
@@ -3595,6 +3675,7 @@ export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
   adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutWaitlistEntriesInput = {
@@ -3648,6 +3729,7 @@ export type UserUpdateWithoutWaitlistEntriesInput = {
   logs?: Prisma.LogUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
@@ -3678,6 +3760,175 @@ export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
   participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
   discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  homeMatches?: Prisma.MatchUncheckedUpdateManyWithoutHomeUserNestedInput
+  awayMatches?: Prisma.MatchUncheckedUpdateManyWithoutAwayUserNestedInput
+  wonMatches?: Prisma.MatchUncheckedUpdateManyWithoutWinnerUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
+  adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
+  ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
+}
+
+export type UserCreateWithoutChangeRequestsInput = {
+  id?: string
+  keycloakId: string
+  email: string
+  username: string
+  displayName?: string | null
+  avatarUrl?: string | null
+  role?: $Enums.Role
+  elo?: number
+  timeBalanceSeconds?: number
+  emailNotifications?: boolean
+  steamId?: string | null
+  steamAvatar?: string | null
+  steamUrl?: string | null
+  steamLevel?: number | null
+  steamPersonaname?: string | null
+  steamCreatedAt?: Date | string | null
+  perfectGamesCount?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
+  ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
+  tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
+  discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
+  waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
+  homeMatches?: Prisma.MatchCreateNestedManyWithoutHomeUserInput
+  awayMatches?: Prisma.MatchCreateNestedManyWithoutAwayUserInput
+  wonMatches?: Prisma.MatchCreateNestedManyWithoutWinnerUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  logs?: Prisma.LogCreateNestedManyWithoutUserInput
+  adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
+  ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutChangeRequestsInput = {
+  id?: string
+  keycloakId: string
+  email: string
+  username: string
+  displayName?: string | null
+  avatarUrl?: string | null
+  role?: $Enums.Role
+  elo?: number
+  timeBalanceSeconds?: number
+  emailNotifications?: boolean
+  steamId?: string | null
+  steamAvatar?: string | null
+  steamUrl?: string | null
+  steamLevel?: number | null
+  steamPersonaname?: string | null
+  steamCreatedAt?: Date | string | null
+  perfectGamesCount?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
+  ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
+  tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
+  discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
+  homeMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutHomeUserInput
+  awayMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutAwayUserInput
+  wonMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutWinnerUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
+  adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
+  ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutChangeRequestsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutChangeRequestsInput, Prisma.UserUncheckedCreateWithoutChangeRequestsInput>
+}
+
+export type UserUpsertWithoutChangeRequestsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutChangeRequestsInput, Prisma.UserUncheckedUpdateWithoutChangeRequestsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutChangeRequestsInput, Prisma.UserUncheckedCreateWithoutChangeRequestsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutChangeRequestsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutChangeRequestsInput, Prisma.UserUncheckedUpdateWithoutChangeRequestsInput>
+}
+
+export type UserUpdateWithoutChangeRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  keycloakId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  elo?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
+  ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
+  tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
+  discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
+  homeMatches?: Prisma.MatchUpdateManyWithoutHomeUserNestedInput
+  awayMatches?: Prisma.MatchUpdateManyWithoutAwayUserNestedInput
+  wonMatches?: Prisma.MatchUpdateManyWithoutWinnerUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  logs?: Prisma.LogUpdateManyWithoutUserNestedInput
+  adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
+  ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutChangeRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  keycloakId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  elo?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+  ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
+  tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
+  discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
   homeMatches?: Prisma.MatchUncheckedUpdateManyWithoutHomeUserNestedInput
   awayMatches?: Prisma.MatchUncheckedUpdateManyWithoutAwayUserNestedInput
   wonMatches?: Prisma.MatchUncheckedUpdateManyWithoutWinnerUserNestedInput
@@ -3722,6 +3973,7 @@ export type UserUpdateWithoutParticipatingEntriesInput = {
   logs?: Prisma.LogUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutParticipatingEntriesInput = {
@@ -3759,6 +4011,7 @@ export type UserUncheckedUpdateWithoutParticipatingEntriesInput = {
   logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
   adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutParticipatingEntriesInput = {
@@ -3804,6 +4057,7 @@ export type UserCountOutputType = {
   logs: number
   adminLogs: number
   ranks: number
+  changeRequests: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3822,6 +4076,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   logs?: boolean | UserCountOutputTypeCountLogsArgs
   adminLogs?: boolean | UserCountOutputTypeCountAdminLogsArgs
   ranks?: boolean | UserCountOutputTypeCountRanksArgs
+  changeRequests?: boolean | UserCountOutputTypeCountChangeRequestsArgs
 }
 
 /**
@@ -3939,6 +4194,13 @@ export type UserCountOutputTypeCountRanksArgs<ExtArgs extends runtime.Types.Exte
   where?: Prisma.UserRankWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountChangeRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChangeRequestWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3976,6 +4238,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   logs?: boolean | Prisma.User$logsArgs<ExtArgs>
   adminLogs?: boolean | Prisma.User$adminLogsArgs<ExtArgs>
   ranks?: boolean | Prisma.User$ranksArgs<ExtArgs>
+  changeRequests?: boolean | Prisma.User$changeRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -4063,6 +4326,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   logs?: boolean | Prisma.User$logsArgs<ExtArgs>
   adminLogs?: boolean | Prisma.User$adminLogsArgs<ExtArgs>
   ranks?: boolean | Prisma.User$ranksArgs<ExtArgs>
+  changeRequests?: boolean | Prisma.User$changeRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -4087,6 +4351,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     logs: Prisma.$LogPayload<ExtArgs>[]
     adminLogs: Prisma.$LogPayload<ExtArgs>[]
     ranks: Prisma.$UserRankPayload<ExtArgs>[]
+    changeRequests: Prisma.$ChangeRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4518,6 +4783,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   logs<T extends Prisma.User$logsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$logsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   adminLogs<T extends Prisma.User$adminLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$adminLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ranks<T extends Prisma.User$ranksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ranksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserRankPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  changeRequests<T extends Prisma.User$changeRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$changeRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChangeRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5330,6 +5596,30 @@ export type User$ranksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
   take?: number
   skip?: number
   distinct?: Prisma.UserRankScalarFieldEnum | Prisma.UserRankScalarFieldEnum[]
+}
+
+/**
+ * User.changeRequests
+ */
+export type User$changeRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChangeRequest
+   */
+  select?: Prisma.ChangeRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChangeRequest
+   */
+  omit?: Prisma.ChangeRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChangeRequestInclude<ExtArgs> | null
+  where?: Prisma.ChangeRequestWhereInput
+  orderBy?: Prisma.ChangeRequestOrderByWithRelationInput | Prisma.ChangeRequestOrderByWithRelationInput[]
+  cursor?: Prisma.ChangeRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChangeRequestScalarFieldEnum | Prisma.ChangeRequestScalarFieldEnum[]
 }
 
 /**

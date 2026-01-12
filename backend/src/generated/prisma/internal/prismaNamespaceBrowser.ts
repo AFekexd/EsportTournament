@@ -70,7 +70,8 @@ export const ModelName = {
   Log: 'Log',
   Waitlist: 'Waitlist',
   BookingSchedule: 'BookingSchedule',
-  ClientVersion: 'ClientVersion'
+  ClientVersion: 'ClientVersion',
+  ChangeRequest: 'ChangeRequest'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -406,6 +407,20 @@ export const ClientVersionScalarFieldEnum = {
 export type ClientVersionScalarFieldEnum = (typeof ClientVersionScalarFieldEnum)[keyof typeof ClientVersionScalarFieldEnum]
 
 
+export const ChangeRequestScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  entityId: 'entityId',
+  requesterId: 'requesterId',
+  data: 'data',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChangeRequestScalarFieldEnum = (typeof ChangeRequestScalarFieldEnum)[keyof typeof ChangeRequestScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -420,6 +435,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: 'JsonNull'
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

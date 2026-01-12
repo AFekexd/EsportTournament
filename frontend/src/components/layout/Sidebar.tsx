@@ -13,16 +13,21 @@ import {
   MessageSquare,
   Monitor,
   ClipboardList,
+  FileQuestion,
 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { useAppSelector, useAppDispatch } from "../../hooks/useRedux";
 import { toggleSidebar } from "../../store/slices/uiSlice";
+import { useState, useEffect } from "react";
+import { API_URL } from "../../config";
+import { apiFetch } from "../../lib/api-client";
 
 interface NavItem {
   to: string;
   icon: React.ReactNode;
   label: string;
   roles?: string[];
+  badge?: boolean;
 }
 
 const navItems: NavItem[] = [
@@ -61,6 +66,13 @@ const adminItems: NavItem[] = [
     label: "Discord",
     roles: ["ADMIN", "ORGANIZER", "MODERATOR", "TEACHER"],
   },
+  {
+    to: "/admin/requests",
+    icon: <FileQuestion size={20} />,
+    label: "Kérelmek",
+    roles: ["ADMIN", "ORGANIZER", "MODERATOR"],
+    badge: true,
+  },
 ];
 
 export function Sidebar() {
@@ -68,6 +80,30 @@ export function Sidebar() {
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector((state) => state.ui.sidebarOpen);
   const { user, isAuthenticated } = useAuth();
+  const [requestCount, setRequestCount] = useState(0);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (user && ["ADMIN", "ORGANIZER", "MODERATOR"].includes(user.role)) {
+        try {
+          const res = await apiFetch(`${API_URL}/change-requests/stats`);
+          const data = await res.json();
+          if (data.success) {
+            setRequestCount(data.data.pendingCount);
+          }
+        } catch (error) {
+          console.error("Failed to fetch request stats", error);
+        }
+      }
+    };
+
+    if (isAuthenticated) {
+      fetchStats();
+      // Poll every minute
+      const interval = setInterval(fetchStats, 60000);
+      return () => clearInterval(interval);
+    }
+  }, [user, isAuthenticated]);
 
   const isActive = (path: string) => {
     if (path === "/") return location.pathname === "/";
@@ -86,18 +122,16 @@ export function Sidebar() {
       {/* Mobile Overlay */}
 
       <div
-        className={`fixed inset-0 z-40 bg-background/80 backdrop-blur-sm transition-all duration-300 md:hidden ${
-          isOpen ? "opacity-100" : "pointer-events-none opacity-0"
-        }`}
+        className={`fixed inset-0 z-40 bg-background/80 backdrop-blur-sm transition-all duration-300 md:hidden ${isOpen ? "opacity-100" : "pointer-events-none opacity-0"
+          }`}
         onClick={() => dispatch(toggleSidebar())}
       />
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex h-screen flex-col border-r border-white/5 bg-background/60 backdrop-blur-xl transition-all duration-300 ease-in-out ${
-          isOpen
-            ? "w-64 translate-x-0"
-            : "-translate-x-full md:w-20 md:translate-x-0"
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 flex h-screen flex-col border-r border-white/5 bg-background/60 backdrop-blur-xl transition-all duration-300 ease-in-out ${isOpen
+          ? "w-64 translate-x-0"
+          : "-translate-x-full md:w-20 md:translate-x-0"
+          }`}
       >
         <div className="flex h-16 items-center border-b border-white/5 px-4">
           {isOpen && (
@@ -115,9 +149,8 @@ export function Sidebar() {
             </Link>
           )}
           <button
-            className={`ml-auto flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-white/10 hover:text-white ${
-              !isOpen && "mx-auto"
-            }`}
+            className={`ml-auto flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-white/10 hover:text-white ${!isOpen && "mx-auto"
+              }`}
             onClick={() => dispatch(toggleSidebar())}
             aria-label={isOpen ? "Collapse sidebar" : "Expand sidebar"}
           >
@@ -132,19 +165,17 @@ export function Sidebar() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
-                    isActive(item.to)
-                      ? "bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
-                      : "text-muted-foreground hover:bg-white/5 hover:text-white"
-                  } ${!isOpen && "justify-center px-0"}`}
+                  className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive(item.to)
+                    ? "bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
+                    : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                    } ${!isOpen && "justify-center px-0"}`}
                   title={!isOpen ? item.label : undefined}
                 >
                   <span
-                    className={`transition-transform duration-200 group-hover:scale-110 ${
-                      isActive(item.to)
-                        ? "text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]"
-                        : ""
-                    }`}
+                    className={`transition-transform duration-200 group-hover:scale-110 ${isActive(item.to)
+                      ? "text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]"
+                      : ""
+                      }`}
                   >
                     {item.icon}
                   </span>
@@ -162,23 +193,30 @@ export function Sidebar() {
                     <Link
                       key={item.to}
                       to={item.to}
-                      className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
-                        isActive(item.to)
-                          ? "bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
-                          : "text-muted-foreground hover:bg-white/5 hover:text-white"
-                      } ${!isOpen && "justify-center px-0"}`}
+                      className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive(item.to)
+                        ? "bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
+                        : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                        } ${!isOpen && "justify-center px-0"}`}
                       title={!isOpen ? item.label : undefined}
                     >
                       <span
-                        className={`transition-transform duration-200 group-hover:scale-110 ${
-                          isActive(item.to)
-                            ? "text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]"
-                            : ""
-                        }`}
+                        className={`transition-transform duration-200 group-hover:scale-110 ${isActive(item.to)
+                          ? "text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]"
+                          : ""
+                          }`}
                       >
                         {item.icon}
                       </span>
-                      {isOpen && <span>{item.label}</span>}
+                      {isOpen && (
+                        <div className="flex items-center justify-between flex-1">
+                          <span>{item.label}</span>
+                          {(item as any).badge && requestCount > 0 && (
+                            <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                              {requestCount}
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </Link>
                   ))}
                 </div>

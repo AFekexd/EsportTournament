@@ -99,3 +99,20 @@ export const ComputerStatus = {
 } as const
 
 export type ComputerStatus = (typeof ComputerStatus)[keyof typeof ComputerStatus]
+
+
+export const ChangeType = {
+  USER_PROFILE: 'USER_PROFILE',
+  TEAM_PROFILE: 'TEAM_PROFILE'
+} as const
+
+export type ChangeType = (typeof ChangeType)[keyof typeof ChangeType]
+
+
+export const RequestStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus]

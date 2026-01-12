@@ -28,6 +28,7 @@ import { setIo } from './services/socket.js';
 
 // Kiosk Routes
 import { steamRouter } from './routes/steam.js';
+import { changeRequestsRouter } from './routes/changeRequests.js';
 
 // Kiosk Routes
 import { kioskRouter } from './routes/kiosk.js';
@@ -101,6 +102,7 @@ app.use('/api/discord', discordRouter);
 app.use('/api/bookings', bookingsRouter);
 app.use('/api/logs', logsRouter);
 app.use('/api/steam', steamRouter);
+app.use('/api/change-requests', changeRequestsRouter);
 app.use('/share', shareRouter);
 
 // Kiosk & Admin Kiosk Routes
