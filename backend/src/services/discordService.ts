@@ -14,7 +14,11 @@ import {
     Interaction,
     Role,
     CacheType,
-    Message
+    Message,
+    REST,
+    Routes,
+    SlashCommandBuilder,
+    ChatInputCommandInteraction
 } from 'discord.js';
 import prisma from '../lib/prisma.js';
 import { DISCORD_ROLE_MAP, BASE_VERIFIED_ROLES, GUEST_ROLES } from '../config/discordRoles.js';
@@ -58,13 +62,14 @@ class DiscordService {
         this.guildId = DISCORD_GUILD_ID;
         this.categoryId = DISCORD_CATEGORY_ID || '';
 
-        this.client.once('ready', () => {
+        this.client.once('ready', async () => {
             console.log(`✅ Discord Bot logged in as ${this.client.user?.tag}`);
             this.isReady = true;
-            this.isReady = true;
             this.setupInteractionHandler();
-            this.setupVerificationHandler();
             this.setupGuildMemberAdd();
+            
+            // Register Slash Command
+            await this.registerCommands(DISCORD_BOT_TOKEN, DISCORD_GUILD_ID);
         });
 
         try {
@@ -74,13 +79,42 @@ class DiscordService {
         }
     }
 
+    private async registerCommands(token: string, guildId: string) {
+        const commands = [
+            new SlashCommandBuilder()
+                .setName('om')
+                .setDescription('Tanulói azonosítás OM azonosítóval')
+                .addStringOption(option =>
+                    option.setName('azonosito')
+                        .setDescription('A 11 jegyű oktatási azonosítód')
+                        .setRequired(true))
+        ];
+
+        try {
+            const guild = await this.client.guilds.fetch(guildId);
+            if(guild) {
+                 await guild.commands.set(commands); // Registers specifically for this guild (instant update)
+                 console.log('✅ Successfully reloaded application (/) commands.');
+            }
+        } catch (error) {
+            console.error('❌ Failed to register slash commands:', error);
+        }
+    }
+
     private setupInteractionHandler() {
         this.client.on('interactionCreate', async (interaction: Interaction<CacheType>) => {
-            if (!interaction.isButton()) return;
+            if (interaction.isButton()) {
+                 if (interaction.customId.startsWith('toggle_role_')) {
+                    const roleName = interaction.customId.replace('toggle_role_', '');
+                    await this.handleRoleToggle(interaction, roleName);
+                }
+                return;
+            }
 
-            if (interaction.customId.startsWith('toggle_role_')) {
-                const roleName = interaction.customId.replace('toggle_role_', '');
-                await this.handleRoleToggle(interaction, roleName);
+            if (interaction.isChatInputCommand()) {
+                if (interaction.commandName === 'om') {
+                    await this.handleOmCommand(interaction);
+                }
             }
         });
     }
@@ -89,70 +123,57 @@ class DiscordService {
         this.client.on('guildMemberAdd', async (member) => {
             const welcomeChannel = member.guild.channels.cache.find(c => c.name === 'general' || c.name === 'csevegő' || c.name === 'hirdetmények') as TextChannel;
             if (welcomeChannel) {
-                await welcomeChannel.send(`Üdvözöllek ${member.toString()}! Kérlek igazold magad az OM azonosítóddal a következő paranccsal: \`!verify <OM_AZONOSÍTÓ>\``);
+                await welcomeChannel.send(`Üdvözöllek ${member.toString()}! Kérlek igazold magad az OM azonosítóddal a következő paranccsal: \`/om <OM_AZONOSÍTÓ>\``);
             }
         });
     }
 
-    private setupVerificationHandler() {
-        this.client.on('messageCreate', async (message: Message) => {
-            if (message.author.bot) return;
+    // Removed message-based setupVerificationHandler
 
-            if (message.content.startsWith('!verify') || message.content.startsWith('!azonosit')) {
-                await this.handleVerificationCommand(message);
-            }
-        });
-    }
-
-    private async handleVerificationCommand(message: Message) {
-        const args = message.content.split(' ');
-        if (args.length < 2) {
-            await message.reply('❌ Használat: `!verify <OM_AZONOSÍTÓ>` (pl. `!verify 72345678912`)');
-            return;
-        }
-
-        const omId = args[1];
+    private async handleOmCommand(interaction: ChatInputCommandInteraction) {
+        const omId = interaction.options.getString('azonosito', true);
         
-        // Basic validation (OM usually 11 digits, but let's just check length)
+        await interaction.deferReply({ ephemeral: true });
+
+        // Basic validation
         if (omId.length < 10) {
-             await message.reply('❌ Érvénytelennek tűnő OM azonosító.');
+             await interaction.editReply('❌ Érvénytelennek tűnő OM azonosító.');
              return;
         }
 
         try {
             // Find user by OM ID
-            // Cast to any to bypass TS error until DB migration/client generation is fully synced
             const user = await prisma.user.findUnique({
                 where: { omId: omId } as any
             });
 
             if (!user) {
-                await message.reply(`❌ Nem található felhasználó a megadott OM azonosítóval (${omId}). Kérlek ellenőrizd, vagy lépj be először a weboldalra!`);
+                await interaction.editReply(`❌ Nem található felhasználó a megadott OM azonosítóval (${omId}). Kérlek ellenőrizd, vagy lépj be először a weboldalra!`);
                 return;
             }
 
-            if (user.discordId && user.discordId !== message.author.id) {
-                await message.reply('❌ Ez az OM azonosító már össze van kapcsolva egy másik Discord fiókkal!');
+            if (user.discordId && user.discordId !== interaction.user.id) {
+                await interaction.editReply('❌ Ez az OM azonosító már össze van kapcsolva egy másik Discord fiókkal!');
                 return;
             }
 
             // Update User with Discord ID
             await prisma.user.update({
                 where: { id: user.id },
-                data: { discordId: message.author.id }
+                data: { discordId: interaction.user.id }
             });
 
             // Sync User (Nickname + Roles)
             const success = await this.syncUser(user.id);
             if (success) {
-                await message.reply(`✅ Sikeres hitelesítés! Üdvözöllek, **${user.displayName}**! A rangjaid frissítve lettek.`);
+                await interaction.editReply(`✅ Sikeres hitelesítés! Üdvözöllek, **${user.displayName}**! A rangjaid frissítve lettek.`);
             } else {
-                 await message.reply(`✅ Sikeres hitelesítés, de a rangok frissítése közben hiba történt. Kérlek szólj egy adminnak.`);
+                 await interaction.editReply(`✅ Sikeres hitelesítés, de a rangok frissítése közben hiba történt. Kérlek szólj egy adminnak.`);
             }
 
         } catch (error) {
             console.error('Verification error:', error);
-            await message.reply('❌ Rendszerhiba történt a hitelesítés során.');
+            await interaction.editReply('❌ Rendszerhiba történt a hitelesítés során.');
         }
     }
 
