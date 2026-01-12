@@ -47,6 +47,8 @@ export type UserMinAggregateOutputType = {
   username: string | null
   displayName: string | null
   avatarUrl: string | null
+  omId: string | null
+  discordId: string | null
   role: $Enums.Role | null
   elo: number | null
   timeBalanceSeconds: number | null
@@ -69,6 +71,8 @@ export type UserMaxAggregateOutputType = {
   username: string | null
   displayName: string | null
   avatarUrl: string | null
+  omId: string | null
+  discordId: string | null
   role: $Enums.Role | null
   elo: number | null
   timeBalanceSeconds: number | null
@@ -91,6 +95,8 @@ export type UserCountAggregateOutputType = {
   username: number
   displayName: number
   avatarUrl: number
+  omId: number
+  discordId: number
   role: number
   elo: number
   timeBalanceSeconds: number
@@ -129,6 +135,8 @@ export type UserMinAggregateInputType = {
   username?: true
   displayName?: true
   avatarUrl?: true
+  omId?: true
+  discordId?: true
   role?: true
   elo?: true
   timeBalanceSeconds?: true
@@ -151,6 +159,8 @@ export type UserMaxAggregateInputType = {
   username?: true
   displayName?: true
   avatarUrl?: true
+  omId?: true
+  discordId?: true
   role?: true
   elo?: true
   timeBalanceSeconds?: true
@@ -173,6 +183,8 @@ export type UserCountAggregateInputType = {
   username?: true
   displayName?: true
   avatarUrl?: true
+  omId?: true
+  discordId?: true
   role?: true
   elo?: true
   timeBalanceSeconds?: true
@@ -282,6 +294,8 @@ export type UserGroupByOutputType = {
   username: string
   displayName: string | null
   avatarUrl: string | null
+  omId: string | null
+  discordId: string | null
   role: $Enums.Role
   elo: number
   timeBalanceSeconds: number
@@ -327,6 +341,8 @@ export type UserWhereInput = {
   username?: Prisma.StringFilter<"User"> | string
   displayName?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  omId?: Prisma.StringNullableFilter<"User"> | string | null
+  discordId?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   elo?: Prisma.IntFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntFilter<"User"> | number
@@ -366,6 +382,8 @@ export type UserOrderByWithRelationInput = {
   username?: Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  omId?: Prisma.SortOrderInput | Prisma.SortOrder
+  discordId?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
@@ -408,6 +426,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   displayName?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  omId?: Prisma.StringNullableFilter<"User"> | string | null
+  discordId?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   elo?: Prisma.IntFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntFilter<"User"> | number
@@ -447,6 +467,8 @@ export type UserOrderByWithAggregationInput = {
   username?: Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  omId?: Prisma.SortOrderInput | Prisma.SortOrder
+  discordId?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
@@ -477,6 +499,8 @@ export type UserScalarWhereWithAggregatesInput = {
   username?: Prisma.StringWithAggregatesFilter<"User"> | string
   displayName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  omId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  discordId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
   elo?: Prisma.IntWithAggregatesFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntWithAggregatesFilter<"User"> | number
@@ -499,6 +523,8 @@ export type UserCreateInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -538,6 +564,8 @@ export type UserUncheckedCreateInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -577,6 +605,8 @@ export type UserUpdateInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -616,6 +646,8 @@ export type UserUncheckedUpdateInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -655,6 +687,8 @@ export type UserCreateManyInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -677,6 +711,8 @@ export type UserUpdateManyMutationInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -699,6 +735,8 @@ export type UserUncheckedUpdateManyInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -721,6 +759,8 @@ export type UserCountOrderByAggregateInput = {
   username?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
+  omId?: Prisma.SortOrder
+  discordId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
@@ -750,6 +790,8 @@ export type UserMaxOrderByAggregateInput = {
   username?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
+  omId?: Prisma.SortOrder
+  discordId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
@@ -772,6 +814,8 @@ export type UserMinOrderByAggregateInput = {
   username?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
+  omId?: Prisma.SortOrder
+  discordId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
@@ -1135,6 +1179,8 @@ export type UserCreateWithoutOwnedTeamsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -1173,6 +1219,8 @@ export type UserUncheckedCreateWithoutOwnedTeamsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -1227,6 +1275,8 @@ export type UserUpdateWithoutOwnedTeamsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1265,6 +1315,8 @@ export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1303,6 +1355,8 @@ export type UserCreateWithoutTeamMembershipsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -1341,6 +1395,8 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -1395,6 +1451,8 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1433,6 +1491,8 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1471,6 +1531,8 @@ export type UserCreateWithoutTournamentEntriesInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -1509,6 +1571,8 @@ export type UserUncheckedCreateWithoutTournamentEntriesInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -1552,6 +1616,8 @@ export type UserCreateWithoutParticipatingEntriesInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -1590,6 +1656,8 @@ export type UserUncheckedCreateWithoutParticipatingEntriesInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -1644,6 +1712,8 @@ export type UserUpdateWithoutTournamentEntriesInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1682,6 +1752,8 @@ export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1739,6 +1811,8 @@ export type UserScalarWhereInput = {
   username?: Prisma.StringFilter<"User"> | string
   displayName?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  omId?: Prisma.StringNullableFilter<"User"> | string | null
+  discordId?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   elo?: Prisma.IntFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntFilter<"User"> | number
@@ -1761,6 +1835,8 @@ export type UserCreateWithoutHomeMatchesInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -1799,6 +1875,8 @@ export type UserUncheckedCreateWithoutHomeMatchesInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -1842,6 +1920,8 @@ export type UserCreateWithoutAwayMatchesInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -1880,6 +1960,8 @@ export type UserUncheckedCreateWithoutAwayMatchesInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -1923,6 +2005,8 @@ export type UserCreateWithoutWonMatchesInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -1961,6 +2045,8 @@ export type UserUncheckedCreateWithoutWonMatchesInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -2015,6 +2101,8 @@ export type UserUpdateWithoutHomeMatchesInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2053,6 +2141,8 @@ export type UserUncheckedUpdateWithoutHomeMatchesInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2102,6 +2192,8 @@ export type UserUpdateWithoutAwayMatchesInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2140,6 +2232,8 @@ export type UserUncheckedUpdateWithoutAwayMatchesInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2189,6 +2283,8 @@ export type UserUpdateWithoutWonMatchesInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2227,6 +2323,8 @@ export type UserUncheckedUpdateWithoutWonMatchesInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2265,6 +2363,8 @@ export type UserCreateWithoutGameStatsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -2303,6 +2403,8 @@ export type UserUncheckedCreateWithoutGameStatsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -2357,6 +2459,8 @@ export type UserUpdateWithoutGameStatsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2395,6 +2499,8 @@ export type UserUncheckedUpdateWithoutGameStatsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2433,6 +2539,8 @@ export type UserCreateWithoutRanksInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -2471,6 +2579,8 @@ export type UserUncheckedCreateWithoutRanksInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -2525,6 +2635,8 @@ export type UserUpdateWithoutRanksInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2563,6 +2675,8 @@ export type UserUncheckedUpdateWithoutRanksInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2601,6 +2715,8 @@ export type UserCreateWithoutNotificationsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -2639,6 +2755,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -2693,6 +2811,8 @@ export type UserUpdateWithoutNotificationsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2731,6 +2851,8 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2769,6 +2891,8 @@ export type UserCreateWithoutDiscordSettingsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -2807,6 +2931,8 @@ export type UserUncheckedCreateWithoutDiscordSettingsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -2861,6 +2987,8 @@ export type UserUpdateWithoutDiscordSettingsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2899,6 +3027,8 @@ export type UserUncheckedUpdateWithoutDiscordSettingsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2937,6 +3067,8 @@ export type UserCreateWithoutBookingsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -2975,6 +3107,8 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -3029,6 +3163,8 @@ export type UserUpdateWithoutBookingsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3067,6 +3203,8 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3105,6 +3243,8 @@ export type UserCreateWithoutSessionsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -3143,6 +3283,8 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -3197,6 +3339,8 @@ export type UserUpdateWithoutSessionsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3235,6 +3379,8 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3273,6 +3419,8 @@ export type UserCreateWithoutLogsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -3311,6 +3459,8 @@ export type UserUncheckedCreateWithoutLogsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -3354,6 +3504,8 @@ export type UserCreateWithoutAdminLogsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -3392,6 +3544,8 @@ export type UserUncheckedCreateWithoutAdminLogsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -3446,6 +3600,8 @@ export type UserUpdateWithoutLogsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3484,6 +3640,8 @@ export type UserUncheckedUpdateWithoutLogsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3533,6 +3691,8 @@ export type UserUpdateWithoutAdminLogsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3571,6 +3731,8 @@ export type UserUncheckedUpdateWithoutAdminLogsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3609,6 +3771,8 @@ export type UserCreateWithoutWaitlistEntriesInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -3647,6 +3811,8 @@ export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -3701,6 +3867,8 @@ export type UserUpdateWithoutWaitlistEntriesInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3739,6 +3907,8 @@ export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3777,6 +3947,8 @@ export type UserCreateWithoutChangeRequestsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -3815,6 +3987,8 @@ export type UserUncheckedCreateWithoutChangeRequestsInput = {
   username: string
   displayName?: string | null
   avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
@@ -3869,6 +4043,8 @@ export type UserUpdateWithoutChangeRequestsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3907,6 +4083,8 @@ export type UserUncheckedUpdateWithoutChangeRequestsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3945,6 +4123,8 @@ export type UserUpdateWithoutParticipatingEntriesInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -3983,6 +4163,8 @@ export type UserUncheckedUpdateWithoutParticipatingEntriesInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4021,6 +4203,8 @@ export type UserUncheckedUpdateManyWithoutParticipatingEntriesInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
@@ -4209,6 +4393,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   username?: boolean
   displayName?: boolean
   avatarUrl?: boolean
+  omId?: boolean
+  discordId?: boolean
   role?: boolean
   elo?: boolean
   timeBalanceSeconds?: boolean
@@ -4249,6 +4435,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   username?: boolean
   displayName?: boolean
   avatarUrl?: boolean
+  omId?: boolean
+  discordId?: boolean
   role?: boolean
   elo?: boolean
   timeBalanceSeconds?: boolean
@@ -4271,6 +4459,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   username?: boolean
   displayName?: boolean
   avatarUrl?: boolean
+  omId?: boolean
+  discordId?: boolean
   role?: boolean
   elo?: boolean
   timeBalanceSeconds?: boolean
@@ -4293,6 +4483,8 @@ export type UserSelectScalar = {
   username?: boolean
   displayName?: boolean
   avatarUrl?: boolean
+  omId?: boolean
+  discordId?: boolean
   role?: boolean
   elo?: boolean
   timeBalanceSeconds?: boolean
@@ -4308,7 +4500,7 @@ export type UserSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "keycloakId" | "email" | "username" | "displayName" | "avatarUrl" | "role" | "elo" | "timeBalanceSeconds" | "emailNotifications" | "steamId" | "steamAvatar" | "steamUrl" | "steamLevel" | "steamPersonaname" | "steamCreatedAt" | "perfectGamesCount" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "keycloakId" | "email" | "username" | "displayName" | "avatarUrl" | "omId" | "discordId" | "role" | "elo" | "timeBalanceSeconds" | "emailNotifications" | "steamId" | "steamAvatar" | "steamUrl" | "steamLevel" | "steamPersonaname" | "steamCreatedAt" | "perfectGamesCount" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
   ownedTeams?: boolean | Prisma.User$ownedTeamsArgs<ExtArgs>
@@ -4360,6 +4552,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     username: string
     displayName: string | null
     avatarUrl: string | null
+    omId: string | null
+    discordId: string | null
     role: $Enums.Role
     elo: number
     timeBalanceSeconds: number
@@ -4819,6 +5013,8 @@ export interface UserFieldRefs {
   readonly username: Prisma.FieldRef<"User", 'String'>
   readonly displayName: Prisma.FieldRef<"User", 'String'>
   readonly avatarUrl: Prisma.FieldRef<"User", 'String'>
+  readonly omId: Prisma.FieldRef<"User", 'String'>
+  readonly discordId: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'Role'>
   readonly elo: Prisma.FieldRef<"User", 'Int'>
   readonly timeBalanceSeconds: Prisma.FieldRef<"User", 'Int'>

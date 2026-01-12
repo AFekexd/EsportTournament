@@ -2024,6 +2024,8 @@ export const UserScalarFieldEnum = {
   username: 'username',
   displayName: 'displayName',
   avatarUrl: 'avatarUrl',
+  omId: 'omId',
+  discordId: 'discordId',
   role: 'role',
   elo: 'elo',
   timeBalanceSeconds: 'timeBalanceSeconds',

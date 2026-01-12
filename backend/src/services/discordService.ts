@@ -13,8 +13,12 @@ import {
     ButtonStyle,
     Interaction,
     Role,
-    CacheType
+    CacheType,
+    Message
 } from 'discord.js';
+import prisma from '../lib/prisma.js';
+import { DISCORD_ROLE_MAP, BASE_VERIFIED_ROLES, GUEST_ROLES } from '../config/discordRoles.js';
+import { Role as UserRole } from '../generated/prisma/enums.js';
 
 interface DiscordEmbed {
     title: string;
@@ -57,7 +61,10 @@ class DiscordService {
         this.client.once('ready', () => {
             console.log(`✅ Discord Bot logged in as ${this.client.user?.tag}`);
             this.isReady = true;
+            this.isReady = true;
             this.setupInteractionHandler();
+            this.setupVerificationHandler();
+            this.setupGuildMemberAdd();
         });
 
         try {
@@ -76,6 +83,134 @@ class DiscordService {
                 await this.handleRoleToggle(interaction, roleName);
             }
         });
+    }
+
+    private setupGuildMemberAdd() {
+        this.client.on('guildMemberAdd', async (member) => {
+            const welcomeChannel = member.guild.channels.cache.find(c => c.name === 'general' || c.name === 'csevegő' || c.name === 'hirdetmények') as TextChannel;
+            if (welcomeChannel) {
+                await welcomeChannel.send(`Üdvözöllek ${member.toString()}! Kérlek igazold magad az OM azonosítóddal a következő paranccsal: \`!verify <OM_AZONOSÍTÓ>\``);
+            }
+        });
+    }
+
+    private setupVerificationHandler() {
+        this.client.on('messageCreate', async (message: Message) => {
+            if (message.author.bot) return;
+
+            if (message.content.startsWith('!verify') || message.content.startsWith('!azonosit')) {
+                await this.handleVerificationCommand(message);
+            }
+        });
+    }
+
+    private async handleVerificationCommand(message: Message) {
+        const args = message.content.split(' ');
+        if (args.length < 2) {
+            await message.reply('❌ Használat: `!verify <OM_AZONOSÍTÓ>` (pl. `!verify 72345678912`)');
+            return;
+        }
+
+        const omId = args[1];
+        
+        // Basic validation (OM usually 11 digits, but let's just check length)
+        if (omId.length < 10) {
+             await message.reply('❌ Érvénytelennek tűnő OM azonosító.');
+             return;
+        }
+
+        try {
+            // Find user by OM ID
+            // Cast to any to bypass TS error until DB migration/client generation is fully synced
+            const user = await prisma.user.findUnique({
+                where: { omId: omId } as any
+            });
+
+            if (!user) {
+                await message.reply(`❌ Nem található felhasználó a megadott OM azonosítóval (${omId}). Kérlek ellenőrizd, vagy lépj be először a weboldalra!`);
+                return;
+            }
+
+            if (user.discordId && user.discordId !== message.author.id) {
+                await message.reply('❌ Ez az OM azonosító már össze van kapcsolva egy másik Discord fiókkal!');
+                return;
+            }
+
+            // Update User with Discord ID
+            await prisma.user.update({
+                where: { id: user.id },
+                data: { discordId: message.author.id }
+            });
+
+            // Sync User (Nickname + Roles)
+            const success = await this.syncUser(user.id);
+            if (success) {
+                await message.reply(`✅ Sikeres hitelesítés! Üdvözöllek, **${user.displayName}**! A rangjaid frissítve lettek.`);
+            } else {
+                 await message.reply(`✅ Sikeres hitelesítés, de a rangok frissítése közben hiba történt. Kérlek szólj egy adminnak.`);
+            }
+
+        } catch (error) {
+            console.error('Verification error:', error);
+            await message.reply('❌ Rendszerhiba történt a hitelesítés során.');
+        }
+    }
+
+    public async syncUser(userId: string): Promise<boolean> {
+        if (!this.isReady) return false;
+
+        try {
+            const user = await prisma.user.findUnique({ where: { id: userId } });
+            if (!user || !user.discordId) return false;
+
+            const guild = await this.client.guilds.fetch(this.guildId);
+            if (!guild) return false;
+
+            const member = await guild.members.fetch(user.discordId).catch(() => null);
+            if (!member) return false;
+
+            // 1. Update Nickname
+            if (member.manageable && user.displayName) {
+                await member.setNickname(user.displayName).catch(err => console.error('Failed to set nickname:', err));
+            }
+
+            // 2. Manage Roles
+            const rolesToAdd: string[] = [...BASE_VERIFIED_ROLES];
+            
+            // Map UserRole to Discord Role Name
+            if (user.role && DISCORD_ROLE_MAP[user.role as UserRole]) {
+                rolesToAdd.push(DISCORD_ROLE_MAP[user.role as UserRole]);
+            }
+
+            // Resolve Roles
+            const allRoles = await guild.roles.fetch();
+            
+            // Add Roles
+            for (const roleName of rolesToAdd) {
+                const role = allRoles.find(r => r.name.toLowerCase() === roleName.toLowerCase());
+                if (role) {
+                     await member.roles.add(role).catch(err => console.error(`Failed to add role ${roleName}:`, err));
+                } else {
+                     // Optionally create role if missing? For now just log
+                     console.warn(`Role ${roleName} not found in guild.`);
+                     // await this.ensureRoleExists(roleName); // Could auto-create
+                }
+            }
+
+            // Remove Guest Roles
+            for (const roleName of GUEST_ROLES) {
+                const role = allRoles.find(r => r.name.toLowerCase() === roleName.toLowerCase());
+                if (role && member.roles.cache.has(role.id)) {
+                    await member.roles.remove(role).catch(err => console.error(`Failed to remove role ${roleName}:`, err));
+                }
+            }
+
+            return true;
+
+        } catch (error) {
+            console.error('Sync user error:', error);
+            return false;
+        }
     }
 
     private async handleRoleToggle(interaction: any, roleName: string) {

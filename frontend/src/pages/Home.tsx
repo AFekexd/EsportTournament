@@ -192,28 +192,28 @@ export function HomePage() {
         <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
           {statsLoading
             ? // Loading skeleton
-            Array.from({ length: 4 }).map((_, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center justify-center border-l border-white/5 py-4 first:border-0"
-              >
-                <Skeleton className="h-16 w-32 mb-2 bg-white/5" />
-                <Skeleton className="h-4 w-40 bg-white/5" />
-              </div>
-            ))
+              Array.from({ length: 4 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col items-center justify-center border-l border-white/5 py-4 first:border-0"
+                >
+                  <Skeleton className="h-16 w-32 mb-2 bg-white/5" />
+                  <Skeleton className="h-4 w-40 bg-white/5" />
+                </div>
+              ))
             : statsData.map((stat, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center justify-center border-l border-white/5 py-4 first:border-0 group hover:bg-white/5 rounded-lg transition-colors"
-              >
-                <span className="text-glow mb-2 text-5xl font-black tracking-tight text-white md:text-6xl group-hover:scale-110 transition-transform duration-300 group-hover:text-primary">
-                  {stat.value}
-                </span>
-                <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground group-hover:text-white transition-colors">
-                  {stat.label}
-                </span>
-              </div>
-            ))}
+                <div
+                  key={index}
+                  className="flex flex-col items-center justify-center border-l border-white/5 py-4 first:border-0 group hover:bg-white/5 rounded-lg transition-colors"
+                >
+                  <span className="text-glow mb-2 text-5xl font-black tracking-tight text-white md:text-6xl group-hover:scale-110 transition-transform duration-300 group-hover:text-primary">
+                    {stat.value}
+                  </span>
+                  <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground group-hover:text-white transition-colors">
+                    {stat.label}
+                  </span>
+                </div>
+              ))}
         </div>
       </section>
 
@@ -238,6 +238,14 @@ export function HomePage() {
               <h2 className="text-2xl font-bold text-white md:text-3xl">
                 Pollák Discord
               </h2>
+              <iframe
+                src="https://discord.com/widget?id=1449786215720026237&theme=dark"
+                width="350"
+                height="500"
+                allowTransparency={true}
+                frameBorder="0"
+                sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+              ></iframe>
             </div>
             <p className="max-w-xl text-muted-foreground">
               Találj csapattársakat, szervezz meccseket, és légy része az

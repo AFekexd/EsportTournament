@@ -85,6 +85,8 @@ model User {
   username      String   @unique
   displayName   String?
   avatarUrl     String?
+  omId          String?
+  discordId     String?  
   role          Role     @default(STUDENT)
   elo           Int      @default(1000)
   timeBalanceSeconds Int @default(0) // Kiosk time balance

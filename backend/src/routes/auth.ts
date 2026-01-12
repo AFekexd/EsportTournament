@@ -1,6 +1,7 @@
 import { Router, Response } from 'express';
 import { logSystemActivity } from '../services/logService.js';
 import prisma from '../lib/prisma.js';
+import { discordService } from '../services/discordService.js';
 import { authenticate, AuthenticatedRequest, getHighestRole } from '../middleware/auth.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 
@@ -11,7 +12,7 @@ authRouter.post(
     '/sync',
     authenticate,
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-        const { sub: keycloakId, email, preferred_username, name } = req.user!;
+        const { sub: keycloakId, email, preferred_username, name, OM } = req.user!;
 
         if (!keycloakId) {
             return res.status(400).json({
@@ -32,6 +33,7 @@ authRouter.post(
             email: userEmail,
             username,
             role,
+            omId: OM,
             originalEmail: email,
             originalUsername: preferred_username,
             realmRoles: req.user!.realm_access?.roles
@@ -47,6 +49,7 @@ authRouter.post(
                 email: userEmail,
                 username,
                 // displayName: name || username, // Don't overwrite display name on sync, allow user to change it locally
+                omId: OM || null,
                 ...roleUpdate,
             },
             create: {
@@ -54,6 +57,7 @@ authRouter.post(
                 email: userEmail,
                 username,
                 displayName: name || username,
+                omId: OM || null,
                 role, // Set role from Keycloak on creation
             },
         });
@@ -82,6 +86,14 @@ authRouter.post(
                     }
                 }
             );
+        }
+
+        // Trigger Discord Sync (Fire and forget, or await if critical)
+        try {
+            // We catch errors here to not fail the login if Discord bot is down or user not in guild
+            await discordService.syncUser(user.id).catch(err => console.error('Discord sync failed:', err));
+        } catch (error) {
+            console.error('Discord sync invocation failed:', error);
         }
 
         res.json({ success: true, data: user });
