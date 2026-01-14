@@ -12,7 +12,7 @@ authRouter.post(
     '/sync',
     authenticate,
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-        const { sub: keycloakId, email, preferred_username, name } = req.user!;
+        const { sub: keycloakId, email, preferred_username, name, given_name, family_name } = req.user!;
         // Try to find OM ID with case-insensitive property check
         // Keycloak mapper might be 'OM', 'om', 'omId' etc.
         const userPayload = req.user as any;
@@ -29,6 +29,11 @@ authRouter.post(
         // This can happen when Keycloak client scopes are not properly configured
         const userEmail = email || `${keycloakId}@keycloak.local`;
         const username = preferred_username || keycloakId;
+        let preferredName = name || username;
+        if (family_name && given_name) {
+            preferredName = `${family_name} ${given_name}`;
+        }
+
 
         const role = getHighestRole(req.user!);
 
@@ -58,7 +63,7 @@ authRouter.post(
             update: {
                 email: userEmail,
                 username,
-                // displayName: name || username, // Don't overwrite display name on sync, allow user to change it locally
+                displayName: preferredName,
                 omId: OM ? String(OM) : null,
                 ...roleUpdate,
             },
@@ -66,7 +71,7 @@ authRouter.post(
                 keycloakId,
                 email: userEmail,
                 username,
-                displayName: name || username,
+                displayName: preferredName,
                 omId: OM ? String(OM) : null,
                 role, // Set role from Keycloak on creation
             },

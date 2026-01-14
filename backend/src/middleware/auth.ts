@@ -32,6 +32,8 @@ export interface KeycloakTokenPayload {
     email?: string;
     preferred_username?: string;
     name?: string;
+    given_name?: string;
+    family_name?: string;
     OM?: string; // Custom attribute from Keycloak
     realm_access?: {
         roles: string[];
