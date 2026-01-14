@@ -38,6 +38,13 @@ interface DiscordEmbed {
     image?: { url: string };
 }
 
+
+
+
+const registrationMessage = `Ebben a csatornában csak a /om parancsot használd! 
+Ha még nem regisztráltál, akkor kérlek menj fel a https://esport.pollak.info/ oldalra, és regisztrálj magad! 
+Ha már regisztráltál, akkor kérlek írd be a parancsot a hitelesítéshez.`;
+
 class DiscordService {
     private client: Client;
     private isReady: boolean = false;
@@ -50,6 +57,7 @@ class DiscordService {
                 GatewayIntentBits.Guilds,
                 GatewayIntentBits.GuildMessages,
                 GatewayIntentBits.GuildMembers, // Needed for role management
+                GatewayIntentBits.MessageContent, // Needed for reading message content
             ],
         });
 
@@ -72,6 +80,7 @@ class DiscordService {
             this.isReady = true;
             this.setupInteractionHandler();
             this.setupGuildMemberAdd();
+            this.setupMessageMonitor();
             
             // Register Slash Command
             await this.registerCommands(DISCORD_BOT_TOKEN, DISCORD_GUILD_ID);
@@ -146,6 +155,34 @@ class DiscordService {
             const welcomeChannel = member.guild.channels.cache.find(c => c.name === 'general' || c.name === 'csevegő' || c.name === 'hirdetmények') as TextChannel;
             if (welcomeChannel) {
                 await welcomeChannel.send(`Üdvözöllek ${member.toString()}! Kérlek igazold magad az OM azonosítóddal a következő paranccsal: \`/om <OM_AZONOSÍTÓ>\`, vagy használd a hitelesítő csatornán lévő gombot!`);
+            }
+        });
+    }
+
+    private setupMessageMonitor() {
+        this.client.on('messageCreate', async (message: Message) => {
+            // Monitor specific channel
+            if (message.channelId === '1461056761988382862') {
+                if (message.author.bot) return; // Ignore bots
+
+                // Check if user is admin
+                if (message.member?.permissions.has(PermissionsBitField.Flags.Administrator)) {
+                    return; // Allow admins to talk
+                }
+
+                // Delete message
+                try {
+                    await message.delete();
+                    
+                    // Send DM warning
+                    try {
+                        await message.author.send(registrationMessage);
+                    } catch (dmError) {
+                        // User might have DMs disabled, ignore
+                    }
+                } catch (error) {
+                    console.error('Failed to handle monitored message:', error);
+                }
             }
         });
     }
@@ -405,7 +442,7 @@ class DiscordService {
 
         } catch (error) {
             console.error('Recheck error:', error);
-            await interaction.editReply('❌ Hiba történt az ellenőrzés során.');
+            await interaction.editReply('❌ Hiba történt a ellenőrzés során.');
         }
     }
 
