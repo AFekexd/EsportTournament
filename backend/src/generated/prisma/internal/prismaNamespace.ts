@@ -404,7 +404,8 @@ export const ModelName = {
   Waitlist: 'Waitlist',
   BookingSchedule: 'BookingSchedule',
   ClientVersion: 'ClientVersion',
-  ChangeRequest: 'ChangeRequest'
+  ChangeRequest: 'ChangeRequest',
+  Changelog: 'Changelog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -420,7 +421,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "team" | "teamMember" | "game" | "tournament" | "tournamentEntry" | "match" | "gameStats" | "rank" | "userRank" | "notification" | "event" | "discordSettings" | "computer" | "booking" | "session" | "log" | "waitlist" | "bookingSchedule" | "clientVersion" | "changeRequest"
+    modelProps: "user" | "team" | "teamMember" | "game" | "tournament" | "tournamentEntry" | "match" | "gameStats" | "rank" | "userRank" | "notification" | "event" | "discordSettings" | "computer" | "booking" | "session" | "log" | "waitlist" | "bookingSchedule" | "clientVersion" | "changeRequest" | "changelog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1978,6 +1979,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Changelog: {
+      payload: Prisma.$ChangelogPayload<ExtArgs>
+      fields: Prisma.ChangelogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChangelogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangelogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChangelogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangelogPayload>
+        }
+        findFirst: {
+          args: Prisma.ChangelogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangelogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChangelogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangelogPayload>
+        }
+        findMany: {
+          args: Prisma.ChangelogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangelogPayload>[]
+        }
+        create: {
+          args: Prisma.ChangelogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangelogPayload>
+        }
+        createMany: {
+          args: Prisma.ChangelogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChangelogCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangelogPayload>[]
+        }
+        delete: {
+          args: Prisma.ChangelogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangelogPayload>
+        }
+        update: {
+          args: Prisma.ChangelogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangelogPayload>
+        }
+        deleteMany: {
+          args: Prisma.ChangelogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChangelogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChangelogUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangelogPayload>[]
+        }
+        upsert: {
+          args: Prisma.ChangelogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangelogPayload>
+        }
+        aggregate: {
+          args: Prisma.ChangelogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChangelog>
+        }
+        groupBy: {
+          args: Prisma.ChangelogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChangelogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChangelogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChangelogCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2350,6 +2425,18 @@ export const ChangeRequestScalarFieldEnum = {
 export type ChangeRequestScalarFieldEnum = (typeof ChangeRequestScalarFieldEnum)[keyof typeof ChangeRequestScalarFieldEnum]
 
 
+export const ChangelogScalarFieldEnum = {
+  id: 'id',
+  version: 'version',
+  type: 'type',
+  changes: 'changes',
+  authorId: 'authorId',
+  createdAt: 'createdAt'
+} as const
+
+export type ChangelogScalarFieldEnum = (typeof ChangelogScalarFieldEnum)[keyof typeof ChangelogScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2636,6 +2723,20 @@ export type ListEnumRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
+ * Reference to a field of type 'ChangeLogType'
+ */
+export type EnumChangeLogTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChangeLogType'>
+    
+
+
+/**
+ * Reference to a field of type 'ChangeLogType[]'
+ */
+export type ListEnumChangeLogTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChangeLogType[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -2764,6 +2865,7 @@ export type GlobalOmitConfig = {
   bookingSchedule?: Prisma.BookingScheduleOmit
   clientVersion?: Prisma.ClientVersionOmit
   changeRequest?: Prisma.ChangeRequestOmit
+  changelog?: Prisma.ChangelogOmit
 }
 
 /* Types for Logging */

@@ -29,6 +29,7 @@ import {
 } from "./pages";
 import RequestsPage from "./pages/admin/RequestsPage";
 import { AdminLogs } from "./components/admin/AdminLogs";
+import ReleasesPage from "./pages/admin/ReleasesPage";
 import { PuffLoader } from "react-spinners";
 import { Toaster } from "./components/ui/sonner";
 
@@ -92,6 +93,7 @@ function AppContent() {
           <Route path="settings" element={<SettingsPage />} />
           <Route path="admin" element={<AdminPage />} />
           <Route path="admin/requests" element={<RequestsPage />} />
+          <Route path="admin/releases" element={<ReleasesPage />} />
           <Route path="admin/logs" element={<AdminLogs />} />
           <Route path="teacher/time" element={<TeacherTimePage />} />
           <Route path="booking" element={<BookingPage />} />

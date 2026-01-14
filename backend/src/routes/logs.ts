@@ -22,18 +22,23 @@ logsRouter.get(
         const limit = parseInt(req.query.limit as string) || 20;
         const type = req.query.type as string;
         const userId = req.query.userId as string;
+        const adminId = req.query.adminId as string;
         const search = req.query.search as string;
+        const startDate = req.query.startDate as string;
+        const endDate = req.query.endDate as string;
 
         const skip = (page - 1) * limit;
 
         const where: any = {};
 
-        if (type) {
-            where.type = type;
-        }
+        if (type) where.type = type;
+        if (userId) where.userId = userId;
+        if (adminId) where.adminId = adminId;
 
-        if (userId) {
-            where.userId = userId;
+        if (startDate || endDate) {
+            where.createdAt = {};
+            if (startDate) where.createdAt.gte = new Date(startDate);
+            if (endDate) where.createdAt.lte = new Date(endDate);
         }
 
         if (search) {

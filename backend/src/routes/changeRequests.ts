@@ -26,28 +26,66 @@ changeRequestsRouter.get(
                     select: {
                         id: true,
                         username: true,
-                        displayName: true,
-                        avatarUrl: true
+                        displayName: true
+                        // avatarUrl removed to reduce payload size
                     }
                 }
             },
             orderBy: { createdAt: 'desc' }
         });
 
-        // Enhance requests with entity names
+        // Enhance requests with entity names and current data for comparison
         const enrichedRequests = await Promise.all(requests.map(async (req: any) => {
             let entityName = 'Ismeretlen';
+            let currentData: any = {};
+            
             if (req.type === 'USER_PROFILE') {
-                const u = await prisma.user.findUnique({ where: { id: req.entityId }, select: { username: true } });
+                const u = await prisma.user.findUnique({ 
+                    where: { id: req.entityId },
+                    select: { 
+                        username: true,
+                        displayName: true,
+                        avatarUrl: true,
+                        steamId: true,
+                        emailNotifications: true
+                    } 
+                });
                 entityName = u?.username || 'Ismeretlen Felhasználó';
+                
+                if (u && req.data) {
+                    // Extract only the fields that are being changed
+                    Object.keys(req.data).forEach(key => {
+                        if (key in u) {
+                            currentData[key] = (u as any)[key];
+                        }
+                    });
+                }
             } else if (req.type === 'TEAM_PROFILE') {
-                const t = await prisma.team.findUnique({ where: { id: req.entityId }, select: { name: true } });
+                const t = await prisma.team.findUnique({ 
+                    where: { id: req.entityId },
+                    select: { 
+                        name: true,
+                        description: true,
+                        logoUrl: true,
+                        coverUrl: true
+                    } 
+                });
                 entityName = t?.name || 'Ismeretlen Csapat';
+                
+                if (t && req.data) {
+                    // Extract only the fields that are being changed
+                    Object.keys(req.data).forEach(key => {
+                        if (key in t) {
+                            currentData[key] = (t as any)[key];
+                        }
+                    });
+                }
             }
 
             return {
                 ...req,
-                entityName
+                entityName,
+                currentData
             };
         }));
 
@@ -74,6 +112,128 @@ changeRequestsRouter.get(
     })
 );
 
+// Helper to approve a single request
+async function approveRequestInternal(requestId: string, admin: any) {
+    const request = await prisma.changeRequest.findUnique({ where: { id: requestId } });
+
+    if (!request) {
+        throw new Error(`Request ${requestId} not found`);
+    }
+
+    if (request.status !== 'PENDING') {
+        return; // Skip if already processed
+    }
+
+    const data = request.data as any;
+
+    if (request.type === 'USER_PROFILE') {
+        await prisma.user.update({
+            where: { id: request.entityId },
+            data: {
+                ...(data.displayName !== undefined && { displayName: data.displayName }),
+                ...(data.avatarUrl !== undefined && { avatarUrl: data.avatarUrl }),
+                ...(data.steamId !== undefined && { steamId: data.steamId }),
+                ...(data.emailNotifications !== undefined && { emailNotifications: data.emailNotifications })
+            }
+        });
+        await logSystemActivity(
+            'USER_UPDATE_APPROVED',
+            `User update approved by ${admin.username}`,
+            { adminId: admin.id, userId: request.entityId }
+        );
+
+    } else if (request.type === 'TEAM_PROFILE') {
+        await prisma.team.update({
+            where: { id: request.entityId },
+            data: {
+                ...(data.name && { name: data.name }),
+                ...(data.description !== undefined && { description: data.description }),
+                ...(data.logoUrl !== undefined && { logoUrl: data.logoUrl }),
+                ...(data.coverUrl !== undefined && { coverUrl: data.coverUrl })
+            }
+        });
+        await logSystemActivity(
+            'TEAM_UPDATE_APPROVED',
+            `Team update approved by ${admin.username}`,
+            { adminId: admin.id, metadata: { teamId: request.entityId } }
+        );
+    }
+
+    return prisma.changeRequest.update({
+        where: { id: request.id },
+        data: { status: 'APPROVED' }
+    });
+}
+
+// Bulk Approve
+changeRequestsRouter.post(
+    '/bulk-approve',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const admin = await prisma.user.findUnique({ where: { keycloakId: req.user!.sub } });
+
+        if (!admin || ![UserRole.ADMIN, UserRole.ORGANIZER, UserRole.MODERATOR].includes(admin.role as UserRole)) {
+            throw new ApiError('Nincs jogosultságod a művelethez', 403, 'FORBIDDEN');
+        }
+
+        const { ids } = req.body;
+        if (!Array.isArray(ids) || ids.length === 0) {
+            throw new ApiError('Nincs kiválasztva elem', 400, 'NO_SELECTION');
+        }
+
+        let successCount = 0;
+        const errors = [];
+
+        for (const id of ids) {
+            try {
+                await approveRequestInternal(id, admin);
+                successCount++;
+            } catch (error: any) {
+                console.error(`Failed to approve request ${id}`, error);
+                errors.push({ id, error: error.message });
+            }
+        }
+
+        res.json({ success: true, data: { successCount, errors } });
+    })
+);
+
+// Bulk Reject
+changeRequestsRouter.post(
+    '/bulk-reject',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const admin = await prisma.user.findUnique({ where: { keycloakId: req.user!.sub } });
+
+        if (!admin || ![UserRole.ADMIN, UserRole.ORGANIZER, UserRole.MODERATOR].includes(admin.role as UserRole)) {
+            throw new ApiError('Nincs jogosultságod a művelethez', 403, 'FORBIDDEN');
+        }
+
+        const { ids } = req.body;
+        if (!Array.isArray(ids) || ids.length === 0) {
+            throw new ApiError('Nincs kiválasztva elem', 400, 'NO_SELECTION');
+        }
+
+        // Parallel processing for reject is safer/easier than approve usually, but sequential is fine
+        const result = await prisma.changeRequest.updateMany({
+            where: {
+                id: { in: ids },
+                status: 'PENDING'
+            },
+            data: { status: 'REJECTED' }
+        });
+
+        // Log mass rejection
+        await logSystemActivity(
+            'BULK_REJECT',
+            `${result.count} requests rejected by ${admin.username}`,
+            { adminId: admin.id, metadata: { count: result.count, ids } }
+        );
+
+        res.json({ success: true, data: { count: result.count } });
+    })
+);
+
 // Approve request
 changeRequestsRouter.post(
     '/:id/approve',
@@ -85,59 +245,19 @@ changeRequestsRouter.post(
             throw new ApiError('Nincs jogosultságod a kérelem jóváhagyásához', 403, 'FORBIDDEN');
         }
 
-        const request = await prisma.changeRequest.findUnique({ where: { id: req.params.id as string } });
-
-        if (!request) {
-            throw new ApiError('A kérelem nem található', 404, 'NOT_FOUND');
+        try {
+            const updatedRequest = await approveRequestInternal(req.params.id, admin);
+            if (!updatedRequest) {
+                 // Might happen if it wasn't PENDING
+                 throw new ApiError('A kérelem már feldolgozásra került', 400, 'ALREADY_PROCESSED');
+            }
+            res.json({ success: true, data: updatedRequest });
+        } catch (error: any) {
+            if (error.message.includes('not found')) {
+                 throw new ApiError('A kérelem nem található', 404, 'NOT_FOUND');
+            }
+            throw error;
         }
-
-        if (request.status !== 'PENDING') {
-            throw new ApiError('Ez a kérelem már feldolgozásra került', 400, 'ALREADY_PROCESSED');
-        }
-
-        const data = request.data as any;
-
-        // Apply changes based on type
-        if (request.type === 'USER_PROFILE') {
-            await prisma.user.update({
-                where: { id: request.entityId },
-                data: {
-                    ...(data.displayName !== undefined && { displayName: data.displayName }),
-                    ...(data.avatarUrl !== undefined && { avatarUrl: data.avatarUrl }),
-                    ...(data.steamId !== undefined && { steamId: data.steamId }),
-                    ...(data.emailNotifications !== undefined && { emailNotifications: data.emailNotifications })
-                }
-            });
-            await logSystemActivity(
-                'USER_UPDATE_APPROVED',
-                `User update approved by ${admin.username}`,
-                { adminId: admin.id, userId: request.entityId }
-            );
-
-        } else if (request.type === 'TEAM_PROFILE') {
-            await prisma.team.update({
-                where: { id: request.entityId },
-                data: {
-                    ...(data.name && { name: data.name }),
-                    ...(data.description !== undefined && { description: data.description }),
-                    ...(data.logoUrl !== undefined && { logoUrl: data.logoUrl }),
-                    ...(data.coverUrl !== undefined && { coverUrl: data.coverUrl })
-                }
-            });
-            await logSystemActivity(
-                'TEAM_UPDATE_APPROVED',
-                `Team update approved by ${admin.username}`,
-                { adminId: admin.id, metadata: { teamId: request.entityId } }
-            );
-        }
-
-        // Mark request as approved
-        const updatedRequest = await prisma.changeRequest.update({
-            where: { id: request.id },
-            data: { status: 'APPROVED' }
-        });
-
-        res.json({ success: true, data: updatedRequest });
     })
 );
 

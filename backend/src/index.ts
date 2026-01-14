@@ -102,7 +102,12 @@ app.use('/api/discord', discordRouter);
 app.use('/api/bookings', bookingsRouter);
 app.use('/api/logs', logsRouter);
 app.use('/api/steam', steamRouter);
+import { changelogRouter } from './routes/changelog.js';
+
+// ...
+
 app.use('/api/change-requests', changeRequestsRouter);
+app.use('/api/changelog', changelogRouter);
 app.use('/share', shareRouter);
 
 // Kiosk & Admin Kiosk Routes

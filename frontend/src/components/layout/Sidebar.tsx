@@ -14,6 +14,7 @@ import {
   Monitor,
   ClipboardList,
   FileQuestion,
+  GitCommit,
 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { useAppSelector, useAppDispatch } from "../../hooks/useRedux";
@@ -21,6 +22,7 @@ import { toggleSidebar } from "../../store/slices/uiSlice";
 import { useState, useEffect } from "react";
 import { API_URL } from "../../config";
 import { apiFetch } from "../../lib/api-client";
+import { ChangelogModal } from "../common/ChangelogModal";
 
 interface NavItem {
   to: string;
@@ -47,6 +49,12 @@ const adminItems: NavItem[] = [
     icon: <Shield size={20} />,
     label: "Menedzsment",
     roles: ["ADMIN", "ORGANIZER"],
+  },
+  {
+    to: "/admin/releases",
+    icon: <GitCommit size={20} />,
+    label: "Kiadások",
+    roles: ["ADMIN", "ORGANIZER"], // Only show for admins/organizers
   },
   {
     to: "/admin/logs",
@@ -82,6 +90,11 @@ export function Sidebar() {
   const { user, isAuthenticated } = useAuth();
   const [requestCount, setRequestCount] = useState(0);
 
+  // Changelog State
+  const [showChangelog, setShowChangelog] = useState(false);
+  const [appVersion, setAppVersion] = useState("0.0.0");
+  const [hasUpdate, setHasUpdate] = useState(false);
+
   useEffect(() => {
     const fetchStats = async () => {
       if (user && ["ADMIN", "ORGANIZER", "MODERATOR"].includes(user.role)) {
@@ -97,10 +110,32 @@ export function Sidebar() {
       }
     };
 
+    const fetchVersion = async () => {
+      try {
+        const res = await apiFetch(`${API_URL}/changelog`);
+        const data = await res.json();
+        if (data.success && data.data.latestVersion) {
+          const serverVersion = data.data.latestVersion;
+          setAppVersion(serverVersion);
+
+          const lastSeen = localStorage.getItem("last_seen_version");
+          if (lastSeen !== serverVersion) {
+            setHasUpdate(true);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch version", error);
+      }
+    };
+
     if (isAuthenticated) {
       fetchStats();
+      fetchVersion();
       // Poll every minute
-      const interval = setInterval(fetchStats, 60000);
+      const interval = setInterval(() => {
+        fetchStats();
+        // We could poll version too, but maybe less frequently, keeping it simple for now
+      }, 60000);
       return () => clearInterval(interval);
     }
   }, [user, isAuthenticated]);
@@ -122,16 +157,18 @@ export function Sidebar() {
       {/* Mobile Overlay */}
 
       <div
-        className={`fixed inset-0 z-40 bg-background/80 backdrop-blur-sm transition-all duration-300 md:hidden ${isOpen ? "opacity-100" : "pointer-events-none opacity-0"
-          }`}
+        className={`fixed inset-0 z-40 bg-background/80 backdrop-blur-sm transition-all duration-300 md:hidden ${
+          isOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
         onClick={() => dispatch(toggleSidebar())}
       />
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex h-screen flex-col border-r border-white/5 bg-background/60 backdrop-blur-xl transition-all duration-300 ease-in-out ${isOpen
-          ? "w-64 translate-x-0"
-          : "-translate-x-full md:w-20 md:translate-x-0"
-          }`}
+        className={`fixed inset-y-0 left-0 z-50 flex h-screen flex-col border-r border-white/5 bg-background/60 backdrop-blur-xl transition-all duration-300 ease-in-out ${
+          isOpen
+            ? "w-64 translate-x-0"
+            : "-translate-x-full md:w-20 md:translate-x-0"
+        }`}
       >
         <div className="flex h-16 items-center border-b border-white/5 px-4">
           {isOpen && (
@@ -149,8 +186,9 @@ export function Sidebar() {
             </Link>
           )}
           <button
-            className={`ml-auto flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-white/10 hover:text-white ${!isOpen && "mx-auto"
-              }`}
+            className={`ml-auto flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-white/10 hover:text-white ${
+              !isOpen && "mx-auto"
+            }`}
             onClick={() => dispatch(toggleSidebar())}
             aria-label={isOpen ? "Collapse sidebar" : "Expand sidebar"}
           >
@@ -165,17 +203,19 @@ export function Sidebar() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive(item.to)
-                    ? "bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
-                    : "text-muted-foreground hover:bg-white/5 hover:text-white"
-                    } ${!isOpen && "justify-center px-0"}`}
+                  className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+                    isActive(item.to)
+                      ? "bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
+                      : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                  } ${!isOpen && "justify-center px-0"}`}
                   title={!isOpen ? item.label : undefined}
                 >
                   <span
-                    className={`transition-transform duration-200 group-hover:scale-110 ${isActive(item.to)
-                      ? "text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]"
-                      : ""
-                      }`}
+                    className={`transition-transform duration-200 group-hover:scale-110 ${
+                      isActive(item.to)
+                        ? "text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]"
+                        : ""
+                    }`}
                   >
                     {item.icon}
                   </span>
@@ -193,20 +233,27 @@ export function Sidebar() {
                     <Link
                       key={item.to}
                       to={item.to}
-                      className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive(item.to)
-                        ? "bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
-                        : "text-muted-foreground hover:bg-white/5 hover:text-white"
-                        } ${!isOpen && "justify-center px-0"}`}
+                      className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+                        isActive(item.to)
+                          ? "bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
+                          : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                      } ${!isOpen && "justify-center px-0"}`}
                       title={!isOpen ? item.label : undefined}
                     >
-                      <span
-                        className={`transition-transform duration-200 group-hover:scale-110 ${isActive(item.to)
-                          ? "text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]"
-                          : ""
+                      <div className="relative">
+                        <span
+                          className={`transition-transform duration-200 group-hover:scale-110 ${
+                            isActive(item.to)
+                              ? "text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]"
+                              : ""
                           }`}
-                      >
-                        {item.icon}
-                      </span>
+                        >
+                          {item.icon}
+                        </span>
+                        {!isOpen && (item as any).badge && requestCount > 0 && (
+                          <span className="absolute -top-1 -right-1 block h-3 w-3 rounded-full bg-red-500 ring-2 ring-[#0f1016]" />
+                        )}
+                      </div>
                       {isOpen && (
                         <div className="flex items-center justify-between flex-1">
                           <span>{item.label}</span>
@@ -223,8 +270,73 @@ export function Sidebar() {
               </div>
             </div>
           )}
+
+          {/* Version Footer */}
+          {/* Version Footer */}
+          {isAuthenticated && (
+            <div
+              className={`mt-auto border-t border-white/5 transition-all duration-300 ${
+                isOpen
+                  ? "mx-3 px-6 pb-6 pt-4"
+                  : "mx-0 px-2 py-4 flex justify-center"
+              }`}
+            >
+              <button
+                onClick={() => setShowChangelog(true)}
+                className={`flex items-center group transition-all ${
+                  isOpen
+                    ? "w-full justify-between"
+                    : "flex-col gap-1 justify-center"
+                }`}
+                title={`Verzió: v${appVersion}`}
+              >
+                <div
+                  className={`flex flex-col ${
+                    isOpen ? "items-start" : "items-center"
+                  }`}
+                >
+                  <span
+                    className={`text-xs font-medium text-gray-500 group-hover:text-white transition-colors ${
+                      !isOpen && "hidden"
+                    }`}
+                  >
+                    Verzió:{" "}
+                  </span>
+                  <span
+                    className={`font-mono transition-colors ${
+                      isOpen
+                        ? "text-gray-400"
+                        : "text-[10px] text-gray-500 group-hover:text-white"
+                    }`}
+                  >
+                    v{appVersion}
+                  </span>
+                </div>
+                {hasUpdate && (
+                  <span
+                    className={`bg-primary/20 text-primary font-bold rounded-full animate-pulse shadow-[0_0_10px_rgba(139,92,246,0.3)] ${
+                      isOpen
+                        ? "text-[10px] px-2 py-0.5"
+                        : "text-[8px] px-1.5 py-0.5 mt-1"
+                    }`}
+                  >
+                    {isOpen ? "ÚJ" : "NEW"}
+                  </span>
+                )}
+              </button>
+            </div>
+          )}
         </nav>
       </aside>
+
+      <ChangelogModal
+        isOpen={showChangelog}
+        onClose={() => {
+          setShowChangelog(false);
+          setHasUpdate(false);
+          localStorage.setItem("last_seen_version", appVersion);
+        }}
+      />
     </>
   );
 }

@@ -170,6 +170,19 @@ usersRouter.patch(
             const isOnlySettings = !displayName && !avatarUrl && !steamId && emailNotifications !== undefined;
 
             if (!isOnlySettings) {
+                // Check for existing pending request
+                const existingRequest = await prisma.changeRequest.findFirst({
+                    where: {
+                        entityId: targetUserId,
+                        type: 'USER_PROFILE',
+                        status: 'PENDING'
+                    }
+                });
+
+                if (existingRequest) {
+                    throw new ApiError('Már van függőben lévő kérelmed.', 400, 'DUPLICATE_REQUEST');
+                }
+
                 await prisma.changeRequest.create({
                     data: {
                         type: 'USER_PROFILE',

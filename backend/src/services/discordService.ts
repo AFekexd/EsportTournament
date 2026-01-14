@@ -18,7 +18,12 @@ import {
     REST,
     Routes,
     SlashCommandBuilder,
-    ChatInputCommandInteraction
+    ChatInputCommandInteraction,
+    ModalBuilder,
+    TextInputBuilder,
+    TextInputStyle,
+    ButtonInteraction,
+    ModalSubmitInteraction
 } from 'discord.js';
 import prisma from '../lib/prisma.js';
 import { DISCORD_ROLE_MAP, BASE_VERIFIED_ROLES, GUEST_ROLES } from '../config/discordRoles.js';
@@ -89,8 +94,8 @@ class DiscordService {
                         .setDescription('A 11 jegyű oktatási azonosítód')
                         .setRequired(true)),
             new SlashCommandBuilder()
-                .setName('recheck')
-                .setDescription('Jogosultságok újraellenőrzése (Admin)')
+                .setName('deploy-verify')
+                .setDescription('Hitelesítő üzenet küldése (Admin)')
                 .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
         ];
 
@@ -111,6 +116,15 @@ class DiscordService {
                  if (interaction.customId.startsWith('toggle_role_')) {
                     const roleName = interaction.customId.replace('toggle_role_', '');
                     await this.handleRoleToggle(interaction, roleName);
+                } else if (interaction.customId === 'verify_button') {
+                    await this.handleVerifyButton(interaction);
+                }
+                return;
+            }
+
+            if (interaction.isModalSubmit()) {
+                if (interaction.customId === 'verify_modal') {
+                    await this.handleVerifyModal(interaction);
                 }
                 return;
             }
@@ -120,6 +134,8 @@ class DiscordService {
                     await this.handleOmCommand(interaction);
                 } else if (interaction.commandName === 'recheck') {
                     await this.handleRecheckCommand(interaction);
+                } else if (interaction.commandName === 'deploy-verify') {
+                    await this.handleDeployVerify(interaction);
                 }
             }
         });
@@ -129,33 +145,91 @@ class DiscordService {
         this.client.on('guildMemberAdd', async (member) => {
             const welcomeChannel = member.guild.channels.cache.find(c => c.name === 'general' || c.name === 'csevegő' || c.name === 'hirdetmények') as TextChannel;
             if (welcomeChannel) {
-                await welcomeChannel.send(`Üdvözöllek ${member.toString()}! Kérlek igazold magad az OM azonosítóddal a következő paranccsal: \`/om <OM_AZONOSÍTÓ>\``);
+                await welcomeChannel.send(`Üdvözöllek ${member.toString()}! Kérlek igazold magad az OM azonosítóddal a következő paranccsal: \`/om <OM_AZONOSÍTÓ>\`, vagy használd a hitelesítő csatornán lévő gombot!`);
             }
         });
     }
 
     // Removed message-based setupVerificationHandler
 
+    private async handleDeployVerify(interaction: ChatInputCommandInteraction) {
+        if (!interaction.memberPermissions?.has(PermissionsBitField.Flags.Administrator)) {
+            await interaction.reply({ content: '❌ Nincs jogosultságod ehhez a parancshoz.', ephemeral: true });
+            return;
+        }
+
+        const embed = new EmbedBuilder()
+            .setTitle('🔐 Diák Hitelesítés')
+            .setDescription('A versenyen való részvételhez és a szerveren a megfelelő rangok megkapásához hitelesítened kell magad az OM azonosítóddal.\n\nKattints az alábbi **"Azonosítás"** gombra, és írd be a 11 jegyű oktatási azonosítódat!')
+            .setColor('#7c3aed' as ColorResolvable)
+            .setFooter({ text: 'EsportHub Verification System' });
+
+        const row = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('verify_button')
+                    .setLabel('Azonosítás')
+                    .setStyle(ButtonStyle.Primary)
+                    .setEmoji('🆔')
+            );
+
+
+        const channel = interaction.channel as TextChannel;
+        if (channel && channel.send) {
+             await channel.send({ embeds: [embed], components: [row] });
+             await interaction.reply({ content: '✅ Hitelesítő üzenet elküldve!', ephemeral: true });
+        } else {
+             await interaction.reply({ content: '❌ Nem tudtam elküldeni az üzenetet ebbe a csatornába.', ephemeral: true });
+        }
+    }
+
+    private async handleVerifyButton(interaction: ButtonInteraction) {
+        const modal = new ModalBuilder()
+            .setCustomId('verify_modal')
+            .setTitle('Diák Hitelesítés');
+
+        const omInput = new TextInputBuilder()
+            .setCustomId('om_input')
+            .setLabel("Oktatási Azonosító (11 jegyű)")
+            .setStyle(TextInputStyle.Short)
+            .setMinLength(11)
+            .setMaxLength(11)
+            .setPlaceholder("pl. 71234567890")
+            .setRequired(true);
+
+        const firstActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(omInput);
+        modal.addComponents(firstActionRow);
+
+        await interaction.showModal(modal);
+    }
+
+    private async handleVerifyModal(interaction: ModalSubmitInteraction) {
+        const omId = interaction.fields.getTextInputValue('om_input');
+        await interaction.deferReply({ ephemeral: true });
+        await this.processVerification(interaction, omId);
+    }
+
     private async handleOmCommand(interaction: ChatInputCommandInteraction) {
         const omId = interaction.options.getString('azonosito', true);
-        
         await interaction.deferReply({ ephemeral: true });
+        await this.processVerification(interaction, omId);
+    }
 
+    private async processVerification(interaction: ChatInputCommandInteraction | ModalSubmitInteraction, omId: string) {
         // Basic validation
-        if (omId.length < 10) {
-             await interaction.editReply('❌ Érvénytelennek tűnő OM azonosító.');
+        if (omId.length !== 11) { // Strict 11 chars
+             await interaction.editReply('❌ Az oktatási azonosítónak pontosan 11 számjegyből kell állnia.');
              return;
         }
 
         try {
             // Find user by OM ID
-            // using findFirst because omId might not be unique in Prisma schema (though it should be logically)
             const user = await prisma.user.findFirst({
                 where: { omId: omId }
             });
 
             if (!user) {
-                await interaction.editReply(`❌ Nem található felhasználó a megadott OM azonosítóval (${omId}). Kérlek ellenőrizd, vagy lépj be először a weboldalra!`);
+                await interaction.editReply(`❌ Nem található felhasználó a megadott OM azonosítóval (${omId}).\nKérlek ellenőrizd, hogy helyesen adtad-e meg, vagy regisztrálj előbb a weboldalon!`);
                 return;
             }
 
@@ -170,7 +244,6 @@ class DiscordService {
                 data: { discordId: interaction.user.id }
             });
 
-            // Sync User (Nickname + Roles)
             // Sync User (Nickname + Roles)
             const result = await this.syncUser(user.id);
             if (result.success) {
@@ -461,18 +534,22 @@ class DiscordService {
                 if (gameCategoryId) {
                     targetCategoryId = gameCategoryId;
                 }
-                // Ensure Role exists for this game
+                // Ensure Role exists for this game (optional, keeping it as is)
                 await this.ensureRoleExists(gameName);
             }
 
             // Sanitize channel name
             const channelName = this.sanitizeName(tournamentName);
 
+            // Fetch Verified Roles
+            const allRoles = await guild.roles.fetch();
+            const verifiedRoles = allRoles.filter(r => BASE_VERIFIED_ROLES.some(vr => vr.toLowerCase() === r.name.toLowerCase()));
+
             const permissionOverwrites = [
                 {
                     id: guild.id, // @everyone
-                    allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.ReadMessageHistory],
-                    deny: [PermissionsBitField.Flags.SendMessages], // Read-only for everyone by default
+                    allow: [],
+                    deny: [PermissionsBitField.Flags.ViewChannel], // Hidden for everyone
                 },
                 {
                     id: this.client.user!.id,
@@ -480,7 +557,17 @@ class DiscordService {
                 },
             ];
 
-            // 2. Create Text Channel
+            // Add Verified Roles Permissions
+            for (const role of verifiedRoles.values()) {
+                permissionOverwrites.push({
+                    id: role.id,
+                    allow: [PermissionsBitField.Flags.ViewChannel],
+                    deny: [],
+                } as any);
+            }
+
+
+            // 2. Create Text Channel (Info/Chat)
             const textChannel = await guild.channels.create({
                 name: `🏆-${channelName}`,
                 type: ChannelType.GuildText,
@@ -489,7 +576,29 @@ class DiscordService {
                 topic: `Official channel for ${tournamentName}`,
             });
 
-            // 3. Create Voice Channel
+            // 3. Create Results Channel
+             const resultsChannel = await guild.channels.create({
+                name: `📊-${channelName}-eredmények`,
+                type: ChannelType.GuildText,
+                parent: targetCategoryId || undefined,
+                permissionOverwrites: [
+                     ...permissionOverwrites, 
+                     {
+                        id: guild.id, // Overwrite @everyone again just to be safe/explicit, though base list has it
+                        deny: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages] 
+                     },
+                     // Make it read-only for verified users (they can view, but not send)
+                     ...verifiedRoles.map(role => ({
+                        id: role.id,
+                        allow: [PermissionsBitField.Flags.ViewChannel],
+                        deny: [PermissionsBitField.Flags.SendMessages]
+                     }))
+                ],
+                topic: `Results for ${tournamentName}`,
+            });
+
+
+            // 4. Create Voice Channel
             const voiceChannel = await guild.channels.create({
                 name: `🔊 ${tournamentName}`,
                 type: ChannelType.GuildVoice,
@@ -498,12 +607,20 @@ class DiscordService {
                     ...permissionOverwrites,
                     {
                         id: guild.id,
-                        allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.Speak], // Allow speaking in voice
-                    }
+                         deny: [PermissionsBitField.Flags.ViewChannel], // Double check hidden
+                    },
+                     // Allow verified to connect/speak
+                     ...verifiedRoles.map(role => ({
+                        id: role.id,
+                        allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.Speak],
+                     }))
                 ],
             });
 
-            console.log(`✅ Created Discord channels for ${tournamentName}: Text(${textChannel.id}), Voice(${voiceChannel.id})`);
+            console.log(`✅ Created Discord channels for ${tournamentName}: Text(${textChannel.id}), Results(${resultsChannel.id}), Voice(${voiceChannel.id})`);
+
+            // Optional: Send welcome message to text channel
+            await textChannel.send(`**${tournamentName}** csatorna létrehozva! A részvételhez és a látáshoz _Verified_ vagy _Tag_ rang szükséges.`);
 
             return {
                 textChannelId: textChannel.id,

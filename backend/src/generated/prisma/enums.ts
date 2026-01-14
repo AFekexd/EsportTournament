@@ -116,3 +116,12 @@ export const RequestStatus = {
 } as const
 
 export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus]
+
+
+export const ChangeLogType = {
+  MAJOR: 'MAJOR',
+  MINOR: 'MINOR',
+  PATCH: 'PATCH'
+} as const
+
+export type ChangeLogType = (typeof ChangeLogType)[keyof typeof ChangeLogType]

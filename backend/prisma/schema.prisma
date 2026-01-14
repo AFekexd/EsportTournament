@@ -79,49 +79,50 @@ enum SeedingMethod {
 
 // Felhasználó (Keycloak-ból szinkronizált adatok)
 model User {
-  id            String   @id @default(uuid())
-  keycloakId    String   @unique
-  email         String   @unique
-  username      String   @unique
-  displayName   String?
-  avatarUrl     String?
-  omId          String?
-  discordId     String?  
-  role          Role     @default(STUDENT)
-  elo           Int      @default(1000)
-  timeBalanceSeconds Int @default(0) // Kiosk time balance
-  emailNotifications Boolean @default(true)
-  steamId       String?
-  steamAvatar   String?
-  steamUrl      String?
-  steamLevel    Int?
-  steamPersonaname String?
-  steamCreatedAt DateTime?
-  perfectGamesCount Int  @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id                 String    @id @default(uuid())
+  keycloakId         String    @unique
+  email              String    @unique
+  username           String    @unique
+  displayName        String?
+  avatarUrl          String?
+  omId               String?
+  discordId          String?
+  role               Role      @default(STUDENT)
+  elo                Int       @default(1000)
+  timeBalanceSeconds Int       @default(0) // Kiosk time balance
+  emailNotifications Boolean   @default(true)
+  steamId            String?
+  steamAvatar        String?
+  steamUrl           String?
+  steamLevel         Int?
+  steamPersonaname   String?
+  steamCreatedAt     DateTime?
+  perfectGamesCount  Int       @default(0)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 
-  teamMemberships   TeamMember[]
-  ownedTeams        Team[]             @relation("TeamOwner")
-  notifications     Notification[]
-  gameStats         GameStats[]
-  tournamentEntries TournamentEntry[]  // For solo tournament registration
+  teamMemberships      TeamMember[]
+  ownedTeams           Team[]            @relation("TeamOwner")
+  notifications        Notification[]
+  gameStats            GameStats[]
+  tournamentEntries    TournamentEntry[] // For solo tournament registration
   participatingEntries TournamentEntry[] @relation("TournamentParticipants") // For team tournament participation
-  discordSettings   DiscordSettings?
-  bookings          Booking[]          // Computer bookings
-  waitlistEntries   Waitlist[]         // Waitlist entries
+  discordSettings      DiscordSettings?
+  bookings             Booking[] // Computer bookings
+  waitlistEntries      Waitlist[] // Waitlist entries
   // Match relations for solo tournaments
-  homeMatches       Match[]            @relation("HomeUser")
-  awayMatches       Match[]            @relation("AwayUser")
-  wonMatches        Match[]            @relation("WinnerUser")
-  
-  // Kiosk relations
-  sessions          Session[]
-  logs              Log[]
-  adminLogs         Log[]              @relation("LogAdmin")
+  homeMatches          Match[]           @relation("HomeUser")
+  awayMatches          Match[]           @relation("AwayUser")
+  wonMatches           Match[]           @relation("WinnerUser")
 
-  ranks             UserRank[]
-  changeRequests    ChangeRequest[]
+  // Kiosk relations
+  sessions  Session[]
+  logs      Log[]
+  adminLogs Log[]     @relation("LogAdmin")
+
+  ranks              UserRank[]
+  changeRequests     ChangeRequest[]
+  authoredChangelogs Changelog[]
 }
 
 // Csapat
@@ -166,14 +167,14 @@ model Game {
   imageUrl    String?
   rules       String?
   rulesPdfUrl String? // Base64 encoded PDF
-  teamSize    Int?     // 1, 2, 3, 5 (Optional, defaults to 1 if not set)
+  teamSize    Int? // 1, 2, 3, 5 (Optional, defaults to 1 if not set)
   createdAt   DateTime @default(now())
 
   tournaments Tournament[]
   gameStats   GameStats[]
 
-  ranks       Rank[]
-  userRanks   UserRank[]
+  ranks     Rank[]
+  userRanks UserRank[]
 }
 
 // Verseny
@@ -181,12 +182,12 @@ model Tournament {
   id                   String           @id @default(uuid())
   name                 String
   description          String?
-  imageUrl             String?          // Custom tournament image
+  imageUrl             String? // Custom tournament image
   gameId               String
   game                 Game             @relation(fields: [gameId], references: [id])
   format               TournamentFormat @default(SINGLE_ELIMINATION)
   status               TournamentStatus @default(DRAFT)
-  teamSize             Int?             // Override Game.teamSize (1=1v1, 5=5v5 etc.)
+  teamSize             Int? // Override Game.teamSize (1=1v1, 5=5v5 etc.)
   maxTeams             Int
   startDate            DateTime
   endDate              DateTime?
@@ -206,8 +207,8 @@ model Tournament {
   hasQualifier       Boolean @default(false)
   qualifierMatches   Int     @default(0)
   qualifierMinPoints Int     @default(0)
-  
-  requireRank        Boolean @default(true) // If true, all participants must have a rank for the game
+
+  requireRank Boolean @default(true) // If true, all participants must have a rank for the game
 
   entries TournamentEntry[]
   matches Match[]
@@ -215,19 +216,19 @@ model Tournament {
 
 // Verseny jelentkezés
 model TournamentEntry {
-  id           String     @id @default(uuid())
-  tournamentId String
-  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
-  teamId       String?    // Null for solo tournaments
-  team         Team?      @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  userId       String?    // For solo tournaments (1v1)
-  user         User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  seed         Int?
-  matchesPlayed Int      @default(0)
-  qualifierPoints Int    @default(0)
-  registeredAt DateTime   @default(now())
+  id              String     @id @default(uuid())
+  tournamentId    String
+  tournament      Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  teamId          String? // Null for solo tournaments
+  team            Team?      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  userId          String? // For solo tournaments (1v1)
+  user            User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  seed            Int?
+  matchesPlayed   Int        @default(0)
+  qualifierPoints Int        @default(0)
+  registeredAt    DateTime   @default(now())
 
-  participants User[]     @relation("TournamentParticipants")
+  participants User[] @relation("TournamentParticipants")
 
   @@unique([tournamentId, teamId])
   @@unique([tournamentId, userId])
@@ -280,19 +281,18 @@ model GameStats {
   @@unique([userId, gameId])
 }
 
-
 // Rangok
 model Rank {
-  id        String   @id @default(uuid())
+  id        String     @id @default(uuid())
   gameId    String
-  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  game      Game       @relation(fields: [gameId], references: [id], onDelete: Cascade)
   name      String
-  value     Int      // P-ELO érték
+  value     Int // P-ELO érték
   image     String?
-  order     Int      @default(0)
+  order     Int        @default(0)
   users     UserRank[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 // Felhasználói rangok
@@ -302,10 +302,10 @@ model UserRank {
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   rankId     String
   rank       Rank     @relation(fields: [rankId], references: [id], onDelete: Cascade)
-  gameId     String   // Redundáns, de egyszerűsíti a query-t (User game rank-ja)
+  gameId     String // Redundáns, de egyszerűsíti a query-t (User game rank-ja)
   game       Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
   assignedAt DateTime @default(now())
-  
+
   @@unique([userId, gameId]) // Egy usernek egy játékban csak egy rangja lehet egyszerre
 }
 
@@ -324,29 +324,29 @@ model Notification {
 
 // Fun aktivitások (játéknapok, közös események)
 model Event {
-  id          String    @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
   description String?
   eventDate   DateTime
   location    String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 // Discord notification settings
 model DiscordSettings {
-  id                       String   @id @default(uuid())
-  userId                   String   @unique
-  enabled                  Boolean  @default(false)
-  webhookUrl               String?
-  notifyOnTournamentStart  Boolean  @default(true)
-  notifyOnMatchScheduled   Boolean  @default(true)
-  notifyOnMatchResult      Boolean  @default(true)
-  notifyOnTeamInvite       Boolean  @default(true)
-  notifyOnRoundComplete    Boolean  @default(true)
-  mentionRole              String?  // Discord role to mention (e.g., @everyone, role ID)
-  createdAt                DateTime @default(now())
-  updatedAt                DateTime @updatedAt
+  id                      String   @id @default(uuid())
+  userId                  String   @unique
+  enabled                 Boolean  @default(false)
+  webhookUrl              String?
+  notifyOnTournamentStart Boolean  @default(true)
+  notifyOnMatchScheduled  Boolean  @default(true)
+  notifyOnMatchResult     Boolean  @default(true)
+  notifyOnTeamInvite      Boolean  @default(true)
+  notifyOnRoundComplete   Boolean  @default(true)
+  mentionRole             String? // Discord role to mention (e.g., @everyone, role ID)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -363,24 +363,24 @@ enum ComputerStatus {
 
 // Számítógép a teremben
 model Computer {
-  id              String          @id @default(uuid())
-  name            String          // "PC-1", "PC-2", stb.
-  hostname        String?         @unique // Network hostname for Kiosk Client
-  row             Int             // 0 vagy 1 (2 sor)
-  position        Int             // 0-4 (5 pozíció soronként)
-  isActive        Boolean         @default(true) // Physically available
-  
-  // Kiosk-specific fields
-  isLocked        Boolean         @default(false)
-  isCompetitionMode Boolean       @default(false)
+  id       String  @id @default(uuid())
+  name     String // "PC-1", "PC-2", stb.
+  hostname String? @unique // Network hostname for Kiosk Client
+  row      Int // 0 vagy 1 (2 sor)
+  position Int // 0-4 (5 pozíció soronként)
+  isActive Boolean @default(true) // Physically available
 
-  status          ComputerStatus  @default(AVAILABLE)
-  specs           Json?           // { cpu, gpu, ram, monitor, storage }
-  installedGames  String[]        // Telepített játékok listája
-  clientVersion   String?         // The current version running on this machine (e.g. "1.0.0")
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  
+  // Kiosk-specific fields
+  isLocked          Boolean @default(false)
+  isCompetitionMode Boolean @default(false)
+
+  status         ComputerStatus @default(AVAILABLE)
+  specs          Json? // { cpu, gpu, ram, monitor, storage }
+  installedGames String[] // Telepített játékok listája
+  clientVersion  String? // The current version running on this machine (e.g. "1.0.0")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
   bookings        Booking[]
   waitlistEntries Waitlist[]
   sessions        Session[]
@@ -391,21 +391,21 @@ model Computer {
 
 // Foglalás
 model Booking {
-  id            String    @id @default(uuid())
-  computerId    String
-  computer      Computer  @relation(fields: [computerId], references: [id], onDelete: Cascade)
-  userId        String
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  date          DateTime  @db.Date  // A foglalás napja
-  startTime     DateTime  // Kezdési időpont
-  endTime       DateTime  // Befejezési időpont (max 2 óra a startTime után)
+  id           String    @id @default(uuid())
+  computerId   String
+  computer     Computer  @relation(fields: [computerId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date         DateTime  @db.Date // A foglalás napja
+  startTime    DateTime // Kezdési időpont
+  endTime      DateTime // Befejezési időpont (max 2 óra a startTime után)
   // QR kód bejelentkezés
-  checkInCode   String?   @unique  // QR kód tartalom
-  checkedInAt   DateTime?          // Bejelentkezés időpontja
-  reminderSent  Boolean   @default(false)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  
+  checkInCode  String?   @unique // QR kód tartalom
+  checkedInAt  DateTime? // Bejelentkezés időpontja
+  reminderSent Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
   @@index([computerId, date])
   @@index([userId])
   @@index([date])
@@ -413,45 +413,45 @@ model Booking {
 
 // Active Kiosk Session
 model Session {
-  id        String    @id @default(uuid())
-  userId    String
-  user      User      @relation(fields: [userId], references: [id])
+  id         String    @id @default(uuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id])
   computerId String
-  computer  Computer   @relation(fields: [computerId], references: [id])
-  startTime DateTime  @default(now())
-  endTime   DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  computer   Computer  @relation(fields: [computerId], references: [id])
+  startTime  DateTime  @default(now())
+  endTime    DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 // Audit Logs for Kiosk/Admin actions
 model Log {
-  id        String   @id @default(uuid())
-  type      String   // LOGIN, LOGOUT, ADD_TIME, LOCK, UNLOCK
-  message   String?
-  metadata  Json?    // Structured data for detailed view
-  userId    String?
-  user      User?    @relation(fields: [userId], references: [id])
-  adminId   String?
-  admin     User?    @relation("LogAdmin", fields: [adminId], references: [id])
+  id         String    @id @default(uuid())
+  type       String // LOGIN, LOGOUT, ADD_TIME, LOCK, UNLOCK
+  message    String?
+  metadata   Json? // Structured data for detailed view
+  userId     String?
+  user       User?     @relation(fields: [userId], references: [id])
+  adminId    String?
+  admin      User?     @relation("LogAdmin", fields: [adminId], references: [id])
   computerId String?
   computer   Computer? @relation(fields: [computerId], references: [id])
-  createdAt DateTime @default(now())
+  createdAt  DateTime  @default(now())
 }
 
 // Várólistás rendszer
 model Waitlist {
-  id          String    @id @default(uuid())
-  computerId  String
-  computer    Computer  @relation(fields: [computerId], references: [id], onDelete: Cascade)
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  date        DateTime  @db.Date
-  startHour   Int       // 0-23
-  endHour     Int       // 0-23
-  notified    Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  
+  id         String   @id @default(uuid())
+  computerId String
+  computer   Computer @relation(fields: [computerId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date       DateTime @db.Date
+  startHour  Int // 0-23
+  endHour    Int // 0-23
+  notified   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
   @@unique([computerId, userId, date, startHour])
   @@index([computerId, date])
   @@index([userId])
@@ -459,22 +459,22 @@ model Waitlist {
 
 // Admin preset az elérhető időpontokhoz
 model BookingSchedule {
-  id          String    @id @default(uuid())
-  dayOfWeek   Int       // 0=Vasárnap, 1=Hétfő, ... 5=Péntek, 6=Szombat
-  startHour   Int       // 0-23
-  endHour     Int       // 0-23
-  isActive    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id        String   @id @default(uuid())
+  dayOfWeek Int // 0=Vasárnap, 1=Hétfő, ... 5=Péntek, 6=Szombat
+  startHour Int // 0-23
+  endHour   Int // 0-23
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // Kiosk Client Version Management
 model ClientVersion {
-  id          String   @id @default(uuid())
-  version     String   @unique // e.g., "1.0.1"
-  fileData    Bytes    // The binary content of the update ZIP
-  isActive    Boolean  @default(false) // Only one version should be active (latest)
-  createdAt   DateTime @default(now())
+  id        String   @id @default(uuid())
+  version   String   @unique // e.g., "1.0.1"
+  fileData  Bytes // The binary content of the update ZIP
+  isActive  Boolean  @default(false) // Only one version should be active (latest)
+  createdAt DateTime @default(now())
 }
 
 // ============================================
@@ -495,11 +495,31 @@ enum RequestStatus {
 model ChangeRequest {
   id          String        @id @default(uuid())
   type        ChangeType
-  entityId    String        // ID of the User or Team
-  requesterId String        // User ID who made the request
+  entityId    String // ID of the User or Team
+  requesterId String // User ID who made the request
   requester   User          @relation(fields: [requesterId], references: [id])
-  data        Json          // The requested changes (e.g. { name: "New", logoUrl: "..." })
+  data        Json // The requested changes (e.g. { name: "New", logoUrl: "..." })
   status      RequestStatus @default(PENDING)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+}
+
+// ============================================
+// CHANGELOG & VERSIONING
+// ============================================
+
+enum ChangeLogType {
+  MAJOR
+  MINOR
+  PATCH
+}
+
+model Changelog {
+  id        String        @id @default(uuid())
+  version   String        @unique // e.g., "1.0.0"
+  type      ChangeLogType
+  changes   String[] // List of change descriptions
+  authorId  String
+  author    User          @relation(fields: [authorId], references: [id])
+  createdAt DateTime      @default(now())
 }

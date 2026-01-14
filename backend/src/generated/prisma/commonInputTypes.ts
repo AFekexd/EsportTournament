@@ -508,6 +508,23 @@ export type EnumRequestStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumRequestStatusFilter<$PrismaModel>
 }
 
+export type EnumChangeLogTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChangeLogType | Prisma.EnumChangeLogTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ChangeLogType[] | Prisma.ListEnumChangeLogTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChangeLogType[] | Prisma.ListEnumChangeLogTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChangeLogTypeFilter<$PrismaModel> | $Enums.ChangeLogType
+}
+
+export type EnumChangeLogTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChangeLogType | Prisma.EnumChangeLogTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ChangeLogType[] | Prisma.ListEnumChangeLogTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChangeLogType[] | Prisma.ListEnumChangeLogTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChangeLogTypeWithAggregatesFilter<$PrismaModel> | $Enums.ChangeLogType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumChangeLogTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumChangeLogTypeFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -959,6 +976,23 @@ export type NestedEnumRequestStatusWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumRequestStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumRequestStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumChangeLogTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChangeLogType | Prisma.EnumChangeLogTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ChangeLogType[] | Prisma.ListEnumChangeLogTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChangeLogType[] | Prisma.ListEnumChangeLogTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChangeLogTypeFilter<$PrismaModel> | $Enums.ChangeLogType
+}
+
+export type NestedEnumChangeLogTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChangeLogType | Prisma.EnumChangeLogTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ChangeLogType[] | Prisma.ListEnumChangeLogTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChangeLogType[] | Prisma.ListEnumChangeLogTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChangeLogTypeWithAggregatesFilter<$PrismaModel> | $Enums.ChangeLogType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumChangeLogTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumChangeLogTypeFilter<$PrismaModel>
 }
 
 

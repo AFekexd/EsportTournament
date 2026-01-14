@@ -71,7 +71,8 @@ export const ModelName = {
   Waitlist: 'Waitlist',
   BookingSchedule: 'BookingSchedule',
   ClientVersion: 'ClientVersion',
-  ChangeRequest: 'ChangeRequest'
+  ChangeRequest: 'ChangeRequest',
+  Changelog: 'Changelog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -421,6 +422,18 @@ export const ChangeRequestScalarFieldEnum = {
 } as const
 
 export type ChangeRequestScalarFieldEnum = (typeof ChangeRequestScalarFieldEnum)[keyof typeof ChangeRequestScalarFieldEnum]
+
+
+export const ChangelogScalarFieldEnum = {
+  id: 'id',
+  version: 'version',
+  type: 'type',
+  changes: 'changes',
+  authorId: 'authorId',
+  createdAt: 'createdAt'
+} as const
+
+export type ChangelogScalarFieldEnum = (typeof ChangelogScalarFieldEnum)[keyof typeof ChangelogScalarFieldEnum]
 
 
 export const SortOrder = {

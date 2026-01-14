@@ -122,3 +122,8 @@ export type ClientVersion = Prisma.ClientVersionModel
  * 
  */
 export type ChangeRequest = Prisma.ChangeRequestModel
+/**
+ * Model Changelog
+ * 
+ */
+export type Changelog = Prisma.ChangelogModel

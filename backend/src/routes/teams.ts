@@ -282,6 +282,19 @@ teamsRouter.patch(
 
         // If not Admin/Organizer, create Change Request instead of immediate update
         if (!['ADMIN', 'ORGANIZER', 'MODERATOR'].includes(user.role)) {
+            // Check for existing pending request
+            const existingRequest = await prisma.changeRequest.findFirst({
+                where: {
+                    entityId: req.params.id,
+                    type: 'TEAM_PROFILE',
+                    status: 'PENDING'
+                }
+            });
+
+            if (existingRequest) {
+                throw new ApiError('Ennek a csapatnak már van függőben lévő kérelme.', 400, 'DUPLICATE_REQUEST');
+            }
+
             await prisma.changeRequest.create({
                 data: {
                     type: 'TEAM_PROFILE',
