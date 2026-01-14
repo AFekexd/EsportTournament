@@ -3,7 +3,7 @@ import { API_URL } from "../../config";
 import { apiFetch } from "../../lib/api-client";
 import { format } from "date-fns";
 import { hu } from "date-fns/locale";
-import { Check, X, User, Shield } from "lucide-react";
+import { Check, X, User, Shield, RefreshCw } from "lucide-react";
 import dict from "../../lib/dict";
 import { toast } from "sonner";
 import { ConfirmationModal } from "../../components/common/ConfirmationModal";
@@ -96,6 +96,8 @@ export default function RequestsPage() {
             );
             setRequests((prev) => prev.filter((r) => r.id !== request.id));
             setConfirmModal((prev) => ({ ...prev, isOpen: false }));
+            // Trigger update in sidebar
+            window.dispatchEvent(new CustomEvent("requests-updated"));
           } else {
             throw new Error(data.error?.message || "Hiba történt");
           }
@@ -121,10 +123,21 @@ export default function RequestsPage() {
 
   return (
     <div className="container mx-auto p-6 max-w-7xl animate-fade-in">
-      <h1 className="text-3xl font-bold text-white mb-2">Kérelmek</h1>
-      <p className="text-gray-400 mb-8">
-        Jóváhagyásra váró profil és csapat módosítások
-      </p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">Kérelmek</h1>
+          <p className="text-gray-400">
+            Jóváhagyásra váró profil és csapat módosítások
+          </p>
+        </div>
+        <button
+          onClick={fetchRequests}
+          className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors text-white"
+        >
+          <RefreshCw size={20} />
+          Frissítés
+        </button>
+      </div>
 
       {requests.length === 0 ? (
         <div className="bg-[#1a1b26] border border-white/5 rounded-2xl p-12 text-center">

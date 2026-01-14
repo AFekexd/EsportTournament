@@ -82,7 +82,7 @@ authRouter.post(
             where: {
                 userId: user.id,
                 type: 'LOGIN',
-                createdAt: { gt: new Date(Date.now() - 10 * 1000) } // 10 seconds
+                createdAt: { gt: new Date(Date.now() - 60 * 60 * 1000) } // 1 hour
             }
         });
 

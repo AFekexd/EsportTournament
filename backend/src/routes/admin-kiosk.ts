@@ -61,7 +61,11 @@ adminKioskRouter.post('/machines/:id/lock', authenticate, requireRole('ADMIN'), 
 // Add time to user
 adminKioskRouter.post('/users/:id/add-time', authenticate, requireRole('ADMIN', 'TEACHER'), async (req: any, res: any) => {
     const { id } = req.params;
-    const { seconds } = req.body;
+    const { seconds, reason } = req.body;
+
+    if (!reason || typeof reason !== 'string' || reason.trim().length === 0) {
+        return res.status(400).json({ error: 'Indoklás megadása kötelező' });
+    }
 
     try {
         const user = await prisma.user.update({
@@ -77,7 +81,7 @@ adminKioskRouter.post('/users/:id/add-time', authenticate, requireRole('ADMIN', 
         await prisma.log.create({
             data: {
                 type: actionType,
-                message: `${actionMsg} ${Math.abs(secondsNum)} seconds ${secondsNum >= 0 ? 'to' : 'from'} user ${user.username}`,
+                message: `${actionMsg} ${Math.abs(secondsNum)} seconds ${secondsNum >= 0 ? 'to' : 'from'} user ${user.username}. Reason: ${reason}`,
                 userId: user.id,
                 adminId: (await prisma.user.findUnique({ where: { keycloakId: req.user!.sub } }))?.id
             }

@@ -166,10 +166,14 @@ usersRouter.patch(
         // If not Admin/Organizer, create Change Request instead of immediate update
         // We only require approval for profile data (name, avatar, steam), not settings like notifications
         if (![UserRole.ADMIN, UserRole.ORGANIZER, UserRole.MODERATOR].includes(currentUser.role as UserRole)) {
-            // Check if only updating settings (safe fields)
-            const isOnlySettings = !displayName && !avatarUrl && !steamId && emailNotifications !== undefined;
+            // Check if any restricted fields are ACTUALLY changing
+            const isNameChanged = displayName !== undefined && displayName !== currentUser.displayName;
+            const isAvatarChanged = avatarUrl !== undefined && avatarUrl !== currentUser.avatarUrl;
+            const isSteamChanged = steamId !== undefined && steamId !== currentUser.steamId;
 
-            if (!isOnlySettings) {
+            const isRestrictedChange = isNameChanged || isAvatarChanged || isSteamChanged;
+
+            if (isRestrictedChange) {
                 // Check for existing pending request
                 const existingRequest = await prisma.changeRequest.findFirst({
                     where: {

@@ -131,12 +131,19 @@ export function Sidebar() {
     if (isAuthenticated) {
       fetchStats();
       fetchVersion();
+
+      // Listen for updates from RequestsPage
+      window.addEventListener("requests-updated", fetchStats);
+
       // Poll every minute
       const interval = setInterval(() => {
         fetchStats();
-        // We could poll version too, but maybe less frequently, keeping it simple for now
       }, 60000);
-      return () => clearInterval(interval);
+
+      return () => {
+        clearInterval(interval);
+        window.removeEventListener("requests-updated", fetchStats);
+      };
     }
   }, [user, isAuthenticated]);
 

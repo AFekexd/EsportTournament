@@ -23,10 +23,16 @@ export const UserTimeModal: React.FC<UserTimeModalProps> = ({
 }) => {
   const { getToken } = useAuth();
   const [amount, setAmount] = useState<number>(60); // Default 60 minutes
+  const [reason, setReason] = useState<string>("");
   const [mode, setMode] = useState<"ADD" | "REMOVE">("ADD");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSave = async () => {
+    if (!reason.trim()) {
+      toast.error("Meg kell adnod egy indoklást!");
+      return;
+    }
+
     setIsLoading(true);
     try {
       const validToken = await getToken();
@@ -44,7 +50,7 @@ export const UserTimeModal: React.FC<UserTimeModalProps> = ({
             "Content-Type": "application/json",
             Authorization: `Bearer ${validToken}`,
           },
-          body: JSON.stringify({ seconds }),
+          body: JSON.stringify({ seconds, reason }),
         }
       );
 
@@ -154,6 +160,39 @@ export const UserTimeModal: React.FC<UserTimeModalProps> = ({
                 </button>
               </div>
             </div>
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-gray-400 text-sm font-bold mb-2">
+              Indoklás (Kötelező)
+            </label>
+            <div className="flex flex-wrap gap-2 mb-3">
+              {[
+                "Nyeremény",
+                "Jutalomból",
+                "Technikai kompenzáció",
+                "Büntetés",
+                "Egyéb",
+              ].map((preset) => (
+                <button
+                  key={preset}
+                  onClick={() => setReason(preset)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+                    reason === preset
+                      ? "bg-primary text-white border-primary"
+                      : "bg-white/5 text-gray-400 border-white/10 hover:bg-white/10 hover:text-white"
+                  }`}
+                >
+                  {preset}
+                </button>
+              ))}
+            </div>
+            <textarea
+              className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500/50 min-h-[80px]"
+              placeholder="Írd ide az indoklást..."
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+            />
           </div>
         </div>
 

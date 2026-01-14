@@ -50,14 +50,17 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
       ).unwrap();
 
       if ((result as any)._status === 202) {
-        toast.info((result as any)._message || "A változtatások jóváhagyásra várnak.");
+        toast.info(
+          (result as any)._message || "A változtatások jóváhagyásra várnak."
+        );
       } else {
         toast.success("Csapat sikeresen frissítve");
       }
 
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to update team:", err);
+      toast.error(err.message || "Hiba történt a csapat frissítésekor");
     }
   };
 
@@ -97,8 +100,12 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
             <div className="flex justify-between items-center mt-1">
               {errors.name ? (
                 <span className="error-message">{errors.name}</span>
-              ) : <span></span>}
-              <span className="text-xs text-gray-500">{formData.name.length}/50</span>
+              ) : (
+                <span></span>
+              )}
+              <span className="text-xs text-gray-500">
+                {formData.name.length}/50
+              </span>
             </div>
           </div>
 
@@ -118,7 +125,9 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
               maxLength={500}
             />
             <div className="text-right mt-1">
-              <span className="text-xs text-gray-500">{formData.description.length}/500</span>
+              <span className="text-xs text-gray-500">
+                {formData.description.length}/500
+              </span>
             </div>
           </div>
 
@@ -153,11 +162,7 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
             >
               Mégse
             </Button>
-            <Button
-              type="submit"
-              className="btn "
-              disabled={updateLoading}
-            >
+            <Button type="submit" className="btn " disabled={updateLoading}>
               {updateLoading ? (
                 <>
                   <div className="spinner" />
