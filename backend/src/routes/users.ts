@@ -259,7 +259,15 @@ usersRouter.get(
                 createdAt: true,
                 teamMemberships: {
                     select: {
-                        team: true
+                        team: {
+                            include: {
+                                members: {
+                                    select: {
+                                        id: true
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 ranks: {
