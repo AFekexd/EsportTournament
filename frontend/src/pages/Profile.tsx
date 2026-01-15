@@ -12,7 +12,10 @@ import {
   GraduationCap,
   RefreshCw,
   FileText,
+  X,
 } from "lucide-react";
+import { RankSelector } from "../components/profile/RankSelector";
+
 import { updateUser } from "../store/slices/authSlice";
 import { apiFetch } from "../lib/api-client";
 import { API_URL } from "../config";
@@ -47,6 +50,7 @@ export function ProfilePage() {
   const myTeamsList = useAppSelector((state) => state.teams.myTeams);
   const [syncLoading, setSyncLoading] = useState(false);
   const [localSteamId, setLocalSteamId] = useState("");
+  const [isAvatarOpen, setIsAvatarOpen] = useState(false);
 
   useEffect(() => {
     if (user?.steamId) {
@@ -320,14 +324,17 @@ export function ProfilePage() {
             <div className="relative flex flex-col md:flex-row gap-8 items-end -mt-20">
               {/* Avatar */}
               <div className="relative shrink-0 mx-auto md:mx-0 z-10">
-                <div className="w-36 h-36 md:w-44 md:h-44 rounded-full p-1.5 bg-[#1a1b26] shadow-2xl relative">
-                  <div className="w-full h-full rounded-full p-1 bg-gradient-to-br from-primary to-purple-600">
+                <div
+                  className="w-36 h-36 md:w-44 md:h-44 rounded-full p-1.5 bg-[#1a1b26] shadow-2xl relative cursor-pointer group/avatar"
+                  onClick={() => setIsAvatarOpen(true)}
+                >
+                  <div className="w-full h-full rounded-full p-1 bg-gradient-to-br from-primary to-purple-600 group-hover/avatar:scale-[1.02] transition-transform">
                     <div className="w-full h-full rounded-full bg-[#0f1015] overflow-hidden flex items-center justify-center relative z-10">
                       {profileUser?.avatarUrl ? (
                         <img
                           src={profileUser.avatarUrl}
                           alt={profileUser.displayName || profileUser.username}
-                          className="w-full h-full object-cover transform transition-transform hover:scale-110 duration-500"
+                          className="w-full h-full object-cover transform transition-transform group-hover/avatar:scale-110 duration-500"
                         />
                       ) : (
                         <span className="text-5xl font-bold text-white">
@@ -341,6 +348,11 @@ export function ProfilePage() {
                         </span>
                       )}
                     </div>
+                  </div>
+
+                  {/* Zoom hint overlay */}
+                  <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-opacity z-20 pointer-events-none">
+                    <span className="text-white text-xs font-bold uppercase tracking-widest">Nagyítás</span>
                   </div>
                 </div>
                 {/* Status Indicator */}
@@ -570,20 +582,12 @@ export function ProfilePage() {
                           {isOwnProfile && (
                             <div className="relative">
                               {ranks.length > 0 && (
-                                <select
-                                  className="bg-black/40 border border-white/10 text-white text-xs rounded-lg px-3 py-2 pr-8 focus:outline-none focus:border-primary/50 transition-colors cursor-pointer appearance-none hover:bg-black/60"
-                                  value={currentRankId}
-                                  onChange={(e) =>
-                                    handleRankChange(game.id, e.target.value)
-                                  }
-                                >
-                                  <option value="">Válassz...</option>
-                                  {ranks.map((rank) => (
-                                    <option key={rank.id} value={rank.id}>
-                                      {rank.name}
-                                    </option>
-                                  ))}
-                                </select>
+                                <RankSelector
+                                  gameId={game.id}
+                                  currentRankId={currentRankId}
+                                  ranks={ranks}
+                                  onSelect={(gId, rId) => handleRankChange(gId, rId)}
+                                />
                               )}
                             </div>
                           )}
@@ -940,6 +944,26 @@ export function ProfilePage() {
           </div>
         </div>
       </div>
+      {/* Avatar Lightbox */}
+      {isAvatarOpen && profileUser?.avatarUrl && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={() => setIsAvatarOpen(false)}
+        >
+          <button
+            className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
+            onClick={() => setIsAvatarOpen(false)}
+          >
+            <X size={24} />
+          </button>
+          <img
+            src={profileUser.avatarUrl}
+            alt={profileUser.displayName || "Avatar"}
+            className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl animate-in zoom-in-50 duration-300"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </div>
   );
 }

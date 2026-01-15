@@ -74,6 +74,89 @@ usersRouter.get(
     })
 );
 
+
+// Get own ranks
+usersRouter.get(
+    '/me/ranks',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const currentUser = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!currentUser) {
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
+        }
+
+        const userRanks = await prisma.userRank.findMany({
+            where: { userId: currentUser.id },
+            include: {
+                rank: true,
+                game: true
+            }
+        });
+
+        res.json({
+            success: true,
+            data: userRanks
+        });
+    })
+);
+
+// Set own rank
+usersRouter.post(
+    '/me/ranks',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const currentUser = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!currentUser) {
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
+        }
+
+        const { gameId, rankId } = req.body;
+
+        if (!gameId || !rankId) {
+            throw new ApiError('GameId és RankId kötelező', 400, 'MISSING_FIELDS');
+        }
+
+        const userRank = await prisma.userRank.upsert({
+            where: {
+                userId_gameId: {
+                    userId: currentUser.id,
+                    gameId
+                }
+            },
+            update: {
+                rankId
+            },
+            create: {
+                userId: currentUser.id,
+                gameId,
+                rankId
+            },
+            include: {
+                rank: true,
+                game: true
+            }
+        });
+
+        // Log the change
+        await logSystemActivity(
+            'USER_RANK_UPDATE',
+            `User ${currentUser.username} updated rank for game ${userRank.game.name} to ${userRank.rank.name}`,
+            { userId: currentUser.id, metadata: { gameId, rankId } }
+        );
+
+        res.json({
+            success: true,
+            data: userRank
+        });
+    })
+);
+
 // Delete user (Admin only)
 usersRouter.delete(
     '/:id',

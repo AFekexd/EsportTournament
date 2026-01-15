@@ -39,7 +39,7 @@ export function GameRankModal({ game, onClose }: GameRankModalProps) {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => {},
+    onConfirm: () => { },
     variant: "primary",
   });
 
@@ -199,11 +199,10 @@ export function GameRankModal({ game, onClose }: GameRankModalProps) {
                 </div>
               </div>
               <button
-                className={`w-full py-3 rounded-xl text-sm font-bold text-white shadow-lg transition-all duration-300 ${
-                  !newRank.name
+                className={`w-full py-3 rounded-xl text-sm font-bold text-white shadow-lg transition-all duration-300 ${!newRank.name
                     ? "bg-gray-800 text-gray-500 cursor-not-allowed shadow-none"
                     : "bg-gradient-to-r from-primary to-purple-600 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] hover:-translate-y-0.5"
-                }`}
+                  }`}
                 disabled={!newRank.name}
                 onClick={handleAdd}
               >
@@ -236,7 +235,7 @@ export function GameRankModal({ game, onClose }: GameRankModalProps) {
               </div>
             ) : (
               <div className="space-y-3">
-                {ranks
+                {[...ranks]
                   .sort((a, b) => a.order - b.order)
                   .map((rank) => (
                     <div
