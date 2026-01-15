@@ -204,7 +204,7 @@ export function HomePage() {
             : statsData.map((stat, index) => (
               <Link
                 key={index}
-                to={stat.url}
+                to={stat.url || '#'}
                 className="flex flex-col items-center justify-center border-l border-white/5 py-4 first:border-0 group hover:bg-white/5 rounded-lg transition-colors"
               >
                 <span className="text-glow mb-2 text-5xl font-black tracking-tight text-white md:text-6xl group-hover:scale-110 transition-transform duration-300 group-hover:text-primary">
