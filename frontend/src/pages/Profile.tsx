@@ -274,16 +274,15 @@ export function ProfilePage() {
         <div className="relative overflow-hidden rounded-2xl bg-[#1a1b26] border border-white/5 shadow-2xl">
           {/* Banner */}
           <div
-            className={`h-64 relative group ${
-              !topGameImage ? "bg-[#0f1015]" : ""
-            }`}
+            className={`h-64 relative group ${!topGameImage ? "bg-[#0f1015]" : ""
+              }`}
             style={
               topGameImage
                 ? {
-                    backgroundImage: `url(${topGameImage})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }
+                  backgroundImage: `url(${topGameImage})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }
                 : {}
             }
           >
@@ -298,11 +297,10 @@ export function ProfilePage() {
               </>
             )}
             <div
-              className={`absolute inset-0 ${
-                topGameImage
-                  ? "bg-black/40 backdrop-blur-[2px]"
-                  : "bg-gradient-to-t from-[#1a1b26] via-transparent to-transparent"
-              }`}
+              className={`absolute inset-0 ${topGameImage
+                ? "bg-black/40 backdrop-blur-[2px]"
+                : "bg-gradient-to-t from-[#1a1b26] via-transparent to-transparent"
+                }`}
             ></div>
 
             {isOwnProfile && (
@@ -348,15 +346,14 @@ export function ProfilePage() {
                 {/* Status Indicator */}
                 <div className="absolute bottom-3 right-3 md:bottom-5 md:right-5 z-20">
                   <div
-                    className={`w-8 h-8 rounded-full border-[4px] border-[#1a1b26] flex items-center justify-center ${
-                      profileUser?.role === "ADMIN"
-                        ? "bg-red-500 text-white"
-                        : profileUser?.role === "ORGANIZER"
+                    className={`w-8 h-8 rounded-full border-[4px] border-[#1a1b26] flex items-center justify-center ${profileUser?.role === "ADMIN"
+                      ? "bg-red-500 text-white"
+                      : profileUser?.role === "ORGANIZER"
                         ? "bg-purple-500 text-white"
                         : profileUser?.role === "MODERATOR"
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-600 text-gray-200"
-                    }`}
+                          ? "bg-blue-500 text-white"
+                          : "bg-gray-600 text-gray-200"
+                      }`}
                     title={getRoleLabel(profileUser?.role)}
                   >
                     {profileUser?.role === "ADMIN" ? (
@@ -670,14 +667,8 @@ export function ProfilePage() {
 
               <div className="p-6 border-b border-white/5 flex justify-between items-center bg-[#171a21] relative z-10">
                 <h2 className="text-xl font-bold text-[#c7d5e0] flex items-center gap-3">
-                  <div className="w-8 h-8 flex items-center justify-center bg-gradient-to-br from-[#1b2838] to-[#2a475e] rounded-lg shadow-inner">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-5 h-5 text-[#66c0f4]"
-                    >
-                      <path d="M11.979 0C5.362 0 0 5.383 0 11.971c0 3.256 1.3 6.22 3.42 8.353l3.65-5.32c-.522-.728-.84-1.61-.84-2.583 0-2.482 1.992-4.482 4.473-4.482 2.474 0 4.474 2.008 4.474 4.482 0 2.482-2.008 4.49-4.474 4.49-.66 0-1.282-.136-1.848-.375L5.753 21.61c1.864 1.488 4.212 2.39 6.758 2.39 6.632 0 12-5.375 12-12.029C23.987 5.375 18.611 0 11.979 0zM8.336 12.42c0-1.12.92-2.032 2.04-2.032 1.128 0 2.04.912 2.04 2.032 0 1.12-.912 2.04-2.04 2.04-1.12 0-2.04-.92-2.04-2.04zm6.04-3.64c0 .6.471 1.087 1.054 1.087.6 0 1.063-.487 1.063-1.087 0-.608-.471-1.095-1.063-1.095-.575 0-1.054.487-1.054 1.095z" />
-                    </svg>
+                  <div className="w-8 h-8 flex items-center justify-center  rounded-lg shadow-inner">
+                    <img src="/steam.png" className="w-full h-full object-cover " />
                   </div>
                   Steam Profil
                 </h2>
@@ -709,9 +700,9 @@ export function ProfilePage() {
                             src={
                               isOwnProfile
                                 ? user?.steamAvatar ||
-                                  "https://avatars.akamai.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg"
+                                "https://avatars.akamai.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg"
                                 : (profileUser as any)?.steamAvatar ||
-                                  "https://avatars.akamai.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg"
+                                "https://avatars.akamai.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg"
                             }
                             alt="Steam Avatar"
                             className="w-full h-full rounded bg-black object-cover"
@@ -730,7 +721,7 @@ export function ProfilePage() {
                           {isOwnProfile
                             ? user?.steamPersonaname || user?.username
                             : (profileUser as any)?.steamPersonaname ||
-                              (profileUser as any)?.username}
+                            (profileUser as any)?.username}
                         </div>
                         <a
                           href={
@@ -801,10 +792,10 @@ export function ProfilePage() {
                               ? new Date(user.steamCreatedAt).getFullYear()
                               : "-"
                             : (profileUser as any)?.steamCreatedAt
-                            ? new Date(
+                              ? new Date(
                                 (profileUser as any).steamCreatedAt
                               ).getFullYear()
-                            : "-"}
+                              : "-"}
                         </div>
                         <div className="text-[10px] text-gray-500 mt-1">
                           {isOwnProfile && user?.steamCreatedAt
@@ -912,19 +903,18 @@ export function ProfilePage() {
                           {tournament.name}
                         </h3>
                         <span
-                          className={`text-[10px] px-2 py-0.5 rounded border uppercase tracking-wide font-bold ${
-                            tournament.status === "REGISTRATION"
-                              ? "bg-green-500/10 text-green-500 border-green-500/20"
-                              : tournament.status === "IN_PROGRESS"
+                          className={`text-[10px] px-2 py-0.5 rounded border uppercase tracking-wide font-bold ${tournament.status === "REGISTRATION"
+                            ? "bg-green-500/10 text-green-500 border-green-500/20"
+                            : tournament.status === "IN_PROGRESS"
                               ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
                               : "bg-blue-500/10 text-blue-500 border-blue-500/20"
-                          }`}
+                            }`}
                         >
                           {tournament.status === "REGISTRATION"
                             ? "Nevezés"
                             : tournament.status === "IN_PROGRESS"
-                            ? "Zajlik"
-                            : "Vége"}
+                              ? "Zajlik"
+                              : "Vége"}
                         </span>
                       </div>
 

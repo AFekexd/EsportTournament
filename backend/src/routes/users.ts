@@ -4,6 +4,7 @@ import prisma from '../lib/prisma.js';
 import { authenticate, optionalAuth, AuthenticatedRequest } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { UserRole } from '../utils/enums.js';
+import { notificationService } from '../services/notificationService.js';
 
 export const usersRouter: Router = Router();
 
@@ -93,6 +94,17 @@ usersRouter.delete(
             throw new ApiError('Nem törölheted saját magad', 400, 'CANNOT_DELETE_SELF');
         }
 
+
+        // Delete related ChangeRequests first to avoid Foreign Key constraint errors
+        await prisma.changeRequest.deleteMany({
+            where: {
+                OR: [
+                    { requesterId: userId },
+                    { entityId: userId }
+                ]
+            }
+        });
+
         await prisma.user.delete({
             where: { id: userId },
         });
@@ -159,96 +171,122 @@ usersRouter.patch(
             steamId?: string;
         };
 
-        if (displayName && displayName !== currentUser.displayName && currentUser.role !== UserRole.ADMIN) {
-            throw new ApiError('A megjelenítendő nevet csak adminisztrátor módosíthatja', 403, 'FORBIDDEN');
+        // --- SPLIT UPDATE LOGIC ---
+
+        // 1. Identify Restricted vs Immediate fields
+        const isNameChanged = displayName !== undefined && displayName !== currentUser.displayName;
+        const isAvatarChanged = avatarUrl !== undefined && avatarUrl !== currentUser.avatarUrl;
+
+        // These are restricted and require approval if not Admin/Organizer
+        const restrictedChangesProvided = isNameChanged || isAvatarChanged;
+        const isRestrictedContext = ![UserRole.ADMIN, UserRole.ORGANIZER, UserRole.MODERATOR].includes(currentUser.role as UserRole);
+
+        let immediateData: any = {};
+        let pendingData: any = {};
+
+        if (isRestrictedContext && restrictedChangesProvided) {
+            // Split the data
+            if (isNameChanged) pendingData.displayName = displayName;
+            if (isAvatarChanged) pendingData.avatarUrl = avatarUrl;
+
+            // Immediate fields
+            if (emailNotifications !== undefined) immediateData.emailNotifications = emailNotifications;
+            if (steamId !== undefined) immediateData.steamId = steamId;
+        } else {
+            // If Admin or no restricted changes, everything is immediate
+            if (displayName !== undefined) immediateData.displayName = displayName;
+            if (avatarUrl !== undefined) immediateData.avatarUrl = avatarUrl;
+            if (emailNotifications !== undefined) immediateData.emailNotifications = emailNotifications;
+            if (steamId !== undefined) immediateData.steamId = steamId;
         }
 
-        // If not Admin/Organizer, create Change Request instead of immediate update
-        // We only require approval for profile data (name, avatar, steam), not settings like notifications
-        if (![UserRole.ADMIN, UserRole.ORGANIZER, UserRole.MODERATOR].includes(currentUser.role as UserRole)) {
-            // Check if any restricted fields are ACTUALLY changing
-            const isNameChanged = displayName !== undefined && displayName !== currentUser.displayName;
-            const isAvatarChanged = avatarUrl !== undefined && avatarUrl !== currentUser.avatarUrl;
-            const isSteamChanged = steamId !== undefined && steamId !== currentUser.steamId;
-
-            const isRestrictedChange = isNameChanged || isAvatarChanged || isSteamChanged;
-
-            if (isRestrictedChange) {
-                // Check for existing pending request
-                const existingRequest = await prisma.changeRequest.findFirst({
-                    where: {
-                        entityId: targetUserId,
-                        type: 'USER_PROFILE',
-                        status: 'PENDING'
-                    }
-                });
-
-                if (existingRequest) {
-                    throw new ApiError('Már van függőben lévő kérelmed.', 400, 'DUPLICATE_REQUEST');
+        // 2. Handle Pending Request (Atomic creation)
+        if (Object.keys(pendingData).length > 0) {
+            // Check for existing pending request
+            const existingRequest = await prisma.changeRequest.findFirst({
+                where: {
+                    entityId: targetUserId,
+                    type: 'USER_PROFILE',
+                    status: 'PENDING'
                 }
+            });
 
-                await prisma.changeRequest.create({
-                    data: {
-                        type: 'USER_PROFILE',
-                        entityId: targetUserId,
-                        requesterId: currentUser.id,
-                        data: {
-                            ...(displayName !== undefined && { displayName }),
-                            ...(avatarUrl !== undefined && { avatarUrl }),
-                            ...(steamId !== undefined && { steamId }),
-                            // We might want to include notifications too if they are part of the payload, but usually they are separate.
-                            // For simplicity storing everything from payload.
-                            ...(emailNotifications !== undefined && { emailNotifications })
-                        }
-                    }
-                });
-
-                res.status(202).json({
-                    success: true,
-                    message: 'A változtatások jóváhagyásra várnak.',
-                    data: currentUser // Return current data, client should handle the "pending" state UI
-                });
-                return;
+            if (existingRequest) {
+                // If a request exists, we might want to UPDATE it or error.
+                // For simplicity, erroring to avoid complex merging logic.
+                // Or we can just let them know one is already pending.
+                throw new ApiError('Már van függőben lévő kérelmed (Név/Avatár). Várd meg az elbírálást!', 400, 'DUPLICATE_REQUEST');
             }
+
+            await prisma.changeRequest.create({
+                data: {
+                    type: 'USER_PROFILE',
+                    entityId: targetUserId,
+                    requesterId: currentUser.id,
+                    data: pendingData
+                }
+            });
+
+            // Notify User
+            await notificationService.createNotification({
+                userId: currentUser.id,
+                type: 'SYSTEM',
+                title: 'Módosítási kérelem elküldve',
+                message: 'A neved/avatárod módosítása adminisztrátori jóváhagyásra vár.',
+                link: '/settings'
+            });
         }
 
-        const updatedUser = await prisma.user.update({
-            where: { id: targetUserId },
-            data: {
-                displayName,
-                avatarUrl,
-                emailNotifications,
-                steamId,
-            },
-        });
+        // 3. Handle Immediate Update
+        let updatedUser = currentUser;
 
-        // Determine who did it for the log
-        const isSelf = currentUser.id === targetUserId;
-        const changes: string[] = [];
-        if (displayName !== undefined) changes.push(`Display Name ('${displayName}')`);
-        if (avatarUrl !== undefined) changes.push('Avatar');
-        if (emailNotifications !== undefined) changes.push(`Notifications (${emailNotifications})`);
-        if (steamId !== undefined) changes.push(`Steam ID ('${steamId}')`);
+        if (Object.keys(immediateData).length > 0) {
+            updatedUser = await prisma.user.update({
+                where: { id: targetUserId },
+                data: immediateData,
+            });
 
-        await logSystemActivity(
-            'USER_PROFILE_UPDATE',
-            `User ${updatedUser.username} profile updated by ${isSelf ? 'themselves' : currentUser.username}. Changes: ${changes.join(', ')}`,
-            {
-                userId: updatedUser.id,
-                adminId: isSelf ? undefined : currentUser.id,
-                metadata: {
-                    changes,
-                    updatedFields: {
-                        ...(displayName !== undefined && { displayName }),
-                        ...(avatarUrl !== undefined && { avatarUrl }),
-                        ...(emailNotifications !== undefined && { emailNotifications }),
-                        ...(steamId !== undefined && { steamId })
-                    }
+            // Log immediate changes
+            const changes: string[] = [];
+            if (immediateData.displayName !== undefined) changes.push(`Display Name ('${immediateData.displayName}')`);
+            if (immediateData.avatarUrl !== undefined) changes.push('Avatar');
+            if (immediateData.emailNotifications !== undefined) changes.push(`Notifications (${immediateData.emailNotifications})`);
+            if (immediateData.steamId !== undefined) changes.push(`Steam ID ('${immediateData.steamId}')`);
+
+            const isSelf = currentUser.id === targetUserId;
+            await logSystemActivity(
+                'USER_PROFILE_UPDATE',
+                `User ${updatedUser.username} profile updated by ${isSelf ? 'themselves' : currentUser.username}. Changes: ${changes.join(', ')}`,
+                {
+                    userId: updatedUser.id,
+                    adminId: isSelf ? undefined : currentUser.id,
+                    metadata: { changes, updatedFields: immediateData }
                 }
-            }
-        );
+            );
+        }
 
-        res.json({ success: true, data: updatedUser });
+        // 4. Response
+        // If we created a pending request BUT also updated some fields, we should return 200 with the updated user,
+        // but maybe include a message or flag. 
+        // If ONLY pending request was created, 202 is appropriate.
+
+        if (Object.keys(pendingData).length > 0 && Object.keys(immediateData).length === 0) {
+            res.status(202).json({
+                success: true,
+                message: 'A változtatások jóváhagyásra várnak.',
+                data: currentUser
+            });
+        } else if (Object.keys(pendingData).length > 0) {
+            // Mixed status: Some updated, some pending.
+            res.json({
+                success: true,
+                data: updatedUser,
+                message: 'A beállítások mentve. A név/avatár módosítás jóváhagyásra vár.'
+            });
+        } else {
+            // Normal update
+            res.json({ success: true, data: updatedUser });
+        }
     })
 );
 // Get public user profile

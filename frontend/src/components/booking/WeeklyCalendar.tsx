@@ -36,7 +36,7 @@ export function WeeklyCalendar({
 
     for (let i = 0; i < 7; i++) {
       const d = new Date(start);
-      d.setDate(d.getDate() + i);
+      d.setUTCDate(d.getUTCDate() + i);
       days.push({
         date: d,
         dateStr: d.toISOString().split("T")[0],
@@ -116,7 +116,7 @@ export function WeeklyCalendar({
   const navigateWeek = (direction: "prev" | "next") => {
     const current = new Date(selectedWeekStart);
     const days = direction === "next" ? 7 : -7;
-    current.setDate(current.getDate() + days);
+    current.setUTCDate(current.getUTCDate() + days);
     const newStart = current.toISOString().split("T")[0];
     dispatch(setSelectedWeekStart(newStart));
     dispatch(fetchWeeklyBookings(newStart));
@@ -230,15 +230,14 @@ export function WeeklyCalendar({
                         }}
                         title={
                           booking
-                            ? `Foglalta: ${
-                                booking.user?.displayName ||
-                                booking.user?.username
-                              }`
+                            ? `Foglalta: ${booking.user?.displayName ||
+                            booking.user?.username
+                            }`
                             : !isActive
-                            ? "Nem elérhető"
-                            : isPast
-                            ? "Múltbeli időpont"
-                            : "Szabad (1. félidő)"
+                              ? "Nem elérhető"
+                              : isPast
+                                ? "Múltbeli időpont"
+                                : "Szabad (1. félidő)"
                         }
                       >
                         {booking && (
@@ -300,15 +299,14 @@ export function WeeklyCalendar({
                         }}
                         title={
                           booking
-                            ? `Foglalta: ${
-                                booking.user?.displayName ||
-                                booking.user?.username
-                              }`
+                            ? `Foglalta: ${booking.user?.displayName ||
+                            booking.user?.username
+                            }`
                             : !isActive
-                            ? "Nem elérhető"
-                            : isPast
-                            ? "Múltbeli időpont"
-                            : "Szabad (2. félidő)"
+                              ? "Nem elérhető"
+                              : isPast
+                                ? "Múltbeli időpont"
+                                : "Szabad (2. félidő)"
                         }
                       >
                         {booking && (

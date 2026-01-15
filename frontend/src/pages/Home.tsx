@@ -66,10 +66,10 @@ export function HomePage() {
   }, [dispatch]);
 
   const statsData = [
-    { value: stats?.activeTournaments ?? 0, label: "Versenyek" },
-    { value: stats?.registeredUsers ?? 0, label: "Regisztrált Játékosok" },
-    { value: stats?.createdTeams ?? 0, label: "Létrehozott Csapatok" },
-    { value: stats?.playedMatches ?? 0, label: "Meccsek" },
+    { value: stats?.activeTournaments ?? 0, label: "Versenyek", url: "/tournaments" },
+    { value: stats?.registeredUsers ?? 0, label: "Regisztrált Játékosok", url: "/leaderboards" },
+    { value: stats?.createdTeams ?? 0, label: "Létrehozott Csapatok", url: "/teams" },
+    { value: stats?.playedMatches ?? 0, label: "Meccsek", },
   ];
 
   return (
@@ -202,8 +202,9 @@ export function HomePage() {
               </div>
             ))
             : statsData.map((stat, index) => (
-              <div
+              <Link
                 key={index}
+                to={stat.url}
                 className="flex flex-col items-center justify-center border-l border-white/5 py-4 first:border-0 group hover:bg-white/5 rounded-lg transition-colors"
               >
                 <span className="text-glow mb-2 text-5xl font-black tracking-tight text-white md:text-6xl group-hover:scale-110 transition-transform duration-300 group-hover:text-primary">
@@ -212,13 +213,13 @@ export function HomePage() {
                 <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground group-hover:text-white transition-colors">
                   {stat.label}
                 </span>
-              </div>
+              </Link>
             ))}
         </div>
       </section>
 
       {/* Discord Section */}
-      <div className="flex w-full justify-evenly">
+      <div className="flex w-full sm:flex-row justify-evenly items-center gap-8">
         <section className="relative overflow-hidden rounded-3xl border border-[#5865F2]/30 bg-[#5865F2]/10 p-8 md:p-12 ">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,#5865F2,transparent_70%)] opacity-20" />
 

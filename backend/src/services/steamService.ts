@@ -1,7 +1,7 @@
 import prisma from "../lib/prisma.js";
 
 const STEAM_API_KEY = process.env.STEAM_API_KEY || "7727AE3836768E83ED71477FCBAFEFCC"; // Ensure this is set in .env
-const STEAM_API_BASE = "http://api.steampowered.com";
+const STEAM_API_BASE = "https://api.steampowered.com";
 
 interface SteamGame {
     appid: number;
@@ -32,15 +32,26 @@ export class SteamService {
         try {
             const summaryUrl = `${STEAM_API_BASE}/ISteamUser/GetPlayerSummaries/v0002/?key=${STEAM_API_KEY}&steamids=${steamId}`;
             const summaryRes = await fetch(summaryUrl);
-            const summaryData = await summaryRes.json();
-            const player = summaryData.response?.players?.[0];
+            const summaryText = await summaryRes.text();
 
-            if (player) {
-                steamAvatar = player.avatarfull;
-                steamUrl = player.profileurl;
-                steamPersonaname = player.personaname;
-                if (player.timecreated) {
-                    steamCreatedAt = new Date(player.timecreated * 1000);
+            if (!summaryRes.ok) {
+                console.error(`Steam API Summary Error (${summaryRes.status}): ${summaryText.substring(0, 200)}`);
+            } else {
+                try {
+                    const summaryData = JSON.parse(summaryText);
+                    const player = summaryData.response?.players?.[0];
+
+                    if (player) {
+                        steamAvatar = player.avatarfull;
+                        steamUrl = player.profileurl;
+                        steamPersonaname = player.personaname;
+                        if (player.timecreated) {
+                            steamCreatedAt = new Date(player.timecreated * 1000);
+                        }
+                    }
+                } catch (e) {
+                    console.error("Failed to parse steam summary JSON", e);
+                    console.error("Received Text:", summaryText.substring(0, 200));
                 }
             }
         } catch (e) {
@@ -51,9 +62,20 @@ export class SteamService {
         try {
             const levelUrl = `${STEAM_API_BASE}/IPlayerService/GetSteamLevel/v1/?key=${STEAM_API_KEY}&steamid=${steamId}`;
             const levelRes = await fetch(levelUrl);
-            const levelData = await levelRes.json();
-            if (levelData.response) {
-                steamLevel = levelData.response.player_level;
+            const levelText = await levelRes.text();
+
+            if (!levelRes.ok) {
+                console.error(`Steam API Level Error (${levelRes.status}): ${levelText.substring(0, 200)}`);
+            } else {
+                try {
+                    const levelData = JSON.parse(levelText);
+                    if (levelData.response) {
+                        steamLevel = levelData.response.player_level;
+                    }
+                } catch (e) {
+                    console.error("Failed to parse steam level JSON", e);
+                    console.error("Received Text:", levelText.substring(0, 200));
+                }
             }
         } catch (e) {
             console.error("Failed to fetch steam level", e);
@@ -63,7 +85,20 @@ export class SteamService {
         const ownedGamesUrl = `${STEAM_API_BASE}/IPlayerService/GetOwnedGames/v0001/?key=${STEAM_API_KEY}&steamid=${steamId}&format=json&include_appinfo=true`;
 
         const response = await fetch(ownedGamesUrl);
-        const data = await response.json();
+        const responseText = await response.text();
+
+        let data: any = {};
+        if (!response.ok) {
+            console.error(`Steam API OwnedGames Error (${response.status}): ${responseText.substring(0, 200)}`);
+            // Proceed with empty data or handle as needed, for now we just log
+        } else {
+            try {
+                data = JSON.parse(responseText);
+            } catch (e) {
+                console.error("Failed to parse owned games JSON", e);
+                console.error("Received Text:", responseText.substring(0, 200));
+            }
+        }
 
         let perfectCount = 0;
 
@@ -90,7 +125,20 @@ export class SteamService {
                         continue;
                     }
 
-                    const statsData = await statsRes.json();
+                    const statsText = await statsRes.text();
+                    let statsData: any = {};
+
+                    if (!statsRes.ok) {
+                        console.error(`Steam API Stats Error (${statsRes.status}) for app ${game.appid}: ${statsText.substring(0, 200)}`);
+                        continue;
+                    }
+
+                    try {
+                        statsData = JSON.parse(statsText);
+                    } catch (e) {
+                        console.error(`Failed to parse stats JSON for app ${game.appid}`, e);
+                        continue;
+                    }
 
                     if (statsData.playerstats && statsData.playerstats.achievements) {
                         const achievements: SteamAchievement[] = statsData.playerstats.achievements;

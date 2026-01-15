@@ -5,6 +5,7 @@ import { authenticate, AuthenticatedRequest } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { logSystemActivity } from '../services/logService.js';
 import { UserRole } from '../utils/enums.js';
+import { notificationService } from '../services/notificationService.js';
 
 export const changeRequestsRouter: Router = Router();
 
@@ -38,20 +39,20 @@ changeRequestsRouter.get(
         const enrichedRequests = await Promise.all(requests.map(async (req: any) => {
             let entityName = 'Ismeretlen';
             let currentData: any = {};
-            
+
             if (req.type === 'USER_PROFILE') {
-                const u = await prisma.user.findUnique({ 
+                const u = await prisma.user.findUnique({
                     where: { id: req.entityId },
-                    select: { 
+                    select: {
                         username: true,
                         displayName: true,
                         avatarUrl: true,
                         steamId: true,
                         emailNotifications: true
-                    } 
+                    }
                 });
                 entityName = u?.username || 'Ismeretlen Felhasználó';
-                
+
                 if (u && req.data) {
                     // Extract only the fields that are being changed
                     Object.keys(req.data).forEach(key => {
@@ -61,17 +62,17 @@ changeRequestsRouter.get(
                     });
                 }
             } else if (req.type === 'TEAM_PROFILE') {
-                const t = await prisma.team.findUnique({ 
+                const t = await prisma.team.findUnique({
                     where: { id: req.entityId },
-                    select: { 
+                    select: {
                         name: true,
                         description: true,
                         logoUrl: true,
                         coverUrl: true
-                    } 
+                    }
                 });
                 entityName = t?.name || 'Ismeretlen Csapat';
-                
+
                 if (t && req.data) {
                     // Extract only the fields that are being changed
                     Object.keys(req.data).forEach(key => {
@@ -142,6 +143,15 @@ async function approveRequestInternal(requestId: string, admin: any) {
             { adminId: admin.id, userId: request.entityId }
         );
 
+        // Notify User
+        await notificationService.createNotification({
+            userId: request.entityId,
+            type: 'SYSTEM',
+            title: 'Profil módosítás elfogadva',
+            message: `Az adminisztrátor jóváhagyta a profil módosítási kérelmedet.`,
+            link: '/settings'
+        });
+
     } else if (request.type === 'TEAM_PROFILE') {
         await prisma.team.update({
             where: { id: request.entityId },
@@ -157,6 +167,17 @@ async function approveRequestInternal(requestId: string, admin: any) {
             `Team update approved by ${admin.username}`,
             { adminId: admin.id, metadata: { teamId: request.entityId } }
         );
+
+        // Notify Team Owner? Probably overkill for now, but consistent
+        // For Teams, entityId is TeamId. We need the owner or requester.
+        // Assuming requesterId is the user to notify.
+        await notificationService.createNotification({
+            userId: request.requesterId,
+            type: 'SYSTEM',
+            title: 'Csapat módosítás elfogadva',
+            message: `A csapat profil módosítási kérelmet elfogadták.`,
+            link: `/teams/${request.entityId}`
+        });
     }
 
     return prisma.changeRequest.update({
@@ -230,6 +251,12 @@ changeRequestsRouter.post(
             { adminId: admin.id, metadata: { count: result.count, ids } }
         );
 
+        // Notify users (Batch notification effectively)
+        // We need to fetch the requests to know WHO to notify, but they are updated now.
+        // For simplicity/performance in bulk, we might skip individual notifications or handle it smarter.
+        // Given the constraints, let's leave bulk notification for now or do a simple loop if needed.
+        // Let's rely on individual reject for detailed feedback usually.
+
         res.json({ success: true, data: { count: result.count } });
     })
 );
@@ -248,13 +275,13 @@ changeRequestsRouter.post(
         try {
             const updatedRequest = await approveRequestInternal(req.params.id, admin);
             if (!updatedRequest) {
-                 // Might happen if it wasn't PENDING
-                 throw new ApiError('A kérelem már feldolgozásra került', 400, 'ALREADY_PROCESSED');
+                // Might happen if it wasn't PENDING
+                throw new ApiError('A kérelem már feldolgozásra került', 400, 'ALREADY_PROCESSED');
             }
             res.json({ success: true, data: updatedRequest });
         } catch (error: any) {
             if (error.message.includes('not found')) {
-                 throw new ApiError('A kérelem nem található', 404, 'NOT_FOUND');
+                throw new ApiError('A kérelem nem található', 404, 'NOT_FOUND');
             }
             throw error;
         }
@@ -292,6 +319,14 @@ changeRequestsRouter.post(
             `Request rejected by ${admin.username}`,
             { adminId: admin.id, metadata: { requestId: request.id, type: request.type } }
         );
+
+        await notificationService.createNotification({
+            userId: request.requesterId,
+            type: 'SYSTEM',
+            title: 'Módosítási kérelem elutasítva',
+            message: `A profil/csapat módosítási kérelmedet elutasították.`,
+            link: '/settings'
+        });
 
         res.json({ success: true, data: updatedRequest });
     })
