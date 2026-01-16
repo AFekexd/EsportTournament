@@ -219,7 +219,7 @@ export function HomePage() {
       </section>
 
       {/* Discord Section */}
-      <div className="flex w-full sm:flex-row justify-evenly items-center gap-8">
+      <div className="flex w-full flex-row smflex-col justify-evenly items-center gap-8">
         <section className="relative overflow-hidden rounded-3xl border border-[#5865F2]/30 bg-[#5865F2]/10 p-8 md:p-12 ">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,#5865F2,transparent_70%)] opacity-20" />
 

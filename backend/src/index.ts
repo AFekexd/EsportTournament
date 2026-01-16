@@ -68,10 +68,10 @@ TournamentSchedulerService.startScheduler();
 
 const PORT = process.env.PORT || 3000;
 
-// Rate limiting
+// Rate limiting - magasabb limit iskolai környezethez (NAT mögött sok felhasználó)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 perc
-  max: 100, // max 100 request per IP
+  max: 1000, // max 1000 request per IP (iskolai NAT miatt magasabb)
   message: { error: 'Túl sok kérés, próbáld újra később' },
   standardHeaders: true,
   legacyHeaders: false,
