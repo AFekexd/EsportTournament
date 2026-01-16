@@ -117,11 +117,12 @@ export const authenticate = async (
             });
 
             if (user?.lastLogoutAt) {
-                // iat is in seconds, lastLogoutAt is milliseconds
+                // iat is in seconds, lastLogoutAt is in milliseconds
                 // If token was issued BEFORE the last logout, it's invalid
-                // Add a 1-second buffer to avoid race conditions with quick re-logins
-                const tokenIssuedAt = (decoded as any).iat * 1000;
-                if (tokenIssuedAt < user.lastLogoutAt.getTime() - 1000) {
+                const tokenIssuedAt = (decoded as any).iat * 1000; // Convert to milliseconds
+                const logoutTimestamp = user.lastLogoutAt.getTime();
+
+                if (tokenIssuedAt < logoutTimestamp) {
                     throw new ApiError('A munkamenet érvénytelenítve lett', 401, 'TOKEN_INVALIDATED');
                 }
             }
