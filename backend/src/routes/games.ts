@@ -63,7 +63,7 @@ gamesRouter.post(
                 throw new ApiError('Érvénytelen PDF formátum', 400, 'INVALID_PDF');
             }
             if (!validatePdfSize(rulesPdf, 5)) {
-                 throw new ApiError('A PDF túl nagy (max 5MB)', 400, 'PDF_TOO_LARGE');
+                throw new ApiError('A PDF túl nagy (max 5MB)', 400, 'PDF_TOO_LARGE');
             }
             processedPdfUrl = rulesPdf;
         }
@@ -95,7 +95,7 @@ gamesRouter.get(
     '/:id',
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
         const game = await prisma.game.findUnique({
-            where: { id: req.params.id as string},
+            where: { id: req.params.id as string },
             include: {
                 tournaments: {
                     where: { status: { in: ['REGISTRATION', 'IN_PROGRESS'] } },
@@ -122,7 +122,7 @@ gamesRouter.patch(
         const user = await prisma.user.findUnique({
             where: { keycloakId: req.user!.sub },
         });
- 
+
         if (!user || user.role !== 'ADMIN' && user.role !== 'ORGANIZER') {
             throw new ApiError('Csak adminisztrátorok és organizátorok módosíthatnak játékokat', 403, 'FORBIDDEN');
         }
@@ -131,6 +131,15 @@ gamesRouter.patch(
 
         if (teamSize && ![1, 2, 3, 5].includes(teamSize)) {
             throw new ApiError('A csapatméretnek 1, 2, 3 vagy 5-nek kell lennie', 400, 'INVALID_TEAM_SIZE');
+        }
+
+        // Get original game for logging
+        const originalGame = await prisma.game.findUnique({
+            where: { id: req.params.id as string },
+        });
+
+        if (!originalGame) {
+            throw new ApiError('A játék nem található', 404, 'NOT_FOUND');
         }
 
         // Process image if base64
@@ -145,13 +154,13 @@ gamesRouter.patch(
         // Process PDF if base64
         let processedPdfUrl = undefined;
         if (rulesPdf !== undefined) {
-             if (rulesPdf && !isBase64Pdf(rulesPdf)) {
-                 throw new ApiError('Érvénytelen PDF formátum', 400, 'INVALID_PDF');
-             }
-             if (rulesPdf && !validatePdfSize(rulesPdf, 5)) {
-                  throw new ApiError('A PDF túl nagy (max 5MB)', 400, 'PDF_TOO_LARGE');
-             }
-             processedPdfUrl = rulesPdf;
+            if (rulesPdf && !isBase64Pdf(rulesPdf)) {
+                throw new ApiError('Érvénytelen PDF formátum', 400, 'INVALID_PDF');
+            }
+            if (rulesPdf && !validatePdfSize(rulesPdf, 5)) {
+                throw new ApiError('A PDF túl nagy (max 5MB)', 400, 'PDF_TOO_LARGE');
+            }
+            processedPdfUrl = rulesPdf;
         }
 
         const game = await prisma.game.update({
@@ -166,8 +175,37 @@ gamesRouter.patch(
             },
         });
 
-        // Log update
-        await logSystemActivity('GAME_UPDATE', `Game '${game.name}' updated by ${user.username}`, { adminId: user.id });
+        // Build changes object for detailed logging
+        const changes: Record<string, { from: any; to: any }> = {};
+        if (name && name !== originalGame.name) {
+            changes.name = { from: originalGame.name, to: name };
+        }
+        if (description !== undefined && description !== originalGame.description) {
+            changes.description = { from: originalGame.description?.substring(0, 100), to: description?.substring(0, 100) };
+        }
+        if (processedImageUrl !== undefined && processedImageUrl !== originalGame.imageUrl) {
+            changes.imageUrl = { from: '(régi kép)', to: '(új kép)' };
+        }
+        if (rules !== undefined && rules !== originalGame.rules) {
+            changes.rules = { from: originalGame.rules?.substring(0, 100), to: rules?.substring(0, 100) };
+        }
+        if (rulesPdf !== undefined) {
+            changes.rulesPdfUrl = { from: originalGame.rulesPdfUrl ? '(volt PDF)' : '(nem volt PDF)', to: rulesPdf ? '(új PDF)' : '(törölt PDF)' };
+        }
+        if (teamSize && teamSize !== originalGame.teamSize) {
+            changes.teamSize = { from: originalGame.teamSize, to: teamSize };
+        }
+
+        // Log update with detailed payload
+        await logSystemActivity('GAME_UPDATE', `Game '${game.name}' updated by ${user.username}`, {
+            adminId: user.id,
+            metadata: {
+                gameId: game.id,
+                gameName: game.name,
+                adminUsername: user.username,
+                changes: Object.keys(changes).length > 0 ? changes : { info: 'Nincs változás' }
+            }
+        });
 
         res.json({ success: true, data: game });
     })
