@@ -148,7 +148,7 @@ export function HomePage() {
 
         <div className="relative hidden h-[500px] lg:block perspective-[1000px]">
           {/* Visual elements using absolute positioning and Tailwind */}
-          <div className="absolute left-[10%] top-[10%] w-56 animate-bounce delay-0 hover:z-10">
+          <div className="absolute left-[10%] top-[10%] w-56 hover:animate-bounce delay-0 hover:z-10">
             <div className="glass-card rounded-2xl p-6 text-center shadow-2xl transition-all hover:scale-110 group cursor-pointer border-t border-white/10 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/20 text-primary transition-shadow">
@@ -160,7 +160,7 @@ export function HomePage() {
             </div>
           </div>
 
-          <div className="absolute right-[10%] top-[35%] w-56 animate-bounce delay-700 hover:z-10">
+          <div className="absolute right-[10%] top-[35%] w-56 hover:animate-bounce delay-700 hover:z-10">
             <div className="glass-card rounded-2xl p-6 text-center shadow-2xl transition-all hover:scale-110 group cursor-pointer border-t border-white/10 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--accent))]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-accent/20 text-accent shadow-[0_0_15px_hsla(var(--accent),0.3)] group-hover:shadow-[0_0_25px_hsla(var(--accent),0.6)] transition-shadow">
@@ -172,7 +172,7 @@ export function HomePage() {
             </div>
           </div>
 
-          <div className="absolute bottom-[10%] left-[20%] w-56 animate-bounce delay-300 hover:z-10">
+          <div className="absolute bottom-[10%] left-[20%] w-56 hover:animate-bounce delay-300 hover:z-10">
             <div className="glass-card rounded-2xl p-6 text-center shadow-2xl transition-all hover:scale-110 group cursor-pointer border-t border-white/10 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--neon-pink))]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-[hsl(var(--neon-pink))]/20 text-[hsl(var(--neon-pink))] shadow-[0_0_15px_hsla(var(--neon-pink),0.3)] group-hover:shadow-[0_0_25px_hsla(var(--neon-pink),0.6)] transition-shadow">
@@ -275,15 +275,16 @@ export function HomePage() {
 
           </div>
 
-        </section>  <iframe
-          src="https://discord.com/widget?id=1449786215720026237&theme=dark"
-          width="350"
-          height="500"
-          allowTransparency={true}
-          frameBorder="0"
-          className="rounded-2xl"
-          sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
-        ></iframe>
+        </section>
+        <div className="w-full max-w-[350px]">
+          <iframe
+            src="https://discord.com/widget?id=1449786215720026237&theme=dark"
+            className="w-full h-[500px] rounded-2xl"
+            allowTransparency={true}
+            frameBorder="0"
+            sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+          ></iframe>
+        </div>
       </div>
       {/* Features Section */}
       <section className="flex flex-col gap-16 ">
@@ -291,7 +292,7 @@ export function HomePage() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="glass-card group  relative overflow-hidden rounded-3xl p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(139,92,246,0.2)] border border-white/5 hover:border-primary/50"
+              className="glass-card group relative overflow-hidden rounded-3xl p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(139,92,246,0.2)] border border-white/5 hover:border-primary/50 cursor-pointer"
             >
               <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br from-primary/30 to-transparent blur-2xl transition-all group-hover:scale-150 group-hover:bg-primary/40" />
 

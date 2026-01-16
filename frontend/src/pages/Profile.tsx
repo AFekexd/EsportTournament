@@ -52,6 +52,17 @@ export function ProfilePage() {
   const [localSteamId, setLocalSteamId] = useState("");
   const [isAvatarOpen, setIsAvatarOpen] = useState(false);
 
+  // ESC kezelés az Avatar Lightbox-hoz
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsAvatarOpen(false);
+    };
+    if (isAvatarOpen) {
+      document.addEventListener('keydown', handleEsc);
+      return () => document.removeEventListener('keydown', handleEsc);
+    }
+  }, [isAvatarOpen]);
+
   useEffect(() => {
     if (user?.steamId) {
       setLocalSteamId(user.steamId);

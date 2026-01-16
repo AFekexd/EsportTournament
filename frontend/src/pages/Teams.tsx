@@ -38,7 +38,7 @@ function TeamCard({ team }: { team: Team }) {
             {team.name}
           </h3>
           {team.description && (
-            <p className="text-sm text-gray-400 line-clamp-1 break-words max-w-[150px]">
+            <p className="text-sm text-gray-400 line-clamp-1 break-words max-w-full">
               {team.description}
             </p>
           )}
@@ -139,6 +139,17 @@ export function TeamsPage() {
     }
   }, [searchParams]);
 
+  // ESC kezelés a Join Modal-hoz
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowJoinModal(false);
+    };
+    if (showJoinModal) {
+      document.addEventListener('keydown', handleEsc);
+      return () => document.removeEventListener('keydown', handleEsc);
+    }
+  }, [showJoinModal]);
+
   const handleJoin = async () => {
     if (!joinCode.trim()) return;
 
@@ -204,7 +215,7 @@ export function TeamsPage() {
         <div className="relative max-w-xl mx-auto flex items-center">
           <Search
             size={18}
-            className="absolute right-4 text-gray-500 pointer-events-none z-10"
+            className="absolute left-4 text-gray-500 pointer-events-none z-10"
           />
           <input
             type="text"

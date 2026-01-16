@@ -59,7 +59,7 @@ export function AdminPage() {
     const timer = setTimeout(() => {
       setDebouncedTournamentSearch(tournamentSearch);
       setTournamentPage(1); // Reset page on search
-    }, 500);
+    }, 300);
     return () => clearTimeout(timer);
   }, [tournamentSearch]);
 
@@ -100,7 +100,7 @@ export function AdminPage() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => {},
+    onConfirm: () => { },
     variant: "primary",
   });
 
@@ -124,8 +124,7 @@ export function AdminPage() {
         try {
           const token = authService.keycloak?.token;
           const response = await fetch(
-            `${
-              import.meta.env.VITE_API_URL || "http://localhost:3000/api"
+            `${import.meta.env.VITE_API_URL || "http://localhost:3000/api"
             }/stats`,
             {
               headers: { Authorization: `Bearer ${token}` },
@@ -257,9 +256,9 @@ export function AdminPage() {
     { id: "games", label: "Játékok", icon: Gamepad2 },
     ...(canManageComputers
       ? [
-          { id: "bookings", label: "Gépfoglalás", icon: Calendar },
-          { id: "kiosk", label: "Gépterem", icon: Monitor },
-        ]
+        { id: "bookings", label: "Gépfoglalás", icon: Calendar },
+        { id: "kiosk", label: "Gépterem", icon: Monitor },
+      ]
       : []),
   ];
 
@@ -350,11 +349,10 @@ export function AdminPage() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap
-                                ${
-                                  isActive
-                                    ? "bg-primary text-white shadow-[0_0_20px_rgba(139,92,246,0.3)]"
-                                    : "bg-[#0f1016] border border-white/5 text-muted-foreground hover:text-white hover:bg-white/5"
-                                }`}
+                                ${isActive
+                  ? "bg-primary text-white shadow-[0_0_20px_rgba(139,92,246,0.3)]"
+                  : "bg-[#0f1016] border border-white/5 text-muted-foreground hover:text-white hover:bg-white/5"
+                }`}
             >
               <Icon size={18} />
               {tab.label}
@@ -833,11 +831,10 @@ export function AdminPage() {
                     <button
                       key={page}
                       onClick={() => setTournamentPage(page)}
-                      className={`px-3 py-1 rounded-lg text-sm transition-colors ${
-                        tournamentPagination.page === page
+                      className={`px-3 py-1 rounded-lg text-sm transition-colors ${tournamentPagination.page === page
                           ? "bg-primary text-white"
                           : "bg-white/5 text-gray-400 hover:bg-white/10"
-                      }`}
+                        }`}
                     >
                       {page}
                     </button>

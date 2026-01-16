@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import rateLimit from 'express-rate-limit';
 import { createServer } from 'http';
 import { Server } from 'socket.io'; // Socket.IO
 
@@ -37,19 +38,24 @@ import { clientUpdateRouter } from './routes/clientUpdate.js';
 
 
 
+// CORS origins from environment variable or default
+const corsOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(',')
+  : [
+    'http://localhost:5173',
+    'http://localhost:4173',
+    'https://esport.afeke.com',
+    'http://esport.afeke.com',
+    'https://esport-backend.pollak.info',
+    'https://esport.pollak.info',
+    'http://esport.pollak.info'
+  ];
+
 const app: express.Express = express();
 const httpServer = createServer(app); // Create HTTP server for Socket.IO
 const io = new Server(httpServer, {
   cors: {
-    origin: [
-      'http://localhost:5173',
-      'http://localhost:4173',
-      'https://esport.afeke.com',
-      'http://esport.afeke.com',
-      'https://esport-backend.pollak.info',
-      'https://esport.pollak.info',
-      'http://esport.pollak.info'
-    ],
+    origin: corsOrigins,
     methods: ["GET", "POST"],
     credentials: true
   }
@@ -62,20 +68,22 @@ TournamentSchedulerService.startScheduler();
 
 const PORT = process.env.PORT || 3000;
 
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 perc
+  max: 100, // max 100 request per IP
+  message: { error: 'Túl sok kérés, próbáld újra később' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // Middleware
 app.use(helmet());
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:4173',
-    'https://esport.afeke.com',
-    'http://esport.afeke.com',
-    'https://esport-backend.pollak.info',
-    'https://esport.pollak.info',
-    'http://esport.pollak.info'
-  ],
+  origin: corsOrigins,
   credentials: true,
 }));
+app.use('/api/', limiter);
 app.use(morgan('dev'));
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ limit: '20mb', extended: true }));
