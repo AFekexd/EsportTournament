@@ -387,7 +387,7 @@ const TournamentCard = React.memo(({ tournament }: Props) => {
 
 2. **Error Messages**
    - **Probléma**: Hibaüzenetek néha üresek (`ex.Message == ""`)
-   - **Lokáció**: `Form1.cs` 799. sor
+   - **Lokáció**: `Form1.cs` 798. sor
    - **Javaslat**: Fallback hibaüzenet használata
 
    ```csharp
