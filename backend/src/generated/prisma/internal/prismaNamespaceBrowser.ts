@@ -112,7 +112,8 @@ export const UserScalarFieldEnum = {
   steamCreatedAt: 'steamCreatedAt',
   perfectGamesCount: 'perfectGamesCount',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  lastLogoutAt: 'lastLogoutAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]

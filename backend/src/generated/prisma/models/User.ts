@@ -62,6 +62,7 @@ export type UserMinAggregateOutputType = {
   perfectGamesCount: number | null
   createdAt: Date | null
   updatedAt: Date | null
+  lastLogoutAt: Date | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -86,6 +87,7 @@ export type UserMaxAggregateOutputType = {
   perfectGamesCount: number | null
   createdAt: Date | null
   updatedAt: Date | null
+  lastLogoutAt: Date | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -110,6 +112,7 @@ export type UserCountAggregateOutputType = {
   perfectGamesCount: number
   createdAt: number
   updatedAt: number
+  lastLogoutAt: number
   _all: number
 }
 
@@ -150,6 +153,7 @@ export type UserMinAggregateInputType = {
   perfectGamesCount?: true
   createdAt?: true
   updatedAt?: true
+  lastLogoutAt?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -174,6 +178,7 @@ export type UserMaxAggregateInputType = {
   perfectGamesCount?: true
   createdAt?: true
   updatedAt?: true
+  lastLogoutAt?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -198,6 +203,7 @@ export type UserCountAggregateInputType = {
   perfectGamesCount?: true
   createdAt?: true
   updatedAt?: true
+  lastLogoutAt?: true
   _all?: true
 }
 
@@ -309,6 +315,7 @@ export type UserGroupByOutputType = {
   perfectGamesCount: number
   createdAt: Date
   updatedAt: Date
+  lastLogoutAt: Date | null
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -356,6 +363,7 @@ export type UserWhereInput = {
   perfectGamesCount?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  lastLogoutAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   teamMemberships?: Prisma.TeamMemberListRelationFilter
   ownedTeams?: Prisma.TeamListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
@@ -398,6 +406,7 @@ export type UserOrderByWithRelationInput = {
   perfectGamesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  lastLogoutAt?: Prisma.SortOrderInput | Prisma.SortOrder
   teamMemberships?: Prisma.TeamMemberOrderByRelationAggregateInput
   ownedTeams?: Prisma.TeamOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
@@ -443,6 +452,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   perfectGamesCount?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  lastLogoutAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   teamMemberships?: Prisma.TeamMemberListRelationFilter
   ownedTeams?: Prisma.TeamListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
@@ -485,6 +495,7 @@ export type UserOrderByWithAggregationInput = {
   perfectGamesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  lastLogoutAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -517,6 +528,7 @@ export type UserScalarWhereWithAggregatesInput = {
   perfectGamesCount?: Prisma.IntWithAggregatesFilter<"User"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  lastLogoutAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
 }
 
 export type UserCreateInput = {
@@ -541,6 +553,7 @@ export type UserCreateInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -583,6 +596,7 @@ export type UserUncheckedCreateInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -625,6 +639,7 @@ export type UserUpdateInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -667,6 +682,7 @@ export type UserUncheckedUpdateInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -709,6 +725,7 @@ export type UserCreateManyInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
 }
 
 export type UserUpdateManyMutationInput = {
@@ -733,6 +750,7 @@ export type UserUpdateManyMutationInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -757,6 +775,7 @@ export type UserUncheckedUpdateManyInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -781,6 +800,7 @@ export type UserCountOrderByAggregateInput = {
   perfectGamesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  lastLogoutAt?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
@@ -812,6 +832,7 @@ export type UserMaxOrderByAggregateInput = {
   perfectGamesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  lastLogoutAt?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -836,6 +857,7 @@ export type UserMinOrderByAggregateInput = {
   perfectGamesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  lastLogoutAt?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
@@ -1215,6 +1237,7 @@ export type UserCreateWithoutOwnedTeamsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
@@ -1256,6 +1279,7 @@ export type UserUncheckedCreateWithoutOwnedTeamsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
@@ -1313,6 +1337,7 @@ export type UserUpdateWithoutOwnedTeamsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
@@ -1354,6 +1379,7 @@ export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
@@ -1395,6 +1421,7 @@ export type UserCreateWithoutTeamMembershipsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
@@ -1436,6 +1463,7 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
@@ -1493,6 +1521,7 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
@@ -1534,6 +1563,7 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
@@ -1575,6 +1605,7 @@ export type UserCreateWithoutTournamentEntriesInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -1616,6 +1647,7 @@ export type UserUncheckedCreateWithoutTournamentEntriesInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -1662,6 +1694,7 @@ export type UserCreateWithoutParticipatingEntriesInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -1703,6 +1736,7 @@ export type UserUncheckedCreateWithoutParticipatingEntriesInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -1760,6 +1794,7 @@ export type UserUpdateWithoutTournamentEntriesInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -1801,6 +1836,7 @@ export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -1861,6 +1897,7 @@ export type UserScalarWhereInput = {
   perfectGamesCount?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  lastLogoutAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
 }
 
 export type UserCreateWithoutHomeMatchesInput = {
@@ -1885,6 +1922,7 @@ export type UserCreateWithoutHomeMatchesInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -1926,6 +1964,7 @@ export type UserUncheckedCreateWithoutHomeMatchesInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -1972,6 +2011,7 @@ export type UserCreateWithoutAwayMatchesInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -2013,6 +2053,7 @@ export type UserUncheckedCreateWithoutAwayMatchesInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -2059,6 +2100,7 @@ export type UserCreateWithoutWonMatchesInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -2100,6 +2142,7 @@ export type UserUncheckedCreateWithoutWonMatchesInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -2157,6 +2200,7 @@ export type UserUpdateWithoutHomeMatchesInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -2198,6 +2242,7 @@ export type UserUncheckedUpdateWithoutHomeMatchesInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -2250,6 +2295,7 @@ export type UserUpdateWithoutAwayMatchesInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -2291,6 +2337,7 @@ export type UserUncheckedUpdateWithoutAwayMatchesInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -2343,6 +2390,7 @@ export type UserUpdateWithoutWonMatchesInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -2384,6 +2432,7 @@ export type UserUncheckedUpdateWithoutWonMatchesInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -2425,6 +2474,7 @@ export type UserCreateWithoutGameStatsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -2466,6 +2516,7 @@ export type UserUncheckedCreateWithoutGameStatsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -2523,6 +2574,7 @@ export type UserUpdateWithoutGameStatsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -2564,6 +2616,7 @@ export type UserUncheckedUpdateWithoutGameStatsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -2605,6 +2658,7 @@ export type UserCreateWithoutRanksInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -2646,6 +2700,7 @@ export type UserUncheckedCreateWithoutRanksInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -2703,6 +2758,7 @@ export type UserUpdateWithoutRanksInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -2744,6 +2800,7 @@ export type UserUncheckedUpdateWithoutRanksInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -2785,6 +2842,7 @@ export type UserCreateWithoutNotificationsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
@@ -2826,6 +2884,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
@@ -2883,6 +2942,7 @@ export type UserUpdateWithoutNotificationsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
@@ -2924,6 +2984,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
@@ -2965,6 +3026,7 @@ export type UserCreateWithoutDiscordSettingsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -3006,6 +3068,7 @@ export type UserUncheckedCreateWithoutDiscordSettingsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -3063,6 +3126,7 @@ export type UserUpdateWithoutDiscordSettingsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -3104,6 +3168,7 @@ export type UserUncheckedUpdateWithoutDiscordSettingsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -3145,6 +3210,7 @@ export type UserCreateWithoutBookingsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -3186,6 +3252,7 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -3243,6 +3310,7 @@ export type UserUpdateWithoutBookingsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -3284,6 +3352,7 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -3325,6 +3394,7 @@ export type UserCreateWithoutSessionsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -3366,6 +3436,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -3423,6 +3494,7 @@ export type UserUpdateWithoutSessionsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -3464,6 +3536,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -3505,6 +3578,7 @@ export type UserCreateWithoutLogsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -3546,6 +3620,7 @@ export type UserUncheckedCreateWithoutLogsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -3592,6 +3667,7 @@ export type UserCreateWithoutAdminLogsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -3633,6 +3709,7 @@ export type UserUncheckedCreateWithoutAdminLogsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -3690,6 +3767,7 @@ export type UserUpdateWithoutLogsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -3731,6 +3809,7 @@ export type UserUncheckedUpdateWithoutLogsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -3783,6 +3862,7 @@ export type UserUpdateWithoutAdminLogsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -3824,6 +3904,7 @@ export type UserUncheckedUpdateWithoutAdminLogsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -3865,6 +3946,7 @@ export type UserCreateWithoutWaitlistEntriesInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -3906,6 +3988,7 @@ export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -3963,6 +4046,7 @@ export type UserUpdateWithoutWaitlistEntriesInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -4004,6 +4088,7 @@ export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -4045,6 +4130,7 @@ export type UserCreateWithoutChangeRequestsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -4086,6 +4172,7 @@ export type UserUncheckedCreateWithoutChangeRequestsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -4143,6 +4230,7 @@ export type UserUpdateWithoutChangeRequestsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -4184,6 +4272,7 @@ export type UserUncheckedUpdateWithoutChangeRequestsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -4225,6 +4314,7 @@ export type UserCreateWithoutAuthoredChangelogsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -4266,6 +4356,7 @@ export type UserUncheckedCreateWithoutAuthoredChangelogsInput = {
   perfectGamesCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -4323,6 +4414,7 @@ export type UserUpdateWithoutAuthoredChangelogsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -4364,6 +4456,7 @@ export type UserUncheckedUpdateWithoutAuthoredChangelogsInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -4405,6 +4498,7 @@ export type UserUpdateWithoutParticipatingEntriesInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -4446,6 +4540,7 @@ export type UserUncheckedUpdateWithoutParticipatingEntriesInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -4487,6 +4582,7 @@ export type UserUncheckedUpdateManyWithoutParticipatingEntriesInput = {
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -4686,6 +4782,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   perfectGamesCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  lastLogoutAt?: boolean
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
   ownedTeams?: boolean | Prisma.User$ownedTeamsArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
@@ -4729,6 +4826,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   perfectGamesCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  lastLogoutAt?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -4753,6 +4851,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   perfectGamesCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  lastLogoutAt?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -4777,9 +4876,10 @@ export type UserSelectScalar = {
   perfectGamesCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  lastLogoutAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "keycloakId" | "email" | "username" | "displayName" | "avatarUrl" | "omId" | "discordId" | "role" | "elo" | "timeBalanceSeconds" | "emailNotifications" | "steamId" | "steamAvatar" | "steamUrl" | "steamLevel" | "steamPersonaname" | "steamCreatedAt" | "perfectGamesCount" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "keycloakId" | "email" | "username" | "displayName" | "avatarUrl" | "omId" | "discordId" | "role" | "elo" | "timeBalanceSeconds" | "emailNotifications" | "steamId" | "steamAvatar" | "steamUrl" | "steamLevel" | "steamPersonaname" | "steamCreatedAt" | "perfectGamesCount" | "createdAt" | "updatedAt" | "lastLogoutAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
   ownedTeams?: boolean | Prisma.User$ownedTeamsArgs<ExtArgs>
@@ -4848,6 +4948,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     perfectGamesCount: number
     createdAt: Date
     updatedAt: Date
+    lastLogoutAt: Date | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -5310,6 +5411,7 @@ export interface UserFieldRefs {
   readonly perfectGamesCount: Prisma.FieldRef<"User", 'Int'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly lastLogoutAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     
 

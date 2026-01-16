@@ -109,6 +109,24 @@ export const authenticate = async (
             );
         });
 
+        // Check for token invalidation (local logout)
+        if (decoded.sub) {
+            const user = await prisma.user.findUnique({
+                where: { keycloakId: decoded.sub },
+                select: { lastLogoutAt: true }
+            });
+
+            if (user?.lastLogoutAt) {
+                // iat is in seconds, lastLogoutAt is milliseconds
+                // If token was issued BEFORE the last logout, it's invalid
+                // Add a 1-second buffer to avoid race conditions with quick re-logins
+                const tokenIssuedAt = (decoded as any).iat * 1000;
+                if (tokenIssuedAt < user.lastLogoutAt.getTime() - 1000) {
+                    throw new ApiError('A munkamenet érvénytelenítve lett', 401, 'TOKEN_INVALIDATED');
+                }
+            }
+        }
+
         req.user = decoded;
         next();
     } catch (error) {

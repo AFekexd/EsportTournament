@@ -198,6 +198,41 @@ usersRouter.delete(
     })
 );
 
+// Logout user (Admin only)
+usersRouter.post(
+    '/:id/logout',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const currentUser = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!currentUser || currentUser.role !== 'ADMIN') {
+            throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
+        }
+
+        const userId = req.params.id;
+
+        // Prevent logging out self (optional, but good practice to avoid accidental lockout)
+        if (userId === currentUser.id) {
+            throw new ApiError('Saját magadat nem jelentkeztetheted ki', 400, 'CANNOT_LOGOUT_SELF');
+        }
+
+        const user = await prisma.user.update({
+            where: { id: userId },
+            data: { lastLogoutAt: new Date() },
+        });
+
+        await logSystemActivity(
+            'USER_LOGOUT',
+            `User ${user.username} logged out by admin ${currentUser.username}`,
+            { adminId: currentUser.id, userId: user.id }
+        );
+
+        res.json({ success: true, message: 'Felhasználó kijelentkeztetve' });
+    })
+);
+
 // Update user role (Admin only)
 usersRouter.patch(
     '/:id/role',

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { Users, Shield, Search, Edit2, Trash2, Clock } from "lucide-react";
+import { Users, Shield, Search, Edit2, Trash2, Clock, LogOut } from "lucide-react";
 import { authService } from "../../lib/auth-service";
 import { RoleChangeModal } from "./RoleChangeModal";
 import { UserTimeModal } from "./UserTimeModal";
@@ -48,7 +48,7 @@ export function UserManagement() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => {},
+    onConfirm: () => { },
     variant: "primary",
   });
 
@@ -274,6 +274,39 @@ export function UserManagement() {
     }
   };
 
+  const handleLogoutUser = (userId: string) => {
+    setConfirmModal({
+      isOpen: true,
+      title: "Felhasználó kijelentkeztetése",
+      message: "Biztosan ki szeretnéd jelentkeztetni ezt a felhasználót? A művelet azonnal érvénybe lép.",
+      variant: "warning",
+      confirmLabel: "Kijelentkeztetés",
+      onConfirm: async () => {
+        try {
+          const token = authService.keycloak?.token;
+          if (!token) return;
+
+          const response = await fetch(`${API_URL}/users/${userId}/logout`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (response.ok) {
+            toast.success("Felhasználó sikeresen kijelentkeztetve");
+          } else {
+            const data = await response.json();
+            toast.error(`Hiba: ${data.message || "Sikertelen kijelentkeztetés"}`);
+          }
+        } catch (error) {
+          console.error("Failed to logout user:", error);
+          toast.error("Hiba történt a művelet során");
+        }
+      },
+    });
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -444,11 +477,10 @@ export function UserManagement() {
                   </td>
                   <td className="p-3">{getRoleBadge(user.role)}</td>
                   <td
-                    className={`p-3 text-center font-mono text-sm ${
-                      user.timeBalanceSeconds < 0
-                        ? "text-red-400"
-                        : "text-green-400"
-                    }`}
+                    className={`p-3 text-center font-mono text-sm ${user.timeBalanceSeconds < 0
+                      ? "text-red-400"
+                      : "text-green-400"
+                      }`}
                   >
                     {["ADMIN", "TEACHER"].includes(user.role)
                       ? "∞"
@@ -482,6 +514,13 @@ export function UserManagement() {
                         onClick={() => setEditModalUser(user)}
                       >
                         <Edit2 size={16} />
+                      </button>
+                      <button
+                        className="btn-icon hover:bg-yellow-500/10 text-yellow-400"
+                        title="Kijelentkeztetés"
+                        onClick={() => handleLogoutUser(user.id)}
+                      >
+                        <LogOut size={16} />
                       </button>
                       <button
                         className="btn-icon hover:bg-red-500/10 text-red-400"
@@ -529,11 +568,10 @@ export function UserManagement() {
                   <button
                     key={p}
                     onClick={() => setPage(p)}
-                    className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors mx-0.5 ${
-                      page === p
-                        ? "bg-primary text-white"
-                        : "bg-white/5 text-gray-400 hover:bg-white/10"
-                    }`}
+                    className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors mx-0.5 ${page === p
+                      ? "bg-primary text-white"
+                      : "bg-white/5 text-gray-400 hover:bg-white/10"
+                      }`}
                   >
                     {p}
                   </button>
