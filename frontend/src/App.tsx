@@ -59,52 +59,54 @@ function AppContent() {
     }
   }, [error]);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-6">
-          <PuffLoader color="#8b5cf6" size={60} />
-          <span className="font-bold uppercase tracking-widest text-muted-foreground group-hover:text-white transition-colors text-lg">
-            Betöltés...
-          </span>
-        </div>
+  const loadingContent = (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="flex flex-col items-center gap-6">
+        <PuffLoader color="#8b5cf6" size={60} />
+        <span className="font-bold uppercase tracking-widest text-muted-foreground group-hover:text-white transition-colors text-lg">
+          Betöltés...
+        </span>
       </div>
-    );
-  }
+    </div>
+  );
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="tournaments" element={<TournamentsPage />} />
-          <Route path="tournaments/:id" element={<TournamentDetailPage />} />
-          <Route path="teams" element={<TeamsPage />} />
-          <Route path="teams/create" element={<TeamCreatePage />} />
-          <Route path="teams/:id" element={<TeamDetailPage />} />
-          <Route path="games" element={<GamesPage />} />
-          <Route path="games/:id" element={<GameDetailPage />} />
-          <Route path="leaderboards" element={<LeaderboardsPage />} />
-          <Route path="notifications" element={<NotificationsPage />} />
-          <Route path="discord-settings" element={<DiscordAdminPage />} />
-          <Route path="calendar" element={<CalendarPage />} />
-          <Route path="profile" element={<ProfilePage />} />
-          <Route path="profile/:id" element={<ProfilePage />} />
-          <Route path="settings" element={<SettingsPage />} />
-          <Route path="admin" element={<AdminPage />} />
-          <Route path="admin/requests" element={<RequestsPage />} />
-          <Route path="admin/releases" element={<ReleasesPage />} />
-          <Route path="admin/logs" element={<AdminLogs />} />
-          <Route path="teacher/time" element={<TeacherTimePage />} />
-          <Route path="booking" element={<BookingPage />} />
-        </Route>
-        <Route
-          path="/embed/tournaments/:id"
-          element={<TournamentEmbedPage />}
-        />
-        <Route path="/tv" element={<TVDisplayPage />} />
-        <Route path="/tv2" element={<TVRecruitmentPage />} />
-      </Routes>
+      {isLoading ? (
+        loadingContent
+      ) : (
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<HomePage />} />
+            <Route path="tournaments" element={<TournamentsPage />} />
+            <Route path="tournaments/:id" element={<TournamentDetailPage />} />
+            <Route path="teams" element={<TeamsPage />} />
+            <Route path="teams/create" element={<TeamCreatePage />} />
+            <Route path="teams/:id" element={<TeamDetailPage />} />
+            <Route path="games" element={<GamesPage />} />
+            <Route path="games/:id" element={<GameDetailPage />} />
+            <Route path="leaderboards" element={<LeaderboardsPage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
+            <Route path="discord-settings" element={<DiscordAdminPage />} />
+            <Route path="calendar" element={<CalendarPage />} />
+            <Route path="profile" element={<ProfilePage />} />
+            <Route path="profile/:id" element={<ProfilePage />} />
+            <Route path="settings" element={<SettingsPage />} />
+            <Route path="admin" element={<AdminPage />} />
+            <Route path="admin/requests" element={<RequestsPage />} />
+            <Route path="admin/releases" element={<ReleasesPage />} />
+            <Route path="admin/logs" element={<AdminLogs />} />
+            <Route path="teacher/time" element={<TeacherTimePage />} />
+            <Route path="booking" element={<BookingPage />} />
+          </Route>
+          <Route
+            path="/embed/tournaments/:id"
+            element={<TournamentEmbedPage />}
+          />
+          <Route path="/tv" element={<TVDisplayPage />} />
+          <Route path="/tv2" element={<TVRecruitmentPage />} />
+        </Routes>
+      )}
       <Toaster />
     </BrowserRouter>
   );
