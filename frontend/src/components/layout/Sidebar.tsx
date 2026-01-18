@@ -128,9 +128,11 @@ export function Sidebar() {
       }
     };
 
+    // Fetch version regardless of auth
+    fetchVersion();
+
     if (isAuthenticated) {
       fetchStats();
-      fetchVersion();
 
       // Listen for updates from RequestsPage
       window.addEventListener("requests-updated", fetchStats);
@@ -279,60 +281,57 @@ export function Sidebar() {
           )}
 
           {/* Version Footer */}
-          {/* Version Footer */}
-          {isAuthenticated && (
-            <div
-              className={`mt-auto border-t border-white/5 transition-all duration-300 ${
+          <div
+            className={`mt-auto border-t border-white/5 transition-all duration-300 ${
+              isOpen
+                ? "mx-3 px-6 pb-6 pt-4"
+                : "mx-0 px-2 py-4 flex justify-center"
+            }`}
+          >
+            <button
+              onClick={() => setShowChangelog(true)}
+              className={`flex items-center group transition-all ${
                 isOpen
-                  ? "mx-3 px-6 pb-6 pt-4"
-                  : "mx-0 px-2 py-4 flex justify-center"
+                  ? "w-full justify-between"
+                  : "flex-col gap-1 justify-center"
               }`}
+              title={`Verzió: v${appVersion}`}
             >
-              <button
-                onClick={() => setShowChangelog(true)}
-                className={`flex items-center group transition-all ${
-                  isOpen
-                    ? "w-full justify-between"
-                    : "flex-col gap-1 justify-center"
+              <div
+                className={`flex flex-col ${
+                  isOpen ? "items-start" : "items-center"
                 }`}
-                title={`Verzió: v${appVersion}`}
               >
-                <div
-                  className={`flex flex-col ${
-                    isOpen ? "items-start" : "items-center"
+                <span
+                  className={`text-xs font-medium text-gray-500 group-hover:text-white transition-colors ${
+                    !isOpen && "hidden"
                   }`}
                 >
-                  <span
-                    className={`text-xs font-medium text-gray-500 group-hover:text-white transition-colors ${
-                      !isOpen && "hidden"
-                    }`}
-                  >
-                    Verzió:{" "}
-                  </span>
-                  <span
-                    className={`font-mono transition-colors ${
-                      isOpen
-                        ? "text-gray-400"
-                        : "text-[10px] text-gray-500 group-hover:text-white"
-                    }`}
-                  >
-                    v{appVersion}
-                  </span>
-                </div>
-                {hasUpdate && (
-                  <span
-                    className={`bg-primary/20 text-primary font-bold rounded-full animate-pulse shadow-[0_0_10px_rgba(139,92,246,0.3)] ${
-                      isOpen
-                        ? "text-[10px] px-2 py-0.5"
-                        : "text-[8px] px-1.5 py-0.5 mt-1"
-                    }`}
-                  >
-                    {isOpen ? "ÚJ" : "NEW"}
-                  </span>
-                )}
-              </button>
-            </div>
-          )}
+                  Verzió:{" "}
+                </span>
+                <span
+                  className={`font-mono transition-colors ${
+                    isOpen
+                      ? "text-gray-400"
+                      : "text-[10px] text-gray-500 group-hover:text-white"
+                  }`}
+                >
+                  v{appVersion}
+                </span>
+              </div>
+              {hasUpdate && (
+                <span
+                  className={`bg-primary/20 text-primary font-bold rounded-full animate-pulse shadow-[0_0_10px_rgba(139,92,246,0.3)] ${
+                    isOpen
+                      ? "text-[10px] px-2 py-0.5"
+                      : "text-[8px] px-1.5 py-0.5 mt-1"
+                  }`}
+                >
+                  {isOpen ? "ÚJ" : "NEW"}
+                </span>
+              )}
+            </button>
+          </div>
         </nav>
       </aside>
 
