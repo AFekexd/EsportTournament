@@ -13,6 +13,7 @@ import { logSystemActivity } from '../services/logService.js';
 import prisma from '../lib/prisma.js';
 import { DiscordLogType, DiscordLogStatus, EmailType } from '../generated/prisma/client.js';
 import { emailService } from '../services/emailService.js';
+import { announcementTemplate } from '../services/emailTemplates.js';
 
 export const adminDiscordRouter: Router = Router();
 
@@ -210,17 +211,7 @@ adminDiscordRouter.post(
         // --- EMAIL LOGIC ---
         if (channels.includes('email')) {
              const subject = title || 'Rendszerüzenet';
-             const htmlContent = `
-                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
-                    <h2 style="color: #3b82f6; border-bottom: 2px solid #eee; padding-bottom: 15px;">${subject}</h2>
-                    <div style="white-space: pre-wrap; margin: 20px 0; font-size: 16px; line-height: 1.5;">${message}</div>
-                    <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
-                    <p style="font-size: 12px; color: #666; text-align: center;">
-                        Küldte: ${adminUser.username} | <strong>EsportHub Admin</strong><br>
-                        Ez egy automatikus rendszerüzenet. Kérjük ne válaszolj erre az emailre.
-                    </p>
-                </div>
-             `;
+             const htmlContent = announcementTemplate(subject, message, adminUser.username);
              
              if (targetUserId) {
                  const targetUser = await prisma.user.findUnique({ where: { id: targetUserId }, select: { email: true } });

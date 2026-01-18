@@ -470,6 +470,24 @@ export function weeklyDigestTemplate(
 // ADMIN BROADCAST TEMPLATE
 // ===================================
 
+export function announcementTemplate(title: string, message: string, senderName: string): string {
+    return generateEmailTemplate({
+        title,
+        content: `
+            <div style="padding: 16px; background: rgba(59, 130, 246, 0.1); border-radius: 12px; border-left: 4px solid #3b82f6; margin-bottom: 16px;">
+                <p style="margin: 0; font-size: 12px; color: #3b82f6; text-transform: uppercase; letter-spacing: 1px;">📢 Hirdetmény</p>
+            </div>
+            <div style="color: #fff; line-height: 1.8; font-size: 16px;">
+                ${message.replace(/\n/g, '<br>')}
+            </div>
+            <p style="margin: 24px 0 0; font-size: 13px; color: #666; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 16px;">
+                Küldte: <strong style="color: #fff;">${senderName}</strong> | EsportHub Admin
+            </p>
+        `,
+        footer: 'Ezt az üzenetet az EsportHub adminisztrátora küldte.'
+    });
+}
+
 export function adminBroadcastTemplate(title: string, message: string, senderName: string): string {
     return generateEmailTemplate({
         title,
