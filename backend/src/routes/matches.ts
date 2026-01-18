@@ -171,10 +171,14 @@ matchesRouter.patch(
 
             const eloChange = calculateEloChange(winnerUser.elo, loserUser.elo);
 
-            await prisma.user.update({
+            const updatedWinner = await prisma.user.update({
                 where: { id: winnerUser.id },
                 data: { elo: { increment: eloChange } },
             });
+
+            // Web-Discord Sync: Elo
+            const { webSyncService } = await import('../services/webSyncService.js');
+            await webSyncService.onEloUpdate(updatedWinner.id, updatedWinner.elo);
 
             await prisma.user.update({
                 where: { id: loserUser.id },
@@ -197,6 +201,10 @@ matchesRouter.patch(
                 data: { elo: { decrement: eloChange } },
             });
         }
+
+        // Web-Discord Sync: Match Result
+        const { webSyncService } = await import('../services/webSyncService.js');
+        await webSyncService.onMatchResult(match.id);
 
         // Send notifications if enabled
         if (match.tournament.notifyUsers || match.tournament.notifyDiscord) {

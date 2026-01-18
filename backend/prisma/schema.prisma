@@ -90,7 +90,19 @@ model User {
   role               Role      @default(STUDENT)
   elo                Int       @default(1000)
   timeBalanceSeconds Int       @default(0) // Kiosk time balance
-  emailNotifications Boolean   @default(true)
+  // Granular email preferences
+  emailNotifications   Boolean   @default(true) // Master toggle (legacy, kept for compatibility)
+  emailPrefTournaments Boolean   @default(true) // Tournament announcements & invites
+  emailPrefMatches     Boolean   @default(true) // Match reminders & results
+  emailPrefBookings    Boolean   @default(true) // Booking confirmations & reminders
+  emailPrefSystem      Boolean   @default(true) // System notifications
+  emailPrefWeeklyDigest Boolean  @default(false) // Weekly summary emails (opt-in)
+  // Discord DM preferences
+  discordDmTournaments  Boolean   @default(true)  // Tournament announcements via DM
+  discordDmMatches      Boolean   @default(true)  // Match reminders via DM
+  discordDmReminders    Boolean   @default(true)  // General reminders via DM
+  discordDmResults      Boolean   @default(true)  // Match results via DM
+  discordDmSystem       Boolean   @default(false) // System notifications via DM (opt-in)
   steamId            String?
   steamAvatar        String?
   steamUrl           String?
@@ -124,6 +136,14 @@ model User {
   ranks              UserRank[]
   changeRequests     ChangeRequest[]
   authoredChangelogs Changelog[]
+  
+  // Discord relations
+  discordLogs        DiscordLog[]
+  matchCheckIns      MatchCheckIn[]
+  matchPredictions   MatchPrediction[]
+
+  // Achievements (stored as JSON array)
+  achievements       Json?  @default("[]") // Array of { id: string, unlockedAt: Date }
 }
 
 // Csapat
@@ -200,6 +220,7 @@ model Tournament {
   notifyUsers      Boolean @default(false) // Send in-app notifications
   notifyDiscord    Boolean @default(false) // Post to Discord
   discordChannelId String? @default("matches") // Which Discord channel to use
+  discordRoleId    String? // Role specific to this tournament participants
 
   // Seeding settings
   seedingMethod SeedingMethod @default(STANDARD)
@@ -258,13 +279,18 @@ model Match {
   winnerUserId String?
   winnerUser   User?       @relation("WinnerUser", fields: [winnerUserId], references: [id])
   // Scores and status
-  homeScore    Int?
-  awayScore    Int?
-  status       MatchStatus @default(PENDING)
-  scheduledAt  DateTime?
-  playedAt     DateTime?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  homeScore       Int?
+  awayScore       Int?
+  status          MatchStatus @default(PENDING)
+  scheduledAt     DateTime?
+  playedAt        DateTime?
+  checkInDeadline DateTime?   // Deadline for players to check in
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  // Check-in and prediction relations
+  checkIns        MatchCheckIn[]
+  predictions     MatchPrediction[]
 }
 
 // Játékos statisztikák
@@ -523,4 +549,130 @@ model Changelog {
   authorId  String
   author    User          @relation(fields: [authorId], references: [id])
   createdAt DateTime      @default(now())
+}
+
+// ============================================
+// EMAIL LOGGING
+// ============================================
+
+enum EmailStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+enum EmailType {
+  TOURNAMENT_INVITE
+  TOURNAMENT_ANNOUNCEMENT
+  MATCH_REMINDER
+  MATCH_RESULT
+  BOOKING_CONFIRMATION
+  BOOKING_REMINDER
+  BOOKING_CANCELLED
+  WAITLIST_AVAILABLE
+  SYSTEM
+  DIGEST
+  ADMIN_BROADCAST
+}
+
+model EmailLog {
+  id        String      @id @default(uuid())
+  to        String
+  subject   String
+  type      EmailType
+  status    EmailStatus @default(PENDING)
+  attempts  Int         @default(1)
+  error     String?
+  metadata  Json?       // Extra info like tournamentId, bookingId, etc.
+  createdAt DateTime    @default(now())
+  sentAt    DateTime?
+
+  @@index([to])
+  @@index([type])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ============================================
+// DISCORD LOGGING & FEATURES
+// ============================================
+
+enum DiscordLogType {
+  TOURNAMENT_ANNOUNCE
+  MATCH_REMINDER
+  MATCH_RESULT
+  SYSTEM_ANNOUNCE
+  CHECK_IN_REQUEST
+  REGISTRATION_REMINDER
+  WEEKLY_STANDINGS
+  ACHIEVEMENT
+  PREDICTION
+  DM_NOTIFICATION
+  COMMAND_USAGE
+  ERROR
+}
+
+enum DiscordLogStatus {
+  SENT
+  FAILED
+  PENDING
+}
+
+// Discord message/notification log
+model DiscordLog {
+  id          String           @id @default(uuid())
+  type        DiscordLogType
+  channelId   String?
+  messageId   String?
+  userId      String?          // Our internal user ID
+  discordId   String?          // Discord user ID
+  content     String?          @db.Text
+  embedTitle  String?
+  status      DiscordLogStatus @default(SENT)
+  error       String?
+  metadata    Json?
+  createdAt   DateTime         @default(now())
+
+  user        User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([type])
+  @@index([createdAt])
+  @@index([userId])
+  @@index([status])
+}
+
+// Match check-in system
+model MatchCheckIn {
+  id        String   @id @default(uuid())
+  matchId   String
+  userId    String
+  teamId    String?  // If team match, which team
+  checkedAt DateTime @default(now())
+  
+  match     Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([matchId, userId])
+  @@index([matchId])
+}
+
+// Match predictions for engagement
+model MatchPrediction {
+  id                  String   @id @default(uuid())
+  matchId             String
+  predictorId         String
+  predictedWinnerId   String?  // Team or User ID of predicted winner
+  predictedHomeScore  Int?
+  predictedAwayScore  Int?
+  points              Int      @default(0)  // Points earned for correct prediction
+  isCorrect           Boolean? // Set after match completes
+  createdAt           DateTime @default(now())
+  
+  match       Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  predictor   User     @relation(fields: [predictorId], references: [id], onDelete: Cascade)
+
+  @@unique([matchId, predictorId])
+  @@index([matchId])
+  @@index([predictorId])
+  @@index([isCorrect])
 }

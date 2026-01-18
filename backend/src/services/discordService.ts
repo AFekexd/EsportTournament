@@ -28,6 +28,8 @@ import {
 import prisma from '../lib/prisma.js';
 import { DISCORD_ROLE_MAP, BASE_VERIFIED_ROLES, GUEST_ROLES } from '../config/discordRoles.js';
 import { Role as UserRole } from '../generated/prisma/enums.js';
+import * as CommandHandlers from './discordCommandHandlers.js';
+
 
 interface DiscordEmbed {
     title: string;
@@ -95,6 +97,7 @@ class DiscordService {
 
     private async registerCommands(token: string, guildId: string) {
         const commands = [
+            // Existing commands
             new SlashCommandBuilder()
                 .setName('om')
                 .setDescription('Tanulói azonosítás OM azonosítóval')
@@ -105,14 +108,103 @@ class DiscordService {
             new SlashCommandBuilder()
                 .setName('deploy-verify')
                 .setDescription('Hitelesítő üzenet küldése (Admin)')
+                .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
+            
+            // New user commands
+            new SlashCommandBuilder()
+                .setName('stats')
+                .setDescription('Játékos statisztikák megtekintése')
+                .addUserOption(option =>
+                    option.setName('user')
+                        .setDescription('Melyik játékos? (hagyd üresen saját)')
+                        .setRequired(false)),
+            
+            new SlashCommandBuilder()
+                .setName('leaderboard')
+                .setDescription('Top 10 ranglista')
+                .addStringOption(option =>
+                    option.setName('game')
+                        .setDescription('Játék szűrő (opcionális)')
+                        .setRequired(false)),
+            
+            new SlashCommandBuilder()
+                .setName('tournament')
+                .setDescription('Verseny információk keresése')
+                .addStringOption(option =>
+                    option.setName('name')
+                        .setDescription('Verseny neve (részleges keresés)')
+                        .setRequired(false)),
+            
+            new SlashCommandBuilder()
+                .setName('team')
+                .setDescription('Csapat információk')
+                .addStringOption(option =>
+                    option.setName('name')
+                        .setDescription('Csapat neve')
+                        .setRequired(true)),
+            
+            new SlashCommandBuilder()
+                .setName('link')
+                .setDescription('Discord fiók összekötése a webes fiókkal'),
+            
+            new SlashCommandBuilder()
+                .setName('predict')
+                .setDescription('Tippelj egy meccs eredményére')
+                .addStringOption(option =>
+                    option.setName('match')
+                        .setDescription('Meccs ID')
+                        .setRequired(true))
+                .addIntegerOption(option =>
+                    option.setName('home_score')
+                        .setDescription('Hazai pontszám')
+                        .setRequired(true)
+                        .setMinValue(0)
+                        .setMaxValue(100))
+                .addIntegerOption(option =>
+                    option.setName('away_score')
+                        .setDescription('Vendég pontszám')
+                        .setRequired(true)
+                        .setMinValue(0)
+                        .setMaxValue(100)),
+            
+            new SlashCommandBuilder()
+                .setName('checkin')
+                .setDescription('Bejelentkezés a következő meccsedre'),
+            
+            new SlashCommandBuilder()
+                .setName('preferences')
+                .setDescription('Discord értesítés beállítások megtekintése/módosítása'),
+            
+            // Admin commands
+            new SlashCommandBuilder()
+                .setName('announce')
+                .setDescription('Rendszerüzenet küldése (Admin)')
                 .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
+                .addStringOption(option =>
+                    option.setName('message')
+                        .setDescription('Üzenet tartalma')
+                        .setRequired(true))
+                .addChannelOption(option =>
+                    option.setName('channel')
+                        .setDescription('Célcsatorna (opcionális)')
+                        .setRequired(false)),
+            
+            new SlashCommandBuilder()
+                .setName('sync-all')
+                .setDescription('Összes felhasználó szinkronizálása (Admin)')
+                .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
+            
+            new SlashCommandBuilder()
+                .setName('recheck')
+                .setDescription('Vendég rangok kiosztása nem hitelesített tagoknak (Admin)')
+                .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
         ];
 
         try {
             const guild = await this.client.guilds.fetch(guildId);
             if(guild) {
-                 await guild.commands.set(commands); // Registers specifically for this guild (instant update)
-                 console.log('✅ Successfully reloaded application (/) commands.');
+                 await guild.commands.set(commands);
+                 console.log(`✅ Successfully registered ${commands.length} slash commands.`);
             }
         } catch (error) {
             console.error('❌ Failed to register slash commands:', error);
@@ -122,11 +214,17 @@ class DiscordService {
     private setupInteractionHandler() {
         this.client.on('interactionCreate', async (interaction: Interaction<CacheType>) => {
             if (interaction.isButton()) {
-                 if (interaction.customId.startsWith('toggle_role_')) {
+                if (interaction.customId.startsWith('toggle_role_')) {
                     const roleName = interaction.customId.replace('toggle_role_', '');
                     await this.handleRoleToggle(interaction, roleName);
                 } else if (interaction.customId === 'verify_button') {
                     await this.handleVerifyButton(interaction);
+                } else if (interaction.customId.startsWith('checkin_')) {
+                    const matchId = interaction.customId.replace('checkin_', '');
+                    await CommandHandlers.handleCheckInButton(interaction, matchId);
+                } else if (interaction.customId.startsWith('pref_')) {
+                    const prefKey = interaction.customId.replace('pref_', '');
+                    await CommandHandlers.handlePreferenceToggle(interaction, prefKey);
                 }
                 return;
             }
@@ -134,17 +232,57 @@ class DiscordService {
             if (interaction.isModalSubmit()) {
                 if (interaction.customId === 'verify_modal') {
                     await this.handleVerifyModal(interaction);
+                } else if (interaction.customId === 'link_modal') {
+                    await CommandHandlers.handleLinkModal(interaction);
                 }
                 return;
             }
 
             if (interaction.isChatInputCommand()) {
-                if (interaction.commandName === 'om') {
-                    await this.handleOmCommand(interaction);
-                } else if (interaction.commandName === 'recheck') {
-                    await this.handleRecheckCommand(interaction);
-                } else if (interaction.commandName === 'deploy-verify') {
-                    await this.handleDeployVerify(interaction);
+                // Log command usage
+                const { discordLogService } = await import('./discordLogService.js');
+                await discordLogService.logCommand(interaction.commandName, interaction.user.id);
+
+                switch (interaction.commandName) {
+                    case 'om':
+                        await this.handleOmCommand(interaction);
+                        break;
+                    case 'recheck':
+                        await this.handleRecheckCommand(interaction);
+                        break;
+                    case 'deploy-verify':
+                        await this.handleDeployVerify(interaction);
+                        break;
+                    case 'stats':
+                        await CommandHandlers.handleStatsCommand(interaction);
+                        break;
+                    case 'leaderboard':
+                        await CommandHandlers.handleLeaderboardCommand(interaction);
+                        break;
+                    case 'tournament':
+                        await CommandHandlers.handleTournamentCommand(interaction);
+                        break;
+                    case 'team':
+                        await CommandHandlers.handleTeamCommand(interaction);
+                        break;
+                    case 'link':
+                        await CommandHandlers.handleLinkCommand(interaction);
+                        break;
+                    case 'predict':
+                        await CommandHandlers.handlePredictCommand(interaction);
+                        break;
+                    case 'checkin':
+                        await CommandHandlers.handleCheckInCommand(interaction);
+                        break;
+                    case 'preferences':
+                        await CommandHandlers.handlePreferencesCommand(interaction);
+                        break;
+                    case 'announce':
+                        await CommandHandlers.handleAnnounceCommand(interaction);
+                        break;
+                    case 'sync-all':
+                        await CommandHandlers.handleSyncAllCommand(interaction);
+                        break;
                 }
             }
         });
@@ -710,26 +848,6 @@ class DiscordService {
         }
     }
 
-    async getAvailableChannels(): Promise<Array<{ id: string; name: string }>> {
-        if (!this.isReady) return [];
-
-        try {
-            const guild = await this.client.guilds.fetch(this.guildId);
-            if (!guild) return [];
-
-            const channels = await guild.channels.fetch();
-            return channels
-                .filter(c => c?.type === ChannelType.GuildText)
-                .map(c => ({
-                    id: c!.id,
-                    name: c!.name,
-                }));
-        } catch (error) {
-            console.error('Failed to fetch available channels:', error);
-            return [];
-        }
-    }
-
     async searchGuildMembers(query: string): Promise<Array<{ id: string; username: string; displayName: string; avatarUrl: string | null }>> {
         if (!this.isReady) return [];
 
@@ -896,6 +1014,122 @@ class DiscordService {
             color: 0x3b82f6, // Blue
             timestamp: new Date().toISOString(),
         });
+    }
+
+    /**
+     * Send a Direct Message to a Discord user
+     */
+    async sendDM(discordId: string, embedData: DiscordEmbed): Promise<boolean> {
+        if (!this.isReady) return false;
+
+        try {
+            const user = await this.client.users.fetch(discordId);
+            if (!user) {
+                console.warn(`Discord user ${discordId} not found`);
+                return false;
+            }
+
+            const embed = new EmbedBuilder()
+                .setTitle(embedData.title)
+                .setDescription(embedData.description || null)
+                .setColor(embedData.color as ColorResolvable)
+                .setTimestamp(embedData.timestamp ? new Date(embedData.timestamp) : new Date());
+
+            if (embedData.fields) {
+                embed.addFields(embedData.fields);
+            }
+
+            if (embedData.image) {
+                embed.setImage(embedData.image.url);
+            }
+
+            await user.send({ embeds: [embed] });
+            return true;
+
+        } catch (error: any) {
+            // User might have DMs disabled
+            if (error.code === 50007) {
+                console.warn(`Cannot send DM to ${discordId} - user has DMs disabled`);
+            } else {
+                console.error(`Failed to send DM to ${discordId}:`, error);
+            }
+            return false;
+        }
+    }
+
+    /**
+     * Add a role to a Discord user
+     */
+    async addRoleToUser(discordId: string, roleId: string): Promise<boolean> {
+        if (!this.isReady) return false;
+
+        try {
+            const guild = await this.client.guilds.fetch(this.guildId);
+            if (!guild) return false;
+
+            const member = await guild.members.fetch(discordId);
+            if (!member) return false;
+
+            await member.roles.add(roleId);
+            return true;
+        } catch (error) {
+            console.error(`Failed to add role ${roleId} to user ${discordId}:`, error);
+            return false;
+        }
+    }
+
+    /**
+     * Remove a role from a Discord user
+     */
+    async removeRoleFromUser(discordId: string, roleId: string): Promise<boolean> {
+        if (!this.isReady) return false;
+
+        try {
+            const guild = await this.client.guilds.fetch(this.guildId);
+            if (!guild) return false;
+
+            const member = await guild.members.fetch(discordId);
+            if (!member) return false;
+
+            await member.roles.remove(roleId);
+            return true;
+        } catch (error) {
+            console.error(`Failed to remove role ${roleId} from user ${discordId}:`, error);
+            return false;
+        }
+    }
+
+    /**
+     * Get list of available text channels
+     */
+    async getAvailableChannels(): Promise<Array<{ id: string; name: string; category?: string }>> {
+        if (!this.isReady) return [];
+
+        try {
+            const guild = await this.client.guilds.fetch(this.guildId);
+            if (!guild) return [];
+
+            const channels = await guild.channels.fetch();
+            const textChannels: Array<{ id: string; name: string; category?: string }> = [];
+
+            channels.forEach(channel => {
+                if (channel && channel.type === ChannelType.GuildText) {
+                    textChannels.push({
+                        id: channel.id,
+                        name: channel.name,
+                        category: channel.parent?.name
+                    });
+                }
+            });
+
+            return textChannels.sort((a, b) => {
+                if (a.category === b.category) return a.name.localeCompare(b.name);
+                return (a.category || '').localeCompare(b.category || '');
+            });
+        } catch (error) {
+            console.error('Failed to get available channels:', error);
+            return [];
+        }
     }
 }
 

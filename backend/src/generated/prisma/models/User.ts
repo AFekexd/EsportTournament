@@ -53,6 +53,16 @@ export type UserMinAggregateOutputType = {
   elo: number | null
   timeBalanceSeconds: number | null
   emailNotifications: boolean | null
+  emailPrefTournaments: boolean | null
+  emailPrefMatches: boolean | null
+  emailPrefBookings: boolean | null
+  emailPrefSystem: boolean | null
+  emailPrefWeeklyDigest: boolean | null
+  discordDmTournaments: boolean | null
+  discordDmMatches: boolean | null
+  discordDmReminders: boolean | null
+  discordDmResults: boolean | null
+  discordDmSystem: boolean | null
   steamId: string | null
   steamAvatar: string | null
   steamUrl: string | null
@@ -78,6 +88,16 @@ export type UserMaxAggregateOutputType = {
   elo: number | null
   timeBalanceSeconds: number | null
   emailNotifications: boolean | null
+  emailPrefTournaments: boolean | null
+  emailPrefMatches: boolean | null
+  emailPrefBookings: boolean | null
+  emailPrefSystem: boolean | null
+  emailPrefWeeklyDigest: boolean | null
+  discordDmTournaments: boolean | null
+  discordDmMatches: boolean | null
+  discordDmReminders: boolean | null
+  discordDmResults: boolean | null
+  discordDmSystem: boolean | null
   steamId: string | null
   steamAvatar: string | null
   steamUrl: string | null
@@ -103,6 +123,16 @@ export type UserCountAggregateOutputType = {
   elo: number
   timeBalanceSeconds: number
   emailNotifications: number
+  emailPrefTournaments: number
+  emailPrefMatches: number
+  emailPrefBookings: number
+  emailPrefSystem: number
+  emailPrefWeeklyDigest: number
+  discordDmTournaments: number
+  discordDmMatches: number
+  discordDmReminders: number
+  discordDmResults: number
+  discordDmSystem: number
   steamId: number
   steamAvatar: number
   steamUrl: number
@@ -113,6 +143,7 @@ export type UserCountAggregateOutputType = {
   createdAt: number
   updatedAt: number
   lastLogoutAt: number
+  achievements: number
   _all: number
 }
 
@@ -144,6 +175,16 @@ export type UserMinAggregateInputType = {
   elo?: true
   timeBalanceSeconds?: true
   emailNotifications?: true
+  emailPrefTournaments?: true
+  emailPrefMatches?: true
+  emailPrefBookings?: true
+  emailPrefSystem?: true
+  emailPrefWeeklyDigest?: true
+  discordDmTournaments?: true
+  discordDmMatches?: true
+  discordDmReminders?: true
+  discordDmResults?: true
+  discordDmSystem?: true
   steamId?: true
   steamAvatar?: true
   steamUrl?: true
@@ -169,6 +210,16 @@ export type UserMaxAggregateInputType = {
   elo?: true
   timeBalanceSeconds?: true
   emailNotifications?: true
+  emailPrefTournaments?: true
+  emailPrefMatches?: true
+  emailPrefBookings?: true
+  emailPrefSystem?: true
+  emailPrefWeeklyDigest?: true
+  discordDmTournaments?: true
+  discordDmMatches?: true
+  discordDmReminders?: true
+  discordDmResults?: true
+  discordDmSystem?: true
   steamId?: true
   steamAvatar?: true
   steamUrl?: true
@@ -194,6 +245,16 @@ export type UserCountAggregateInputType = {
   elo?: true
   timeBalanceSeconds?: true
   emailNotifications?: true
+  emailPrefTournaments?: true
+  emailPrefMatches?: true
+  emailPrefBookings?: true
+  emailPrefSystem?: true
+  emailPrefWeeklyDigest?: true
+  discordDmTournaments?: true
+  discordDmMatches?: true
+  discordDmReminders?: true
+  discordDmResults?: true
+  discordDmSystem?: true
   steamId?: true
   steamAvatar?: true
   steamUrl?: true
@@ -204,6 +265,7 @@ export type UserCountAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   lastLogoutAt?: true
+  achievements?: true
   _all?: true
 }
 
@@ -306,6 +368,16 @@ export type UserGroupByOutputType = {
   elo: number
   timeBalanceSeconds: number
   emailNotifications: boolean
+  emailPrefTournaments: boolean
+  emailPrefMatches: boolean
+  emailPrefBookings: boolean
+  emailPrefSystem: boolean
+  emailPrefWeeklyDigest: boolean
+  discordDmTournaments: boolean
+  discordDmMatches: boolean
+  discordDmReminders: boolean
+  discordDmResults: boolean
+  discordDmSystem: boolean
   steamId: string | null
   steamAvatar: string | null
   steamUrl: string | null
@@ -316,6 +388,7 @@ export type UserGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   lastLogoutAt: Date | null
+  achievements: runtime.JsonValue | null
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -354,6 +427,16 @@ export type UserWhereInput = {
   elo?: Prisma.IntFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntFilter<"User"> | number
   emailNotifications?: Prisma.BoolFilter<"User"> | boolean
+  emailPrefTournaments?: Prisma.BoolFilter<"User"> | boolean
+  emailPrefMatches?: Prisma.BoolFilter<"User"> | boolean
+  emailPrefBookings?: Prisma.BoolFilter<"User"> | boolean
+  emailPrefSystem?: Prisma.BoolFilter<"User"> | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFilter<"User"> | boolean
+  discordDmTournaments?: Prisma.BoolFilter<"User"> | boolean
+  discordDmMatches?: Prisma.BoolFilter<"User"> | boolean
+  discordDmReminders?: Prisma.BoolFilter<"User"> | boolean
+  discordDmResults?: Prisma.BoolFilter<"User"> | boolean
+  discordDmSystem?: Prisma.BoolFilter<"User"> | boolean
   steamId?: Prisma.StringNullableFilter<"User"> | string | null
   steamAvatar?: Prisma.StringNullableFilter<"User"> | string | null
   steamUrl?: Prisma.StringNullableFilter<"User"> | string | null
@@ -364,6 +447,7 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   lastLogoutAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  achievements?: Prisma.JsonNullableFilter<"User">
   teamMemberships?: Prisma.TeamMemberListRelationFilter
   ownedTeams?: Prisma.TeamListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
@@ -382,6 +466,9 @@ export type UserWhereInput = {
   ranks?: Prisma.UserRankListRelationFilter
   changeRequests?: Prisma.ChangeRequestListRelationFilter
   authoredChangelogs?: Prisma.ChangelogListRelationFilter
+  discordLogs?: Prisma.DiscordLogListRelationFilter
+  matchCheckIns?: Prisma.MatchCheckInListRelationFilter
+  matchPredictions?: Prisma.MatchPredictionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -397,6 +484,16 @@ export type UserOrderByWithRelationInput = {
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
   emailNotifications?: Prisma.SortOrder
+  emailPrefTournaments?: Prisma.SortOrder
+  emailPrefMatches?: Prisma.SortOrder
+  emailPrefBookings?: Prisma.SortOrder
+  emailPrefSystem?: Prisma.SortOrder
+  emailPrefWeeklyDigest?: Prisma.SortOrder
+  discordDmTournaments?: Prisma.SortOrder
+  discordDmMatches?: Prisma.SortOrder
+  discordDmReminders?: Prisma.SortOrder
+  discordDmResults?: Prisma.SortOrder
+  discordDmSystem?: Prisma.SortOrder
   steamId?: Prisma.SortOrderInput | Prisma.SortOrder
   steamAvatar?: Prisma.SortOrderInput | Prisma.SortOrder
   steamUrl?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -407,6 +504,7 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastLogoutAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  achievements?: Prisma.SortOrderInput | Prisma.SortOrder
   teamMemberships?: Prisma.TeamMemberOrderByRelationAggregateInput
   ownedTeams?: Prisma.TeamOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
@@ -425,6 +523,9 @@ export type UserOrderByWithRelationInput = {
   ranks?: Prisma.UserRankOrderByRelationAggregateInput
   changeRequests?: Prisma.ChangeRequestOrderByRelationAggregateInput
   authoredChangelogs?: Prisma.ChangelogOrderByRelationAggregateInput
+  discordLogs?: Prisma.DiscordLogOrderByRelationAggregateInput
+  matchCheckIns?: Prisma.MatchCheckInOrderByRelationAggregateInput
+  matchPredictions?: Prisma.MatchPredictionOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -443,6 +544,16 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   elo?: Prisma.IntFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntFilter<"User"> | number
   emailNotifications?: Prisma.BoolFilter<"User"> | boolean
+  emailPrefTournaments?: Prisma.BoolFilter<"User"> | boolean
+  emailPrefMatches?: Prisma.BoolFilter<"User"> | boolean
+  emailPrefBookings?: Prisma.BoolFilter<"User"> | boolean
+  emailPrefSystem?: Prisma.BoolFilter<"User"> | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFilter<"User"> | boolean
+  discordDmTournaments?: Prisma.BoolFilter<"User"> | boolean
+  discordDmMatches?: Prisma.BoolFilter<"User"> | boolean
+  discordDmReminders?: Prisma.BoolFilter<"User"> | boolean
+  discordDmResults?: Prisma.BoolFilter<"User"> | boolean
+  discordDmSystem?: Prisma.BoolFilter<"User"> | boolean
   steamId?: Prisma.StringNullableFilter<"User"> | string | null
   steamAvatar?: Prisma.StringNullableFilter<"User"> | string | null
   steamUrl?: Prisma.StringNullableFilter<"User"> | string | null
@@ -453,6 +564,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   lastLogoutAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  achievements?: Prisma.JsonNullableFilter<"User">
   teamMemberships?: Prisma.TeamMemberListRelationFilter
   ownedTeams?: Prisma.TeamListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
@@ -471,6 +583,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   ranks?: Prisma.UserRankListRelationFilter
   changeRequests?: Prisma.ChangeRequestListRelationFilter
   authoredChangelogs?: Prisma.ChangelogListRelationFilter
+  discordLogs?: Prisma.DiscordLogListRelationFilter
+  matchCheckIns?: Prisma.MatchCheckInListRelationFilter
+  matchPredictions?: Prisma.MatchPredictionListRelationFilter
 }, "id" | "keycloakId" | "email" | "username">
 
 export type UserOrderByWithAggregationInput = {
@@ -486,6 +601,16 @@ export type UserOrderByWithAggregationInput = {
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
   emailNotifications?: Prisma.SortOrder
+  emailPrefTournaments?: Prisma.SortOrder
+  emailPrefMatches?: Prisma.SortOrder
+  emailPrefBookings?: Prisma.SortOrder
+  emailPrefSystem?: Prisma.SortOrder
+  emailPrefWeeklyDigest?: Prisma.SortOrder
+  discordDmTournaments?: Prisma.SortOrder
+  discordDmMatches?: Prisma.SortOrder
+  discordDmReminders?: Prisma.SortOrder
+  discordDmResults?: Prisma.SortOrder
+  discordDmSystem?: Prisma.SortOrder
   steamId?: Prisma.SortOrderInput | Prisma.SortOrder
   steamAvatar?: Prisma.SortOrderInput | Prisma.SortOrder
   steamUrl?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -496,6 +621,7 @@ export type UserOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastLogoutAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  achievements?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -519,6 +645,16 @@ export type UserScalarWhereWithAggregatesInput = {
   elo?: Prisma.IntWithAggregatesFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntWithAggregatesFilter<"User"> | number
   emailNotifications?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  emailPrefTournaments?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  emailPrefMatches?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  emailPrefBookings?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  emailPrefSystem?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  discordDmTournaments?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  discordDmMatches?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  discordDmReminders?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  discordDmResults?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  discordDmSystem?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   steamId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   steamAvatar?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   steamUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
@@ -529,6 +665,7 @@ export type UserScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   lastLogoutAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  achievements?: Prisma.JsonNullableWithAggregatesFilter<"User">
 }
 
 export type UserCreateInput = {
@@ -544,6 +681,16 @@ export type UserCreateInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -554,6 +701,7 @@ export type UserCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -572,6 +720,9 @@ export type UserCreateInput = {
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -587,6 +738,16 @@ export type UserUncheckedCreateInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -597,6 +758,7 @@ export type UserUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -615,6 +777,9 @@ export type UserUncheckedCreateInput = {
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUpdateInput = {
@@ -630,6 +795,16 @@ export type UserUpdateInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -640,6 +815,7 @@ export type UserUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -658,6 +834,9 @@ export type UserUpdateInput = {
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -673,6 +852,16 @@ export type UserUncheckedUpdateInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -683,6 +872,7 @@ export type UserUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -701,6 +891,9 @@ export type UserUncheckedUpdateInput = {
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -716,6 +909,16 @@ export type UserCreateManyInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -726,6 +929,7 @@ export type UserCreateManyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type UserUpdateManyMutationInput = {
@@ -741,6 +945,16 @@ export type UserUpdateManyMutationInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -751,6 +965,7 @@ export type UserUpdateManyMutationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -766,6 +981,16 @@ export type UserUncheckedUpdateManyInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -776,6 +1001,7 @@ export type UserUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -791,6 +1017,16 @@ export type UserCountOrderByAggregateInput = {
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
   emailNotifications?: Prisma.SortOrder
+  emailPrefTournaments?: Prisma.SortOrder
+  emailPrefMatches?: Prisma.SortOrder
+  emailPrefBookings?: Prisma.SortOrder
+  emailPrefSystem?: Prisma.SortOrder
+  emailPrefWeeklyDigest?: Prisma.SortOrder
+  discordDmTournaments?: Prisma.SortOrder
+  discordDmMatches?: Prisma.SortOrder
+  discordDmReminders?: Prisma.SortOrder
+  discordDmResults?: Prisma.SortOrder
+  discordDmSystem?: Prisma.SortOrder
   steamId?: Prisma.SortOrder
   steamAvatar?: Prisma.SortOrder
   steamUrl?: Prisma.SortOrder
@@ -801,6 +1037,7 @@ export type UserCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastLogoutAt?: Prisma.SortOrder
+  achievements?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
@@ -823,6 +1060,16 @@ export type UserMaxOrderByAggregateInput = {
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
   emailNotifications?: Prisma.SortOrder
+  emailPrefTournaments?: Prisma.SortOrder
+  emailPrefMatches?: Prisma.SortOrder
+  emailPrefBookings?: Prisma.SortOrder
+  emailPrefSystem?: Prisma.SortOrder
+  emailPrefWeeklyDigest?: Prisma.SortOrder
+  discordDmTournaments?: Prisma.SortOrder
+  discordDmMatches?: Prisma.SortOrder
+  discordDmReminders?: Prisma.SortOrder
+  discordDmResults?: Prisma.SortOrder
+  discordDmSystem?: Prisma.SortOrder
   steamId?: Prisma.SortOrder
   steamAvatar?: Prisma.SortOrder
   steamUrl?: Prisma.SortOrder
@@ -848,6 +1095,16 @@ export type UserMinOrderByAggregateInput = {
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
   emailNotifications?: Prisma.SortOrder
+  emailPrefTournaments?: Prisma.SortOrder
+  emailPrefMatches?: Prisma.SortOrder
+  emailPrefBookings?: Prisma.SortOrder
+  emailPrefSystem?: Prisma.SortOrder
+  emailPrefWeeklyDigest?: Prisma.SortOrder
+  discordDmTournaments?: Prisma.SortOrder
+  discordDmMatches?: Prisma.SortOrder
+  discordDmReminders?: Prisma.SortOrder
+  discordDmResults?: Prisma.SortOrder
+  discordDmSystem?: Prisma.SortOrder
   steamId?: Prisma.SortOrder
   steamAvatar?: Prisma.SortOrder
   steamUrl?: Prisma.SortOrder
@@ -1215,6 +1472,50 @@ export type UserUpdateOneRequiredWithoutAuthoredChangelogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAuthoredChangelogsInput, Prisma.UserUpdateWithoutAuthoredChangelogsInput>, Prisma.UserUncheckedUpdateWithoutAuthoredChangelogsInput>
 }
 
+export type UserCreateNestedOneWithoutDiscordLogsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscordLogsInput, Prisma.UserUncheckedCreateWithoutDiscordLogsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscordLogsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutDiscordLogsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscordLogsInput, Prisma.UserUncheckedCreateWithoutDiscordLogsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscordLogsInput
+  upsert?: Prisma.UserUpsertWithoutDiscordLogsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDiscordLogsInput, Prisma.UserUpdateWithoutDiscordLogsInput>, Prisma.UserUncheckedUpdateWithoutDiscordLogsInput>
+}
+
+export type UserCreateNestedOneWithoutMatchCheckInsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMatchCheckInsInput, Prisma.UserUncheckedCreateWithoutMatchCheckInsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMatchCheckInsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutMatchCheckInsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMatchCheckInsInput, Prisma.UserUncheckedCreateWithoutMatchCheckInsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMatchCheckInsInput
+  upsert?: Prisma.UserUpsertWithoutMatchCheckInsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMatchCheckInsInput, Prisma.UserUpdateWithoutMatchCheckInsInput>, Prisma.UserUncheckedUpdateWithoutMatchCheckInsInput>
+}
+
+export type UserCreateNestedOneWithoutMatchPredictionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMatchPredictionsInput, Prisma.UserUncheckedCreateWithoutMatchPredictionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMatchPredictionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutMatchPredictionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMatchPredictionsInput, Prisma.UserUncheckedCreateWithoutMatchPredictionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMatchPredictionsInput
+  upsert?: Prisma.UserUpsertWithoutMatchPredictionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMatchPredictionsInput, Prisma.UserUpdateWithoutMatchPredictionsInput>, Prisma.UserUncheckedUpdateWithoutMatchPredictionsInput>
+}
+
 export type UserCreateWithoutOwnedTeamsInput = {
   id?: string
   keycloakId: string
@@ -1228,6 +1529,16 @@ export type UserCreateWithoutOwnedTeamsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -1238,6 +1549,7 @@ export type UserCreateWithoutOwnedTeamsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
@@ -1255,6 +1567,9 @@ export type UserCreateWithoutOwnedTeamsInput = {
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUncheckedCreateWithoutOwnedTeamsInput = {
@@ -1270,6 +1585,16 @@ export type UserUncheckedCreateWithoutOwnedTeamsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -1280,6 +1605,7 @@ export type UserUncheckedCreateWithoutOwnedTeamsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
@@ -1297,6 +1623,9 @@ export type UserUncheckedCreateWithoutOwnedTeamsInput = {
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
 }
 
 export type UserCreateOrConnectWithoutOwnedTeamsInput = {
@@ -1328,6 +1657,16 @@ export type UserUpdateWithoutOwnedTeamsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1338,6 +1677,7 @@ export type UserUpdateWithoutOwnedTeamsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
@@ -1355,6 +1695,9 @@ export type UserUpdateWithoutOwnedTeamsInput = {
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
@@ -1370,6 +1713,16 @@ export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1380,6 +1733,7 @@ export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
@@ -1397,6 +1751,9 @@ export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserCreateWithoutTeamMembershipsInput = {
@@ -1412,6 +1769,16 @@ export type UserCreateWithoutTeamMembershipsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -1422,6 +1789,7 @@ export type UserCreateWithoutTeamMembershipsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
@@ -1439,6 +1807,9 @@ export type UserCreateWithoutTeamMembershipsInput = {
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUncheckedCreateWithoutTeamMembershipsInput = {
@@ -1454,6 +1825,16 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -1464,6 +1845,7 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
@@ -1481,6 +1863,9 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
 }
 
 export type UserCreateOrConnectWithoutTeamMembershipsInput = {
@@ -1512,6 +1897,16 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1522,6 +1917,7 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
@@ -1539,6 +1935,9 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
@@ -1554,6 +1953,16 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1564,6 +1973,7 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
@@ -1581,6 +1991,9 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserCreateWithoutTournamentEntriesInput = {
@@ -1596,6 +2009,16 @@ export type UserCreateWithoutTournamentEntriesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -1606,6 +2029,7 @@ export type UserCreateWithoutTournamentEntriesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -1623,6 +2047,9 @@ export type UserCreateWithoutTournamentEntriesInput = {
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUncheckedCreateWithoutTournamentEntriesInput = {
@@ -1638,6 +2065,16 @@ export type UserUncheckedCreateWithoutTournamentEntriesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -1648,6 +2085,7 @@ export type UserUncheckedCreateWithoutTournamentEntriesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -1665,6 +2103,9 @@ export type UserUncheckedCreateWithoutTournamentEntriesInput = {
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
 }
 
 export type UserCreateOrConnectWithoutTournamentEntriesInput = {
@@ -1685,6 +2126,16 @@ export type UserCreateWithoutParticipatingEntriesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -1695,6 +2146,7 @@ export type UserCreateWithoutParticipatingEntriesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -1712,6 +2164,9 @@ export type UserCreateWithoutParticipatingEntriesInput = {
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUncheckedCreateWithoutParticipatingEntriesInput = {
@@ -1727,6 +2182,16 @@ export type UserUncheckedCreateWithoutParticipatingEntriesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -1737,6 +2202,7 @@ export type UserUncheckedCreateWithoutParticipatingEntriesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -1754,6 +2220,9 @@ export type UserUncheckedCreateWithoutParticipatingEntriesInput = {
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
 }
 
 export type UserCreateOrConnectWithoutParticipatingEntriesInput = {
@@ -1785,6 +2254,16 @@ export type UserUpdateWithoutTournamentEntriesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1795,6 +2274,7 @@ export type UserUpdateWithoutTournamentEntriesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -1812,6 +2292,9 @@ export type UserUpdateWithoutTournamentEntriesInput = {
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
@@ -1827,6 +2310,16 @@ export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1837,6 +2330,7 @@ export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -1854,6 +2348,9 @@ export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUpsertWithWhereUniqueWithoutParticipatingEntriesInput = {
@@ -1888,6 +2385,16 @@ export type UserScalarWhereInput = {
   elo?: Prisma.IntFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntFilter<"User"> | number
   emailNotifications?: Prisma.BoolFilter<"User"> | boolean
+  emailPrefTournaments?: Prisma.BoolFilter<"User"> | boolean
+  emailPrefMatches?: Prisma.BoolFilter<"User"> | boolean
+  emailPrefBookings?: Prisma.BoolFilter<"User"> | boolean
+  emailPrefSystem?: Prisma.BoolFilter<"User"> | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFilter<"User"> | boolean
+  discordDmTournaments?: Prisma.BoolFilter<"User"> | boolean
+  discordDmMatches?: Prisma.BoolFilter<"User"> | boolean
+  discordDmReminders?: Prisma.BoolFilter<"User"> | boolean
+  discordDmResults?: Prisma.BoolFilter<"User"> | boolean
+  discordDmSystem?: Prisma.BoolFilter<"User"> | boolean
   steamId?: Prisma.StringNullableFilter<"User"> | string | null
   steamAvatar?: Prisma.StringNullableFilter<"User"> | string | null
   steamUrl?: Prisma.StringNullableFilter<"User"> | string | null
@@ -1898,6 +2405,7 @@ export type UserScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   lastLogoutAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  achievements?: Prisma.JsonNullableFilter<"User">
 }
 
 export type UserCreateWithoutHomeMatchesInput = {
@@ -1913,6 +2421,16 @@ export type UserCreateWithoutHomeMatchesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -1923,6 +2441,7 @@ export type UserCreateWithoutHomeMatchesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -1940,6 +2459,9 @@ export type UserCreateWithoutHomeMatchesInput = {
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUncheckedCreateWithoutHomeMatchesInput = {
@@ -1955,6 +2477,16 @@ export type UserUncheckedCreateWithoutHomeMatchesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -1965,6 +2497,7 @@ export type UserUncheckedCreateWithoutHomeMatchesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -1982,6 +2515,9 @@ export type UserUncheckedCreateWithoutHomeMatchesInput = {
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
 }
 
 export type UserCreateOrConnectWithoutHomeMatchesInput = {
@@ -2002,6 +2538,16 @@ export type UserCreateWithoutAwayMatchesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -2012,6 +2558,7 @@ export type UserCreateWithoutAwayMatchesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -2029,6 +2576,9 @@ export type UserCreateWithoutAwayMatchesInput = {
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUncheckedCreateWithoutAwayMatchesInput = {
@@ -2044,6 +2594,16 @@ export type UserUncheckedCreateWithoutAwayMatchesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -2054,6 +2614,7 @@ export type UserUncheckedCreateWithoutAwayMatchesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -2071,6 +2632,9 @@ export type UserUncheckedCreateWithoutAwayMatchesInput = {
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
 }
 
 export type UserCreateOrConnectWithoutAwayMatchesInput = {
@@ -2091,6 +2655,16 @@ export type UserCreateWithoutWonMatchesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -2101,6 +2675,7 @@ export type UserCreateWithoutWonMatchesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -2118,6 +2693,9 @@ export type UserCreateWithoutWonMatchesInput = {
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUncheckedCreateWithoutWonMatchesInput = {
@@ -2133,6 +2711,16 @@ export type UserUncheckedCreateWithoutWonMatchesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -2143,6 +2731,7 @@ export type UserUncheckedCreateWithoutWonMatchesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -2160,6 +2749,9 @@ export type UserUncheckedCreateWithoutWonMatchesInput = {
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
 }
 
 export type UserCreateOrConnectWithoutWonMatchesInput = {
@@ -2191,6 +2783,16 @@ export type UserUpdateWithoutHomeMatchesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2201,6 +2803,7 @@ export type UserUpdateWithoutHomeMatchesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -2218,6 +2821,9 @@ export type UserUpdateWithoutHomeMatchesInput = {
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutHomeMatchesInput = {
@@ -2233,6 +2839,16 @@ export type UserUncheckedUpdateWithoutHomeMatchesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2243,6 +2859,7 @@ export type UserUncheckedUpdateWithoutHomeMatchesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -2260,6 +2877,9 @@ export type UserUncheckedUpdateWithoutHomeMatchesInput = {
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUpsertWithoutAwayMatchesInput = {
@@ -2286,6 +2906,16 @@ export type UserUpdateWithoutAwayMatchesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2296,6 +2926,7 @@ export type UserUpdateWithoutAwayMatchesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -2313,6 +2944,9 @@ export type UserUpdateWithoutAwayMatchesInput = {
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAwayMatchesInput = {
@@ -2328,6 +2962,16 @@ export type UserUncheckedUpdateWithoutAwayMatchesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2338,6 +2982,7 @@ export type UserUncheckedUpdateWithoutAwayMatchesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -2355,6 +3000,9 @@ export type UserUncheckedUpdateWithoutAwayMatchesInput = {
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUpsertWithoutWonMatchesInput = {
@@ -2381,6 +3029,16 @@ export type UserUpdateWithoutWonMatchesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2391,6 +3049,7 @@ export type UserUpdateWithoutWonMatchesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -2408,6 +3067,9 @@ export type UserUpdateWithoutWonMatchesInput = {
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWonMatchesInput = {
@@ -2423,6 +3085,16 @@ export type UserUncheckedUpdateWithoutWonMatchesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2433,6 +3105,7 @@ export type UserUncheckedUpdateWithoutWonMatchesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -2450,6 +3123,9 @@ export type UserUncheckedUpdateWithoutWonMatchesInput = {
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserCreateWithoutGameStatsInput = {
@@ -2465,6 +3141,16 @@ export type UserCreateWithoutGameStatsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -2475,6 +3161,7 @@ export type UserCreateWithoutGameStatsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -2492,6 +3179,9 @@ export type UserCreateWithoutGameStatsInput = {
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUncheckedCreateWithoutGameStatsInput = {
@@ -2507,6 +3197,16 @@ export type UserUncheckedCreateWithoutGameStatsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -2517,6 +3217,7 @@ export type UserUncheckedCreateWithoutGameStatsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -2534,6 +3235,9 @@ export type UserUncheckedCreateWithoutGameStatsInput = {
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
 }
 
 export type UserCreateOrConnectWithoutGameStatsInput = {
@@ -2565,6 +3269,16 @@ export type UserUpdateWithoutGameStatsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2575,6 +3289,7 @@ export type UserUpdateWithoutGameStatsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -2592,6 +3307,9 @@ export type UserUpdateWithoutGameStatsInput = {
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGameStatsInput = {
@@ -2607,6 +3325,16 @@ export type UserUncheckedUpdateWithoutGameStatsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2617,6 +3345,7 @@ export type UserUncheckedUpdateWithoutGameStatsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -2634,6 +3363,9 @@ export type UserUncheckedUpdateWithoutGameStatsInput = {
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserCreateWithoutRanksInput = {
@@ -2649,6 +3381,16 @@ export type UserCreateWithoutRanksInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -2659,6 +3401,7 @@ export type UserCreateWithoutRanksInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -2676,6 +3419,9 @@ export type UserCreateWithoutRanksInput = {
   adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
   changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUncheckedCreateWithoutRanksInput = {
@@ -2691,6 +3437,16 @@ export type UserUncheckedCreateWithoutRanksInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -2701,6 +3457,7 @@ export type UserUncheckedCreateWithoutRanksInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -2718,6 +3475,9 @@ export type UserUncheckedCreateWithoutRanksInput = {
   adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
   changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
 }
 
 export type UserCreateOrConnectWithoutRanksInput = {
@@ -2749,6 +3509,16 @@ export type UserUpdateWithoutRanksInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2759,6 +3529,7 @@ export type UserUpdateWithoutRanksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -2776,6 +3547,9 @@ export type UserUpdateWithoutRanksInput = {
   adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
   changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRanksInput = {
@@ -2791,6 +3565,16 @@ export type UserUncheckedUpdateWithoutRanksInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2801,6 +3585,7 @@ export type UserUncheckedUpdateWithoutRanksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -2818,6 +3603,9 @@ export type UserUncheckedUpdateWithoutRanksInput = {
   adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
   changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -2833,6 +3621,16 @@ export type UserCreateWithoutNotificationsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -2843,6 +3641,7 @@ export type UserCreateWithoutNotificationsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
@@ -2860,6 +3659,9 @@ export type UserCreateWithoutNotificationsInput = {
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -2875,6 +3677,16 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -2885,6 +3697,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
@@ -2902,6 +3715,9 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -2933,6 +3749,16 @@ export type UserUpdateWithoutNotificationsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2943,6 +3769,7 @@ export type UserUpdateWithoutNotificationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
@@ -2960,6 +3787,9 @@ export type UserUpdateWithoutNotificationsInput = {
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -2975,6 +3805,16 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2985,6 +3825,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
@@ -3002,6 +3843,9 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserCreateWithoutDiscordSettingsInput = {
@@ -3017,6 +3861,16 @@ export type UserCreateWithoutDiscordSettingsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -3027,6 +3881,7 @@ export type UserCreateWithoutDiscordSettingsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -3044,6 +3899,9 @@ export type UserCreateWithoutDiscordSettingsInput = {
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUncheckedCreateWithoutDiscordSettingsInput = {
@@ -3059,6 +3917,16 @@ export type UserUncheckedCreateWithoutDiscordSettingsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -3069,6 +3937,7 @@ export type UserUncheckedCreateWithoutDiscordSettingsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -3086,6 +3955,9 @@ export type UserUncheckedCreateWithoutDiscordSettingsInput = {
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
 }
 
 export type UserCreateOrConnectWithoutDiscordSettingsInput = {
@@ -3117,6 +3989,16 @@ export type UserUpdateWithoutDiscordSettingsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3127,6 +4009,7 @@ export type UserUpdateWithoutDiscordSettingsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -3144,6 +4027,9 @@ export type UserUpdateWithoutDiscordSettingsInput = {
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDiscordSettingsInput = {
@@ -3159,6 +4045,16 @@ export type UserUncheckedUpdateWithoutDiscordSettingsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3169,6 +4065,7 @@ export type UserUncheckedUpdateWithoutDiscordSettingsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -3186,6 +4083,9 @@ export type UserUncheckedUpdateWithoutDiscordSettingsInput = {
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserCreateWithoutBookingsInput = {
@@ -3201,6 +4101,16 @@ export type UserCreateWithoutBookingsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -3211,6 +4121,7 @@ export type UserCreateWithoutBookingsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -3228,6 +4139,9 @@ export type UserCreateWithoutBookingsInput = {
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUncheckedCreateWithoutBookingsInput = {
@@ -3243,6 +4157,16 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -3253,6 +4177,7 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -3270,6 +4195,9 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
 }
 
 export type UserCreateOrConnectWithoutBookingsInput = {
@@ -3301,6 +4229,16 @@ export type UserUpdateWithoutBookingsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3311,6 +4249,7 @@ export type UserUpdateWithoutBookingsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -3328,6 +4267,9 @@ export type UserUpdateWithoutBookingsInput = {
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBookingsInput = {
@@ -3343,6 +4285,16 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3353,6 +4305,7 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -3370,6 +4323,9 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -3385,6 +4341,16 @@ export type UserCreateWithoutSessionsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -3395,6 +4361,7 @@ export type UserCreateWithoutSessionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -3412,6 +4379,9 @@ export type UserCreateWithoutSessionsInput = {
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -3427,6 +4397,16 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -3437,6 +4417,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -3454,6 +4435,9 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -3485,6 +4469,16 @@ export type UserUpdateWithoutSessionsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3495,6 +4489,7 @@ export type UserUpdateWithoutSessionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -3512,6 +4507,9 @@ export type UserUpdateWithoutSessionsInput = {
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -3527,6 +4525,16 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3537,6 +4545,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -3554,6 +4563,9 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserCreateWithoutLogsInput = {
@@ -3569,6 +4581,16 @@ export type UserCreateWithoutLogsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -3579,6 +4601,7 @@ export type UserCreateWithoutLogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -3596,6 +4619,9 @@ export type UserCreateWithoutLogsInput = {
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUncheckedCreateWithoutLogsInput = {
@@ -3611,6 +4637,16 @@ export type UserUncheckedCreateWithoutLogsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -3621,6 +4657,7 @@ export type UserUncheckedCreateWithoutLogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -3638,6 +4675,9 @@ export type UserUncheckedCreateWithoutLogsInput = {
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
 }
 
 export type UserCreateOrConnectWithoutLogsInput = {
@@ -3658,6 +4698,16 @@ export type UserCreateWithoutAdminLogsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -3668,6 +4718,7 @@ export type UserCreateWithoutAdminLogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -3685,6 +4736,9 @@ export type UserCreateWithoutAdminLogsInput = {
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUncheckedCreateWithoutAdminLogsInput = {
@@ -3700,6 +4754,16 @@ export type UserUncheckedCreateWithoutAdminLogsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -3710,6 +4774,7 @@ export type UserUncheckedCreateWithoutAdminLogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -3727,6 +4792,9 @@ export type UserUncheckedCreateWithoutAdminLogsInput = {
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
 }
 
 export type UserCreateOrConnectWithoutAdminLogsInput = {
@@ -3758,6 +4826,16 @@ export type UserUpdateWithoutLogsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3768,6 +4846,7 @@ export type UserUpdateWithoutLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -3785,6 +4864,9 @@ export type UserUpdateWithoutLogsInput = {
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLogsInput = {
@@ -3800,6 +4882,16 @@ export type UserUncheckedUpdateWithoutLogsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3810,6 +4902,7 @@ export type UserUncheckedUpdateWithoutLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -3827,6 +4920,9 @@ export type UserUncheckedUpdateWithoutLogsInput = {
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUpsertWithoutAdminLogsInput = {
@@ -3853,6 +4949,16 @@ export type UserUpdateWithoutAdminLogsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3863,6 +4969,7 @@ export type UserUpdateWithoutAdminLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -3880,6 +4987,9 @@ export type UserUpdateWithoutAdminLogsInput = {
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAdminLogsInput = {
@@ -3895,6 +5005,16 @@ export type UserUncheckedUpdateWithoutAdminLogsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3905,6 +5025,7 @@ export type UserUncheckedUpdateWithoutAdminLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -3922,6 +5043,9 @@ export type UserUncheckedUpdateWithoutAdminLogsInput = {
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserCreateWithoutWaitlistEntriesInput = {
@@ -3937,6 +5061,16 @@ export type UserCreateWithoutWaitlistEntriesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -3947,6 +5081,7 @@ export type UserCreateWithoutWaitlistEntriesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -3964,6 +5099,9 @@ export type UserCreateWithoutWaitlistEntriesInput = {
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
@@ -3979,6 +5117,16 @@ export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -3989,6 +5137,7 @@ export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -4006,6 +5155,9 @@ export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
   authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
 }
 
 export type UserCreateOrConnectWithoutWaitlistEntriesInput = {
@@ -4037,6 +5189,16 @@ export type UserUpdateWithoutWaitlistEntriesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4047,6 +5209,7 @@ export type UserUpdateWithoutWaitlistEntriesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -4064,6 +5227,9 @@ export type UserUpdateWithoutWaitlistEntriesInput = {
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
@@ -4079,6 +5245,16 @@ export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4089,6 +5265,7 @@ export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -4106,6 +5283,9 @@ export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserCreateWithoutChangeRequestsInput = {
@@ -4121,6 +5301,16 @@ export type UserCreateWithoutChangeRequestsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -4131,6 +5321,7 @@ export type UserCreateWithoutChangeRequestsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -4148,6 +5339,9 @@ export type UserCreateWithoutChangeRequestsInput = {
   adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
   authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUncheckedCreateWithoutChangeRequestsInput = {
@@ -4163,6 +5357,16 @@ export type UserUncheckedCreateWithoutChangeRequestsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -4173,6 +5377,7 @@ export type UserUncheckedCreateWithoutChangeRequestsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -4190,6 +5395,9 @@ export type UserUncheckedCreateWithoutChangeRequestsInput = {
   adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
   authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
 }
 
 export type UserCreateOrConnectWithoutChangeRequestsInput = {
@@ -4221,6 +5429,16 @@ export type UserUpdateWithoutChangeRequestsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4231,6 +5449,7 @@ export type UserUpdateWithoutChangeRequestsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -4248,6 +5467,9 @@ export type UserUpdateWithoutChangeRequestsInput = {
   adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
   authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutChangeRequestsInput = {
@@ -4263,6 +5485,16 @@ export type UserUncheckedUpdateWithoutChangeRequestsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4273,6 +5505,7 @@ export type UserUncheckedUpdateWithoutChangeRequestsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -4290,6 +5523,9 @@ export type UserUncheckedUpdateWithoutChangeRequestsInput = {
   adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
   authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserCreateWithoutAuthoredChangelogsInput = {
@@ -4305,6 +5541,16 @@ export type UserCreateWithoutAuthoredChangelogsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -4315,6 +5561,7 @@ export type UserCreateWithoutAuthoredChangelogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -4332,6 +5579,9 @@ export type UserCreateWithoutAuthoredChangelogsInput = {
   adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
 }
 
 export type UserUncheckedCreateWithoutAuthoredChangelogsInput = {
@@ -4347,6 +5597,16 @@ export type UserUncheckedCreateWithoutAuthoredChangelogsInput = {
   elo?: number
   timeBalanceSeconds?: number
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: string | null
   steamAvatar?: string | null
   steamUrl?: string | null
@@ -4357,6 +5617,7 @@ export type UserUncheckedCreateWithoutAuthoredChangelogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
   ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -4374,6 +5635,9 @@ export type UserUncheckedCreateWithoutAuthoredChangelogsInput = {
   adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
   ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
   changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
 }
 
 export type UserCreateOrConnectWithoutAuthoredChangelogsInput = {
@@ -4405,6 +5669,16 @@ export type UserUpdateWithoutAuthoredChangelogsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4415,6 +5689,7 @@ export type UserUpdateWithoutAuthoredChangelogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -4432,6 +5707,9 @@ export type UserUpdateWithoutAuthoredChangelogsInput = {
   adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuthoredChangelogsInput = {
@@ -4447,6 +5725,16 @@ export type UserUncheckedUpdateWithoutAuthoredChangelogsInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4457,6 +5745,7 @@ export type UserUncheckedUpdateWithoutAuthoredChangelogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -4474,6 +5763,729 @@ export type UserUncheckedUpdateWithoutAuthoredChangelogsInput = {
   adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
+}
+
+export type UserCreateWithoutDiscordLogsInput = {
+  id?: string
+  keycloakId: string
+  email: string
+  username: string
+  displayName?: string | null
+  avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
+  role?: $Enums.Role
+  elo?: number
+  timeBalanceSeconds?: number
+  emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
+  steamId?: string | null
+  steamAvatar?: string | null
+  steamUrl?: string | null
+  steamLevel?: number | null
+  steamPersonaname?: string | null
+  steamCreatedAt?: Date | string | null
+  perfectGamesCount?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
+  ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
+  tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
+  discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
+  waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
+  homeMatches?: Prisma.MatchCreateNestedManyWithoutHomeUserInput
+  awayMatches?: Prisma.MatchCreateNestedManyWithoutAwayUserInput
+  wonMatches?: Prisma.MatchCreateNestedManyWithoutWinnerUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  logs?: Prisma.LogCreateNestedManyWithoutUserInput
+  adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
+  ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
+  authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
+}
+
+export type UserUncheckedCreateWithoutDiscordLogsInput = {
+  id?: string
+  keycloakId: string
+  email: string
+  username: string
+  displayName?: string | null
+  avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
+  role?: $Enums.Role
+  elo?: number
+  timeBalanceSeconds?: number
+  emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
+  steamId?: string | null
+  steamAvatar?: string | null
+  steamUrl?: string | null
+  steamLevel?: number | null
+  steamPersonaname?: string | null
+  steamCreatedAt?: Date | string | null
+  perfectGamesCount?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
+  ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
+  tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
+  discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
+  homeMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutHomeUserInput
+  awayMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutAwayUserInput
+  wonMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutWinnerUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
+  adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
+  ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
+  authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
+}
+
+export type UserCreateOrConnectWithoutDiscordLogsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscordLogsInput, Prisma.UserUncheckedCreateWithoutDiscordLogsInput>
+}
+
+export type UserUpsertWithoutDiscordLogsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDiscordLogsInput, Prisma.UserUncheckedUpdateWithoutDiscordLogsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscordLogsInput, Prisma.UserUncheckedCreateWithoutDiscordLogsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDiscordLogsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDiscordLogsInput, Prisma.UserUncheckedUpdateWithoutDiscordLogsInput>
+}
+
+export type UserUpdateWithoutDiscordLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  keycloakId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  elo?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
+  ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
+  tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
+  discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
+  homeMatches?: Prisma.MatchUpdateManyWithoutHomeUserNestedInput
+  awayMatches?: Prisma.MatchUpdateManyWithoutAwayUserNestedInput
+  wonMatches?: Prisma.MatchUpdateManyWithoutWinnerUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  logs?: Prisma.LogUpdateManyWithoutUserNestedInput
+  adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
+  ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
+  authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDiscordLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  keycloakId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  elo?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+  ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
+  tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
+  discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
+  homeMatches?: Prisma.MatchUncheckedUpdateManyWithoutHomeUserNestedInput
+  awayMatches?: Prisma.MatchUncheckedUpdateManyWithoutAwayUserNestedInput
+  wonMatches?: Prisma.MatchUncheckedUpdateManyWithoutWinnerUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
+  adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
+  ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
+}
+
+export type UserCreateWithoutMatchCheckInsInput = {
+  id?: string
+  keycloakId: string
+  email: string
+  username: string
+  displayName?: string | null
+  avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
+  role?: $Enums.Role
+  elo?: number
+  timeBalanceSeconds?: number
+  emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
+  steamId?: string | null
+  steamAvatar?: string | null
+  steamUrl?: string | null
+  steamLevel?: number | null
+  steamPersonaname?: string | null
+  steamCreatedAt?: Date | string | null
+  perfectGamesCount?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
+  ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
+  tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
+  discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
+  waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
+  homeMatches?: Prisma.MatchCreateNestedManyWithoutHomeUserInput
+  awayMatches?: Prisma.MatchCreateNestedManyWithoutAwayUserInput
+  wonMatches?: Prisma.MatchCreateNestedManyWithoutWinnerUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  logs?: Prisma.LogCreateNestedManyWithoutUserInput
+  adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
+  ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
+  authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
+}
+
+export type UserUncheckedCreateWithoutMatchCheckInsInput = {
+  id?: string
+  keycloakId: string
+  email: string
+  username: string
+  displayName?: string | null
+  avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
+  role?: $Enums.Role
+  elo?: number
+  timeBalanceSeconds?: number
+  emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
+  steamId?: string | null
+  steamAvatar?: string | null
+  steamUrl?: string | null
+  steamLevel?: number | null
+  steamPersonaname?: string | null
+  steamCreatedAt?: Date | string | null
+  perfectGamesCount?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
+  ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
+  tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
+  discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
+  homeMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutHomeUserInput
+  awayMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutAwayUserInput
+  wonMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutWinnerUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
+  adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
+  ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
+  authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
+}
+
+export type UserCreateOrConnectWithoutMatchCheckInsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutMatchCheckInsInput, Prisma.UserUncheckedCreateWithoutMatchCheckInsInput>
+}
+
+export type UserUpsertWithoutMatchCheckInsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutMatchCheckInsInput, Prisma.UserUncheckedUpdateWithoutMatchCheckInsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutMatchCheckInsInput, Prisma.UserUncheckedCreateWithoutMatchCheckInsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutMatchCheckInsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutMatchCheckInsInput, Prisma.UserUncheckedUpdateWithoutMatchCheckInsInput>
+}
+
+export type UserUpdateWithoutMatchCheckInsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  keycloakId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  elo?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
+  ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
+  tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
+  discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
+  homeMatches?: Prisma.MatchUpdateManyWithoutHomeUserNestedInput
+  awayMatches?: Prisma.MatchUpdateManyWithoutAwayUserNestedInput
+  wonMatches?: Prisma.MatchUpdateManyWithoutWinnerUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  logs?: Prisma.LogUpdateManyWithoutUserNestedInput
+  adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
+  ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
+  authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutMatchCheckInsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  keycloakId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  elo?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+  ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
+  tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
+  discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
+  homeMatches?: Prisma.MatchUncheckedUpdateManyWithoutHomeUserNestedInput
+  awayMatches?: Prisma.MatchUncheckedUpdateManyWithoutAwayUserNestedInput
+  wonMatches?: Prisma.MatchUncheckedUpdateManyWithoutWinnerUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
+  adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
+  ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
+}
+
+export type UserCreateWithoutMatchPredictionsInput = {
+  id?: string
+  keycloakId: string
+  email: string
+  username: string
+  displayName?: string | null
+  avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
+  role?: $Enums.Role
+  elo?: number
+  timeBalanceSeconds?: number
+  emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
+  steamId?: string | null
+  steamAvatar?: string | null
+  steamUrl?: string | null
+  steamLevel?: number | null
+  steamPersonaname?: string | null
+  steamCreatedAt?: Date | string | null
+  perfectGamesCount?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
+  ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
+  tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
+  discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
+  waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
+  homeMatches?: Prisma.MatchCreateNestedManyWithoutHomeUserInput
+  awayMatches?: Prisma.MatchCreateNestedManyWithoutAwayUserInput
+  wonMatches?: Prisma.MatchCreateNestedManyWithoutWinnerUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  logs?: Prisma.LogCreateNestedManyWithoutUserInput
+  adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
+  ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
+  authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutMatchPredictionsInput = {
+  id?: string
+  keycloakId: string
+  email: string
+  username: string
+  displayName?: string | null
+  avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
+  role?: $Enums.Role
+  elo?: number
+  timeBalanceSeconds?: number
+  emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
+  steamId?: string | null
+  steamAvatar?: string | null
+  steamUrl?: string | null
+  steamLevel?: number | null
+  steamPersonaname?: string | null
+  steamCreatedAt?: Date | string | null
+  perfectGamesCount?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
+  ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
+  tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
+  discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
+  homeMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutHomeUserInput
+  awayMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutAwayUserInput
+  wonMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutWinnerUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
+  adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
+  ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
+  authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutMatchPredictionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutMatchPredictionsInput, Prisma.UserUncheckedCreateWithoutMatchPredictionsInput>
+}
+
+export type UserUpsertWithoutMatchPredictionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutMatchPredictionsInput, Prisma.UserUncheckedUpdateWithoutMatchPredictionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutMatchPredictionsInput, Prisma.UserUncheckedCreateWithoutMatchPredictionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutMatchPredictionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutMatchPredictionsInput, Prisma.UserUncheckedUpdateWithoutMatchPredictionsInput>
+}
+
+export type UserUpdateWithoutMatchPredictionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  keycloakId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  elo?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
+  ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
+  tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
+  discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
+  homeMatches?: Prisma.MatchUpdateManyWithoutHomeUserNestedInput
+  awayMatches?: Prisma.MatchUpdateManyWithoutAwayUserNestedInput
+  wonMatches?: Prisma.MatchUpdateManyWithoutWinnerUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  logs?: Prisma.LogUpdateManyWithoutUserNestedInput
+  adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
+  ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
+  authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutMatchPredictionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  keycloakId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  elo?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+  ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
+  tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
+  discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
+  homeMatches?: Prisma.MatchUncheckedUpdateManyWithoutHomeUserNestedInput
+  awayMatches?: Prisma.MatchUncheckedUpdateManyWithoutAwayUserNestedInput
+  wonMatches?: Prisma.MatchUncheckedUpdateManyWithoutWinnerUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
+  adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
+  ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpdateWithoutParticipatingEntriesInput = {
@@ -4489,6 +6501,16 @@ export type UserUpdateWithoutParticipatingEntriesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4499,6 +6521,7 @@ export type UserUpdateWithoutParticipatingEntriesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -4516,6 +6539,9 @@ export type UserUpdateWithoutParticipatingEntriesInput = {
   ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutParticipatingEntriesInput = {
@@ -4531,6 +6557,16 @@ export type UserUncheckedUpdateWithoutParticipatingEntriesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4541,6 +6577,7 @@ export type UserUncheckedUpdateWithoutParticipatingEntriesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -4558,6 +6595,9 @@ export type UserUncheckedUpdateWithoutParticipatingEntriesInput = {
   ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
   changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
   authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutParticipatingEntriesInput = {
@@ -4573,6 +6613,16 @@ export type UserUncheckedUpdateManyWithoutParticipatingEntriesInput = {
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4583,6 +6633,7 @@ export type UserUncheckedUpdateManyWithoutParticipatingEntriesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 
@@ -4608,6 +6659,9 @@ export type UserCountOutputType = {
   ranks: number
   changeRequests: number
   authoredChangelogs: number
+  discordLogs: number
+  matchCheckIns: number
+  matchPredictions: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4628,6 +6682,9 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   ranks?: boolean | UserCountOutputTypeCountRanksArgs
   changeRequests?: boolean | UserCountOutputTypeCountChangeRequestsArgs
   authoredChangelogs?: boolean | UserCountOutputTypeCountAuthoredChangelogsArgs
+  discordLogs?: boolean | UserCountOutputTypeCountDiscordLogsArgs
+  matchCheckIns?: boolean | UserCountOutputTypeCountMatchCheckInsArgs
+  matchPredictions?: boolean | UserCountOutputTypeCountMatchPredictionsArgs
 }
 
 /**
@@ -4759,6 +6816,27 @@ export type UserCountOutputTypeCountAuthoredChangelogsArgs<ExtArgs extends runti
   where?: Prisma.ChangelogWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDiscordLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DiscordLogWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountMatchCheckInsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MatchCheckInWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountMatchPredictionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MatchPredictionWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -4773,6 +6851,16 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   elo?: boolean
   timeBalanceSeconds?: boolean
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: boolean
   steamAvatar?: boolean
   steamUrl?: boolean
@@ -4783,6 +6871,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   updatedAt?: boolean
   lastLogoutAt?: boolean
+  achievements?: boolean
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
   ownedTeams?: boolean | Prisma.User$ownedTeamsArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
@@ -4801,6 +6890,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   ranks?: boolean | Prisma.User$ranksArgs<ExtArgs>
   changeRequests?: boolean | Prisma.User$changeRequestsArgs<ExtArgs>
   authoredChangelogs?: boolean | Prisma.User$authoredChangelogsArgs<ExtArgs>
+  discordLogs?: boolean | Prisma.User$discordLogsArgs<ExtArgs>
+  matchCheckIns?: boolean | Prisma.User$matchCheckInsArgs<ExtArgs>
+  matchPredictions?: boolean | Prisma.User$matchPredictionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -4817,6 +6909,16 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   elo?: boolean
   timeBalanceSeconds?: boolean
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: boolean
   steamAvatar?: boolean
   steamUrl?: boolean
@@ -4827,6 +6929,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   lastLogoutAt?: boolean
+  achievements?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -4842,6 +6945,16 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   elo?: boolean
   timeBalanceSeconds?: boolean
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: boolean
   steamAvatar?: boolean
   steamUrl?: boolean
@@ -4852,6 +6965,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   lastLogoutAt?: boolean
+  achievements?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -4867,6 +6981,16 @@ export type UserSelectScalar = {
   elo?: boolean
   timeBalanceSeconds?: boolean
   emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
   steamId?: boolean
   steamAvatar?: boolean
   steamUrl?: boolean
@@ -4877,9 +7001,10 @@ export type UserSelectScalar = {
   createdAt?: boolean
   updatedAt?: boolean
   lastLogoutAt?: boolean
+  achievements?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "keycloakId" | "email" | "username" | "displayName" | "avatarUrl" | "omId" | "discordId" | "role" | "elo" | "timeBalanceSeconds" | "emailNotifications" | "steamId" | "steamAvatar" | "steamUrl" | "steamLevel" | "steamPersonaname" | "steamCreatedAt" | "perfectGamesCount" | "createdAt" | "updatedAt" | "lastLogoutAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "keycloakId" | "email" | "username" | "displayName" | "avatarUrl" | "omId" | "discordId" | "role" | "elo" | "timeBalanceSeconds" | "emailNotifications" | "emailPrefTournaments" | "emailPrefMatches" | "emailPrefBookings" | "emailPrefSystem" | "emailPrefWeeklyDigest" | "discordDmTournaments" | "discordDmMatches" | "discordDmReminders" | "discordDmResults" | "discordDmSystem" | "steamId" | "steamAvatar" | "steamUrl" | "steamLevel" | "steamPersonaname" | "steamCreatedAt" | "perfectGamesCount" | "createdAt" | "updatedAt" | "lastLogoutAt" | "achievements", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
   ownedTeams?: boolean | Prisma.User$ownedTeamsArgs<ExtArgs>
@@ -4899,6 +7024,9 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   ranks?: boolean | Prisma.User$ranksArgs<ExtArgs>
   changeRequests?: boolean | Prisma.User$changeRequestsArgs<ExtArgs>
   authoredChangelogs?: boolean | Prisma.User$authoredChangelogsArgs<ExtArgs>
+  discordLogs?: boolean | Prisma.User$discordLogsArgs<ExtArgs>
+  matchCheckIns?: boolean | Prisma.User$matchCheckInsArgs<ExtArgs>
+  matchPredictions?: boolean | Prisma.User$matchPredictionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -4925,6 +7053,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     ranks: Prisma.$UserRankPayload<ExtArgs>[]
     changeRequests: Prisma.$ChangeRequestPayload<ExtArgs>[]
     authoredChangelogs: Prisma.$ChangelogPayload<ExtArgs>[]
+    discordLogs: Prisma.$DiscordLogPayload<ExtArgs>[]
+    matchCheckIns: Prisma.$MatchCheckInPayload<ExtArgs>[]
+    matchPredictions: Prisma.$MatchPredictionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4939,6 +7070,16 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     elo: number
     timeBalanceSeconds: number
     emailNotifications: boolean
+    emailPrefTournaments: boolean
+    emailPrefMatches: boolean
+    emailPrefBookings: boolean
+    emailPrefSystem: boolean
+    emailPrefWeeklyDigest: boolean
+    discordDmTournaments: boolean
+    discordDmMatches: boolean
+    discordDmReminders: boolean
+    discordDmResults: boolean
+    discordDmSystem: boolean
     steamId: string | null
     steamAvatar: string | null
     steamUrl: string | null
@@ -4949,6 +7090,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     createdAt: Date
     updatedAt: Date
     lastLogoutAt: Date | null
+    achievements: runtime.JsonValue | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -5361,6 +7503,9 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   ranks<T extends Prisma.User$ranksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ranksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserRankPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   changeRequests<T extends Prisma.User$changeRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$changeRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChangeRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   authoredChangelogs<T extends Prisma.User$authoredChangelogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$authoredChangelogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChangelogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  discordLogs<T extends Prisma.User$discordLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$discordLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscordLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  matchCheckIns<T extends Prisma.User$matchCheckInsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$matchCheckInsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MatchCheckInPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  matchPredictions<T extends Prisma.User$matchPredictionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$matchPredictionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MatchPredictionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5402,6 +7547,16 @@ export interface UserFieldRefs {
   readonly elo: Prisma.FieldRef<"User", 'Int'>
   readonly timeBalanceSeconds: Prisma.FieldRef<"User", 'Int'>
   readonly emailNotifications: Prisma.FieldRef<"User", 'Boolean'>
+  readonly emailPrefTournaments: Prisma.FieldRef<"User", 'Boolean'>
+  readonly emailPrefMatches: Prisma.FieldRef<"User", 'Boolean'>
+  readonly emailPrefBookings: Prisma.FieldRef<"User", 'Boolean'>
+  readonly emailPrefSystem: Prisma.FieldRef<"User", 'Boolean'>
+  readonly emailPrefWeeklyDigest: Prisma.FieldRef<"User", 'Boolean'>
+  readonly discordDmTournaments: Prisma.FieldRef<"User", 'Boolean'>
+  readonly discordDmMatches: Prisma.FieldRef<"User", 'Boolean'>
+  readonly discordDmReminders: Prisma.FieldRef<"User", 'Boolean'>
+  readonly discordDmResults: Prisma.FieldRef<"User", 'Boolean'>
+  readonly discordDmSystem: Prisma.FieldRef<"User", 'Boolean'>
   readonly steamId: Prisma.FieldRef<"User", 'String'>
   readonly steamAvatar: Prisma.FieldRef<"User", 'String'>
   readonly steamUrl: Prisma.FieldRef<"User", 'String'>
@@ -5412,6 +7567,7 @@ export interface UserFieldRefs {
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly lastLogoutAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly achievements: Prisma.FieldRef<"User", 'Json'>
 }
     
 
@@ -6224,6 +8380,78 @@ export type User$authoredChangelogsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.ChangelogScalarFieldEnum | Prisma.ChangelogScalarFieldEnum[]
+}
+
+/**
+ * User.discordLogs
+ */
+export type User$discordLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DiscordLog
+   */
+  select?: Prisma.DiscordLogSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DiscordLog
+   */
+  omit?: Prisma.DiscordLogOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DiscordLogInclude<ExtArgs> | null
+  where?: Prisma.DiscordLogWhereInput
+  orderBy?: Prisma.DiscordLogOrderByWithRelationInput | Prisma.DiscordLogOrderByWithRelationInput[]
+  cursor?: Prisma.DiscordLogWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DiscordLogScalarFieldEnum | Prisma.DiscordLogScalarFieldEnum[]
+}
+
+/**
+ * User.matchCheckIns
+ */
+export type User$matchCheckInsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MatchCheckIn
+   */
+  select?: Prisma.MatchCheckInSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MatchCheckIn
+   */
+  omit?: Prisma.MatchCheckInOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MatchCheckInInclude<ExtArgs> | null
+  where?: Prisma.MatchCheckInWhereInput
+  orderBy?: Prisma.MatchCheckInOrderByWithRelationInput | Prisma.MatchCheckInOrderByWithRelationInput[]
+  cursor?: Prisma.MatchCheckInWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MatchCheckInScalarFieldEnum | Prisma.MatchCheckInScalarFieldEnum[]
+}
+
+/**
+ * User.matchPredictions
+ */
+export type User$matchPredictionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MatchPrediction
+   */
+  select?: Prisma.MatchPredictionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MatchPrediction
+   */
+  omit?: Prisma.MatchPredictionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MatchPredictionInclude<ExtArgs> | null
+  where?: Prisma.MatchPredictionWhereInput
+  orderBy?: Prisma.MatchPredictionOrderByWithRelationInput | Prisma.MatchPredictionOrderByWithRelationInput[]
+  cursor?: Prisma.MatchPredictionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MatchPredictionScalarFieldEnum | Prisma.MatchPredictionScalarFieldEnum[]
 }
 
 /**

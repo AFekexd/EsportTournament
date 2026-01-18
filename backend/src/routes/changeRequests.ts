@@ -152,6 +152,10 @@ async function approveRequestInternal(requestId: string, admin: any) {
             link: '/settings'
         });
 
+        // Web-Discord Sync
+        const { webSyncService } = await import('../services/webSyncService.js');
+        await webSyncService.onUserUpdate(request.entityId);
+
     } else if (request.type === 'TEAM_PROFILE') {
         await prisma.team.update({
             where: { id: request.entityId },

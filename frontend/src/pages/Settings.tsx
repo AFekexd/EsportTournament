@@ -9,6 +9,11 @@ import {
   Mail,
   AtSign,
   RefreshCw,
+  Trophy,
+  Gamepad2,
+  Calendar,
+  AlertCircle,
+  Newspaper,
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useAppDispatch } from "../hooks/useRedux";
@@ -17,6 +22,15 @@ import { ImageUpload } from "../components/common/ImageUpload";
 import { API_URL } from "../config";
 import { apiFetch } from "../lib/api-client";
 
+interface EmailPreference {
+  key: string;
+  label: string;
+  description: string;
+  icon: React.ReactNode;
+  value: boolean;
+  setValue: (val: boolean) => void;
+}
+
 export function SettingsPage() {
   const dispatch = useAppDispatch();
   const { user, isAuthenticated, isAdmin } = useAuth();
@@ -24,13 +38,74 @@ export function SettingsPage() {
   // Settings state - must be declared before any conditional returns
   const [displayName, setDisplayName] = useState(user?.displayName || "");
   const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || "");
+
+  // Email preferences state
   const [emailNotifications, setEmailNotifications] = useState(
-    user?.emailNotifications ?? true
+    user?.emailNotifications ?? true,
   );
+  const [emailPrefTournaments, setEmailPrefTournaments] = useState(
+    user?.emailPrefTournaments ?? true,
+  );
+  const [emailPrefMatches, setEmailPrefMatches] = useState(
+    user?.emailPrefMatches ?? true,
+  );
+  const [emailPrefBookings, setEmailPrefBookings] = useState(
+    user?.emailPrefBookings ?? true,
+  );
+  const [emailPrefSystem, setEmailPrefSystem] = useState(
+    user?.emailPrefSystem ?? true,
+  );
+  const [emailPrefWeeklyDigest, setEmailPrefWeeklyDigest] = useState(
+    user?.emailPrefWeeklyDigest ?? false,
+  );
+
   const [saveLoading, setSaveLoading] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [steamId, setSteamId] = useState(user?.steamId || "");
   const [syncLoading, setSyncLoading] = useState(false);
+
+  const emailPreferences: EmailPreference[] = [
+    {
+      key: "emailPrefTournaments",
+      label: "Verseny értesítések",
+      description: "Új versenyek, meghívók és regisztrációs emlékeztetők",
+      icon: <Trophy size={20} />,
+      value: emailPrefTournaments,
+      setValue: setEmailPrefTournaments,
+    },
+    {
+      key: "emailPrefMatches",
+      label: "Meccs értesítések",
+      description: "Meccs emlékeztetők és eredmények",
+      icon: <Gamepad2 size={20} />,
+      value: emailPrefMatches,
+      setValue: setEmailPrefMatches,
+    },
+    {
+      key: "emailPrefBookings",
+      label: "Foglalás értesítések",
+      description: "Foglalás megerősítések, emlékeztetők és szabad helyek",
+      icon: <Calendar size={20} />,
+      value: emailPrefBookings,
+      setValue: setEmailPrefBookings,
+    },
+    {
+      key: "emailPrefSystem",
+      label: "Rendszer értesítések",
+      description: "Fontos rendszerüzenetek és bejelentések",
+      icon: <AlertCircle size={20} />,
+      value: emailPrefSystem,
+      setValue: setEmailPrefSystem,
+    },
+    {
+      key: "emailPrefWeeklyDigest",
+      label: "Heti összefoglaló",
+      description: "Heti statisztikák és közelgő versenyek összefoglalója",
+      icon: <Newspaper size={20} />,
+      value: emailPrefWeeklyDigest,
+      setValue: setEmailPrefWeeklyDigest,
+    },
+  ];
 
   const handleSteamSync = async () => {
     if (!steamId) return;
@@ -55,7 +130,7 @@ export function SettingsPage() {
       if (data.success) {
         toast.success(`Sikeres szinkronizálás! ${data.count} tökéletes játék.`);
         dispatch(
-          updateUser({ ...user!, steamId, perfectGamesCount: data.count })
+          updateUser({ ...user!, steamId, perfectGamesCount: data.count }),
         );
       } else {
         toast.error(data.message || "Hiba a szinkronizáláskor");
@@ -101,7 +176,12 @@ export function SettingsPage() {
         body: JSON.stringify({
           displayName,
           avatarUrl: avatarUrl || undefined,
-          emailNotifications: emailNotifications,
+          emailNotifications,
+          emailPrefTournaments,
+          emailPrefMatches,
+          emailPrefBookings,
+          emailPrefSystem,
+          emailPrefWeeklyDigest,
         }),
       });
 
@@ -113,19 +193,12 @@ export function SettingsPage() {
 
       if (response.status === 202) {
         toast.info(data.message || "A változtatások jóváhagyásra várnak.");
-        // Should we setSaveSuccess(true) here? 
-        // User might think it failed if the button stays "Save Changes".
-        // But "Successfully Saved" is also misleading if it's pending.
-        // Let's rely on the Toast and maybe a different button state if needed, 
-        // but for now the Toast is the primary feedback mechanism requested.
         return;
       }
 
       setSaveSuccess(true);
       dispatch(updateUser(data.data));
 
-      // Display the message from the backend if available (e.g., mixed update)
-      // otherwise default success message.
       if (data.message) {
         toast.success(data.message);
       } else {
@@ -154,7 +227,7 @@ export function SettingsPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
         {/* Profile Card */}
         <div
           className="glass-card rounded-2xl p-8 hover:scale-[1.01] transition-transform animate-slide-up"
@@ -204,8 +277,9 @@ export function SettingsPage() {
                   onChange={(e) => setDisplayName(e.target.value)}
                   disabled={!isAdmin}
                   maxLength={50}
-                  className={`w-full px-5 py-4 bg-[#0a0a0f]/50 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-lg ${!isAdmin ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
+                  className={`w-full px-5 py-4 bg-[#0a0a0f]/50 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-lg ${
+                    !isAdmin ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                   placeholder="pl. GamerPro123"
                 />
                 {!isAdmin && (
@@ -333,65 +407,124 @@ export function SettingsPage() {
             </div>
           </div>
 
-          {/* Notifications */}
+          {/* Email Notifications */}
           <div className="glass-card rounded-2xl p-8 hover:border-white/20">
             <div className="flex items-center gap-4 mb-6">
               <div className="p-3 bg-yellow-500/10 rounded-xl border border-yellow-500/20">
                 <Bell size={24} className="text-yellow-400" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-white">Értesítések</h2>
+                <h2 className="text-xl font-bold text-white">
+                  Email Értesítések
+                </h2>
                 <p className="text-sm text-gray-400">
-                  Válaszd ki, miről szeretnél hallani
+                  Válaszd ki, miről szeretnél emailt kapni
                 </p>
               </div>
             </div>
 
+            {/* Master Toggle */}
             <div
-              className="flex items-center justify-between p-4 bg-[#0a0a0f]/50 border border-white/5 rounded-xl hover:bg-[#0a0a0f] transition-all cursor-pointer"
+              className="flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-neon-pink/10 border border-primary/20 rounded-xl mb-4 cursor-pointer"
               onClick={() => setEmailNotifications(!emailNotifications)}
             >
               <div className="flex items-center gap-4">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${emailNotifications
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
+                    emailNotifications
                       ? "bg-primary/20 text-primary"
                       : "bg-gray-800 text-gray-500"
-                    }`}
+                  }`}
                 >
                   <Mail size={20} />
                 </div>
                 <div>
-                  <h3 className="font-medium text-white">Email értesítések</h3>
+                  <h3 className="font-medium text-white">
+                    Összes email értesítés
+                  </h3>
                   <p className="text-xs text-gray-400">
-                    Fontos hírek, emlékeztetők
+                    Fő kapcsoló - kikapcsolva egyik emailt sem kapod meg
                   </p>
                 </div>
               </div>
 
               <div
-                className={`w-12 h-7 rounded-full p-1 transition-colors relative ${emailNotifications ? "bg-primary" : "bg-gray-700"
-                  }`}
+                className={`w-12 h-7 rounded-full p-1 transition-colors relative ${
+                  emailNotifications ? "bg-primary" : "bg-gray-700"
+                }`}
               >
                 <div
-                  className={`w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${emailNotifications ? "translate-x-5" : "translate-x-0"
-                    }`}
+                  className={`w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${
+                    emailNotifications ? "translate-x-5" : "translate-x-0"
+                  }`}
                 />
               </div>
             </div>
+
+            {/* Individual Preferences */}
+            <div
+              className={`space-y-2 ${!emailNotifications ? "opacity-50 pointer-events-none" : ""}`}
+            >
+              {emailPreferences.map((pref) => (
+                <div
+                  key={pref.key}
+                  className="flex items-center justify-between p-3 bg-[#0a0a0f]/50 border border-white/5 rounded-xl hover:bg-[#0a0a0f] transition-all cursor-pointer"
+                  onClick={() => pref.setValue(!pref.value)}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
+                        pref.value
+                          ? "bg-primary/20 text-primary"
+                          : "bg-gray-800 text-gray-500"
+                      }`}
+                    >
+                      {pref.icon}
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-white text-sm">
+                        {pref.label}
+                      </h3>
+                      <p className="text-xs text-gray-500">
+                        {pref.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    className={`w-10 h-6 rounded-full p-0.5 transition-colors relative ${
+                      pref.value ? "bg-primary" : "bg-gray-700"
+                    }`}
+                  >
+                    <div
+                      className={`w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${
+                        pref.value ? "translate-x-4" : "translate-x-0"
+                      }`}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <p className="text-xs text-gray-600 text-center mt-4">
+              💡 Az email értesítéseket az adott email "Leiratkozás" linkjével
+              is kikapcsolhatod.
+            </p>
           </div>
         </div>
       </div>
 
       {/* Floating Action Button (Desktop: Bottom Right, Mobile: Sticky Bottom) */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 md:p-8 md:static md:mt-3 flex justify-center md:justify-end max-w-5xl mx-auto z-20 pointer-events-none">
+      <div className="fixed bottom-0 left-0 right-0 p-4 md:p-8 md:static md:mt-3 flex justify-center md:justify-end max-w-6xl mx-auto z-20 pointer-events-none">
         <div className="pointer-events-auto">
           <button
             onClick={handleSave}
             disabled={saveLoading}
-            className={`flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg transform hover:-translate-y-1 ${saveSuccess
+            className={`flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg transform hover:-translate-y-1 ${
+              saveSuccess
                 ? "bg-green-500 hover:bg-green-600 shadow-green-500/25 text-white"
                 : "bg-gradient-to-r from-primary to-neon-pink hover:brightness-110 shadow-primary/25 text-white"
-              } ${saveLoading ? "opacity-75 cursor-wait" : ""}`}
+            } ${saveLoading ? "opacity-75 cursor-wait" : ""}`}
           >
             {saveLoading ? (
               <>

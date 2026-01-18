@@ -12,7 +12,21 @@ export interface User {
     updatedAt: string;
     teamMemberships?: TeamMember[];
     ownedTeams?: Team[];
+    // Email preferences
     emailNotifications?: boolean;
+    emailPrefTournaments?: boolean;
+    emailPrefMatches?: boolean;
+    emailPrefBookings?: boolean;
+    emailPrefSystem?: boolean;
+    emailPrefWeeklyDigest?: boolean;
+    // Discord DM preferences
+    discordDmTournaments?: boolean;
+    discordDmMatches?: boolean;
+    discordDmReminders?: boolean;
+    discordDmResults?: boolean;
+    discordDmSystem?: boolean;
+    discordId?: string;
+    // Other fields
     ranks?: UserRank[];
     steamId?: string;
     steamAvatar?: string;

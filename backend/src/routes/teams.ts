@@ -199,6 +199,11 @@ teamsRouter.post(
             }
         );
 
+        // Web-Discord Sync
+        const { webSyncService } = await import('../services/webSyncService.js');
+        await webSyncService.onTeamCreated(user.id, team.id);
+        await webSyncService.onTeamJoin(user.id, team.id); // Owner joins automatically
+
         res.status(201).json({ success: true, data: team });
     })
 );
@@ -464,6 +469,10 @@ teamsRouter.post(
             }
         );
 
+        // Web-Discord Sync
+        const { webSyncService } = await import('../services/webSyncService.js');
+        await webSyncService.onTeamJoin(user.id, team.id);
+
         res.status(201).json({ success: true, data: member });
     })
 );
@@ -510,6 +519,10 @@ teamsRouter.post(
                 }
             }
         );
+
+        // Web-Discord Sync
+        const { webSyncService } = await import('../services/webSyncService.js');
+        await webSyncService.onTeamLeave(user.id, team.id);
 
         res.json({ success: true, message: 'Left team successfully' });
     })
@@ -562,6 +575,10 @@ teamsRouter.delete(
                 }
             }
         );
+
+        // Web-Discord Sync
+        const { webSyncService } = await import('../services/webSyncService.js');
+        await webSyncService.onTeamLeave(req.params.memberId, team.id);
 
         res.json({ success: true, message: 'Member removed' });
     })

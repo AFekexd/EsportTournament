@@ -405,7 +405,11 @@ export const ModelName = {
   BookingSchedule: 'BookingSchedule',
   ClientVersion: 'ClientVersion',
   ChangeRequest: 'ChangeRequest',
-  Changelog: 'Changelog'
+  Changelog: 'Changelog',
+  EmailLog: 'EmailLog',
+  DiscordLog: 'DiscordLog',
+  MatchCheckIn: 'MatchCheckIn',
+  MatchPrediction: 'MatchPrediction'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -421,7 +425,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "team" | "teamMember" | "game" | "tournament" | "tournamentEntry" | "match" | "gameStats" | "rank" | "userRank" | "notification" | "event" | "discordSettings" | "computer" | "booking" | "session" | "log" | "waitlist" | "bookingSchedule" | "clientVersion" | "changeRequest" | "changelog"
+    modelProps: "user" | "team" | "teamMember" | "game" | "tournament" | "tournamentEntry" | "match" | "gameStats" | "rank" | "userRank" | "notification" | "event" | "discordSettings" | "computer" | "booking" | "session" | "log" | "waitlist" | "bookingSchedule" | "clientVersion" | "changeRequest" | "changelog" | "emailLog" | "discordLog" | "matchCheckIn" | "matchPrediction"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2053,6 +2057,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    EmailLog: {
+      payload: Prisma.$EmailLogPayload<ExtArgs>
+      fields: Prisma.EmailLogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmailLogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailLogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmailLogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailLogPayload>
+        }
+        findFirst: {
+          args: Prisma.EmailLogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailLogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmailLogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailLogPayload>
+        }
+        findMany: {
+          args: Prisma.EmailLogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailLogPayload>[]
+        }
+        create: {
+          args: Prisma.EmailLogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailLogPayload>
+        }
+        createMany: {
+          args: Prisma.EmailLogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmailLogCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailLogPayload>[]
+        }
+        delete: {
+          args: Prisma.EmailLogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailLogPayload>
+        }
+        update: {
+          args: Prisma.EmailLogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailLogPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmailLogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmailLogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmailLogUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailLogPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmailLogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailLogPayload>
+        }
+        aggregate: {
+          args: Prisma.EmailLogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmailLog>
+        }
+        groupBy: {
+          args: Prisma.EmailLogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmailLogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmailLogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmailLogCountAggregateOutputType> | number
+        }
+      }
+    }
+    DiscordLog: {
+      payload: Prisma.$DiscordLogPayload<ExtArgs>
+      fields: Prisma.DiscordLogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DiscordLogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordLogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DiscordLogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordLogPayload>
+        }
+        findFirst: {
+          args: Prisma.DiscordLogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordLogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DiscordLogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordLogPayload>
+        }
+        findMany: {
+          args: Prisma.DiscordLogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordLogPayload>[]
+        }
+        create: {
+          args: Prisma.DiscordLogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordLogPayload>
+        }
+        createMany: {
+          args: Prisma.DiscordLogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DiscordLogCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordLogPayload>[]
+        }
+        delete: {
+          args: Prisma.DiscordLogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordLogPayload>
+        }
+        update: {
+          args: Prisma.DiscordLogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordLogPayload>
+        }
+        deleteMany: {
+          args: Prisma.DiscordLogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DiscordLogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DiscordLogUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordLogPayload>[]
+        }
+        upsert: {
+          args: Prisma.DiscordLogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordLogPayload>
+        }
+        aggregate: {
+          args: Prisma.DiscordLogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDiscordLog>
+        }
+        groupBy: {
+          args: Prisma.DiscordLogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscordLogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DiscordLogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscordLogCountAggregateOutputType> | number
+        }
+      }
+    }
+    MatchCheckIn: {
+      payload: Prisma.$MatchCheckInPayload<ExtArgs>
+      fields: Prisma.MatchCheckInFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MatchCheckInFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchCheckInPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MatchCheckInFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchCheckInPayload>
+        }
+        findFirst: {
+          args: Prisma.MatchCheckInFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchCheckInPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MatchCheckInFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchCheckInPayload>
+        }
+        findMany: {
+          args: Prisma.MatchCheckInFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchCheckInPayload>[]
+        }
+        create: {
+          args: Prisma.MatchCheckInCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchCheckInPayload>
+        }
+        createMany: {
+          args: Prisma.MatchCheckInCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MatchCheckInCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchCheckInPayload>[]
+        }
+        delete: {
+          args: Prisma.MatchCheckInDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchCheckInPayload>
+        }
+        update: {
+          args: Prisma.MatchCheckInUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchCheckInPayload>
+        }
+        deleteMany: {
+          args: Prisma.MatchCheckInDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MatchCheckInUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MatchCheckInUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchCheckInPayload>[]
+        }
+        upsert: {
+          args: Prisma.MatchCheckInUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchCheckInPayload>
+        }
+        aggregate: {
+          args: Prisma.MatchCheckInAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMatchCheckIn>
+        }
+        groupBy: {
+          args: Prisma.MatchCheckInGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MatchCheckInGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MatchCheckInCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MatchCheckInCountAggregateOutputType> | number
+        }
+      }
+    }
+    MatchPrediction: {
+      payload: Prisma.$MatchPredictionPayload<ExtArgs>
+      fields: Prisma.MatchPredictionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MatchPredictionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchPredictionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MatchPredictionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchPredictionPayload>
+        }
+        findFirst: {
+          args: Prisma.MatchPredictionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchPredictionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MatchPredictionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchPredictionPayload>
+        }
+        findMany: {
+          args: Prisma.MatchPredictionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchPredictionPayload>[]
+        }
+        create: {
+          args: Prisma.MatchPredictionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchPredictionPayload>
+        }
+        createMany: {
+          args: Prisma.MatchPredictionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MatchPredictionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchPredictionPayload>[]
+        }
+        delete: {
+          args: Prisma.MatchPredictionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchPredictionPayload>
+        }
+        update: {
+          args: Prisma.MatchPredictionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchPredictionPayload>
+        }
+        deleteMany: {
+          args: Prisma.MatchPredictionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MatchPredictionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MatchPredictionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchPredictionPayload>[]
+        }
+        upsert: {
+          args: Prisma.MatchPredictionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MatchPredictionPayload>
+        }
+        aggregate: {
+          args: Prisma.MatchPredictionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMatchPrediction>
+        }
+        groupBy: {
+          args: Prisma.MatchPredictionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MatchPredictionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MatchPredictionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MatchPredictionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2105,6 +2405,16 @@ export const UserScalarFieldEnum = {
   elo: 'elo',
   timeBalanceSeconds: 'timeBalanceSeconds',
   emailNotifications: 'emailNotifications',
+  emailPrefTournaments: 'emailPrefTournaments',
+  emailPrefMatches: 'emailPrefMatches',
+  emailPrefBookings: 'emailPrefBookings',
+  emailPrefSystem: 'emailPrefSystem',
+  emailPrefWeeklyDigest: 'emailPrefWeeklyDigest',
+  discordDmTournaments: 'discordDmTournaments',
+  discordDmMatches: 'discordDmMatches',
+  discordDmReminders: 'discordDmReminders',
+  discordDmResults: 'discordDmResults',
+  discordDmSystem: 'discordDmSystem',
   steamId: 'steamId',
   steamAvatar: 'steamAvatar',
   steamUrl: 'steamUrl',
@@ -2114,7 +2424,8 @@ export const UserScalarFieldEnum = {
   perfectGamesCount: 'perfectGamesCount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  lastLogoutAt: 'lastLogoutAt'
+  lastLogoutAt: 'lastLogoutAt',
+  achievements: 'achievements'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -2179,6 +2490,7 @@ export const TournamentScalarFieldEnum = {
   notifyUsers: 'notifyUsers',
   notifyDiscord: 'notifyDiscord',
   discordChannelId: 'discordChannelId',
+  discordRoleId: 'discordRoleId',
   seedingMethod: 'seedingMethod',
   hasQualifier: 'hasQualifier',
   qualifierMatches: 'qualifierMatches',
@@ -2220,6 +2532,7 @@ export const MatchScalarFieldEnum = {
   status: 'status',
   scheduledAt: 'scheduledAt',
   playedAt: 'playedAt',
+  checkInDeadline: 'checkInDeadline',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2438,6 +2751,66 @@ export const ChangelogScalarFieldEnum = {
 export type ChangelogScalarFieldEnum = (typeof ChangelogScalarFieldEnum)[keyof typeof ChangelogScalarFieldEnum]
 
 
+export const EmailLogScalarFieldEnum = {
+  id: 'id',
+  to: 'to',
+  subject: 'subject',
+  type: 'type',
+  status: 'status',
+  attempts: 'attempts',
+  error: 'error',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  sentAt: 'sentAt'
+} as const
+
+export type EmailLogScalarFieldEnum = (typeof EmailLogScalarFieldEnum)[keyof typeof EmailLogScalarFieldEnum]
+
+
+export const DiscordLogScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  channelId: 'channelId',
+  messageId: 'messageId',
+  userId: 'userId',
+  discordId: 'discordId',
+  content: 'content',
+  embedTitle: 'embedTitle',
+  status: 'status',
+  error: 'error',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscordLogScalarFieldEnum = (typeof DiscordLogScalarFieldEnum)[keyof typeof DiscordLogScalarFieldEnum]
+
+
+export const MatchCheckInScalarFieldEnum = {
+  id: 'id',
+  matchId: 'matchId',
+  userId: 'userId',
+  teamId: 'teamId',
+  checkedAt: 'checkedAt'
+} as const
+
+export type MatchCheckInScalarFieldEnum = (typeof MatchCheckInScalarFieldEnum)[keyof typeof MatchCheckInScalarFieldEnum]
+
+
+export const MatchPredictionScalarFieldEnum = {
+  id: 'id',
+  matchId: 'matchId',
+  predictorId: 'predictorId',
+  predictedWinnerId: 'predictedWinnerId',
+  predictedHomeScore: 'predictedHomeScore',
+  predictedAwayScore: 'predictedAwayScore',
+  points: 'points',
+  isCorrect: 'isCorrect',
+  createdAt: 'createdAt'
+} as const
+
+export type MatchPredictionScalarFieldEnum = (typeof MatchPredictionScalarFieldEnum)[keyof typeof MatchPredictionScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2469,14 +2842,6 @@ export const QueryMode = {
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
-export const NullsOrder = {
-  first: 'first',
-  last: 'last'
-} as const
-
-export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
 export const JsonNullValueFilter = {
   DbNull: DbNull,
   JsonNull: JsonNull,
@@ -2484,6 +2849,14 @@ export const JsonNullValueFilter = {
 } as const
 
 export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
 
@@ -2552,6 +2925,20 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -2640,20 +3027,6 @@ export type ListEnumMatchStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$
 
 
 /**
- * Reference to a field of type 'Json'
- */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-/**
- * Reference to a field of type 'QueryMode'
- */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
-    
-
-
-/**
  * Reference to a field of type 'NotificationType'
  */
 export type EnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType'>
@@ -2734,6 +3107,62 @@ export type EnumChangeLogTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'ChangeLogType[]'
  */
 export type ListEnumChangeLogTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChangeLogType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'EmailType'
+ */
+export type EnumEmailTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmailType'>
+    
+
+
+/**
+ * Reference to a field of type 'EmailType[]'
+ */
+export type ListEnumEmailTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmailType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'EmailStatus'
+ */
+export type EnumEmailStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmailStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'EmailStatus[]'
+ */
+export type ListEnumEmailStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmailStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DiscordLogType'
+ */
+export type EnumDiscordLogTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscordLogType'>
+    
+
+
+/**
+ * Reference to a field of type 'DiscordLogType[]'
+ */
+export type ListEnumDiscordLogTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscordLogType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DiscordLogStatus'
+ */
+export type EnumDiscordLogStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscordLogStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'DiscordLogStatus[]'
+ */
+export type ListEnumDiscordLogStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscordLogStatus[]'>
     
 
 
@@ -2867,6 +3296,10 @@ export type GlobalOmitConfig = {
   clientVersion?: Prisma.ClientVersionOmit
   changeRequest?: Prisma.ChangeRequestOmit
   changelog?: Prisma.ChangelogOmit
+  emailLog?: Prisma.EmailLogOmit
+  discordLog?: Prisma.DiscordLogOmit
+  matchCheckIn?: Prisma.MatchCheckInOmit
+  matchPrediction?: Prisma.MatchPredictionOmit
 }
 
 /* Types for Logging */

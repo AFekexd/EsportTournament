@@ -13,6 +13,7 @@ import {
   ArrowUpRight,
   Monitor,
   Search,
+  MessageSquare,
 } from "lucide-react";
 import { ConfirmationModal } from "../components/common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
@@ -36,6 +37,7 @@ import { UserManagement } from "../components/admin/UserManagement";
 import { TeamManagement } from "../components/admin/TeamManagement";
 import { KioskManager } from "../components/admin/KioskManager";
 import { Link } from "react-router-dom";
+import { AnnouncementManager } from "../components/admin/AnnouncementManager";
 import "./Admin.css";
 import { authService } from "../lib/auth-service";
 import type { Game, Tournament } from "../types";
@@ -46,7 +48,7 @@ export function AdminPage() {
   const { games } = useAppSelector((state) => state.games);
 
   const { tournaments, pagination: tournamentPagination } = useAppSelector(
-    (state) => state.tournaments
+    (state) => state.tournaments,
   );
 
   const [tournamentSearch, setTournamentSearch] = useState("");
@@ -71,6 +73,7 @@ export function AdminPage() {
     | "games"
     | "bookings"
     | "kiosk"
+    | "announcements"
   >("overview");
   const [stats, setStats] = useState({
     activeTournaments: 0,
@@ -82,10 +85,10 @@ export function AdminPage() {
   const [editingGame, setEditingGame] = useState<Game | null>(null);
   const [showTournamentModal, setShowTournamentModal] = useState(false);
   const [editingTournament, setEditingTournament] = useState<Tournament | null>(
-    null
+    null,
   );
   const [statusTournament, setStatusTournament] = useState<Tournament | null>(
-    null
+    null,
   );
   const [editingGameRanks, setEditingGameRanks] = useState<Game | null>(null);
 
@@ -100,7 +103,7 @@ export function AdminPage() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => { },
+    onConfirm: () => {},
     variant: "primary",
   });
 
@@ -114,7 +117,7 @@ export function AdminPage() {
         fetchTournaments({
           page: tournamentPage,
           search: debouncedTournamentSearch,
-        })
+        }),
       );
       // fetchTeams is handled in TeamManagement component
       dispatch(fetchSchedules());
@@ -124,11 +127,12 @@ export function AdminPage() {
         try {
           const token = authService.keycloak?.token;
           const response = await fetch(
-            `${import.meta.env.VITE_API_URL || "http://localhost:3000/api"
+            `${
+              import.meta.env.VITE_API_URL || "http://localhost:3000/api"
             }/stats`,
             {
               headers: { Authorization: `Bearer ${token}` },
-            }
+            },
           );
           const data = await response.json();
           if (data) {
@@ -161,7 +165,7 @@ export function AdminPage() {
         } catch (error) {
           console.error("Failed to delete game:", error);
           toast.error(
-            "Nem sikerült törölni a játékot. Ellenőrizd, hogy nincsenek-e hozzárendelt versenyek."
+            "Nem sikerült törölni a játékot. Ellenőrizd, hogy nincsenek-e hozzárendelt versenyek.",
           );
         }
       },
@@ -206,7 +210,7 @@ export function AdminPage() {
   const totalUsers = stats.registeredUsers;
   const totalTournaments = stats.activeTournaments;
   const activeTournaments = tournaments.filter(
-    (t) => t.status === "IN_PROGRESS"
+    (t) => t.status === "IN_PROGRESS",
   ).length;
   const totalTeams = stats.createdTeams;
 
@@ -254,11 +258,12 @@ export function AdminPage() {
     { id: "teams", label: "Csapatok", icon: Shield },
     { id: "tournaments", label: "Versenyek", icon: Trophy },
     { id: "games", label: "Játékok", icon: Gamepad2 },
+    { id: "announcements", label: "Bejelentések", icon: MessageSquare },
     ...(canManageComputers
       ? [
-        { id: "bookings", label: "Gépfoglalás", icon: Calendar },
-        { id: "kiosk", label: "Gépterem", icon: Monitor },
-      ]
+          { id: "bookings", label: "Gépfoglalás", icon: Calendar },
+          { id: "kiosk", label: "Gépterem", icon: Monitor },
+        ]
       : []),
   ];
 
@@ -349,10 +354,11 @@ export function AdminPage() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap
-                                ${isActive
-                  ? "bg-primary text-white shadow-[0_0_20px_rgba(139,92,246,0.3)]"
-                  : "bg-[#0f1016] border border-white/5 text-muted-foreground hover:text-white hover:bg-white/5"
-                }`}
+                                ${
+                                  isActive
+                                    ? "bg-primary text-white shadow-[0_0_20px_rgba(139,92,246,0.3)]"
+                                    : "bg-[#0f1016] border border-white/5 text-muted-foreground hover:text-white hover:bg-white/5"
+                                }`}
             >
               <Icon size={18} />
               {tab.label}
@@ -385,13 +391,13 @@ export function AdminPage() {
                         ...e,
                         tournamentName: t.name,
                         gameName: t.game?.name,
-                      }))
+                      })),
                     );
                     const recentEntries = allEntries
                       .sort(
                         (a, b) =>
                           new Date(b.registeredAt).getTime() -
-                          new Date(a.registeredAt).getTime()
+                          new Date(a.registeredAt).getTime(),
                       )
                       .slice(0, 5);
 
@@ -448,7 +454,7 @@ export function AdminPage() {
                               <div className="text-right">
                                 <span className="text-xs text-gray-400 font-mono">
                                   {new Date(
-                                    entry.registeredAt
+                                    entry.registeredAt,
                                   ).toLocaleDateString("hu-HU", {
                                     month: "short",
                                     day: "numeric",
@@ -676,6 +682,12 @@ export function AdminPage() {
           </div>
         )}
 
+        {activeTab === "announcements" && (
+          <div className="animate-fade-in">
+            <AnnouncementManager />
+          </div>
+        )}
+
         {activeTab === "tournaments" && (
           <div className="animate-fade-in">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
@@ -787,7 +799,7 @@ export function AdminPage() {
                                 day: "numeric",
                                 hour: "2-digit",
                                 minute: "2-digit",
-                              }
+                              },
                             )}
                           </td>
                           <td className="p-4 text-right flex gap-2 justify-end">
@@ -826,15 +838,16 @@ export function AdminPage() {
                 <div className="flex justify-center p-4 border-t border-white/5 gap-2 bg-[#161722]">
                   {Array.from(
                     { length: tournamentPagination.pages },
-                    (_, i) => i + 1
+                    (_, i) => i + 1,
                   ).map((page) => (
                     <button
                       key={page}
                       onClick={() => setTournamentPage(page)}
-                      className={`px-3 py-1 rounded-lg text-sm transition-colors ${tournamentPagination.page === page
+                      className={`px-3 py-1 rounded-lg text-sm transition-colors ${
+                        tournamentPagination.page === page
                           ? "bg-primary text-white"
                           : "bg-white/5 text-gray-400 hover:bg-white/10"
-                        }`}
+                      }`}
                     >
                       {page}
                     </button>

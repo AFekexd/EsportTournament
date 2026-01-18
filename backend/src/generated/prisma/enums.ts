@@ -125,3 +125,56 @@ export const ChangeLogType = {
 } as const
 
 export type ChangeLogType = (typeof ChangeLogType)[keyof typeof ChangeLogType]
+
+
+export const EmailStatus = {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  FAILED: 'FAILED'
+} as const
+
+export type EmailStatus = (typeof EmailStatus)[keyof typeof EmailStatus]
+
+
+export const EmailType = {
+  TOURNAMENT_INVITE: 'TOURNAMENT_INVITE',
+  TOURNAMENT_ANNOUNCEMENT: 'TOURNAMENT_ANNOUNCEMENT',
+  MATCH_REMINDER: 'MATCH_REMINDER',
+  MATCH_RESULT: 'MATCH_RESULT',
+  BOOKING_CONFIRMATION: 'BOOKING_CONFIRMATION',
+  BOOKING_REMINDER: 'BOOKING_REMINDER',
+  BOOKING_CANCELLED: 'BOOKING_CANCELLED',
+  WAITLIST_AVAILABLE: 'WAITLIST_AVAILABLE',
+  SYSTEM: 'SYSTEM',
+  DIGEST: 'DIGEST',
+  ADMIN_BROADCAST: 'ADMIN_BROADCAST'
+} as const
+
+export type EmailType = (typeof EmailType)[keyof typeof EmailType]
+
+
+export const DiscordLogType = {
+  TOURNAMENT_ANNOUNCE: 'TOURNAMENT_ANNOUNCE',
+  MATCH_REMINDER: 'MATCH_REMINDER',
+  MATCH_RESULT: 'MATCH_RESULT',
+  SYSTEM_ANNOUNCE: 'SYSTEM_ANNOUNCE',
+  CHECK_IN_REQUEST: 'CHECK_IN_REQUEST',
+  REGISTRATION_REMINDER: 'REGISTRATION_REMINDER',
+  WEEKLY_STANDINGS: 'WEEKLY_STANDINGS',
+  ACHIEVEMENT: 'ACHIEVEMENT',
+  PREDICTION: 'PREDICTION',
+  DM_NOTIFICATION: 'DM_NOTIFICATION',
+  COMMAND_USAGE: 'COMMAND_USAGE',
+  ERROR: 'ERROR'
+} as const
+
+export type DiscordLogType = (typeof DiscordLogType)[keyof typeof DiscordLogType]
+
+
+export const DiscordLogStatus = {
+  SENT: 'SENT',
+  FAILED: 'FAILED',
+  PENDING: 'PENDING'
+} as const
+
+export type DiscordLogStatus = (typeof DiscordLogStatus)[keyof typeof DiscordLogStatus]

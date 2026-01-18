@@ -72,7 +72,11 @@ export const ModelName = {
   BookingSchedule: 'BookingSchedule',
   ClientVersion: 'ClientVersion',
   ChangeRequest: 'ChangeRequest',
-  Changelog: 'Changelog'
+  Changelog: 'Changelog',
+  EmailLog: 'EmailLog',
+  DiscordLog: 'DiscordLog',
+  MatchCheckIn: 'MatchCheckIn',
+  MatchPrediction: 'MatchPrediction'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -104,6 +108,16 @@ export const UserScalarFieldEnum = {
   elo: 'elo',
   timeBalanceSeconds: 'timeBalanceSeconds',
   emailNotifications: 'emailNotifications',
+  emailPrefTournaments: 'emailPrefTournaments',
+  emailPrefMatches: 'emailPrefMatches',
+  emailPrefBookings: 'emailPrefBookings',
+  emailPrefSystem: 'emailPrefSystem',
+  emailPrefWeeklyDigest: 'emailPrefWeeklyDigest',
+  discordDmTournaments: 'discordDmTournaments',
+  discordDmMatches: 'discordDmMatches',
+  discordDmReminders: 'discordDmReminders',
+  discordDmResults: 'discordDmResults',
+  discordDmSystem: 'discordDmSystem',
   steamId: 'steamId',
   steamAvatar: 'steamAvatar',
   steamUrl: 'steamUrl',
@@ -113,7 +127,8 @@ export const UserScalarFieldEnum = {
   perfectGamesCount: 'perfectGamesCount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  lastLogoutAt: 'lastLogoutAt'
+  lastLogoutAt: 'lastLogoutAt',
+  achievements: 'achievements'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -178,6 +193,7 @@ export const TournamentScalarFieldEnum = {
   notifyUsers: 'notifyUsers',
   notifyDiscord: 'notifyDiscord',
   discordChannelId: 'discordChannelId',
+  discordRoleId: 'discordRoleId',
   seedingMethod: 'seedingMethod',
   hasQualifier: 'hasQualifier',
   qualifierMatches: 'qualifierMatches',
@@ -219,6 +235,7 @@ export const MatchScalarFieldEnum = {
   status: 'status',
   scheduledAt: 'scheduledAt',
   playedAt: 'playedAt',
+  checkInDeadline: 'checkInDeadline',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -437,6 +454,66 @@ export const ChangelogScalarFieldEnum = {
 export type ChangelogScalarFieldEnum = (typeof ChangelogScalarFieldEnum)[keyof typeof ChangelogScalarFieldEnum]
 
 
+export const EmailLogScalarFieldEnum = {
+  id: 'id',
+  to: 'to',
+  subject: 'subject',
+  type: 'type',
+  status: 'status',
+  attempts: 'attempts',
+  error: 'error',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  sentAt: 'sentAt'
+} as const
+
+export type EmailLogScalarFieldEnum = (typeof EmailLogScalarFieldEnum)[keyof typeof EmailLogScalarFieldEnum]
+
+
+export const DiscordLogScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  channelId: 'channelId',
+  messageId: 'messageId',
+  userId: 'userId',
+  discordId: 'discordId',
+  content: 'content',
+  embedTitle: 'embedTitle',
+  status: 'status',
+  error: 'error',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscordLogScalarFieldEnum = (typeof DiscordLogScalarFieldEnum)[keyof typeof DiscordLogScalarFieldEnum]
+
+
+export const MatchCheckInScalarFieldEnum = {
+  id: 'id',
+  matchId: 'matchId',
+  userId: 'userId',
+  teamId: 'teamId',
+  checkedAt: 'checkedAt'
+} as const
+
+export type MatchCheckInScalarFieldEnum = (typeof MatchCheckInScalarFieldEnum)[keyof typeof MatchCheckInScalarFieldEnum]
+
+
+export const MatchPredictionScalarFieldEnum = {
+  id: 'id',
+  matchId: 'matchId',
+  predictorId: 'predictorId',
+  predictedWinnerId: 'predictedWinnerId',
+  predictedHomeScore: 'predictedHomeScore',
+  predictedAwayScore: 'predictedAwayScore',
+  points: 'points',
+  isCorrect: 'isCorrect',
+  createdAt: 'createdAt'
+} as const
+
+export type MatchPredictionScalarFieldEnum = (typeof MatchPredictionScalarFieldEnum)[keyof typeof MatchPredictionScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -468,14 +545,6 @@ export const QueryMode = {
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
-export const NullsOrder = {
-  first: 'first',
-  last: 'last'
-} as const
-
-export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
 export const JsonNullValueFilter = {
   DbNull: 'DbNull',
   JsonNull: 'JsonNull',
@@ -483,4 +552,12 @@ export const JsonNullValueFilter = {
 } as const
 
 export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

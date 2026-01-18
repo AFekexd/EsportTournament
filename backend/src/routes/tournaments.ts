@@ -387,6 +387,14 @@ tournamentsRouter.post(
             }
         );
 
+        // Web-Discord Sync
+        const { webSyncService } = await import('../services/webSyncService.js');
+        await webSyncService.onTournamentRegister(
+            entry.userId || currentUser.id, 
+            req.params.id, 
+            entry.teamId || undefined
+        );
+
         res.status(201).json({ success: true, data: entry });
     })
 );
@@ -466,6 +474,12 @@ tournamentsRouter.delete(
                     }
                 );
 
+                // Web-Discord Sync
+                const { webSyncService } = await import('../services/webSyncService.js');
+                if (entryById.userId) {
+                    await webSyncService.onTournamentWithdraw(entryById.userId, tournament.id);
+                }
+
                 return res.json({ success: true, message: 'Sikeres leiratkozás' });
             }
         }
@@ -520,6 +534,10 @@ tournamentsRouter.delete(
                     }
                 }
             );
+
+            // Web-Discord Sync
+            const { webSyncService } = await import('../services/webSyncService.js');
+            await webSyncService.onTournamentWithdraw(targetUserId, tournament.id);
 
         } else {
             // ==========================================

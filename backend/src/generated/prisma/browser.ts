@@ -127,3 +127,23 @@ export type ChangeRequest = Prisma.ChangeRequestModel
  * 
  */
 export type Changelog = Prisma.ChangelogModel
+/**
+ * Model EmailLog
+ * 
+ */
+export type EmailLog = Prisma.EmailLogModel
+/**
+ * Model DiscordLog
+ * 
+ */
+export type DiscordLog = Prisma.DiscordLogModel
+/**
+ * Model MatchCheckIn
+ * 
+ */
+export type MatchCheckIn = Prisma.MatchCheckInModel
+/**
+ * Model MatchPrediction
+ * 
+ */
+export type MatchPrediction = Prisma.MatchPredictionModel

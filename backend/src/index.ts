@@ -35,6 +35,10 @@ import { changeRequestsRouter } from './routes/changeRequests.js';
 import { kioskRouter } from './routes/kiosk.js';
 import { adminKioskRouter } from './routes/admin-kiosk.js';
 import { clientUpdateRouter } from './routes/clientUpdate.js';
+import { adminEmailRouter } from './routes/admin-email.js';
+import { adminDiscordRouter } from './routes/admin-discord.js';
+import { digestService } from './services/digestService.js';
+import { matchReminderService } from './services/matchReminderService.js';
 
 
 
@@ -65,6 +69,8 @@ setIo(io);
 // Start background jobs
 BookingNotificationService.startReminderJob();
 TournamentSchedulerService.startScheduler();
+digestService.startScheduler();
+matchReminderService.startScheduler();
 
 const PORT = process.env.PORT || 3000;
 
@@ -121,6 +127,8 @@ app.use('/share', shareRouter);
 // Kiosk & Admin Kiosk Routes
 app.use('/api/kiosk', kioskRouter);
 app.use('/api/admin/kiosk', adminKioskRouter);
+app.use('/api/admin/email', adminEmailRouter);
+app.use('/api/admin/discord', adminDiscordRouter);
 app.use('/api/client/update', clientUpdateRouter);
 
 // Error handler

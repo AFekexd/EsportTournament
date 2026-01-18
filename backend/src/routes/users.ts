@@ -282,10 +282,25 @@ usersRouter.patch(
             throw new ApiError('Nincs jogosultságod a profil szerkesztéséhez', 403, 'FORBIDDEN');
         }
 
-        const { displayName, avatarUrl, emailNotifications, steamId } = req.body as {
+        const { 
+            displayName, 
+            avatarUrl, 
+            emailNotifications,
+            emailPrefTournaments,
+            emailPrefMatches,
+            emailPrefBookings,
+            emailPrefSystem,
+            emailPrefWeeklyDigest,
+            steamId 
+        } = req.body as {
             displayName?: string;
             avatarUrl?: string;
             emailNotifications?: boolean;
+            emailPrefTournaments?: boolean;
+            emailPrefMatches?: boolean;
+            emailPrefBookings?: boolean;
+            emailPrefSystem?: boolean;
+            emailPrefWeeklyDigest?: boolean;
             steamId?: string;
         };
 
@@ -307,14 +322,24 @@ usersRouter.patch(
             if (isNameChanged) pendingData.displayName = displayName;
             if (isAvatarChanged) pendingData.avatarUrl = avatarUrl;
 
-            // Immediate fields
+            // Immediate fields (email preferences are always immediate)
             if (emailNotifications !== undefined) immediateData.emailNotifications = emailNotifications;
+            if (emailPrefTournaments !== undefined) immediateData.emailPrefTournaments = emailPrefTournaments;
+            if (emailPrefMatches !== undefined) immediateData.emailPrefMatches = emailPrefMatches;
+            if (emailPrefBookings !== undefined) immediateData.emailPrefBookings = emailPrefBookings;
+            if (emailPrefSystem !== undefined) immediateData.emailPrefSystem = emailPrefSystem;
+            if (emailPrefWeeklyDigest !== undefined) immediateData.emailPrefWeeklyDigest = emailPrefWeeklyDigest;
             if (steamId !== undefined) immediateData.steamId = steamId;
         } else {
             // If Admin or no restricted changes, everything is immediate
             if (displayName !== undefined) immediateData.displayName = displayName;
             if (avatarUrl !== undefined) immediateData.avatarUrl = avatarUrl;
             if (emailNotifications !== undefined) immediateData.emailNotifications = emailNotifications;
+            if (emailPrefTournaments !== undefined) immediateData.emailPrefTournaments = emailPrefTournaments;
+            if (emailPrefMatches !== undefined) immediateData.emailPrefMatches = emailPrefMatches;
+            if (emailPrefBookings !== undefined) immediateData.emailPrefBookings = emailPrefBookings;
+            if (emailPrefSystem !== undefined) immediateData.emailPrefSystem = emailPrefSystem;
+            if (emailPrefWeeklyDigest !== undefined) immediateData.emailPrefWeeklyDigest = emailPrefWeeklyDigest;
             if (steamId !== undefined) immediateData.steamId = steamId;
         }
 
@@ -381,6 +406,10 @@ usersRouter.patch(
                     metadata: { changes, updatedFields: immediateData }
                 }
             );
+
+            // Web-Discord Sync
+            const { webSyncService } = await import('../services/webSyncService.js');
+            await webSyncService.onUserUpdate(updatedUser.id);
         }
 
         // 4. Response
