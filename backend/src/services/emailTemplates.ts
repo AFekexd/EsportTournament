@@ -75,8 +75,8 @@ export function generateEmailTemplate(options: EmailTemplateOptions): string {
                     <tr>
                         <td style="padding: 32px 32px 0; text-align: center;">
                             <div style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%); border-radius: 50px; border: 1px solid rgba(139, 92, 246, 0.3);">
-                                <span style="font-size: 18px; font-weight: 700; background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
-                                    🎮 Esport Tournament
+                                <span style="font-size: 18px; font-weight: 700; color: #ffffff; text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);">
+                                    🎮 Esport Hub
                                 </span>
                             </div>
                         </td>
@@ -102,7 +102,7 @@ export function generateEmailTemplate(options: EmailTemplateOptions): string {
                                 ${footer || 'Ez egy automatikus üzenet. Kérjük, ne válaszolj erre az emailre.'}
                             </p>
                             <p style="margin: 12px 0 0; font-size: 12px; color: #444; text-align: center;">
-                                © ${new Date().getFullYear()} Esport Tournament System
+                                © ${new Date().getFullYear()} Pollák - Esport
                             </p>
                         </td>
                     </tr>
@@ -475,7 +475,7 @@ export function announcementTemplate(title: string, message: string, senderName:
         title,
         content: `
             <div style="padding: 16px; background: rgba(59, 130, 246, 0.1); border-radius: 12px; border-left: 4px solid #3b82f6; margin-bottom: 16px;">
-                <p style="margin: 0; font-size: 12px; color: #3b82f6; text-transform: uppercase; letter-spacing: 1px;">📢 Hirdetmény</p>
+                <p style="margin: 0; font-size: 14px; font-weight: 700; color: #3b82f6; text-transform: uppercase; letter-spacing: 1.5px;">📢 Hirdetmény</p>
             </div>
             <div style="color: #fff; line-height: 1.8; font-size: 16px;">
                 ${message.replace(/\n/g, '<br>')}
