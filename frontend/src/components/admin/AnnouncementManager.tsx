@@ -84,58 +84,50 @@ export function AnnouncementManager() {
     setIsSending(true);
     try {
       const token = authService.keycloak?.token;
-      const promises = [];
 
-      // Discord Announcement / DM
-      if (targetChannel === "discord" || targetChannel === "both") {
-        const body: any = {
-          message: title ? `### ${title}\n\n${message}` : message,
-        };
+      const channels = [];
+      if (targetChannel === "discord" || targetChannel === "both")
+        channels.push("discord");
+      if (targetChannel === "email" || targetChannel === "both")
+        channels.push("email");
 
-        // If individual, add targetUserId (Backend handles logic switch)
-        if (recipientType === "individual") {
-          body.targetUserId = selectedUser.id;
-        }
+      const body: any = {
+        message: message,
+        title: title,
+        channels: channels,
+      };
 
-        const promise = fetch(
-          `${import.meta.env.VITE_API_URL || "http://localhost:3000/api"}/admin/discord/announce`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(body),
+      // If individual, add targetUserId
+      if (recipientType === "individual") {
+        body.targetUserId = selectedUser.id;
+      }
+
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL || "http://localhost:3000/api"}/admin/discord/announce`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
-        ).then(async (res) => {
-          if (!res.ok) {
-            const err = await res.json();
-            throw new Error(err.message || "Discord küldés sikertelen");
-          }
-          return res.json();
-        });
-        promises.push(promise);
-      }
+          body: JSON.stringify(body),
+        },
+      );
 
-      // Email Announcement
-      if (targetChannel === "email" || targetChannel === "both") {
-        if (targetChannel === "email") {
-          toast.warning("Email funkció jelenleg fejlesztés alatt áll.");
-        }
-      }
+      const data = await res.json();
 
-      await Promise.all(promises);
+      if (!res.ok) {
+        throw new Error(data.message || "Küldés sikertelen");
+      }
 
       toast.success(
         recipientType === "individual"
-          ? "Üzenet sikeresen elküldve a felhasználónak!"
-          : "Körüzenet sikeresen elküldve!",
+          ? "Üzenet sikeresen elküldve!"
+          : "Bejelentés sikeresen elküldve!",
       );
 
       setMessage("");
       setTitle("");
-      // Keep selected user or clear? Maybe clear to prevent accidental spam
-      // setSelectedUser(null);
     } catch (error: any) {
       console.error("Failed to send announcement:", error);
       toast.error(error.message || "Hiba történt a küldés során.");

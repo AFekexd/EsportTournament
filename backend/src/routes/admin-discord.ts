@@ -11,7 +11,8 @@ import { authenticate, AuthenticatedRequest } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { logSystemActivity } from '../services/logService.js';
 import prisma from '../lib/prisma.js';
-import { DiscordLogType, DiscordLogStatus } from '../generated/prisma/client.js';
+import { DiscordLogType, DiscordLogStatus, EmailType } from '../generated/prisma/client.js';
+import { emailService } from '../services/emailService.js';
 
 export const adminDiscordRouter: Router = Router();
 
@@ -145,68 +146,127 @@ adminDiscordRouter.post(
     authenticate,
     requireAdmin,
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-        const { title, message, channelId, targetUserId } = req.body;
+        const { title, message, channelId, targetUserId, channels = ['discord'] } = req.body;
         const adminUser = (req as any).adminUser;
 
         if (!message) {
             throw new ApiError('Üzenet megadása kötelező', 400, 'MISSING_MESSAGE');
         }
 
-        let success = false;
+        const results = {
+            discord: false,
+            email: false,
+            errors: [] as string[]
+        };
 
-        if (targetUserId) {
-            // Send DM to specific user
-            const targetUser = await prisma.user.findUnique({
-                where: { id: targetUserId },
-                select: { id: true, discordId: true, username: true, displayName: true }
-            });
+        // --- DISCORD LOGIC ---
+        if (channels.includes('discord')) {
+            let success = false;
+            
+            if (targetUserId) {
+                // Send DM to specific user
+                const targetUser = await prisma.user.findUnique({
+                    where: { id: targetUserId },
+                    select: { id: true, discordId: true, username: true, displayName: true }
+                });
 
-            if (!targetUser) {
-                throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
-            }
+                if (targetUser?.discordId) {
+                    success = await discordService.sendDM(targetUser.discordId, {
+                        title: title || 'Privát Rendszerüzenet',
+                        description: `${message}\n\n*Küldte: ${adminUser.username}*`,
+                        color: 0x3b82f6,
+                        timestamp: new Date().toISOString()
+                    });
 
-            if (!targetUser.discordId) {
-                throw new ApiError('A felhasználónak nincs összekapcsolt Discord fiókja', 400, 'NO_DISCORD');
-            }
-
-            success = await discordService.sendDM(targetUser.discordId, {
-                title: title || 'Privát Rendszerüzenet',
-                description: `${message}\n\n*Küldte: ${adminUser.username}*`,
-                color: 0x3b82f6,
-                timestamp: new Date().toISOString()
-            });
-
-            if (success) {
-                await logSystemActivity(
-                    'DISCORD_ANNOUNCE',
-                    `Admin ${adminUser.username} sent DM to ${targetUser.username}: "${title || 'Privát Üzenet'}"`,
-                    { adminId: adminUser.id, metadata: { targetUserId, messageLength: message.length } }
+                    if (success) {
+                        await logSystemActivity(
+                            'DISCORD_ANNOUNCE',
+                            `Admin ${adminUser.username} sent DM to ${targetUser.username}: "${title || 'Privát Üzenet'}"`,
+                            { adminId: adminUser.id, metadata: { targetUserId, messageLength: message.length } }
+                        );
+                    }
+                } else {
+                    results.errors.push('A felhasználónak nincs összekapcsolt Discord fiókja');
+                }
+            } else {
+                // Broadcast to channel
+                success = await discordService.sendSystemAnnouncement(
+                    title || 'Rendszerüzenet',
+                    message,
+                    channelId
                 );
-            }
-        } else {
-            // Broadcast to channel
-            success = await discordService.sendSystemAnnouncement(
-                title || 'Rendszerüzenet',
-                message,
-                channelId
-            );
 
-            if (success) {
-                await logSystemActivity(
-                    'DISCORD_ANNOUNCE',
-                    `Admin ${adminUser.username} sent Discord announcement: "${title || 'Rendszerüzenet'}"`,
-                    { adminId: adminUser.id, metadata: { channelId, messageLength: message.length } }
-                );
+                if (success) {
+                    await logSystemActivity(
+                        'DISCORD_ANNOUNCE',
+                        `Admin ${adminUser.username} sent Discord announcement: "${title || 'Rendszerüzenet'}"`,
+                        { adminId: adminUser.id, metadata: { channelId, messageLength: message.length } }
+                    );
+                }
             }
+            results.discord = success;
         }
 
-        if (!success && targetUserId) {
-             throw new ApiError('Nem sikerült elküldeni a privát üzenetet (lehet, hogy le van tiltva a DM)', 500, 'DM_FAILED');
+        // --- EMAIL LOGIC ---
+        if (channels.includes('email')) {
+             const subject = title || 'Rendszerüzenet';
+             const htmlContent = `
+                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+                    <h2 style="color: #3b82f6; border-bottom: 2px solid #eee; padding-bottom: 15px;">${subject}</h2>
+                    <div style="white-space: pre-wrap; margin: 20px 0; font-size: 16px; line-height: 1.5;">${message}</div>
+                    <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+                    <p style="font-size: 12px; color: #666; text-align: center;">
+                        Küldte: ${adminUser.username} | <strong>EsportHub Admin</strong><br>
+                        Ez egy automatikus rendszerüzenet. Kérjük ne válaszolj erre az emailre.
+                    </p>
+                </div>
+             `;
+             
+             if (targetUserId) {
+                 const targetUser = await prisma.user.findUnique({ where: { id: targetUserId }, select: { email: true } });
+                 if (targetUser?.email) {
+                     results.email = await emailService.sendEmail({
+                         to: targetUser.email,
+                         subject,
+                         html: htmlContent,
+                         type: 'SYSTEM'
+                     });
+                 } else {
+                     results.errors.push('A felhasználónak nincs email címe');
+                 }
+             } else {
+                 // Broadcast - Send to those enabled system notifications
+                 const users = await prisma.user.findMany({
+                     where: { emailNotifications: true, emailPrefSystem: true },
+                     select: { email: true }
+                 });
+                 
+                 let sentCount = 0;
+                 for (const u of users) {
+                     if (u.email) {
+                         const sent = await emailService.sendEmail({
+                             to: u.email,
+                             subject,
+                             html: htmlContent,
+                             type: 'ADMIN_BROADCAST'
+                         });
+                         if (sent) sentCount++;
+                     }
+                 }
+                 results.email = sentCount > 0;
+                 
+                 await logSystemActivity(
+                    'SYSTEM_ANNOUNCE' as any, // Using SYSTEM_ANNOUNCE logging
+                    `Admin ${adminUser.username} sent Email broadcast to ${sentCount} users`,
+                    { adminId: adminUser.id, metadata: { recipientCount: sentCount, subject } }
+                );
+             }
         }
 
         res.json({
-            success,
-            message: success ? 'Üzenet elküldve' : 'Nem sikerült elküldeni az üzenetet'
+            success: true,
+            results,
+            message: 'Üzenet küldése feldolgozva.'
         });
     })
 );
