@@ -381,7 +381,7 @@ export const deleteMatch = createAsyncThunk(
             throw new Error(result.error?.message || 'Failed to delete match');
         }
 
-        return matchId;
+        return { matchId, data: result.data, message: (result as any).message };
     }
 );
 
@@ -593,11 +593,12 @@ const tournamentsSlice = createSlice({
             })
             .addCase(deleteMatch.fulfilled, (state, action) => {
                 state.updateLoading = false;
-                // Remove match from current tournament
+                // Update match in current tournament (it's cleared, not removed)
                 if (state.currentTournament?.matches) {
-                    state.currentTournament.matches = state.currentTournament.matches.filter(
-                        m => m.id !== action.payload
-                    );
+                    const index = state.currentTournament.matches.findIndex(m => m.id === action.payload.matchId);
+                    if (index !== -1) {
+                        state.currentTournament.matches[index] = action.payload.data;
+                    }
                 }
             })
             .addCase(deleteMatch.rejected, (state, action) => {

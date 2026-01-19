@@ -719,17 +719,30 @@ matchesRouter.delete(
             throw new ApiError('A meccs nem található', 404, 'NOT_FOUND');
         }
 
-        // Delete the match
-        await prisma.match.delete({
+        // Instead of hard deleting, we clear the match data (participants, scores, status)
+        // enabling the bracket structure to remain intact.
+        const updatedMatch = await prisma.match.update({
             where: { id: req.params.id },
+            data: {
+                homeTeamId: null,
+                awayTeamId: null,
+                homeUserId: null,
+                awayUserId: null,
+                homeScore: null,
+                awayScore: null,
+                winnerId: null,
+                winnerUserId: null,
+                status: 'PENDING',
+                playedAt: null,
+            },
         });
 
-        // Log the deletion
+        // Log the clearing
         const p1 = match.homeUser?.username || match.homeTeam?.name || 'Home';
         const p2 = match.awayUser?.username || match.awayTeam?.name || 'Away';
         await logSystemActivity(
-            'MATCH_DELETE',
-            `Match deleted: ${p1} vs ${p2} in ${match.tournament.name}`,
+            'MATCH_CLEARED',
+            `Match cleared (participants removed): ${p1} vs ${p2} in ${match.tournament.name}`,
             {
                 userId: user.id,
                 metadata: {
@@ -745,7 +758,8 @@ matchesRouter.delete(
 
         res.json({
             success: true,
-            message: 'Meccs sikeresen törölve'
+            message: 'Meccs adatok törölve (a bracket hely megmaradt)',
+            data: updatedMatch
         });
     })
 );
