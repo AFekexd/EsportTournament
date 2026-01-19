@@ -171,10 +171,10 @@ const usersSlice = createSlice({
       })
       // Handle match deletion (soft delete update) from tournamentsSlice
       .addCase(deleteMatch.fulfilled, (state, action) => {
-        // Update the local match list to reflect the cleared match
-        const index = state.userMatches.findIndex(m => m.id === action.payload.matchId);
-        if (index !== -1) {
-          state.userMatches[index] = action.payload.data;
+        // If a match is cleared (soft deleted), the user is no longer a participant.
+        // So we remove it from their history list.
+        if (state.userMatches) {
+          state.userMatches = state.userMatches.filter(m => m.id !== action.payload.matchId);
         }
       });
   },

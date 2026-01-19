@@ -795,6 +795,13 @@ matchesRouter.delete(
                 status: 'PENDING',
                 playedAt: null,
             },
+            include: {
+                tournament: {
+                    include: {
+                        game: true,
+                    },
+                },
+            },
         });
 
         // Log the clearing
