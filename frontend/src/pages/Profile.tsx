@@ -931,7 +931,7 @@ export function ProfilePage() {
           </div>
           <div className="space-y-6">
             {/* Recent Tournaments */}
-            <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden h-full">
+            <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden h-half">
               <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
                 <h2 className="text-lg font-bold text-white flex items-center gap-2">
                   <Trophy size={20} className="text-purple-400" />
@@ -999,24 +999,25 @@ export function ProfilePage() {
                 )}
               </div>
             </div>
+            <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden h-half">
+              <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <Gamepad2 size={20} className="text-primary" />
+                  Mérkőzés Előzmények
+                </h2>
+              </div>
+              <div className="p-6">
+                <MatchHistory
+                  matches={userMatches}
+                  currentUserId={isOwnProfile ? user?.id || '' : (profileUser as any)?.id || ''}
+                  isAdmin={user?.role === 'ADMIN'}
+                />
+              </div>
+            </div>
           </div>
 
           {/* Match History Section */}
-          <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden">
-            <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
-              <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                <Gamepad2 size={20} className="text-primary" />
-                Mérkőzés Előzmények
-              </h2>
-            </div>
-            <div className="p-6">
-              <MatchHistory
-                matches={userMatches}
-                currentUserId={isOwnProfile ? user?.id || '' : (profileUser as any)?.id || ''}
-                isAdmin={user?.role === 'ADMIN'}
-              />
-            </div>
-          </div>
+
         </div>
       </div>
       {/* Avatar Lightbox */}
