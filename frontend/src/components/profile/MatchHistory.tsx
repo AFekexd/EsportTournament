@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {
-    Trophy,
     Calendar,
     User as UserIcon,
     Trash2,
     X,
-    Check
+    Check,
+    Trophy
 } from 'lucide-react';
 import { deleteMatch } from '../../store/slices/tournamentsSlice';
 import type { AppDispatch } from '../../store';
@@ -35,9 +35,9 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ matches, currentUserId, isA
 
     if (matches.length === 0) {
         return (
-            <div className="text-center py-12 text-gray-500 bg-[#1a1b26] rounded-xl border border-white/5">
-                <Trophy size={48} className="mx-auto mb-4 opacity-20" />
-                <p>Még nincsenek lejátszott meccsek.</p>
+            <div className="text-center py-8 text-gray-500 bg-[#0f1015]/30 rounded-xl border border-dashed border-white/5">
+                <Trophy size={32} className="mx-auto mb-3 opacity-20" />
+                <p className="text-sm">Még nincsenek lejátszott meccsek.</p>
             </div>
         );
     }
@@ -54,140 +54,141 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ matches, currentUserId, isA
         if (match.status !== 'COMPLETED') return 'pending';
         if (match.winnerUserId === currentUserId) return 'win';
         if (match.winnerUserId && match.winnerUserId !== currentUserId) return 'loss';
-        // Draw or unknown
         return 'draw';
     };
 
     return (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-2">
             {matches.map((match) => {
                 const opponent = getOpponent(match);
                 const result = getResult(match);
                 const isConfirmingDelete = deleteId === match.id;
+                const isHome = match.homeUserId === currentUserId;
+                const myScore = isHome ? match.homeScore : match.awayScore;
+                const oppScore = isHome ? match.awayScore : match.homeScore;
+
+                // Format colors based on result
+                const statusColor =
+                    result === 'win' ? 'text-green-500' :
+                        result === 'loss' ? 'text-red-500' :
+                            'text-gray-400';
+
+                const borderColor =
+                    result === 'win' ? 'border-l-green-500' :
+                        result === 'loss' ? 'border-l-red-500' :
+                            'border-l-gray-600';
+
+                const bgHover =
+                    result === 'win' ? 'hover:bg-green-500/5' :
+                        result === 'loss' ? 'hover:bg-red-500/5' :
+                            'hover:bg-white/5';
 
                 return (
                     <div
                         key={match.id}
                         className={`
-              relative overflow-hidden rounded-xl border transition-all duration-300
-              ${result === 'win' ? 'bg-green-500/5 border-green-500/10 hover:border-green-500/30' :
-                                result === 'loss' ? 'bg-red-500/5 border-red-500/10 hover:border-red-500/30' :
-                                    'bg-[#1a1b26] border-white/5 hover:border-white/10'}
-            `}
+                            relative flex items-center justify-between p-3 
+                            bg-[#0f1015]/30 border-y border-r border-l-4 border-white/5 
+                            rounded-r-lg rounded-l-[2px] transition-all duration-200 group
+                            ${borderColor} ${bgHover}
+                        `}
                     >
-                        <div className="p-4 flex flex-col md:flex-row items-center gap-4 md:gap-8">
-                            {/* Game & Tournament Info */}
-                            <div className="flex-1 text-center md:text-left min-w-[200px]">
-                                <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
-                                    {match.tournament.game?.imageUrl && (
-                                        <img
-                                            src={match.tournament.game.imageUrl}
-                                            alt={match.tournament.game.name}
-                                            className="w-4 h-4 rounded-sm object-cover"
-                                        />
-                                    )}
-                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wide">
-                                        {match.tournament.game?.name || 'Játék'}
+                        {/* Game & Date - Compact */}
+                        <div className="flex items-center gap-3 w-1/3 min-w-[140px]">
+                            <div className="w-10 h-10 rounded bg-[#1a1b26] border border-white/10 overflow-hidden shrink-0 flex items-center justify-center">
+                                {match.tournament.game?.imageUrl ? (
+                                    <img
+                                        src={match.tournament.game.imageUrl}
+                                        alt={match.tournament.game.name}
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <span className="text-xs font-bold text-gray-500">
+                                        {match.tournament.game?.name?.charAt(0) || 'G'}
                                     </span>
-                                </div>
+                                )}
+                            </div>
+                            <div className="flex flex-col overflow-hidden">
                                 <Link
                                     to={`/tournaments/${match.tournament.id}`}
-                                    className="font-bold text-white hover:text-primary transition-colors line-clamp-1"
+                                    className="font-bold text-sm text-white hover:text-primary transition-colors truncate"
+                                    title={match.tournament.name}
                                 >
                                     {match.tournament.name}
                                 </Link>
-                                <div className="text-xs text-gray-500 mt-1 flex items-center justify-center md:justify-start gap-2">
-                                    <Calendar size={12} />
-                                    <span>
-                                        {match.playedAt ? new Date(match.playedAt).toLocaleDateString('hu-HU') : 'Tervezett'}
+                                <div className="flex items-center gap-2 text-[10px] text-gray-500">
+                                    <span className="uppercase tracking-wide">
+                                        {match.playedAt ? new Date(match.playedAt).toLocaleDateString('hu-HU') : 'TBD'}
                                     </span>
                                     {match.round > 0 && (
                                         <>
-                                            <span>•</span>
+                                            <span className="w-0.5 h-0.5 rounded-full bg-gray-600"></span>
                                             <span>{match.round}. Kör</span>
                                         </>
                                     )}
                                 </div>
                             </div>
+                        </div>
 
-                            {/* Score Board */}
-                            <div className="flex items-center gap-6">
-                                <div className={`text-2xl font-black ${result === 'win' ? 'text-green-500' : result === 'loss' ? 'text-red-500' : 'text-gray-400'}`}>
-                                    {match.homeUserId === currentUserId ? match.homeScore ?? '-' : match.awayScore ?? '-'}
-                                </div>
-                                <div className="text-gray-600 font-bold text-xs uppercase tracking-widest">VS</div>
-                                <div className={`text-2xl font-black ${result === 'loss' ? 'text-green-500' : result === 'win' ? 'text-red-500' : 'text-gray-400'}`}>
-                                    {match.homeUserId === currentUserId ? match.awayScore ?? '-' : match.homeScore ?? '-'}
+                        {/* Score - Center Piece */}
+                        <div className="flex items-center justify-center gap-3 sm:gap-6 flex-1">
+                            <div className={`text-lg font-black ${statusColor} text-right w-8`}>
+                                {myScore ?? '-'}
+                            </div>
+                            <div className="text-[10px] font-bold text-gray-600 uppercase tracking-widest bg-[#1a1b26] px-1.5 py-0.5 rounded">
+                                VS
+                            </div>
+                            <div className={`text-lg font-black ${result === 'win' ? 'text-red-500' : result === 'loss' ? 'text-green-500' : 'text-gray-400'} text-left w-8`}>
+                                {oppScore ?? '-'}
+                            </div>
+                        </div>
+
+                        {/* Opponent & Actions */}
+                        <div className="flex items-center justify-end gap-3 w-1/3 min-w-[140px]">
+                            {/* Opponent Name & Avatar */}
+                            <div className="flex items-center gap-2 text-right">
+                                <span className="text-sm font-semibold text-gray-300 truncate max-w-[100px] sm:max-w-[150px]">
+                                    {(opponent as any).displayName || (opponent as any).username || (opponent as any).name || '?'}
+                                </span>
+                                <div className="w-8 h-8 rounded-full bg-[#1a1b26] border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
+                                    {(opponent as any).avatarUrl ? (
+                                        <img src={(opponent as any).avatarUrl} alt="avatar" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <UserIcon size={14} className="text-gray-500" />
+                                    )}
                                 </div>
                             </div>
 
-                            {/* Opponent Info */}
-                            <div className="flex-1 text-center md:text-right min-w-[200px] flex flex-col items-center md:items-end">
-                                <div className="text-xs text-gray-500 mb-1">Ellenfél</div>
-                                <div className="flex items-center gap-3">
-                                    <span className="font-bold text-white">
-                                        {(opponent as any).displayName || (opponent as any).username || (opponent as any).name || '?'}
-                                    </span>
-                                    <div className="w-8 h-8 rounded-full bg-[#0f1015] border border-white/10 flex items-center justify-center overflow-hidden">
-                                        {(opponent as any).avatarUrl ? (
-                                            <img src={(opponent as any).avatarUrl} alt="avatar" className="w-full h-full object-cover" />
-                                        ) : (
-                                            <UserIcon size={14} className="text-gray-400" />
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Status Badge */}
-                            <div className="w-24 flex justify-center">
-                                <div className={`
-                    px-3 py-1 rounded-full text-xs font-bold border uppercase tracking-wider
-                    ${result === 'win' ? 'bg-green-500/20 text-green-500 border-green-500/20' :
-                                        result === 'loss' ? 'bg-red-500/20 text-red-500 border-red-500/20' :
-                                            'bg-gray-500/20 text-gray-400 border-gray-500/20'}
-                `}>
-                                    {result === 'win' ? 'Győzelem' : result === 'loss' ? 'Vereség' : 'Függőben'}
-                                </div>
-                            </div>
-
-                            {/* Admin Actions */}
+                            {/* Delete Action (Admin Only) */}
                             {isAdmin && (
-                                <div className="flex items-center justify-center pl-4 border-l border-white/5">
+                                <div className="ml-2 pl-2 border-l border-white/10 flex items-center">
                                     {isConfirmingDelete ? (
-                                        <div className="flex gap-2 animate-in fade-in zoom-in slide-in-from-right-4 duration-200">
+                                        <div className="flex items-center gap-1 animate-in fade-in slide-in-from-right-2 duration-200">
                                             <button
                                                 onClick={() => handleDelete(match.id)}
-                                                className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg shadow-lg hover:shadow-red-500/20 transition-all"
-                                                title="Megerősítés"
+                                                className="p-1.5 bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-white rounded transition-colors"
                                             >
-                                                <Check size={16} />
+                                                <Check size={14} />
                                             </button>
                                             <button
                                                 onClick={() => setDeleteId(null)}
-                                                className="p-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-all"
-                                                title="Mégse"
+                                                className="p-1.5 bg-gray-700/50 text-gray-400 hover:bg-gray-600 hover:text-white rounded transition-colors"
                                             >
-                                                <X size={16} />
+                                                <X size={14} />
                                             </button>
                                         </div>
                                     ) : (
                                         <button
                                             onClick={() => setDeleteId(match.id)}
-                                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                                            className="p-1.5 text-gray-600 hover:text-red-500 hover:bg-red-500/10 rounded transition-colors opacity-0 group-hover:opacity-100"
                                             title="Meccs törlése"
                                         >
-                                            <Trash2 size={18} />
+                                            <Trash2 size={14} />
                                         </button>
                                     )}
                                 </div>
                             )}
                         </div>
-
-                        {/* Decoration for status */}
-                        <div className={`absolute left-0 top-0 bottom-0 w-1 ${result === 'win' ? 'bg-green-500' :
-                            result === 'loss' ? 'bg-red-500' :
-                                'bg-gray-600'
-                            }`}></div>
                     </div>
                 );
             })}

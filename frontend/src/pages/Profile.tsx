@@ -45,7 +45,6 @@ export function ProfilePage() {
   const { user, isAuthenticated } = useAuth();
   const dispatch = useAppDispatch();
 
-  const { tournaments } = useAppSelector((state) => state.tournaments);
   const { games, gameRanks, userRanks } = useAppSelector(
     (state) => state.games
   );
@@ -216,12 +215,16 @@ export function ProfilePage() {
     : (currentProfile?.teams || []).slice(0, 3);
 
   // Tournaments logic
-  // Existing code used global tournaments list. That's probably wrong for "My Tournaments".
-  // Since we don't have user's tournaments in public profile properly fetched (backend returns empty for now or needs fix),
-  // we will use what we have. For public profile, we added teams but not tournaments list in backend.
-  // Actually, I didn't add tournaments list to backend public profile response yet!
-  // I only added "teams". I should fix backend to return tournaments too, or just leave it empty for now.
-  const effectiveTournaments = isOwnProfile ? tournaments.slice(0, 3) : [];
+  // We derive tournaments from user matches to ensure we show what they actually participated in
+  const derivedTournaments =
+    userMatches?.reduce((acc: any[], match) => {
+      if (!acc.find((t) => t.id === match.tournament.id)) {
+        acc.push(match.tournament);
+      }
+      return acc;
+    }, []) || [];
+
+  const effectiveTournaments = derivedTournaments.slice(0, 3);
 
   const getRoleBadgeStyle = (role: string | undefined) => {
     switch (role) {
@@ -931,7 +934,7 @@ export function ProfilePage() {
           </div>
           <div className="space-y-6">
             {/* Recent Tournaments */}
-            <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden h-half">
+            <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden h-full">
               <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
                 <h2 className="text-lg font-bold text-white flex items-center gap-2">
                   <Trophy size={20} className="text-purple-400" />
@@ -997,21 +1000,6 @@ export function ProfilePage() {
                     </Link>
                   ))
                 )}
-              </div>
-            </div>
-            <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden h-half">
-              <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <Gamepad2 size={20} className="text-primary" />
-                  Mérkőzés Előzmények
-                </h2>
-              </div>
-              <div className="p-6">
-                <MatchHistory
-                  matches={userMatches}
-                  currentUserId={isOwnProfile ? user?.id || '' : (profileUser as any)?.id || ''}
-                  isAdmin={user?.role === 'ADMIN'}
-                />
               </div>
             </div>
           </div>

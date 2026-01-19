@@ -21,7 +21,7 @@ interface EmailTemplateOptions {
  */
 export function generateEmailTemplate(options: EmailTemplateOptions): string {
     const { title, preheader, content, button, footer } = options;
-    
+
     const buttonHtml = button ? `
         <table border="0" cellpadding="0" cellspacing="0" style="margin: 24px 0;">
             <tr>
@@ -139,12 +139,13 @@ export function tournamentInviteTemplate(tournamentName: string, tournamentUrl: 
 }
 
 export function newTournamentTemplate(tournamentName: string, tournamentUrl: string, startDate: Date): string {
-    const formattedDate = startDate.toLocaleDateString('hu-HU', { 
-        year: 'numeric', 
-        month: 'long', 
+    const formattedDate = startDate.toLocaleDateString('hu-HU', {
+        year: 'numeric',
+        month: 'long',
         day: 'numeric',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
+        timeZone: 'Europe/Budapest'
     });
 
     return generateEmailTemplate({
@@ -176,7 +177,8 @@ export function matchReminderTemplate(tournamentName: string, opponent: string, 
         month: 'short',
         day: 'numeric',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
+        timeZone: 'Europe/Budapest'
     });
 
     return generateEmailTemplate({
@@ -273,12 +275,7 @@ export function bookingConfirmationTemplate(computerName: string, date: string, 
                 </table>
             </div>
             
-            ${qrCode ? `
-            <div style="text-align: center; margin-bottom: 16px;">
-                <p style="margin: 0 0 12px; font-size: 14px; color: #888;">QR kód a bejelentkezéshez:</p>
-                <p style="margin: 0; font-family: monospace; font-size: 18px; color: #8b5cf6; letter-spacing: 2px;">${qrCode}</p>
-            </div>
-            ` : ''}
+          
             
             <p style="margin: 0; color: #666; font-size: 13px; text-align: center;">
                 ⚠️ Kérjük, érkezz időben! A foglalás automatikusan törlődik, ha 15 perccel a kezdés után nem jelentkezel be.
@@ -414,14 +411,14 @@ export function weeklyDigestTemplate(
                     <a href="${t.url}" style="color: #8b5cf6; text-decoration: none; font-weight: 600;">${t.name}</a>
                 </td>
                 <td style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #888; text-align: right;">
-                    ${t.startDate.toLocaleDateString('hu-HU', { month: 'short', day: 'numeric' })}
+                    ${t.startDate.toLocaleDateString('hu-HU', { month: 'short', day: 'numeric', timeZone: 'Europe/Budapest' })}
                 </td>
             </tr>
         `).join('')
         : `<tr><td colspan="2" style="padding: 16px; color: #666; text-align: center;">Nincsenek közelgő versenyek</td></tr>`;
 
-    const winRate = stats.totalMatches > 0 
-        ? Math.round((stats.wins / stats.totalMatches) * 100) 
+    const winRate = stats.totalMatches > 0
+        ? Math.round((stats.wins / stats.totalMatches) * 100)
         : 0;
 
     return generateEmailTemplate({
