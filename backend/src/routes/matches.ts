@@ -294,8 +294,38 @@ matchesRouter.patch(
 
                     // Loser drops to lower bracket
                     if (loserId) {
-                        const lowerRound = match.round === 1 ? 1 : match.round * 2 - 2;
-                        const lowerPosition = Math.ceil(match.position / 2);
+                        // Calculate which lower bracket round and position the loser goes to
+                        // Double Elimination Lower Bracket structure:
+                        // - LR1: Upper R1 losers fight each other
+                        // - LR2: LR1 winners fight Upper R2 losers
+                        // - LR3: LR2 winners fight each other  
+                        // - LR4: LR3 winners fight Upper R3 losers
+                        // Pattern: Upper Round N (N>1) losers go to Lower Round 2*(N-1)
+                        //          and they are placed in the AWAY slot (home is for LB advancing winners)
+
+                        let lowerRound: number;
+                        let lowerPosition: number;
+                        let isHomeSlot: boolean;
+
+                        if (match.round === 1) {
+                            // Upper R1 losers: go to LR1, positions are halved
+                            // Upper position 1,2 -> LR1 position 1; Upper 3,4 -> LR1 position 2
+                            lowerRound = 1;
+                            lowerPosition = Math.ceil(match.position / 2);
+                            // Odd upper positions go to home, even go to away
+                            isHomeSlot = match.position % 2 === 1;
+                        } else {
+                            // Upper R2+ losers: go to even numbered lower rounds
+                            // They fight against LB advancing winners, so they go to AWAY slot
+                            lowerRound = (match.round - 1) * 2;
+                            // Position maps 1:1 since upper rounds have the same or fewer matches
+                            lowerPosition = match.position;
+                            // Upper bracket losers in later rounds go to AWAY slot
+                            // (LB winners from previous round are in HOME slot)
+                            isHomeSlot = false;
+                        }
+
+                        console.log(`🔽 Lower bracket drop: Upper R${match.round} P${match.position} -> Lower R${lowerRound} P${lowerPosition} (${isHomeSlot ? 'HOME' : 'AWAY'})`);
 
                         const lowerMatch = await prisma.match.findFirst({
                             where: {
@@ -307,44 +337,125 @@ matchesRouter.patch(
                         });
 
                         if (lowerMatch) {
-                            const updateData = isSoloTournament
-                                ? (lowerMatch.homeUserId ? { awayUserId: loserId } : { homeUserId: loserId })
-                                : (lowerMatch.homeTeamId ? { awayTeamId: loserId } : { homeTeamId: loserId });
+                            // Check if the target slot is already occupied to prevent overwriting
+                            const currentHomeOccupied = isSoloTournament ? lowerMatch.homeUserId : lowerMatch.homeTeamId;
+                            const currentAwayOccupied = isSoloTournament ? lowerMatch.awayUserId : lowerMatch.awayTeamId;
 
-                            await prisma.match.update({
-                                where: { id: lowerMatch.id },
-                                data: updateData,
-                            });
+                            console.log(`   Target match ${lowerMatch.id}: Home=${currentHomeOccupied || 'empty'}, Away=${currentAwayOccupied || 'empty'}`);
+
+                            let updateData: any;
+                            if (isHomeSlot && !currentHomeOccupied) {
+                                // Prefer home slot if designated and free
+                                updateData = isSoloTournament
+                                    ? { homeUserId: loserId }
+                                    : { homeTeamId: loserId };
+                            } else if (!isHomeSlot && !currentAwayOccupied) {
+                                // Prefer away slot if designated and free
+                                updateData = isSoloTournament
+                                    ? { awayUserId: loserId }
+                                    : { awayTeamId: loserId };
+                            } else if (!currentHomeOccupied) {
+                                // Fallback to home if designated slot taken
+                                updateData = isSoloTournament
+                                    ? { homeUserId: loserId }
+                                    : { homeTeamId: loserId };
+                                console.log(`   ⚠️ Designated slot taken, using HOME instead`);
+                            } else if (!currentAwayOccupied) {
+                                // Fallback to away if home taken
+                                updateData = isSoloTournament
+                                    ? { awayUserId: loserId }
+                                    : { awayTeamId: loserId };
+                                console.log(`   ⚠️ Designated slot taken, using AWAY instead`);
+                            } else {
+                                // Both slots are occupied - this is an error state
+                                console.error(`   ❌ ERROR: Lower bracket match ${lowerMatch.id} already has both participants filled!`);
+                                // Don't update to avoid corrupting data
+                            }
+
+                            if (updateData) {
+                                await prisma.match.update({
+                                    where: { id: lowerMatch.id },
+                                    data: updateData,
+                                });
+                                console.log(`   ✅ Loser placed successfully`);
+                            }
+                        } else {
+                            console.error(`   ❌ ERROR: Could not find lower bracket match at R${lowerRound} P${lowerPosition}`);
                         }
                     }
 
                 } else if (match.bracketType === 'LOWER') {
                     // Winner advances in lower bracket
                     const nextLowerRound = match.round + 1;
+
+                    // Lower bracket structure:
+                    // - Odd rounds (1, 3, 5...): After this, upper losers will join in even rounds
+                    // - Even rounds (2, 4, 6...): Upper losers participate here
+                    // Position calculation:
+                    // - Even round winners: halve positions (consolidation)
+                    // - Odd round winners: same position (upper losers will join as AWAY)
                     const nextPosition = match.round % 2 === 0
-                        ? Math.ceil(match.position / 2)
-                        : match.position;
+                        ? Math.ceil(match.position / 2)  // Even round: halve positions (consolidation)
+                        : match.position;                // Odd round: same position
+
+                    // Slot determination:
+                    // - From odd rounds: LB winners go to HOME (upper losers will come as AWAY)
+                    // - From even rounds: consolidated winners, odd pos -> HOME, even pos -> AWAY
+                    const isHomeSlot = match.round % 2 === 1
+                        ? true                           // Odd rounds: always HOME (upper losers will be AWAY)
+                        : match.position % 2 === 1;      // Even rounds: odd pos -> home
+
+                    console.log(`🔼 Lower bracket advance: LR${match.round} P${match.position} -> LR${nextLowerRound} P${nextPosition} (${isHomeSlot ? 'HOME' : 'AWAY'})`);
 
                     const nextLowerMatch = await prisma.match.findFirst({
                         where: {
                             tournamentId: match.tournamentId,
                             bracketType: 'LOWER',
                             round: nextLowerRound,
+                            position: nextPosition,
                         },
-                        orderBy: { position: 'asc' },
                     });
 
                     if (nextLowerMatch) {
-                        const updateData = isSoloTournament
-                            ? (nextLowerMatch.homeUserId ? { awayUserId: actualWinnerUserId } : { homeUserId: actualWinnerUserId })
-                            : (nextLowerMatch.homeTeamId ? { awayTeamId: actualWinnerId } : { homeTeamId: actualWinnerId });
+                        // Check current occupancy to avoid overwriting
+                        const currentHomeOccupied = isSoloTournament ? nextLowerMatch.homeUserId : nextLowerMatch.homeTeamId;
+                        const currentAwayOccupied = isSoloTournament ? nextLowerMatch.awayUserId : nextLowerMatch.awayTeamId;
 
-                        await prisma.match.update({
-                            where: { id: nextLowerMatch.id },
-                            data: updateData,
-                        });
+                        console.log(`   Target match ${nextLowerMatch.id}: Home=${currentHomeOccupied || 'empty'}, Away=${currentAwayOccupied || 'empty'}`);
+
+                        let updateData: any;
+                        if (isHomeSlot && !currentHomeOccupied) {
+                            updateData = isSoloTournament
+                                ? { homeUserId: actualWinnerUserId }
+                                : { homeTeamId: actualWinnerId };
+                        } else if (!isHomeSlot && !currentAwayOccupied) {
+                            updateData = isSoloTournament
+                                ? { awayUserId: actualWinnerUserId }
+                                : { awayTeamId: actualWinnerId };
+                        } else if (!currentHomeOccupied) {
+                            updateData = isSoloTournament
+                                ? { homeUserId: actualWinnerUserId }
+                                : { homeTeamId: actualWinnerId };
+                            console.log(`   ⚠️ Designated slot taken, using HOME instead`);
+                        } else if (!currentAwayOccupied) {
+                            updateData = isSoloTournament
+                                ? { awayUserId: actualWinnerUserId }
+                                : { awayTeamId: actualWinnerId };
+                            console.log(`   ⚠️ Designated slot taken, using AWAY instead`);
+                        } else {
+                            console.error(`   ❌ ERROR: Lower bracket match ${nextLowerMatch.id} already has both participants filled!`);
+                        }
+
+                        if (updateData) {
+                            await prisma.match.update({
+                                where: { id: nextLowerMatch.id },
+                                data: updateData,
+                            });
+                            console.log(`   ✅ Winner advanced successfully`);
+                        }
                     } else {
                         // Lower bracket final - winner goes to grand final
+                        console.log(`🏆 Lower bracket winner going to Grand Final`);
                         const grandFinal = await prisma.match.findFirst({
                             where: {
                                 tournamentId: match.tournamentId,
@@ -358,6 +469,9 @@ matchesRouter.patch(
                                     ? { awayUserId: actualWinnerUserId }
                                     : { awayTeamId: actualWinnerId },
                             });
+                            console.log(`   ✅ Lower bracket champion placed in Grand Final (AWAY)`);
+                        } else {
+                            console.error(`   ❌ ERROR: Could not find Grand Final match!`);
                         }
                     }
 

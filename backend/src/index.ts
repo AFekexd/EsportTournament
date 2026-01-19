@@ -56,6 +56,11 @@ const corsOrigins = process.env.CORS_ORIGINS
   ];
 
 const app: express.Express = express();
+
+// Trust proxy - kritikus a helyes kliens IP meghatározásához reverse proxy/Docker mögött
+// Ez lehetővé teszi az X-Forwarded-For header használatát
+app.set('trust proxy', true);
+
 const httpServer = createServer(app); // Create HTTP server for Socket.IO
 const io = new Server(httpServer, {
   cors: {
@@ -74,13 +79,25 @@ matchReminderService.startScheduler();
 
 const PORT = process.env.PORT || 3000;
 
+// Import shared IP utility
+import { getClientIp } from './utils/ip.js';
+
 // Rate limiting - magasabb limit iskolai környezethez (NAT mögött sok felhasználó)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 perc
-  max: 1000, // max 1000 request per IP (iskolai NAT miatt magasabb)
+  max: 1500, // max 1000 request per IP (iskolai NAT miatt magasabb)
   message: { error: 'Túl sok kérés, próbáld újra később' },
   standardHeaders: true,
   legacyHeaders: false,
+  // Use real client IP instead of proxy IP
+  keyGenerator: (req) => {
+    const clientIp = getClientIp(req);
+    // Log occasionally for debugging (only first request from each IP)
+    if (Math.random() < 0.01) { // 1% chance to log
+      console.log(`[RATE-LIMIT] Client IP: ${clientIp} (X-Forwarded-For: ${req.headers['x-forwarded-for'] || 'none'})`);
+    }
+    return clientIp;
+  },
 });
 
 // Middleware

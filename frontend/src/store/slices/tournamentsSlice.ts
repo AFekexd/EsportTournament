@@ -285,7 +285,7 @@ export const deleteBracket = createAsyncThunk(
 
 export const updateMatch = createAsyncThunk(
     'tournaments/updateMatch',
-    async ({ matchId, data }: { matchId: string; data: { homeScore?: number; awayScore?: number; winnerId?: string } }) => {
+    async ({ matchId, data }: { matchId: string; data: { homeScore?: number; awayScore?: number; winnerId?: string; winnerUserId?: string } }) => {
         const token = getToken();
 
         if (!token) throw new Error('Nincs bejelentkezve!');

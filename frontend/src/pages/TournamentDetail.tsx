@@ -378,6 +378,7 @@ export function TournamentDetailPage() {
     homeScore?: number;
     awayScore?: number;
     winnerId?: string;
+    winnerUserId?: string;
   }) => {
     if (!selectedMatch) return;
 
