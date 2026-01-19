@@ -289,18 +289,17 @@ export function ProfilePage() {
         <div className="relative overflow-hidden rounded-2xl bg-[#1a1b26] border border-white/5 shadow-2xl">
           {/* Banner */}
           <div
-            className={`h-64 relative group ${!topGameImage ? "bg-[#0f1015]" : ""
-              }`}
-            style={
-              topGameImage
-                ? {
-                  backgroundImage: `url(${topGameImage})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }
-                : {}
-            }
+            className={`h-72 md:h-80 relative group ${!topGameImage ? "bg-[#0f1015]" : ""}`}
           >
+            {/* Background Image */}
+            {topGameImage && (
+              <img
+                src={topGameImage}
+                alt="Profile Banner"
+                className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 ease-out will-change-transform "
+              />
+            )}
+
             {!topGameImage && (
               <>
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-900/40 via-primary/20 to-blue-900/40"></div>
@@ -311,9 +310,11 @@ export function ProfilePage() {
                 </div>
               </>
             )}
+
+            {/* Overlay */}
             <div
               className={`absolute inset-0 ${topGameImage
-                ? "bg-black/40 backdrop-blur-[2px]"
+                ? "bg-gradient-to-t from-[#1a1b26] via-black/30 to-black/10"
                 : "bg-gradient-to-t from-[#1a1b26] via-transparent to-transparent"
                 }`}
             ></div>
@@ -410,7 +411,7 @@ export function ProfilePage() {
                   <div className="flex flex-col md:flex-row items-center gap-4 text-gray-400">
                     {profileUser?.displayName && (
                       <span className="font-medium text-lg text-primary">
-                        @{profileUser?.username}
+                        {profileUser?.username?.includes('@') ? profileUser?.username : `@${profileUser?.username}`}
                       </span>
                     )}
 
@@ -958,21 +959,38 @@ export function ProfilePage() {
       {/* Avatar Lightbox */}
       {isAvatarOpen && profileUser?.avatarUrl && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm animate-in fade-in duration-200"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-md animate-in fade-in duration-300"
           onClick={() => setIsAvatarOpen(false)}
         >
+          {/* Close button */}
           <button
-            className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
+            className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 rounded-full text-white transition-all hover:scale-110 hover:rotate-90 duration-300 z-10"
             onClick={() => setIsAvatarOpen(false)}
           >
             <X size={24} />
           </button>
-          <img
-            src={profileUser.avatarUrl}
-            alt={profileUser.displayName || "Avatar"}
-            className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl animate-in zoom-in-50 duration-300"
+
+          {/* Image container with frame */}
+          <div
+            className="relative p-1 bg-gradient-to-br from-primary via-purple-500 to-pink-500 rounded-2xl shadow-[0_0_100px_rgba(124,58,237,0.3)] animate-in zoom-in-75 duration-300"
             onClick={(e) => e.stopPropagation()}
-          />
+          >
+            <img
+              src={profileUser.avatarUrl}
+              alt={profileUser.displayName || "Avatar"}
+              className="min-w-[300px] min-h-[300px] sm:min-w-[400px] sm:min-h-[400px] md:min-w-[500px] md:min-h-[500px] max-w-[90vw] max-h-[85vh] w-auto h-auto object-cover rounded-xl"
+            />
+          </div>
+
+          {/* Username below image */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
+            <p className="text-white font-bold text-lg">{profileUser.displayName || profileUser.username}</p>
+            {profileUser.displayName && (
+              <p className="text-gray-400 text-sm">
+                {profileUser.username?.includes('@') ? profileUser.username : `@${profileUser.username}`}
+              </p>
+            )}
+          </div>
         </div>
       )}
     </div>

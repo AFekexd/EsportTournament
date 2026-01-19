@@ -30,6 +30,8 @@ import {
   unregisterFromTournament, // Imported
   generateBracket,
   updateMatch,
+  resetMatch,
+  deleteMatch,
   updateEntryStats,
   deleteTournament,
   deleteBracket,
@@ -386,8 +388,44 @@ export function TournamentDetailPage() {
       await dispatch(updateMatch({ matchId: selectedMatch.id, data })).unwrap();
       setShowMatchModal(false);
       setSelectedMatch(null);
+      // Refresh tournament to get updated bracket
+      if (currentTournament) {
+        dispatch(fetchTournament(currentTournament.id));
+      }
     } catch (err) {
       console.error("Failed to update match:", err);
+    }
+  };
+
+  const handleMatchReset = async () => {
+    if (!selectedMatch) return;
+
+    try {
+      await dispatch(resetMatch(selectedMatch.id)).unwrap();
+      setShowMatchModal(false);
+      setSelectedMatch(null);
+      // Refresh tournament to get updated bracket
+      if (currentTournament) {
+        dispatch(fetchTournament(currentTournament.id));
+      }
+    } catch (err) {
+      console.error("Failed to reset match:", err);
+    }
+  };
+
+  const handleMatchDelete = async () => {
+    if (!selectedMatch) return;
+
+    try {
+      await dispatch(deleteMatch(selectedMatch.id)).unwrap();
+      setShowMatchModal(false);
+      setSelectedMatch(null);
+      // Refresh tournament to get updated bracket
+      if (currentTournament) {
+        dispatch(fetchTournament(currentTournament.id));
+      }
+    } catch (err) {
+      console.error("Failed to delete match:", err);
     }
   };
 
@@ -1596,7 +1634,10 @@ export function TournamentDetailPage() {
               setSelectedMatch(null);
             }}
             onSave={handleMatchUpdate}
-            isLoading={isLoading}
+            onReset={handleMatchReset}
+            onDelete={handleMatchDelete}
+            isLoading={updateLoading}
+            isAdmin={user?.role === "ADMIN"}
           />
         )}
         <ConfirmationModal

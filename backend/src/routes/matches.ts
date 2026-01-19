@@ -602,3 +602,150 @@ matchesRouter.get(
         res.json({ success: true, data: matches });
     })
 );
+
+// Reset match result (admin only) - clears winner, scores, and status back to PENDING
+matchesRouter.patch(
+    '/:id/reset',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user || user.role !== 'ADMIN') {
+            throw new ApiError('Csak adminisztrátorok resetelhetik a meccseket', 403, 'FORBIDDEN');
+        }
+
+        const match = await prisma.match.findUnique({
+            where: { id: req.params.id },
+            include: {
+                homeTeam: true,
+                awayTeam: true,
+                homeUser: true,
+                awayUser: true,
+                tournament: { include: { game: true } },
+            },
+        });
+
+        if (!match) {
+            throw new ApiError('A meccs nem található', 404, 'NOT_FOUND');
+        }
+
+        const isSoloTournament = match.tournament.game?.teamSize === 1;
+
+        // If match had a winner, we may need to undo ELO changes
+        // Note: This is a simplified approach - in production you'd want to track ELO history
+        const hadResult = match.status === 'COMPLETED' && (match.winnerId || match.winnerUserId);
+
+        // Reset the match
+        const updatedMatch = await prisma.match.update({
+            where: { id: req.params.id },
+            data: {
+                homeScore: null,
+                awayScore: null,
+                winnerId: null,
+                winnerUserId: null,
+                status: 'PENDING',
+                playedAt: null,
+            },
+            include: {
+                homeTeam: true,
+                awayTeam: true,
+                homeUser: true,
+                awayUser: true,
+            },
+        });
+
+        // Log the reset
+        const p1 = match.homeUser?.username || match.homeTeam?.name || 'Home';
+        const p2 = match.awayUser?.username || match.awayTeam?.name || 'Away';
+        await logSystemActivity(
+            'MATCH_RESET',
+            `Match reset: ${p1} vs ${p2} in ${match.tournament.name}`,
+            {
+                userId: user.id,
+                metadata: {
+                    matchId: match.id,
+                    tournamentId: match.tournamentId,
+                    tournamentName: match.tournament.name,
+                    previousResult: {
+                        homeScore: match.homeScore,
+                        awayScore: match.awayScore,
+                        winnerId: match.winnerId,
+                        winnerUserId: match.winnerUserId
+                    }
+                }
+            }
+        );
+
+        // TODO: Consider removing winner from next round match if they've been placed there
+        // This is complex and could be implemented as a separate "cascade reset" feature
+
+        res.json({
+            success: true,
+            data: updatedMatch,
+            message: hadResult
+                ? 'Meccs resetelve. Figyelem: Az ELO változások nem lettek automatikusan visszavonva.'
+                : 'Meccs resetelve.'
+        });
+    })
+);
+
+// Delete match (admin only)
+matchesRouter.delete(
+    '/:id',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user || user.role !== 'ADMIN') {
+            throw new ApiError('Csak adminisztrátorok törölhetnek meccseket', 403, 'FORBIDDEN');
+        }
+
+        const match = await prisma.match.findUnique({
+            where: { id: req.params.id },
+            include: {
+                homeTeam: true,
+                awayTeam: true,
+                homeUser: true,
+                awayUser: true,
+                tournament: true,
+            },
+        });
+
+        if (!match) {
+            throw new ApiError('A meccs nem található', 404, 'NOT_FOUND');
+        }
+
+        // Delete the match
+        await prisma.match.delete({
+            where: { id: req.params.id },
+        });
+
+        // Log the deletion
+        const p1 = match.homeUser?.username || match.homeTeam?.name || 'Home';
+        const p2 = match.awayUser?.username || match.awayTeam?.name || 'Away';
+        await logSystemActivity(
+            'MATCH_DELETE',
+            `Match deleted: ${p1} vs ${p2} in ${match.tournament.name}`,
+            {
+                userId: user.id,
+                metadata: {
+                    matchId: match.id,
+                    tournamentId: match.tournamentId,
+                    tournamentName: match.tournament.name,
+                    bracketType: match.bracketType,
+                    round: match.round,
+                    position: match.position
+                }
+            }
+        );
+
+        res.json({
+            success: true,
+            message: 'Meccs sikeresen törölve'
+        });
+    })
+);

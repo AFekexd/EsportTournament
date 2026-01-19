@@ -335,6 +335,55 @@ export const updateEntryStats = createAsyncThunk(
     }
 );
 
+// Reset match result (admin only)
+export const resetMatch = createAsyncThunk(
+    'tournaments/resetMatch',
+    async (matchId: string) => {
+        const token = getToken();
+
+        if (!token) throw new Error('Nincs bejelentkezve!');
+
+        const response = await fetch(`${API_URL}/matches/${matchId}/reset`, {
+            method: 'PATCH',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        const result: ApiResponse<any> = await response.json();
+
+        if (!result.success) {
+            throw new Error(result.error?.message || 'Failed to reset match');
+        }
+
+        return { matchId, data: result.data, message: (result as any).message };
+    }
+);
+
+// Delete match (admin only)
+export const deleteMatch = createAsyncThunk(
+    'tournaments/deleteMatch',
+    async (matchId: string) => {
+        const token = getToken();
+
+        if (!token) throw new Error('Nincs bejelentkezve!');
+
+        const response = await fetch(`${API_URL}/matches/${matchId}`, {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        const result: ApiResponse<any> = await response.json();
+
+        if (!result.success) {
+            throw new Error(result.error?.message || 'Failed to delete match');
+        }
+
+        return matchId;
+    }
+);
 
 const tournamentsSlice = createSlice({
     name: 'tournaments',
@@ -517,6 +566,43 @@ const tournamentsSlice = createSlice({
                         state.currentTournament._count.entries = Math.max(0, state.currentTournament._count.entries - 1);
                     }
                 }
+            })
+            // Reset match
+            .addCase(resetMatch.pending, (state) => {
+                state.updateLoading = true;
+                state.error = null;
+            })
+            .addCase(resetMatch.fulfilled, (state, action) => {
+                state.updateLoading = false;
+                // Update match in current tournament
+                if (state.currentTournament?.matches) {
+                    const index = state.currentTournament.matches.findIndex(m => m.id === action.payload.matchId);
+                    if (index !== -1) {
+                        state.currentTournament.matches[index] = action.payload.data;
+                    }
+                }
+            })
+            .addCase(resetMatch.rejected, (state, action) => {
+                state.updateLoading = false;
+                state.error = action.error.message || 'Failed to reset match';
+            })
+            // Delete match
+            .addCase(deleteMatch.pending, (state) => {
+                state.updateLoading = true;
+                state.error = null;
+            })
+            .addCase(deleteMatch.fulfilled, (state, action) => {
+                state.updateLoading = false;
+                // Remove match from current tournament
+                if (state.currentTournament?.matches) {
+                    state.currentTournament.matches = state.currentTournament.matches.filter(
+                        m => m.id !== action.payload
+                    );
+                }
+            })
+            .addCase(deleteMatch.rejected, (state, action) => {
+                state.updateLoading = false;
+                state.error = action.error.message || 'Failed to delete match';
             });
     },
 });
