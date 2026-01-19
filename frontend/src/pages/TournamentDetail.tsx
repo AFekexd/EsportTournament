@@ -79,7 +79,7 @@ export function TournamentDetailPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { user, isAuthenticated } = useAuth();
-  const { currentTournament, isLoading } = useAppSelector(
+  const { currentTournament, isLoading, updateLoading } = useAppSelector(
     (state) => state.tournaments
   );
   const { myTeams, teams: searchedTeams } = useAppSelector(
@@ -1177,11 +1177,19 @@ export function TournamentDetailPage() {
               </div>
             </div>
             <div
-              className={`overflow-auto flex flex-col ${isFullscreen
+              className={`overflow-auto flex flex-col relative ${isFullscreen
                 ? "h-[calc(100vh-60px)]"
                 : "min-h-[600px] max-h-[800px]"
                 }`}
             >
+              {/* Loading Overlay */}
+              {updateLoading && (
+                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-50 flex flex-col items-center justify-center">
+                  <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
+                  <p className="text-white font-semibold text-lg">Frissítés...</p>
+                  <p className="text-gray-400 text-sm mt-1">Kérjük várjon, a bracket frissül</p>
+                </div>
+              )}
               <TournamentBracket
                 tournament={currentTournament}
                 onMatchClick={handleMatchClick}
@@ -1189,445 +1197,445 @@ export function TournamentDetailPage() {
             </div>
           </div>
         )}
-      </div>
 
-      {showRegisterModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
-          onClick={() => setShowRegisterModal(false)}
-        >
+        {showRegisterModal && (
           <div
-            className="bg-[#0f1016]/95 backdrop-blur-xl rounded-2xl border border-white/10 shadow-[0_0_50px_-12px_rgba(124,58,237,0.25)] w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            onClick={() => setShowRegisterModal(false)}
           >
-            <div className="p-6 border-b border-white/10 flex justify-between items-center bg-gradient-to-r from-primary/10 to-transparent">
-              <h2 className="text-xl font-bold text-white flex items-center gap-3">
-                <UserPlus className="text-primary" size={24} />
-                Csapat regisztrálása
-              </h2>
-              <button
-                className="text-gray-400 hover:text-white hover:bg-white/10 p-2 rounded-full transition-colors"
-                onClick={() => setShowRegisterModal(false)}
-              >
-                <X size={20} />
-              </button>
-            </div>
-            <div className="p-6 overflow-y-auto max-h-[70vh]">
-              {(user?.role === "ADMIN" || user?.role === "ORGANIZER") && (
-                <div className="mb-6 bg-blue-500/10 border border-blue-500/20 p-4 rounded-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Shield size={16} className="text-blue-400" />
-                    <span className="text-sm font-bold text-blue-400">
-                      Adminisztrátori mód
-                    </span>
-                  </div>
-                  <div className="space-y-3">
-                    {requiredTeamSize === 1 ? (
-                      // User Search for 1v1
-                      <>
-                        <input
-                          type="text"
-                          placeholder="Felhasználó keresése..."
-                          className="w-full bg-black/40 border border-white/10 rounded px-3 py-2 text-white/90 text-sm focus:outline-none focus:border-blue-500/50"
-                          value={userSearchQuery}
-                          onChange={async (e) => {
-                            const val = e.target.value;
-                            setUserSearchQuery(val);
-                            if (val.length >= 2) {
-                              // Dynamically importing or assuming it's available?
-                              // I will need to update imports.
-                              // For now, let's use a quick fetch here or assume dispatch action works if imported.
-                              // I will fix imports in next step.
-                              try {
-                                const result = await dispatch(
-                                  searchUsers(val)
-                                ).unwrap();
-                                setSearchedUsers(result);
-                              } catch (err) {
-                                console.error(err);
+            <div
+              className="bg-[#0f1016]/95 backdrop-blur-xl rounded-2xl border border-white/10 shadow-[0_0_50px_-12px_rgba(124,58,237,0.25)] w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-6 border-b border-white/10 flex justify-between items-center bg-gradient-to-r from-primary/10 to-transparent">
+                <h2 className="text-xl font-bold text-white flex items-center gap-3">
+                  <UserPlus className="text-primary" size={24} />
+                  Csapat regisztrálása
+                </h2>
+                <button
+                  className="text-gray-400 hover:text-white hover:bg-white/10 p-2 rounded-full transition-colors"
+                  onClick={() => setShowRegisterModal(false)}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="p-6 overflow-y-auto max-h-[70vh]">
+                {(user?.role === "ADMIN" || user?.role === "ORGANIZER") && (
+                  <div className="mb-6 bg-blue-500/10 border border-blue-500/20 p-4 rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Shield size={16} className="text-blue-400" />
+                      <span className="text-sm font-bold text-blue-400">
+                        Adminisztrátori mód
+                      </span>
+                    </div>
+                    <div className="space-y-3">
+                      {requiredTeamSize === 1 ? (
+                        // User Search for 1v1
+                        <>
+                          <input
+                            type="text"
+                            placeholder="Felhasználó keresése..."
+                            className="w-full bg-black/40 border border-white/10 rounded px-3 py-2 text-white/90 text-sm focus:outline-none focus:border-blue-500/50"
+                            value={userSearchQuery}
+                            onChange={async (e) => {
+                              const val = e.target.value;
+                              setUserSearchQuery(val);
+                              if (val.length >= 2) {
+                                // Dynamically importing or assuming it's available?
+                                // I will need to update imports.
+                                // For now, let's use a quick fetch here or assume dispatch action works if imported.
+                                // I will fix imports in next step.
+                                try {
+                                  const result = await dispatch(
+                                    searchUsers(val)
+                                  ).unwrap();
+                                  setSearchedUsers(result);
+                                } catch (err) {
+                                  console.error(err);
+                                }
+                              } else {
+                                setSearchedUsers([]);
                               }
-                            } else {
-                              setSearchedUsers([]);
-                            }
-                          }}
-                        />
-                        {searchedUsers.length > 0 &&
-                          userSearchQuery.length >= 2 && (
-                            <div className="max-h-40 overflow-y-auto bg-black/40 rounded border border-white/5">
-                              {searchedUsers.map((u: any) => (
-                                <div
-                                  key={u.id}
-                                  onClick={() => {
-                                    setTargetUserId(u.id);
-                                    setUserSearchQuery(
-                                      u.displayName || u.username
-                                    );
-                                    setSearchedUsers([]);
-                                  }}
-                                  className={`p-2 hover:bg-white/5 cursor-pointer flex items-center justify-between text-sm ${targetUserId === u.id
-                                    ? "bg-blue-500/20 text-blue-200"
-                                    : "text-gray-300"
-                                    }`}
-                                >
-                                  <span>{u.displayName || u.username}</span>
-                                  <span className="text-xs text-gray-500">
-                                    {u.username}
-                                  </span>
-                                </div>
-                              ))}
+                            }}
+                          />
+                          {searchedUsers.length > 0 &&
+                            userSearchQuery.length >= 2 && (
+                              <div className="max-h-40 overflow-y-auto bg-black/40 rounded border border-white/5">
+                                {searchedUsers.map((u: any) => (
+                                  <div
+                                    key={u.id}
+                                    onClick={() => {
+                                      setTargetUserId(u.id);
+                                      setUserSearchQuery(
+                                        u.displayName || u.username
+                                      );
+                                      setSearchedUsers([]);
+                                    }}
+                                    className={`p-2 hover:bg-white/5 cursor-pointer flex items-center justify-between text-sm ${targetUserId === u.id
+                                      ? "bg-blue-500/20 text-blue-200"
+                                      : "text-gray-300"
+                                      }`}
+                                  >
+                                    <span>{u.displayName || u.username}</span>
+                                    <span className="text-xs text-gray-500">
+                                      {u.username}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          {targetUserId && (
+                            <div className="text-xs text-blue-300 mt-1 flex items-center gap-2">
+                              Kiválasztva:{" "}
+                              <span className="font-bold">{userSearchQuery}</span>
+                              <button
+                                onClick={() => {
+                                  setTargetUserId(null);
+                                  setUserSearchQuery("");
+                                }}
+                                className="hover:text-white"
+                              >
+                                <X size={12} />
+                              </button>
                             </div>
                           )}
-                        {targetUserId && (
-                          <div className="text-xs text-blue-300 mt-1 flex items-center gap-2">
-                            Kiválasztva:{" "}
-                            <span className="font-bold">{userSearchQuery}</span>
-                            <button
-                              onClick={() => {
-                                setTargetUserId(null);
-                                setUserSearchQuery("");
-                              }}
-                              className="hover:text-white"
-                            >
-                              <X size={12} />
-                            </button>
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      // Team Search for >1
-                      <>
-                        <input
-                          type="text"
-                          placeholder="Csapat keresése név alapján..."
-                          className="w-full bg-black/40 border border-white/10 rounded px-3 py-2 text-white/90 text-sm focus:outline-none focus:border-blue-500/50"
-                          value={teamSearchQuery}
-                          onChange={(e) => {
-                            setTeamSearchQuery(e.target.value);
-                            if (e.target.value.length >= 2) {
-                              dispatch(fetchTeams({ search: e.target.value }));
-                            }
-                          }}
-                        />
-                        {searchedTeams.length > 0 &&
-                          teamSearchQuery.length >= 2 && (
-                            <div className="max-h-40 overflow-y-auto bg-black/40 rounded border border-white/5">
-                              {searchedTeams.map((team) => (
-                                <div
-                                  key={team.id}
-                                  onClick={() => {
-                                    setSelectedTeamId(team.id);
-                                    setTeamSearchQuery(""); // Hide results but keep selection
-                                  }}
-                                  className={`p-2 hover:bg-white/5 cursor-pointer flex items-center justify-between text-sm ${selectedTeamId === team.id
-                                    ? "bg-blue-500/20 text-blue-200"
-                                    : "text-gray-300"
-                                    }`}
-                                >
-                                  <span>{team.name}</span>
-                                  <span className="text-xs text-gray-500">
-                                    {team.members?.length} tag
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                      </>
-                    )}
+                        </>
+                      ) : (
+                        // Team Search for >1
+                        <>
+                          <input
+                            type="text"
+                            placeholder="Csapat keresése név alapján..."
+                            className="w-full bg-black/40 border border-white/10 rounded px-3 py-2 text-white/90 text-sm focus:outline-none focus:border-blue-500/50"
+                            value={teamSearchQuery}
+                            onChange={(e) => {
+                              setTeamSearchQuery(e.target.value);
+                              if (e.target.value.length >= 2) {
+                                dispatch(fetchTeams({ search: e.target.value }));
+                              }
+                            }}
+                          />
+                          {searchedTeams.length > 0 &&
+                            teamSearchQuery.length >= 2 && (
+                              <div className="max-h-40 overflow-y-auto bg-black/40 rounded border border-white/5">
+                                {searchedTeams.map((team) => (
+                                  <div
+                                    key={team.id}
+                                    onClick={() => {
+                                      setSelectedTeamId(team.id);
+                                      setTeamSearchQuery(""); // Hide results but keep selection
+                                    }}
+                                    className={`p-2 hover:bg-white/5 cursor-pointer flex items-center justify-between text-sm ${selectedTeamId === team.id
+                                      ? "bg-blue-500/20 text-blue-200"
+                                      : "text-gray-300"
+                                      }`}
+                                  >
+                                    <span>{team.name}</span>
+                                    <span className="text-xs text-gray-500">
+                                      {team.members?.length} tag
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {requiredTeamSize === 1 ? (
-                <div className="text-center py-6">
-                  {/* ... existing 1v1 UI ... */}
-                  {/* If admin selected someone, show THAT user instead of 'user' */}
-                  {/* We can fetch that user details? Or just use the search result data? 
+                {requiredTeamSize === 1 ? (
+                  <div className="text-center py-6">
+                    {/* ... existing 1v1 UI ... */}
+                    {/* If admin selected someone, show THAT user instead of 'user' */}
+                    {/* We can fetch that user details? Or just use the search result data? 
                       Ideally we want to show who we are registering. 
                       For simplicity, I will show a generic message if targetUserId is set.
                   */}
 
-                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 border border-primary/20">
-                    <UserPlus size={32} className="text-primary" />
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-2">
-                    {targetUserId
-                      ? "Versenyző regisztrálása"
-                      : "Regisztráció egyéni versenyzőként"}
-                  </h3>
-                  <p className="text-gray-400 mb-6">
-                    {targetUserId
-                      ? `A kiválasztott felhasználó: ${userSearchQuery}`
-                      : "Mivel ez egy 1v1 verseny, a saját felhasználóddal fogsz regisztrálni:"}
-                  </p>
-
-                  {!targetUserId && (
-                    <div className="bg-[#1a1b26] p-4 rounded-xl border border-white/10 flex items-center gap-4 max-w-sm mx-auto">
-                      <div className="w-12 h-12 rounded-lg bg-black/30 border border-white/5 overflow-hidden">
-                        {user?.avatarUrl ? (
-                          <img
-                            src={user.avatarUrl}
-                            alt={user.username}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-lg font-bold text-gray-500">
-                            {user?.username?.charAt(0).toUpperCase()}
-                          </div>
-                        )}
-                      </div>
-                      <div className="text-left">
-                        <p className="text-white font-bold">
-                          {user?.displayName || user?.username}
-                        </p>
-                        <p className="text-gray-500 text-sm">
-                          ELO: {user?.elo || 1000}
-                        </p>
-                      </div>
+                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 border border-primary/20">
+                      <UserPlus size={32} className="text-primary" />
                     </div>
-                  )}
-                </div>
-              ) : (
-                <>
-                  <p className="text-gray-300 mb-4">
-                    Válaszd ki a csapatot, amellyel regisztrálni szeretnél:
-                  </p>
-                  {/* ... existing team select ... */}
-                  <select
-                    className="w-full bg-[#1a1b26] border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-inner transition-all appearance-none cursor-pointer hover:border-white/20"
-                    value={selectedTeamId}
-                    onChange={(e) => setSelectedTeamId(e.target.value)}
-                  >
-                    <option value="" className="bg-[#1a1b26]">
-                      Válassz csapatot...
-                    </option>
-                    {myTeams
-                      .filter((team) => team.ownerId === user?.id)
-                      .map((team) => (
-                        <option
-                          key={team.id}
-                          value={team.id}
-                          className="bg-[#1a1b26]"
-                        >
-                          {team.name} ({team.elo} ELO)
-                        </option>
-                      ))}
-                  </select>
+                    <h3 className="text-xl font-bold text-white mb-2">
+                      {targetUserId
+                        ? "Versenyző regisztrálása"
+                        : "Regisztráció egyéni versenyzőként"}
+                    </h3>
+                    <p className="text-gray-400 mb-6">
+                      {targetUserId
+                        ? `A kiválasztott felhasználó: ${userSearchQuery}`
+                        : "Mivel ez egy 1v1 verseny, a saját felhasználóddal fogsz regisztrálni:"}
+                    </p>
 
-                  {selectedTeam && (
-                    <div className="animate-in fade-in slide-in-from-top-4 duration-300 mt-6">
-                      {/* ... members selection ... */}
-                      <div className="flex justify-between items-center mb-3">
-                        <label className="text-sm font-medium text-gray-400">
-                          Válaszd ki a versenyzőket
-                        </label>
-                        <span
-                          className={`text-xs font-bold px-2 py-1 rounded ${selectedMemberIds.length === requiredTeamSize
-                            ? "bg-green-500/20 text-green-400"
-                            : "bg-primary/20 text-primary"
-                            }`}
-                        >
-                          Kiválasztva: {selectedMemberIds.length} /{" "}
-                          {requiredTeamSize}
-                        </span>
+                    {!targetUserId && (
+                      <div className="bg-[#1a1b26] p-4 rounded-xl border border-white/10 flex items-center gap-4 max-w-sm mx-auto">
+                        <div className="w-12 h-12 rounded-lg bg-black/30 border border-white/5 overflow-hidden">
+                          {user?.avatarUrl ? (
+                            <img
+                              src={user.avatarUrl}
+                              alt={user.username}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-lg font-bold text-gray-500">
+                              {user?.username?.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                        </div>
+                        <div className="text-left">
+                          <p className="text-white font-bold">
+                            {user?.displayName || user?.username}
+                          </p>
+                          <p className="text-gray-500 text-sm">
+                            ELO: {user?.elo || 1000}
+                          </p>
+                        </div>
                       </div>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-gray-300 mb-4">
+                      Válaszd ki a csapatot, amellyel regisztrálni szeretnél:
+                    </p>
+                    {/* ... existing team select ... */}
+                    <select
+                      className="w-full bg-[#1a1b26] border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-inner transition-all appearance-none cursor-pointer hover:border-white/20"
+                      value={selectedTeamId}
+                      onChange={(e) => setSelectedTeamId(e.target.value)}
+                    >
+                      <option value="" className="bg-[#1a1b26]">
+                        Válassz csapatot...
+                      </option>
+                      {myTeams
+                        .filter((team) => team.ownerId === user?.id)
+                        .map((team) => (
+                          <option
+                            key={team.id}
+                            value={team.id}
+                            className="bg-[#1a1b26]"
+                          >
+                            {team.name} ({team.elo} ELO)
+                          </option>
+                        ))}
+                    </select>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {selectedTeam.members?.map((member) => {
-                          if (!member.user) return null;
-                          const isSelected = selectedMemberIds.includes(
-                            member.user.id
-                          );
-                          const isFull =
-                            selectedMemberIds.length >= requiredTeamSize;
+                    {selectedTeam && (
+                      <div className="animate-in fade-in slide-in-from-top-4 duration-300 mt-6">
+                        {/* ... members selection ... */}
+                        <div className="flex justify-between items-center mb-3">
+                          <label className="text-sm font-medium text-gray-400">
+                            Válaszd ki a versenyzőket
+                          </label>
+                          <span
+                            className={`text-xs font-bold px-2 py-1 rounded ${selectedMemberIds.length === requiredTeamSize
+                              ? "bg-green-500/20 text-green-400"
+                              : "bg-primary/20 text-primary"
+                              }`}
+                          >
+                            Kiválasztva: {selectedMemberIds.length} /{" "}
+                            {requiredTeamSize}
+                          </span>
+                        </div>
 
-                          return (
-                            <div
-                              key={member.id}
-                              onClick={() => {
-                                if (isSelected) {
-                                  setSelectedMemberIds((prev) =>
-                                    prev.filter((id) => id !== member.user!.id)
-                                  );
-                                } else if (!isFull) {
-                                  setSelectedMemberIds((prev) => [
-                                    ...prev,
-                                    member.user!.id,
-                                  ]);
-                                }
-                              }}
-                              className={`
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {selectedTeam.members?.map((member) => {
+                            if (!member.user) return null;
+                            const isSelected = selectedMemberIds.includes(
+                              member.user.id
+                            );
+                            const isFull =
+                              selectedMemberIds.length >= requiredTeamSize;
+
+                            return (
+                              <div
+                                key={member.id}
+                                onClick={() => {
+                                  if (isSelected) {
+                                    setSelectedMemberIds((prev) =>
+                                      prev.filter((id) => id !== member.user!.id)
+                                    );
+                                  } else if (!isFull) {
+                                    setSelectedMemberIds((prev) => [
+                                      ...prev,
+                                      member.user!.id,
+                                    ]);
+                                  }
+                                }}
+                                className={`
                                   relative p-3 rounded-lg border-2 cursor-pointer transition-all duration-300 flex items-center gap-4 group overflow-hidden
                                   ${isSelected
-                                  ? "bg-primary/5 border-primary shadow-[0_0_20px_rgba(var(--primary-rgb),0.2)]"
-                                  : "bg-black/20 border-white/5 hover:border-white/20 hover:bg-white/5"
-                                }
+                                    ? "bg-primary/5 border-primary shadow-[0_0_20px_rgba(var(--primary-rgb),0.2)]"
+                                    : "bg-black/20 border-white/5 hover:border-white/20 hover:bg-white/5"
+                                  }
                                   ${!isSelected && isFull
-                                  ? "opacity-30 grayscale cursor-not-allowed border-transparent"
-                                  : ""
-                                }
+                                    ? "opacity-30 grayscale cursor-not-allowed border-transparent"
+                                    : ""
+                                  }
                             `}
-                            >
-                              {/* Selection Indicator Glow */}
-                              {isSelected && (
-                                <div className="absolute inset-0 bg-primary/5 animate-pulse" />
-                              )}
+                              >
+                                {/* Selection Indicator Glow */}
+                                {isSelected && (
+                                  <div className="absolute inset-0 bg-primary/5 animate-pulse" />
+                                )}
 
-                              <div
-                                className={`
+                                <div
+                                  className={`
                                   relative w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-300 z-10 flex-shrink-0
                                   ${isSelected
-                                    ? "bg-primary border-primary scale-110"
-                                    : "border-gray-600 bg-transparent group-hover:border-gray-400"
-                                  }
+                                      ? "bg-primary border-primary scale-110"
+                                      : "border-gray-600 bg-transparent group-hover:border-gray-400"
+                                    }
                               `}
-                              >
-                                {isSelected && (
-                                  <Check
-                                    size={12}
-                                    className="text-black stroke-[3]"
-                                  />
-                                )}
-                              </div>
+                                >
+                                  {isSelected && (
+                                    <Check
+                                      size={12}
+                                      className="text-black stroke-[3]"
+                                    />
+                                  )}
+                                </div>
 
-                              <div
-                                className={`relative w-10 h-10 rounded-lg overflow-hidden border border-white/10 transition-transform duration-300 flex-shrink-0 ${isSelected ? "ring-2 ring-primary/50" : ""
-                                  }`}
-                              >
-                                {member.user.avatarUrl ? (
-                                  <img
-                                    src={member.user.avatarUrl}
-                                    alt={member.user.username}
-                                    className="w-full h-full object-cover"
-                                  />
-                                ) : (
-                                  <div className="w-full h-full bg-gray-800 flex items-center justify-center text-sm font-bold text-gray-400">
-                                    {member.user.username
-                                      .charAt(0)
-                                      .toUpperCase()}
-                                  </div>
-                                )}
-                              </div>
-
-                              <div className="overflow-hidden z-10">
-                                <p
-                                  className={`text-sm font-bold truncate transition-colors ${isSelected
-                                    ? "text-white"
-                                    : "text-gray-300 group-hover:text-white"
+                                <div
+                                  className={`relative w-10 h-10 rounded-lg overflow-hidden border border-white/10 transition-transform duration-300 flex-shrink-0 ${isSelected ? "ring-2 ring-primary/50" : ""
                                     }`}
                                 >
-                                  {member.user.displayName ||
-                                    member.user.username}
-                                </p>
-                                <p className="text-xs text-gray-500 truncate font-mono">
-                                  @{member.user.username}
-                                </p>
+                                  {member.user.avatarUrl ? (
+                                    <img
+                                      src={member.user.avatarUrl}
+                                      alt={member.user.username}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  ) : (
+                                    <div className="w-full h-full bg-gray-800 flex items-center justify-center text-sm font-bold text-gray-400">
+                                      {member.user.username
+                                        .charAt(0)
+                                        .toUpperCase()}
+                                    </div>
+                                  )}
+                                </div>
+
+                                <div className="overflow-hidden z-10">
+                                  <p
+                                    className={`text-sm font-bold truncate transition-colors ${isSelected
+                                      ? "text-white"
+                                      : "text-gray-300 group-hover:text-white"
+                                      }`}
+                                  >
+                                    {member.user.displayName ||
+                                      member.user.username}
+                                  </p>
+                                  <p className="text-xs text-gray-500 truncate font-mono">
+                                    @{member.user.username}
+                                  </p>
+                                </div>
                               </div>
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-            <div className="p-6 border-t border-white/10 flex justify-end gap-3 bg-[#0f1016]/50 backdrop-blur-sm">
-              <button
-                className="px-6 py-2.5 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
-                onClick={() => setShowRegisterModal(false)}
-              >
-                Mégse
-              </button>
-              <button
-                className={`
+                    )}
+                  </>
+                )}
+              </div>
+              <div className="p-6 border-t border-white/10 flex justify-end gap-3 bg-[#0f1016]/50 backdrop-blur-sm">
+                <button
+                  className="px-6 py-2.5 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                  onClick={() => setShowRegisterModal(false)}
+                >
+                  Mégse
+                </button>
+                <button
+                  className={`
                     group relative px-8 py-2.5 rounded-xl text-sm font-bold text-white shadow-lg transition-all duration-300
                     ${(requiredTeamSize > 1 &&
-                    (!selectedTeamId ||
-                      selectedMemberIds.length !== requiredTeamSize)) ||
-                    (requiredTeamSize === 1 &&
-                      targetUserId &&
-                      !userSearchQuery)
-                    ? "bg-gray-800 text-gray-500 cursor-not-allowed shadow-none"
-                    : "bg-gradient-to-r from-primary to-purple-600 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] hover:-translate-y-0.5"
-                  }
+                      (!selectedTeamId ||
+                        selectedMemberIds.length !== requiredTeamSize)) ||
+                      (requiredTeamSize === 1 &&
+                        targetUserId &&
+                        !userSearchQuery)
+                      ? "bg-gray-800 text-gray-500 cursor-not-allowed shadow-none"
+                      : "bg-gradient-to-r from-primary to-purple-600 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] hover:-translate-y-0.5"
+                    }
                 `}
-                onClick={handleRegister}
-                disabled={
-                  (requiredTeamSize > 1 &&
-                    (!selectedTeamId ||
-                      selectedMemberIds.length !== requiredTeamSize)) ||
-                  (requiredTeamSize === 1 && !!targetUserId && !userSearchQuery)
-                }
-              >
-                <span className="relative z-10 flex items-center gap-2">
-                  Regisztráció
-                  <ArrowLeft className="rotate-180 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </button>
+                  onClick={handleRegister}
+                  disabled={
+                    (requiredTeamSize > 1 &&
+                      (!selectedTeamId ||
+                        selectedMemberIds.length !== requiredTeamSize)) ||
+                    (requiredTeamSize === 1 && !!targetUserId && !userSearchQuery)
+                  }
+                >
+                  <span className="relative z-10 flex items-center gap-2">
+                    Regisztráció
+                    <ArrowLeft className="rotate-180 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {showStatusModal && currentTournament && (
-        <TournamentStatusModal
-          tournamentId={currentTournament.id}
-          currentStatus={currentTournament.status}
-          currentNotifyUsers={currentTournament.notifyUsers}
-          currentNotifyDiscord={currentTournament.notifyDiscord}
-          currentDiscordChannel={currentTournament.discordChannelId}
-          onClose={() => setShowStatusModal(false)}
-        />
-      )}
+        {showStatusModal && currentTournament && (
+          <TournamentStatusModal
+            tournamentId={currentTournament.id}
+            currentStatus={currentTournament.status}
+            currentNotifyUsers={currentTournament.notifyUsers}
+            currentNotifyDiscord={currentTournament.notifyDiscord}
+            currentDiscordChannel={currentTournament.discordChannelId}
+            onClose={() => setShowStatusModal(false)}
+          />
+        )}
 
-      {/* Match Edit Modal */}
-      {showMatchModal && selectedMatch && (
-        <MatchEditModal
-          match={selectedMatch}
-          onClose={() => {
-            setShowMatchModal(false);
-            setSelectedMatch(null);
-          }}
-          onSave={handleMatchUpdate}
-          isLoading={isLoading}
-        />
-      )}
-      <ConfirmationModal
-        isOpen={confirmModal.isOpen}
-        onClose={closeConfirmModal}
-        onConfirm={confirmModal.onConfirm}
-        title={confirmModal.title}
-        message={confirmModal.message}
-        variant={confirmModal.variant}
-        confirmLabel={confirmModal.confirmLabel}
-      />
-
-      {showRulesModal &&
-        (currentTournament?.game?.rules ||
-          currentTournament?.game?.rulesPdfUrl) && (
-          <RuleAcceptanceModal
-            rules={currentTournament.game.rules || ""}
-            rulesPdfUrl={currentTournament.game.rulesPdfUrl || undefined}
-            gameName={currentTournament.game.name}
+        {/* Match Edit Modal */}
+        {showMatchModal && selectedMatch && (
+          <MatchEditModal
+            match={selectedMatch}
             onClose={() => {
-              setShowRulesModal(false);
-              setPendingRegistration(null);
+              setShowMatchModal(false);
+              setSelectedMatch(null);
             }}
-            onAccept={handleRuleAcceptance}
+            onSave={handleMatchUpdate}
+            isLoading={isLoading}
           />
         )}
+        <ConfirmationModal
+          isOpen={confirmModal.isOpen}
+          onClose={closeConfirmModal}
+          onConfirm={confirmModal.onConfirm}
+          title={confirmModal.title}
+          message={confirmModal.message}
+          variant={confirmModal.variant}
+          confirmLabel={confirmModal.confirmLabel}
+        />
 
-      {showViewRulesModal &&
-        (currentTournament?.game?.rules ||
-          currentTournament?.game?.rulesPdfUrl) && (
-          <RuleAcceptanceModal
-            rules={currentTournament.game.rules || ""}
-            rulesPdfUrl={currentTournament.game.rulesPdfUrl || undefined}
-            gameName={currentTournament.game.name}
-            onClose={() => setShowViewRulesModal(false)}
-            viewOnly={true}
-          />
-        )}
+        {showRulesModal &&
+          (currentTournament?.game?.rules ||
+            currentTournament?.game?.rulesPdfUrl) && (
+            <RuleAcceptanceModal
+              rules={currentTournament.game.rules || ""}
+              rulesPdfUrl={currentTournament.game.rulesPdfUrl || undefined}
+              gameName={currentTournament.game.name}
+              onClose={() => {
+                setShowRulesModal(false);
+                setPendingRegistration(null);
+              }}
+              onAccept={handleRuleAcceptance}
+            />
+          )}
+
+        {showViewRulesModal &&
+          (currentTournament?.game?.rules ||
+            currentTournament?.game?.rulesPdfUrl) && (
+            <RuleAcceptanceModal
+              rules={currentTournament.game.rules || ""}
+              rulesPdfUrl={currentTournament.game.rulesPdfUrl || undefined}
+              gameName={currentTournament.game.name}
+              onClose={() => setShowViewRulesModal(false)}
+              viewOnly={true}
+            />
+          )}
+      </div>
     </div>
   );
 }
