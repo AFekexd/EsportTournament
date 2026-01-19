@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { API_URL } from '../../config';
 import type { RootState } from '../index';
+import { deleteMatch } from './tournamentsSlice';
 
 interface PublicProfile {
   id: string;
@@ -28,14 +29,57 @@ interface PublicProfile {
   }[];
 }
 
+export interface Match {
+  id: string;
+  tournamentId: string;
+  tournament: {
+    id: string;
+    name: string;
+    game?: {
+      id: string;
+      name: string;
+      imageUrl: string | null;
+    };
+  };
+  homeTeamId: string | null;
+  awayTeamId: string | null;
+  homeUserId: string | null;
+  awayUserId: string | null;
+  homeScore: number | null;
+  awayScore: number | null;
+  winnerId: string | null;
+  winnerUserId: string | null;
+  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+  scheduledAt: string | null;
+  playedAt: string | null;
+  round: number;
+  position: number;
+  homeUser?: {
+    id: string;
+    username: string;
+    displayName: string | null;
+    avatarUrl: string | null;
+  };
+  awayUser?: {
+    id: string;
+    username: string;
+    displayName: string | null;
+    avatarUrl: string | null;
+  };
+  homeTeam?: { id: string; name: string };
+  awayTeam?: { id: string; name: string };
+}
+
 interface UsersState {
   currentProfile: PublicProfile | null;
+  userMatches: Match[];
   isLoading: boolean;
   error: string | null;
 }
 
 const initialState: UsersState = {
   currentProfile: null,
+  userMatches: [],
   isLoading: false,
   error: null,
 };
@@ -78,6 +122,24 @@ export const searchUsers = createAsyncThunk(
   }
 );
 
+export const fetchUserMatches = createAsyncThunk(
+  'users/fetchUserMatches',
+  async (userId: string, { getState }) => {
+    const state = getState() as RootState;
+    const token = getToken(state);
+
+    const response = await fetch(`${API_URL}/matches/user/${userId}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+
+    const data = await response.json();
+    if (!data.success) {
+      throw new Error(data.message || 'Failed to fetch user matches');
+    }
+    return data.data;
+  }
+);
+
 const usersSlice = createSlice({
   name: 'users',
   initialState,
@@ -99,6 +161,21 @@ const usersSlice = createSlice({
       .addCase(fetchPublicProfile.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message || 'Failed to fetch profile';
+      })
+      // User Matches
+      .addCase(fetchUserMatches.pending, () => {
+        // We don't necessarily want to trigger global loading for this part
+      })
+      .addCase(fetchUserMatches.fulfilled, (state, action) => {
+        state.userMatches = action.payload;
+      })
+      // Handle match deletion (soft delete update) from tournamentsSlice
+      .addCase(deleteMatch.fulfilled, (state, action) => {
+        // Update the local match list to reflect the cleared match
+        const index = state.userMatches.findIndex(m => m.id === action.payload.matchId);
+        if (index !== -1) {
+          state.userMatches[index] = action.payload.data;
+        }
       });
   },
 });

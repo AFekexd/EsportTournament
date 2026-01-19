@@ -14,6 +14,66 @@ function calculateEloChange(winnerElo: number, loserElo: number): number {
     return Math.round(K_FACTOR * (1 - expectedScore));
 }
 
+// Get matches for a specific user
+matchesRouter.get(
+    '/user/:userId',
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const { userId } = req.params;
+
+        // Find matches where user is either home or away participant
+        // For team matches, we might need a more complex query if we want to show matches 
+        // where user's team played, but for now we focus on where user is directly assigned 
+        // (Solo tournaments) OR if we can link them via team membership.
+        // The simplest approach for now is fetching direct user matches (1v1).
+
+        const matches = await prisma.match.findMany({
+            where: {
+                OR: [
+                    { homeUserId: userId },
+                    { awayUserId: userId }
+                ]
+            },
+            include: {
+                tournament: {
+                    include: {
+                        game: true
+                    }
+                },
+                homeUser: {
+                    select: {
+                        id: true,
+                        username: true,
+                        displayName: true,
+                        avatarUrl: true
+                    }
+                },
+                awayUser: {
+                    select: {
+                        id: true,
+                        username: true,
+                        displayName: true,
+                        avatarUrl: true
+                    }
+                },
+                // Include teams as well in case it's a mixed scenario or for display
+                homeTeam: true,
+                awayTeam: true
+            },
+            orderBy: [
+                { playedAt: 'desc' }, // Recently played first
+                { scheduledAt: 'desc' },
+                { createdAt: 'desc' }
+            ],
+            take: 50 // Limit to last 50 matches for performance
+        });
+
+        res.json({
+            success: true,
+            data: matches
+        });
+    })
+);
+
 // Get match by ID
 matchesRouter.get(
     '/:id',

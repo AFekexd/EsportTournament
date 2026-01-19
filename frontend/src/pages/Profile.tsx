@@ -13,7 +13,12 @@ import {
   RefreshCw,
   FileText,
   X,
+  Gamepad2,
+  ChevronRight
 } from "lucide-react";
+import MatchHistory from "../components/profile/MatchHistory";
+import MatchHistoryModal from "../components/profile/MatchHistoryModal";
+import { fetchUserMatches } from "../store/slices/usersSlice";
 import { RankSelector } from "../components/profile/RankSelector";
 
 import { updateUser } from "../store/slices/authSlice";
@@ -44,13 +49,14 @@ export function ProfilePage() {
   const { games, gameRanks, userRanks } = useAppSelector(
     (state) => state.games
   );
-  const { currentProfile, isLoading: isProfileLoading } = useAppSelector(
+  const { currentProfile, userMatches, isLoading: isProfileLoading } = useAppSelector(
     (state) => state.users
   );
   const myTeamsList = useAppSelector((state) => state.teams.myTeams);
   const [syncLoading, setSyncLoading] = useState(false);
   const [localSteamId, setLocalSteamId] = useState("");
   const [isAvatarOpen, setIsAvatarOpen] = useState(false);
+  const [isMatchHistoryOpen, setIsMatchHistoryOpen] = useState(false);
 
   // ESC kezelés az Avatar Lightbox-hoz
   useEffect(() => {
@@ -83,9 +89,13 @@ export function ProfilePage() {
       }
     }
 
-    // Fetch public profile if viewing someone else
+    // Fetch matches for own profile too if visiting /me or root
+    if (isOwnProfile && user?.id) {
+      dispatch(fetchUserMatches(user.id));
+    }
     if (id && !isOwnProfile) {
       dispatch(fetchPublicProfile(id));
+      dispatch(fetchUserMatches(id));
     }
 
     return () => {
@@ -506,6 +516,42 @@ export function ProfilePage() {
             </div>
           </div>
         </div>
+
+        {/* Match History Section */}
+        <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden mb-6">
+          <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
+            <h2 className="text-lg font-bold text-white flex items-center gap-2">
+              <Gamepad2 size={20} className="text-primary" />
+              Mérkőzés Előzmények
+            </h2>
+            {userMatches && userMatches.length > 5 && (
+              <button
+                onClick={() => setIsMatchHistoryOpen(true)}
+                className="text-xs font-bold text-primary hover:text-white transition-colors flex items-center gap-1 uppercase tracking-wider"
+              >
+                Összes
+                <ChevronRight size={14} />
+              </button>
+            )}
+          </div>
+          <div className="p-6">
+            <MatchHistory
+              matches={(userMatches || []).slice(0, 5)}
+              currentUserId={isOwnProfile ? user?.id || '' : (profileUser as any)?.id || ''}
+              isAdmin={user?.role === 'ADMIN'}
+            />
+          </div>
+        </div>
+
+        {/* Match History Modal */}
+        <MatchHistoryModal
+          isOpen={isMatchHistoryOpen}
+          onClose={() => setIsMatchHistoryOpen(false)}
+          matches={userMatches || []}
+          currentUserId={isOwnProfile ? user?.id || '' : (profileUser as any)?.id || ''}
+          isAdmin={user?.role === 'ADMIN'}
+        />
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Column */}
           <div className="lg:col-span-2 space-y-6">
@@ -952,6 +998,23 @@ export function ProfilePage() {
                   ))
                 )}
               </div>
+            </div>
+          </div>
+
+          {/* Match History Section */}
+          <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden">
+            <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
+              <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                <Gamepad2 size={20} className="text-primary" />
+                Mérkőzés Előzmények
+              </h2>
+            </div>
+            <div className="p-6">
+              <MatchHistory
+                matches={userMatches}
+                currentUserId={isOwnProfile ? user?.id || '' : (profileUser as any)?.id || ''}
+                isAdmin={user?.role === 'ADMIN'}
+              />
             </div>
           </div>
         </div>
