@@ -14,13 +14,14 @@ interface EmailTemplateOptions {
     content: string;
     button?: ButtonParams;
     footer?: string;
+    unsubscribeUrl?: string;
 }
 
 /**
  * Base email template with consistent branding
  */
 export function generateEmailTemplate(options: EmailTemplateOptions): string {
-    const { title, preheader, content, button, footer } = options;
+    const { title, preheader, content, button, footer, unsubscribeUrl } = options;
 
     const buttonHtml = button ? `
         <table border="0" cellpadding="0" cellspacing="0" style="margin: 24px 0;">
@@ -32,6 +33,12 @@ export function generateEmailTemplate(options: EmailTemplateOptions): string {
                 </td>
             </tr>
         </table>
+    ` : '';
+
+    const unsubscribeHtml = unsubscribeUrl ? `
+        <p style="margin: 12px 0 0; font-size: 12px; color: #444; text-align: center;">
+            <a href="${unsubscribeUrl}" style="color: #666; text-decoration: underline;">Leiratkozás</a>
+        </p>
     ` : '';
 
     return `
@@ -104,6 +111,7 @@ export function generateEmailTemplate(options: EmailTemplateOptions): string {
                             <p style="margin: 12px 0 0; font-size: 12px; color: #444; text-align: center;">
                                 © ${new Date().getFullYear()} Pollák - Esport
                             </p>
+                            ${unsubscribeHtml}
                         </td>
                     </tr>
                     

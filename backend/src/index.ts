@@ -147,6 +147,8 @@ app.use('/api/admin/kiosk', adminKioskRouter);
 app.use('/api/admin/email', adminEmailRouter);
 app.use('/api/admin/discord', adminDiscordRouter);
 app.use('/api/client/update', clientUpdateRouter);
+import unsubscribeRouter from './routes/unsubscribe.js';
+app.use('/api/unsubscribe', unsubscribeRouter);
 
 // Error handler
 app.use(errorHandler);

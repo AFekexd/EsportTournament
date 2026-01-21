@@ -89,6 +89,7 @@ $ZipPath = Join-Path $InstallersDir $ZipName
 if (Test-Path $ZipPath) { Remove-Item $ZipPath }
 
 Write-Host "Creating Zip: $ZipName"
+Start-Sleep -Seconds 2
 Compress-Archive -Path "$BuildDir\*" -DestinationPath $ZipPath
 
 # 7. Cleanup

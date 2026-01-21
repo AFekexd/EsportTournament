@@ -1525,6 +1525,9 @@ namespace EsportManager
             // Set flag first to prevent closing issues
             _allowClose = true;
             
+            // Re-enable Task Manager IMMEDIATELY (Priority)
+            try { SetTaskMgrEnabled(true); } catch { }
+
             // Stop timers safely
             try { _timer?.Stop(); } catch { }
             try { _sessionTimer?.Stop(); } catch { }
@@ -1537,8 +1540,14 @@ namespace EsportManager
             // Hide tray icon
             try { if (_notifyIcon != null) _notifyIcon.Visible = false; } catch { }
             
-            // Unhook keyboard
-            try { _keyboardHook?.Unhook(); } catch { }
+            // Unhook keyboard with extra safety
+            try { 
+                if (_keyboardHook != null)
+                {
+                    _keyboardHook.Unhook(); 
+                    _keyboardHook = null;
+                }
+            } catch { }
             
             // Create stop signal for watchdog
             try 
@@ -1552,16 +1561,10 @@ namespace EsportManager
                 Console.WriteLine($"[FAILSAFE] Could not create stop signal: {ex.Message}");
             }
             
-            // Re-enable Task Manager before exit
-            try { SetTaskMgrEnabled(true); } catch { }
+            Console.WriteLine("[FAILSAFE] Exiting application via Environment.Exit(0)...");
             
-            Console.WriteLine("[FAILSAFE] Exiting application...");
-            
-            // Use BeginInvoke to exit on next message loop iteration
-            this.BeginInvoke(new Action(() => 
-            {
-                Application.Exit();
-            }));
+            // Force exit process immediately
+            Environment.Exit(0);
         }
 
         /// <summary>
@@ -1803,7 +1806,7 @@ namespace EsportManager
                     }
                     
                     // 2. Load Logo
-                    string logoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "esportteremhatter.png");
+                    string logoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "esportlogo.png");
                     if (File.Exists(logoPath))
                     {
                         try 
