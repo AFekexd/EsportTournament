@@ -334,7 +334,7 @@ namespace EsportManager
             // 0. Set Application Icon from Logo
             try
             {
-                string appIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "esportteremhatter.png");
+                string appIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "esportlogo.png");
                 if (File.Exists(appIconPath))
                 {
                     using (Bitmap bmp = new Bitmap(appIconPath))
@@ -359,7 +359,7 @@ namespace EsportManager
             };
             
             // Betöltjük a logót a Paint-hez
-            string logoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "esportteremhatter.png");
+            string logoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "esportlogo.png");
             Image? logo = null;
             if (File.Exists(logoPath))
             {

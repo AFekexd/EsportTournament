@@ -27,32 +27,30 @@ router.get('/', async (req, res) => {
         }
 
         // 2. Update User Preferences
-        // The user requested to unsubscribe from "all non-direct emails".
-        // We will disable the master toggle or granular marketing preferences.
-        // For now, let's disable the master toggle as it's the safest "unsubscribe from all" option.
-        // Or strictly granular ones: tournaments, matches notifications?
-        // Let's stick to granular to be less destructive if possible, OR master toggle if that's what "unsubscribe" usually implies.
-        // "Minden nem direkt emailről" -> All notifications.
-        
+        console.log(`Unsubscribing user: ${userId}`);
         await prisma.user.update({
             where: { id: userId },
             data: {
-                // Disable all optional notification categories
                 emailPrefTournaments: false,
-                emailPrefMatches: false, // These are kind of "direct" but also frequent spam if you don't play.
+                emailPrefMatches: false,
                 emailPrefSystem: false,
                 emailPrefWeeklyDigest: false,
-                emailPrefBookings: true, // Keep bookings as they are transactional/receipts usually.
-                // Or maybe just flip the master switch?
-                // emailNotifications: false // This kills everything including Admin Broadcasts potentially? No.
+                emailPrefBookings: true,
             }
         });
+        console.log(`User ${userId} unsubscribed successfully.`);
 
         // 3. Return Success Page
         res.send(renderSuccessPage());
 
-    } catch (error) {
+    } catch (error: any) {
         console.error('Unsubscribe error:', error);
+        
+        // Handle Prisma "Record Not Found" error
+        if (error.code === 'P2025') {
+             return res.status(404).send(renderErrorPage('Felhasználó nem található', 'A megadott azonosítóval nem található felhasználó a rendszerben.'));
+        }
+
         res.status(500).send(renderErrorPage('Hiba történt', 'Belső szerverhiba történt a feldolgozás során.'));
     }
 });
