@@ -225,13 +225,13 @@ class MatchReminderService {
 
         try {
             const { discordService } = await import('./discordService.js');
-            
+
             await discordService.sendDM(player.discordId, {
                 title: `⚔️ Meccs ${minutesBefore} perc múlva!`,
                 description: `**${match.tournament.name}**\n\n${homeName} vs ${awayName}`,
                 color: 0xf59e0b,
                 fields: [
-                    { name: '⏰ Kezdés', value: match.scheduledAt!.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' }), inline: true }
+                    { name: '⏰ Kezdés', value: match.scheduledAt!.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Budapest' }), inline: true }
                 ]
             });
 
@@ -261,7 +261,7 @@ class MatchReminderService {
             fields: [
                 { name: '⚔️ Meccs', value: `${homeName} vs ${awayName}`, inline: false },
                 { name: '⏰ Kezdés', value: `${minutesBefore} perc múlva`, inline: true },
-                { name: '📅 Időpont', value: match.scheduledAt!.toLocaleString('hu-HU'), inline: true },
+                { name: '📅 Időpont', value: match.scheduledAt!.toLocaleString('hu-HU', { timeZone: 'Europe/Budapest' }), inline: true },
                 { name: '✅ Check-in', value: 'Kattints a gombra a bejelentkezéshez!', inline: false }
             ]
         };

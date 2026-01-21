@@ -1,12 +1,12 @@
 import "dotenv/config";
-import { 
-    Client, 
-    GatewayIntentBits, 
-    TextChannel, 
-    ChannelType, 
-    EmbedBuilder, 
-    PermissionsBitField, 
-    ColorResolvable, 
+import {
+    Client,
+    GatewayIntentBits,
+    TextChannel,
+    ChannelType,
+    EmbedBuilder,
+    PermissionsBitField,
+    ColorResolvable,
     CategoryChannel,
     ActionRowBuilder,
     ButtonBuilder,
@@ -83,7 +83,7 @@ class DiscordService {
             this.setupInteractionHandler();
             this.setupGuildMemberAdd();
             this.setupMessageMonitor();
-            
+
             // Register Slash Command
             await this.registerCommands(DISCORD_BOT_TOKEN, DISCORD_GUILD_ID);
         });
@@ -109,7 +109,7 @@ class DiscordService {
                 .setName('deploy-verify')
                 .setDescription('Hitelesítő üzenet küldése (Admin)')
                 .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
-            
+
             // New user commands
             new SlashCommandBuilder()
                 .setName('stats')
@@ -118,7 +118,7 @@ class DiscordService {
                     option.setName('user')
                         .setDescription('Melyik játékos? (hagyd üresen saját)')
                         .setRequired(false)),
-            
+
             new SlashCommandBuilder()
                 .setName('leaderboard')
                 .setDescription('Top 10 ranglista')
@@ -126,7 +126,7 @@ class DiscordService {
                     option.setName('game')
                         .setDescription('Játék szűrő (opcionális)')
                         .setRequired(false)),
-            
+
             new SlashCommandBuilder()
                 .setName('tournament')
                 .setDescription('Verseny információk keresése')
@@ -134,7 +134,7 @@ class DiscordService {
                     option.setName('name')
                         .setDescription('Verseny neve (részleges keresés)')
                         .setRequired(false)),
-            
+
             new SlashCommandBuilder()
                 .setName('team')
                 .setDescription('Csapat információk')
@@ -142,11 +142,11 @@ class DiscordService {
                     option.setName('name')
                         .setDescription('Csapat neve')
                         .setRequired(true)),
-            
+
             new SlashCommandBuilder()
                 .setName('link')
                 .setDescription('Discord fiók összekötése a webes fiókkal'),
-            
+
             new SlashCommandBuilder()
                 .setName('predict')
                 .setDescription('Tippelj egy meccs eredményére')
@@ -166,15 +166,15 @@ class DiscordService {
                         .setRequired(true)
                         .setMinValue(0)
                         .setMaxValue(100)),
-            
+
             new SlashCommandBuilder()
                 .setName('checkin')
                 .setDescription('Bejelentkezés a következő meccsedre'),
-            
+
             new SlashCommandBuilder()
                 .setName('preferences')
                 .setDescription('Discord értesítés beállítások megtekintése/módosítása'),
-            
+
             // Admin commands
             new SlashCommandBuilder()
                 .setName('announce')
@@ -188,12 +188,12 @@ class DiscordService {
                     option.setName('channel')
                         .setDescription('Célcsatorna (opcionális)')
                         .setRequired(false)),
-            
+
             new SlashCommandBuilder()
                 .setName('sync-all')
                 .setDescription('Összes felhasználó szinkronizálása (Admin)')
                 .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
-            
+
             new SlashCommandBuilder()
                 .setName('recheck')
                 .setDescription('Vendég rangok kiosztása nem hitelesített tagoknak (Admin)')
@@ -202,9 +202,9 @@ class DiscordService {
 
         try {
             const guild = await this.client.guilds.fetch(guildId);
-            if(guild) {
-                 await guild.commands.set(commands);
-                 console.log(`✅ Successfully registered ${commands.length} slash commands.`);
+            if (guild) {
+                await guild.commands.set(commands);
+                console.log(`✅ Successfully registered ${commands.length} slash commands.`);
             }
         } catch (error) {
             console.error('❌ Failed to register slash commands:', error);
@@ -311,7 +311,7 @@ class DiscordService {
                 // Delete message
                 try {
                     await message.delete();
-                    
+
                     // Send DM warning
                     try {
                         await message.author.send(registrationMessage);
@@ -351,10 +351,10 @@ class DiscordService {
 
         const channel = interaction.channel as TextChannel;
         if (channel && channel.send) {
-             await channel.send({ embeds: [embed], components: [row] });
-             await interaction.reply({ content: '✅ Hitelesítő üzenet elküldve!', ephemeral: true });
+            await channel.send({ embeds: [embed], components: [row] });
+            await interaction.reply({ content: '✅ Hitelesítő üzenet elküldve!', ephemeral: true });
         } else {
-             await interaction.reply({ content: '❌ Nem tudtam elküldeni az üzenetet ebbe a csatornába.', ephemeral: true });
+            await interaction.reply({ content: '❌ Nem tudtam elküldeni az üzenetet ebbe a csatornába.', ephemeral: true });
         }
     }
 
@@ -393,8 +393,8 @@ class DiscordService {
     private async processVerification(interaction: ChatInputCommandInteraction | ModalSubmitInteraction, omId: string) {
         // Basic validation
         if (omId.length !== 11) { // Strict 11 chars
-             await interaction.editReply('❌ Az oktatási azonosítónak pontosan 11 számjegyből kell állnia.');
-             return;
+            await interaction.editReply('❌ Az oktatási azonosítónak pontosan 11 számjegyből kell állnia.');
+            return;
         }
 
         try {
@@ -428,7 +428,7 @@ class DiscordService {
                     await interaction.editReply(`✅ Sikeres hitelesítés, de a nevedet nem tudtam módosítani (jogosultság). A rangjaid frissítve lettek.`);
                 }
             } else {
-                 await interaction.editReply(`✅ Sikeres hitelesítés, de a szinkronizáció (rang/név) közben hiba történt: ${result.message || 'Ismeretlen hiba'}.`);
+                await interaction.editReply(`✅ Sikeres hitelesítés, de a szinkronizáció (rang/név) közben hiba történt: ${result.message || 'Ismeretlen hiba'}.`);
             }
 
         } catch (error) {
@@ -472,7 +472,7 @@ class DiscordService {
 
             // 2. Manage Roles
             const rolesToAdd: string[] = [...BASE_VERIFIED_ROLES];
-            
+
             // Map UserRole to Discord Role Name
             if (user.role && DISCORD_ROLE_MAP[user.role as UserRole]) {
                 rolesToAdd.push(DISCORD_ROLE_MAP[user.role as UserRole]);
@@ -480,14 +480,14 @@ class DiscordService {
 
             // Resolve Roles
             const allRoles = await guild.roles.fetch();
-            
+
             // Add Roles
             for (const roleName of rolesToAdd) {
                 const role = allRoles.find(r => r.name.toLowerCase() === roleName.toLowerCase());
                 if (role) {
-                     await member.roles.add(role).catch(err => console.error(`Failed to add role ${roleName}:`, err));
+                    await member.roles.add(role).catch(err => console.error(`Failed to add role ${roleName}:`, err));
                 } else {
-                     console.warn(`Role ${roleName} not found in guild.`);
+                    console.warn(`Role ${roleName} not found in guild.`);
                 }
             }
 
@@ -527,7 +527,7 @@ class DiscordService {
 
             const members = await guild.members.fetch(); // Fetch all members
             const allRoles = await guild.roles.fetch();
-            
+
             // Define roles that count as "Verified"
             const verifiedRoleNames = [...BASE_VERIFIED_ROLES, ...Object.values(DISCORD_ROLE_MAP)];
             const verifiedRoleIds = allRoles
@@ -571,7 +571,7 @@ class DiscordService {
             }
 
             let replyMessage = `✅ **Ellenőrzés kész!**\n\n👥 Összes tag: ${checkedCount}\n❓ Nem hitelesített: ${unverifiedCount}\n➕ Vendég rang kiosztva: ${updatedCount}`;
-            
+
             if (failedCount > 0) {
                 replyMessage += `\n⚠️ **Sikertelen:** ${failedCount} (Jogosultság hiba? Ellenőrizd a bot rangjának sorrendjét!)`;
             }
@@ -658,7 +658,7 @@ class DiscordService {
             await guild.roles.fetch();
 
             const existingRole = guild.roles.cache.find(r => r.name.toLowerCase() === name.toLowerCase());
-            
+
             if (existingRole) {
                 return existingRole;
             }
@@ -752,22 +752,22 @@ class DiscordService {
             });
 
             // 3. Create Results Channel
-             const resultsChannel = await guild.channels.create({
+            const resultsChannel = await guild.channels.create({
                 name: `📊-${channelName}-eredmények`,
                 type: ChannelType.GuildText,
                 parent: targetCategoryId || undefined,
                 permissionOverwrites: [
-                     ...permissionOverwrites, 
-                     {
+                    ...permissionOverwrites,
+                    {
                         id: guild.id, // Overwrite @everyone again just to be safe/explicit, though base list has it
-                        deny: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages] 
-                     },
-                     // Make it read-only for verified users (they can view, but not send)
-                     ...verifiedRoles.map(role => ({
+                        deny: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
+                    },
+                    // Make it read-only for verified users (they can view, but not send)
+                    ...verifiedRoles.map(role => ({
                         id: role.id,
                         allow: [PermissionsBitField.Flags.ViewChannel],
                         deny: [PermissionsBitField.Flags.SendMessages]
-                     }))
+                    }))
                 ],
                 topic: `Results for ${tournamentName}`,
             });
@@ -782,20 +782,20 @@ class DiscordService {
                     ...permissionOverwrites,
                     {
                         id: guild.id,
-                         deny: [PermissionsBitField.Flags.ViewChannel], // Double check hidden
+                        deny: [PermissionsBitField.Flags.ViewChannel], // Double check hidden
                     },
-                     // Allow verified to connect/speak
-                     ...verifiedRoles.map(role => ({
+                    // Allow verified to connect/speak
+                    ...verifiedRoles.map(role => ({
                         id: role.id,
                         allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.Speak],
-                     }))
+                    }))
                 ],
             });
 
             console.log(`✅ Created Discord channels for ${tournamentName}: Text(${textChannel.id}), Results(${resultsChannel.id}), Voice(${voiceChannel.id})`);
 
             // Optional: Send welcome message to text channel
-            await textChannel.send(`**${tournamentName}** csatorna létrehozva! A részvételhez és a látáshoz _Verified_ vagy _Tag_ rang szükséges.`);
+            //await textChannel.send(`**${tournamentName}** csatorna létrehozva! A részvételhez és a látáshoz _Verified_ vagy _Tag_ rang szükséges.`);
 
             return {
                 textChannelId: textChannel.id,
@@ -909,11 +909,11 @@ class DiscordService {
             // Search by username
             // Note: This is a fuzzy search, so we must verify exact match
             const members = await guild.members.search({ query: username, limit: 5 });
-            
+
             // Find exact match on username (ignoring case usually safe for auto-link if names are unique enough)
             // Modern Discord usernames are lowercase.
-            const match = members.find(m => 
-                m.user.username.toLowerCase() === username.toLowerCase() || 
+            const match = members.find(m =>
+                m.user.username.toLowerCase() === username.toLowerCase() ||
                 m.user.globalName?.toLowerCase() === username.toLowerCase()
             );
 
@@ -937,11 +937,11 @@ class DiscordService {
         // Try to find role to mention
         let mentionString = '@everyone';
         if (tournament.game) {
-             const guild = this.client.guilds.cache.get(this.guildId);
-             const role = guild?.roles.cache.find(r => r.name.toLowerCase() === tournament.game.toLowerCase());
-             if (role) {
-                 mentionString = role.toString();
-             }
+            const guild = this.client.guilds.cache.get(this.guildId);
+            const role = guild?.roles.cache.find(r => r.name.toLowerCase() === tournament.game.toLowerCase());
+            if (role) {
+                mentionString = role.toString();
+            }
         }
 
         // Create Subscribe Button
@@ -966,7 +966,7 @@ class DiscordService {
             ],
             image: tournament.imageUrl ? { url: tournament.imageUrl } : undefined,
             timestamp: new Date().toISOString(),
-        }, mentionString, [row]); 
+        }, mentionString, [row]);
     }
 
     async sendMatchResult(match: { tournament: string; homeTeam: string; awayTeam: string; homeScore: number; awayScore: number; winner: string }, channelId: string) {

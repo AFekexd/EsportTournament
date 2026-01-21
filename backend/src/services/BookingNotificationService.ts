@@ -26,7 +26,7 @@ export class BookingNotificationService {
      * Called when a booking is created - sends confirmation email and in-app notification
      */
     static async createdBooking(booking: any) {
-        const message = `Sikeres foglalás! Gép: ${booking.computer.name}, Időpont: ${new Date(booking.startTime).toLocaleString('hu-HU')}`;
+        const message = `Sikeres foglalás! Gép: ${booking.computer.name}, Időpont: ${new Date(booking.startTime).toLocaleString('hu-HU', { timeZone: 'Europe/Budapest' })}`;
         await this.createNotification(booking.userId, 'BOOKING_CONFIRMED', message);
 
         // Send confirmation email
@@ -39,15 +39,18 @@ export class BookingNotificationService {
             const date = new Date(booking.startTime).toLocaleDateString('hu-HU', {
                 year: 'numeric',
                 month: 'long',
-                day: 'numeric'
+                day: 'numeric',
+                timeZone: 'Europe/Budapest'
             });
             const startTime = new Date(booking.startTime).toLocaleTimeString('hu-HU', {
                 hour: '2-digit',
-                minute: '2-digit'
+                minute: '2-digit',
+                timeZone: 'Europe/Budapest'
             });
             const endTime = new Date(booking.endTime).toLocaleTimeString('hu-HU', {
                 hour: '2-digit',
-                minute: '2-digit'
+                minute: '2-digit',
+                timeZone: 'Europe/Budapest'
             });
 
             await emailService.sendBookingConfirmation(
@@ -68,7 +71,7 @@ export class BookingNotificationService {
      * Called when a booking is cancelled - sends cancellation email
      */
     static async cancelledBooking(booking: any, reason?: string) {
-        const message = `Foglalás törölve: ${booking.computer.name}, Időpont: ${new Date(booking.startTime).toLocaleString('hu-HU')}`;
+        const message = `Foglalás törölve: ${booking.computer.name}, Időpont: ${new Date(booking.startTime).toLocaleString('hu-HU', { timeZone: 'Europe/Budapest' })}`;
         await this.createNotification(booking.userId, 'BOOKING_CANCELLED', message);
 
         // Send cancellation email
@@ -81,11 +84,13 @@ export class BookingNotificationService {
             const date = new Date(booking.startTime).toLocaleDateString('hu-HU', {
                 year: 'numeric',
                 month: 'long',
-                day: 'numeric'
+                day: 'numeric',
+                timeZone: 'Europe/Budapest'
             });
             const startTime = new Date(booking.startTime).toLocaleTimeString('hu-HU', {
                 hour: '2-digit',
-                minute: '2-digit'
+                minute: '2-digit',
+                timeZone: 'Europe/Budapest'
             });
 
             await emailService.sendBookingCancelled(
@@ -128,9 +133,10 @@ export class BookingNotificationService {
                 });
 
                 for (const booking of upcomingBookings) {
-                    const startTimeStr = new Date(booking.startTime).toLocaleTimeString('hu-HU', { 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
+                    const startTimeStr = new Date(booking.startTime).toLocaleTimeString('hu-HU', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        timeZone: 'Europe/Budapest'
                     });
 
                     // In-app notification
@@ -198,8 +204,8 @@ export class BookingNotificationService {
 
                 // If there's overlap between freed slot and waitlist entry
                 if (entryStart < freeEnd && entryEnd > freeStart) {
-                    const availableTimeStr = `${startTime.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' })} - ${endTime.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' })}`;
-                    
+                    const availableTimeStr = `${startTime.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Budapest' })} - ${endTime.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Budapest' })}`;
+
                     // In-app notification
                     const message = `Jó hír! Felszabadult egy gép, amire vártál: ${entry.computer.name} (${availableTimeStr})`;
                     await this.createNotification(entry.userId, 'WAITLIST_AVAILABLE', message);

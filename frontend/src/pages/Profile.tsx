@@ -13,7 +13,12 @@ import {
   RefreshCw,
   FileText,
   X,
+  Gamepad2,
+  ChevronRight
 } from "lucide-react";
+import MatchHistory from "../components/profile/MatchHistory";
+import MatchHistoryModal from "../components/profile/MatchHistoryModal";
+import { fetchUserMatches } from "../store/slices/usersSlice";
 import { RankSelector } from "../components/profile/RankSelector";
 
 import { updateUser } from "../store/slices/authSlice";
@@ -40,17 +45,17 @@ export function ProfilePage() {
   const { user, isAuthenticated } = useAuth();
   const dispatch = useAppDispatch();
 
-  const { tournaments } = useAppSelector((state) => state.tournaments);
   const { games, gameRanks, userRanks } = useAppSelector(
     (state) => state.games
   );
-  const { currentProfile, isLoading: isProfileLoading } = useAppSelector(
+  const { currentProfile, userMatches, isLoading: isProfileLoading } = useAppSelector(
     (state) => state.users
   );
   const myTeamsList = useAppSelector((state) => state.teams.myTeams);
   const [syncLoading, setSyncLoading] = useState(false);
   const [localSteamId, setLocalSteamId] = useState("");
   const [isAvatarOpen, setIsAvatarOpen] = useState(false);
+  const [isMatchHistoryOpen, setIsMatchHistoryOpen] = useState(false);
 
   // ESC kezelés az Avatar Lightbox-hoz
   useEffect(() => {
@@ -83,9 +88,13 @@ export function ProfilePage() {
       }
     }
 
-    // Fetch public profile if viewing someone else
+    // Fetch matches for own profile too if visiting /me or root
+    if (isOwnProfile && user?.id) {
+      dispatch(fetchUserMatches(user.id));
+    }
     if (id && !isOwnProfile) {
       dispatch(fetchPublicProfile(id));
+      dispatch(fetchUserMatches(id));
     }
 
     return () => {
@@ -206,12 +215,16 @@ export function ProfilePage() {
     : (currentProfile?.teams || []).slice(0, 3);
 
   // Tournaments logic
-  // Existing code used global tournaments list. That's probably wrong for "My Tournaments".
-  // Since we don't have user's tournaments in public profile properly fetched (backend returns empty for now or needs fix),
-  // we will use what we have. For public profile, we added teams but not tournaments list in backend.
-  // Actually, I didn't add tournaments list to backend public profile response yet!
-  // I only added "teams". I should fix backend to return tournaments too, or just leave it empty for now.
-  const effectiveTournaments = isOwnProfile ? tournaments.slice(0, 3) : [];
+  // We derive tournaments from user matches to ensure we show what they actually participated in
+  const derivedTournaments =
+    userMatches?.reduce((acc: any[], match) => {
+      if (!acc.find((t) => t.id === match.tournament.id)) {
+        acc.push(match.tournament);
+      }
+      return acc;
+    }, []) || [];
+
+  const effectiveTournaments = derivedTournaments.slice(0, 3);
 
   const getRoleBadgeStyle = (role: string | undefined) => {
     switch (role) {
@@ -289,18 +302,17 @@ export function ProfilePage() {
         <div className="relative overflow-hidden rounded-2xl bg-[#1a1b26] border border-white/5 shadow-2xl">
           {/* Banner */}
           <div
-            className={`h-64 relative group ${!topGameImage ? "bg-[#0f1015]" : ""
-              }`}
-            style={
-              topGameImage
-                ? {
-                  backgroundImage: `url(${topGameImage})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }
-                : {}
-            }
+            className={`h-72 md:h-80 relative group ${!topGameImage ? "bg-[#0f1015]" : ""}`}
           >
+            {/* Background Image */}
+            {topGameImage && (
+              <img
+                src={topGameImage}
+                alt="Profile Banner"
+                className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 ease-out will-change-transform "
+              />
+            )}
+
             {!topGameImage && (
               <>
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-900/40 via-primary/20 to-blue-900/40"></div>
@@ -311,9 +323,11 @@ export function ProfilePage() {
                 </div>
               </>
             )}
+
+            {/* Overlay */}
             <div
               className={`absolute inset-0 ${topGameImage
-                ? "bg-black/40 backdrop-blur-[2px]"
+                ? "bg-gradient-to-t from-[#1a1b26] via-black/30 to-black/10"
                 : "bg-gradient-to-t from-[#1a1b26] via-transparent to-transparent"
                 }`}
             ></div>
@@ -410,7 +424,7 @@ export function ProfilePage() {
                   <div className="flex flex-col md:flex-row items-center gap-4 text-gray-400">
                     {profileUser?.displayName && (
                       <span className="font-medium text-lg text-primary">
-                        @{profileUser?.username}
+                        {profileUser?.username?.includes('@') ? profileUser?.username : `@${profileUser?.username}`}
                       </span>
                     )}
 
@@ -505,6 +519,42 @@ export function ProfilePage() {
             </div>
           </div>
         </div>
+
+        {/* Match History Section */}
+        <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden mb-6">
+          <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
+            <h2 className="text-lg font-bold text-white flex items-center gap-2">
+              <Gamepad2 size={20} className="text-primary" />
+              Mérkőzés Előzmények
+            </h2>
+            {userMatches && userMatches.length > 5 && (
+              <button
+                onClick={() => setIsMatchHistoryOpen(true)}
+                className="text-xs font-bold text-primary hover:text-white transition-colors flex items-center gap-1 uppercase tracking-wider"
+              >
+                Összes
+                <ChevronRight size={14} />
+              </button>
+            )}
+          </div>
+          <div className="p-6">
+            <MatchHistory
+              matches={(userMatches || []).slice(0, 5)}
+              currentUserId={isOwnProfile ? user?.id || '' : (profileUser as any)?.id || ''}
+              isAdmin={user?.role === 'ADMIN'}
+            />
+          </div>
+        </div>
+
+        {/* Match History Modal */}
+        <MatchHistoryModal
+          isOpen={isMatchHistoryOpen}
+          onClose={() => setIsMatchHistoryOpen(false)}
+          matches={userMatches || []}
+          currentUserId={isOwnProfile ? user?.id || '' : (profileUser as any)?.id || ''}
+          isAdmin={user?.role === 'ADMIN'}
+        />
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Column */}
           <div className="lg:col-span-2 space-y-6">
@@ -953,26 +1003,46 @@ export function ProfilePage() {
               </div>
             </div>
           </div>
+
+          {/* Match History Section */}
+
         </div>
       </div>
       {/* Avatar Lightbox */}
       {isAvatarOpen && profileUser?.avatarUrl && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm animate-in fade-in duration-200"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-md animate-in fade-in duration-300"
           onClick={() => setIsAvatarOpen(false)}
         >
+          {/* Close button */}
           <button
-            className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
+            className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 rounded-full text-white transition-all hover:scale-110 hover:rotate-90 duration-300 z-10"
             onClick={() => setIsAvatarOpen(false)}
           >
             <X size={24} />
           </button>
-          <img
-            src={profileUser.avatarUrl}
-            alt={profileUser.displayName || "Avatar"}
-            className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl animate-in zoom-in-50 duration-300"
+
+          {/* Image container with frame */}
+          <div
+            className="relative p-1 bg-gradient-to-br from-primary via-purple-500 to-pink-500 rounded-2xl shadow-[0_0_100px_rgba(124,58,237,0.3)] animate-in zoom-in-75 duration-300"
             onClick={(e) => e.stopPropagation()}
-          />
+          >
+            <img
+              src={profileUser.avatarUrl}
+              alt={profileUser.displayName || "Avatar"}
+              className="min-w-[300px] min-h-[300px] sm:min-w-[400px] sm:min-h-[400px] md:min-w-[500px] md:min-h-[500px] max-w-[90vw] max-h-[85vh] w-auto h-auto object-cover rounded-xl"
+            />
+          </div>
+
+          {/* Username below image */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
+            <p className="text-white font-bold text-lg">{profileUser.displayName || profileUser.username}</p>
+            {profileUser.displayName && (
+              <p className="text-gray-400 text-sm">
+                {profileUser.username?.includes('@') ? profileUser.username : `@${profileUser.username}`}
+              </p>
+            )}
+          </div>
         </div>
       )}
     </div>

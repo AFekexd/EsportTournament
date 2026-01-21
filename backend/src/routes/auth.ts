@@ -4,6 +4,7 @@ import prisma from '../lib/prisma.js';
 import { discordService } from '../services/discordService.js';
 import { authenticate, AuthenticatedRequest, getHighestRole } from '../middleware/auth.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
+import { getClientIp } from '../utils/ip.js';
 
 export const authRouter: Router = Router();
 
@@ -96,7 +97,7 @@ authRouter.post(
                         keycloakId: user.keycloakId,
                         email: user.email, // PII consideration: Internal log, email is fine usually
                         role: user.role,
-                        ip: req.ip,
+                        ip: getClientIp(req),
                         userAgent: req.headers['user-agent']
                     }
                 }
