@@ -147,8 +147,19 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// In-memory installer storage (for simplicity - in production use file system or S3)
-let installerData: { version: string; fileData: Buffer; uploadedAt: Date } | null = null;
+import fs from 'fs';
+import path from 'path';
+
+// ... (existing imports are fine, but ensure fs and path are available)
+
+// Helper to ensure upload directory exists
+const INSTALLER_DIR = path.join(process.cwd(), 'uploads', 'installer');
+if (!fs.existsSync(INSTALLER_DIR)) {
+  fs.mkdirSync(INSTALLER_DIR, { recursive: true });
+}
+
+const META_FILE = path.join(INSTALLER_DIR, 'meta.json');
+const INSTALLER_FILE = path.join(INSTALLER_DIR, 'installer.zip');
 
 // Upload installer
 router.post('/installer/upload', upload.single('file'), async (req, res) => {
@@ -160,12 +171,16 @@ router.post('/installer/upload', upload.single('file'), async (req, res) => {
       return res.status(400).json({ message: 'Version and file are required' });
     }
 
-    // Store installer
-    installerData = {
+    // Save file to disk
+    fs.writeFileSync(INSTALLER_FILE, file.buffer);
+
+    // Save metadata
+    const meta = {
       version,
-      fileData: Buffer.from(file.buffer),
-      uploadedAt: new Date()
+      uploadedAt: new Date(),
+      size: file.buffer.length
     };
+    fs.writeFileSync(META_FILE, JSON.stringify(meta, null, 2));
 
     console.log(`[INSTALLER] Uploaded version ${version}, size: ${file.buffer.length} bytes`);
 
@@ -179,15 +194,12 @@ router.post('/installer/upload', upload.single('file'), async (req, res) => {
 // Get installer info
 router.get('/installer', async (req, res) => {
   try {
-    if (!installerData) {
+    if (!fs.existsSync(META_FILE) || !fs.existsSync(INSTALLER_FILE)) {
       return res.status(404).json({ message: 'No installer available' });
     }
 
-    res.json({
-      version: installerData.version,
-      uploadedAt: installerData.uploadedAt,
-      size: installerData.fileData.length
-    });
+    const meta = JSON.parse(fs.readFileSync(META_FILE, 'utf-8'));
+    res.json(meta);
   } catch (error) {
     console.error('Error fetching installer info:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -197,13 +209,17 @@ router.get('/installer', async (req, res) => {
 // Download installer
 router.get('/installer/download', async (req, res) => {
   try {
-    if (!installerData) {
+    if (!fs.existsSync(META_FILE) || !fs.existsSync(INSTALLER_FILE)) {
       return res.status(404).json({ message: 'No installer available' });
     }
 
+    const meta = JSON.parse(fs.readFileSync(META_FILE, 'utf-8'));
+
     res.setHeader('Content-Type', 'application/zip');
-    res.setHeader('Content-Disposition', `attachment; filename="EsportManager_Installer_v${installerData.version}.zip"`);
-    res.send(installerData.fileData);
+    res.setHeader('Content-Disposition', `attachment; filename="EsportManager_Installer_v${meta.version}.zip"`);
+    
+    const fileStream = fs.createReadStream(INSTALLER_FILE);
+    fileStream.pipe(res);
   } catch (error) {
     console.error('Error downloading installer:', error);
     res.status(500).json({ message: 'Internal server error' });
