@@ -147,4 +147,67 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// In-memory installer storage (for simplicity - in production use file system or S3)
+let installerData: { version: string; fileData: Buffer; uploadedAt: Date } | null = null;
+
+// Upload installer
+router.post('/installer/upload', upload.single('file'), async (req, res) => {
+  try {
+    const { version } = req.body;
+    const file = req.file;
+
+    if (!version || !file) {
+      return res.status(400).json({ message: 'Version and file are required' });
+    }
+
+    // Store installer
+    installerData = {
+      version,
+      fileData: Buffer.from(file.buffer),
+      uploadedAt: new Date()
+    };
+
+    console.log(`[INSTALLER] Uploaded version ${version}, size: ${file.buffer.length} bytes`);
+
+    res.json({ message: 'Installer uploaded successfully', version });
+  } catch (error) {
+    console.error('Error uploading installer:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Get installer info
+router.get('/installer', async (req, res) => {
+  try {
+    if (!installerData) {
+      return res.status(404).json({ message: 'No installer available' });
+    }
+
+    res.json({
+      version: installerData.version,
+      uploadedAt: installerData.uploadedAt,
+      size: installerData.fileData.length
+    });
+  } catch (error) {
+    console.error('Error fetching installer info:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Download installer
+router.get('/installer/download', async (req, res) => {
+  try {
+    if (!installerData) {
+      return res.status(404).json({ message: 'No installer available' });
+    }
+
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename="EsportManager_Installer_v${installerData.version}.zip"`);
+    res.send(installerData.fileData);
+  } catch (error) {
+    console.error('Error downloading installer:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 export const clientUpdateRouter: Router = router;

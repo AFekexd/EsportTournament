@@ -447,6 +447,36 @@ namespace EsportManager
             };
             _clockTimer.Start();
 
+            // Version Label (bottom-right)
+            string versionText = "v0.0.0";
+            try
+            {
+                string versionPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "version.txt");
+                if (File.Exists(versionPath))
+                {
+                    versionText = "v" + File.ReadAllText(versionPath).Trim();
+                }
+            }
+            catch { }
+            
+            Label lockedVersionLabel = new Label
+            {
+                Text = versionText,
+                Font = new Font("Segoe UI", 12, FontStyle.Regular),
+                ForeColor = Color.FromArgb(100, 100, 100),
+                AutoSize = true,
+                BackColor = Color.Transparent,
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Right
+            };
+            
+            // Position at bottom-right
+            lockedVersionLabel.Location = new Point(
+                (Screen.PrimaryScreen?.Bounds.Width ?? 1920) - 150, 
+                (Screen.PrimaryScreen?.Bounds.Height ?? 1080) - 50
+            );
+            
+            _lockedPanel.Controls.Add(lockedVersionLabel);
+
             this.Controls.Add(_lockedPanel);
 
             // Login panel (rejtve induláskor)
@@ -1376,6 +1406,9 @@ namespace EsportManager
 
         private void ShowFailSafeDialog()
         {
+            bool shouldExit = false;
+            string enteredPassword = "";
+            
             using (Form failsafeForm = new Form())
             {
                 failsafeForm.Text = "Fail-Safe Kilépés";
@@ -1434,75 +1467,101 @@ namespace EsportManager
 
                 if (failsafeForm.ShowDialog() == DialogResult.OK)
                 {
-                    try
-                    {
-                        // Compute Hash of input
-                        using (var sha256 = System.Security.Cryptography.SHA256.Create())
-                        {
-                            var inputText = textBox.Text ?? "";
-                            var bytes = System.Text.Encoding.UTF8.GetBytes(inputText);
-                            var hash = BitConverter.ToString(sha256.ComputeHash(bytes)).Replace("-", "").ToLower();
-                            
-                            // Safely get the failsafe password with null check
-                            string expectedHash;
-                            try
-                            {
-                                expectedHash = FailSafePassword?.ToLower() ?? "";
-                            }
-                            catch
-                            {
-                                expectedHash = "25487c1b7dae15d895fcb2be6c08b9140fe0e1913925dcf4c6059b385a74058c"; // Fallback hash
-                            }
-                            
-                            if (hash == expectedHash)
-                            {
-                                // Kilépés - set flag first to prevent closing issues
-                                _allowClose = true;
-                                
-                                // Stop timers safely
-                                try { _timer?.Stop(); } catch { }
-                                try { _sessionTimer?.Stop(); } catch { }
-                                try { _clockTimer?.Stop(); } catch { }
-                                try { _notificationHideTimer?.Stop(); } catch { }
-                                
-                                // Hide notification overlay
-                                try { _notificationOverlay?.Hide(); } catch { }
-                                
-                                // Hide tray icon
-                                try { if (_notifyIcon != null) _notifyIcon.Visible = false; } catch { }
-                                
-                                // Unhook keyboard
-                                try { _keyboardHook?.Unhook(); } catch { }
-                                
-                                // Create stop signal for watchdog
-                                try 
-                                {
-                                    File.Create(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "EsportManager_Stop.signal")).Close();
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine($"[FAILSAFE] Could not create stop signal: {ex.Message}");
-                                }
-                                
-                                // Re-enable Task Manager before exit
-                                try { SetTaskMgrEnabled(true); } catch { }
-
-                                // Exit application
-                                Application.Exit();
-                            }
-                            else
-                            {
-                                MessageBox.Show("Hibás jelszó!", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"[FAILSAFE] Error during exit: {ex.Message}");
-                        MessageBox.Show($"Hiba történt: {ex.Message}", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    enteredPassword = textBox.Text ?? "";
                 }
             }
+            
+            // Process password AFTER dialog is closed and disposed
+            if (!string.IsNullOrEmpty(enteredPassword))
+            {
+                try
+                {
+                    // Compute Hash of input
+                    string hash;
+                    using (var sha256 = System.Security.Cryptography.SHA256.Create())
+                    {
+                        var bytes = System.Text.Encoding.UTF8.GetBytes(enteredPassword);
+                        hash = BitConverter.ToString(sha256.ComputeHash(bytes)).Replace("-", "").ToLower();
+                    }
+                    
+                    // Safely get the failsafe password with null check
+                    string expectedHash;
+                    try
+                    {
+                        expectedHash = FailSafePassword?.ToLower() ?? "";
+                    }
+                    catch
+                    {
+                        expectedHash = "25487c1b7dae15d895fcb2be6c08b9140fe0e1913925dcf4c6059b385a74058c"; // Fallback hash
+                    }
+                    
+                    if (hash == expectedHash)
+                    {
+                        shouldExit = true;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Hibás jelszó!", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[FAILSAFE] Error during password check: {ex.Message}");
+                    MessageBox.Show($"Hiba történt: {ex.Message}", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            
+            // Exit AFTER dialog is fully disposed
+            if (shouldExit)
+            {
+                PerformEmergencyExit();
+            }
+        }
+        
+        private void PerformEmergencyExit()
+        {
+            Console.WriteLine("[FAILSAFE] Starting emergency exit...");
+            
+            // Set flag first to prevent closing issues
+            _allowClose = true;
+            
+            // Stop timers safely
+            try { _timer?.Stop(); } catch { }
+            try { _sessionTimer?.Stop(); } catch { }
+            try { _clockTimer?.Stop(); } catch { }
+            try { _notificationHideTimer?.Stop(); } catch { }
+            
+            // Hide notification overlay
+            try { _notificationOverlay?.Hide(); } catch { }
+            
+            // Hide tray icon
+            try { if (_notifyIcon != null) _notifyIcon.Visible = false; } catch { }
+            
+            // Unhook keyboard
+            try { _keyboardHook?.Unhook(); } catch { }
+            
+            // Create stop signal for watchdog
+            try 
+            {
+                string signalPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "EsportManager_Stop.signal");
+                File.Create(signalPath).Close();
+                Console.WriteLine($"[FAILSAFE] Created stop signal at {signalPath}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[FAILSAFE] Could not create stop signal: {ex.Message}");
+            }
+            
+            // Re-enable Task Manager before exit
+            try { SetTaskMgrEnabled(true); } catch { }
+            
+            Console.WriteLine("[FAILSAFE] Exiting application...");
+            
+            // Use BeginInvoke to exit on next message loop iteration
+            this.BeginInvoke(new Action(() => 
+            {
+                Application.Exit();
+            }));
         }
 
         /// <summary>
