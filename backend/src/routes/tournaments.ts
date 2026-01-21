@@ -292,6 +292,7 @@ tournamentsRouter.patch(
             seedingMethod,
         } = req.body;
 
+
         // Process image if base64
         let processedImageUrl = imageUrl;
         if (imageUrl && isBase64DataUrl(imageUrl)) {
@@ -301,28 +302,33 @@ tournamentsRouter.patch(
             processedImageUrl = await processImage(imageUrl);
         }
 
+        const updateData: any = {
+            ...(name && { name }),
+            ...(description !== undefined && { description }),
+            ...(processedImageUrl !== undefined && { imageUrl: processedImageUrl }),
+            ...(status && { status }),
+            ...(format && { format }),
+            ...(maxTeams && { maxTeams }),
+            ...(startDate && { startDate: new Date(startDate) }),
+            ...(endDate !== undefined && { endDate: endDate ? new Date(endDate) : null }),
+            ...(registrationDeadline && { registrationDeadline: new Date(registrationDeadline) }),
+            ...(notifyUsers !== undefined && { notifyUsers }),
+            ...(notifyDiscord !== undefined && { notifyDiscord }),
+            ...(discordChannelId !== undefined && { discordChannelId }),
+            ...(hasQualifier !== undefined && { hasQualifier }),
+            ...(qualifierMatches !== undefined && { qualifierMatches: parseInt(qualifierMatches) }),
+            ...(qualifierMinPoints !== undefined && { qualifierMinPoints: parseInt(qualifierMinPoints) }),
+            ...(teamSize !== undefined && { teamSize: teamSize ? parseInt(teamSize) : null }),
+            ...(requireRank !== undefined && { requireRank }),
+            ...(seedingMethod && { seedingMethod }),
+        };
+
+        const { calculateDiff } = await import('../utils/diffUtils.js');
+        const changes = calculateDiff(tournament, updateData);
+
         const updated = await prisma.tournament.update({
             where: { id: req.params.id },
-            data: {
-                ...(name && { name }),
-                ...(description !== undefined && { description }),
-                ...(processedImageUrl !== undefined && { imageUrl: processedImageUrl }),
-                ...(status && { status }),
-                ...(format && { format }),
-                ...(maxTeams && { maxTeams }),
-                ...(startDate && { startDate: new Date(startDate) }),
-                ...(endDate !== undefined && { endDate: endDate ? new Date(endDate) : null }),
-                ...(registrationDeadline && { registrationDeadline: new Date(registrationDeadline) }),
-                ...(notifyUsers !== undefined && { notifyUsers }),
-                ...(notifyDiscord !== undefined && { notifyDiscord }),
-                ...(discordChannelId !== undefined && { discordChannelId }),
-                ...(hasQualifier !== undefined && { hasQualifier }),
-                ...(qualifierMatches !== undefined && { qualifierMatches: parseInt(qualifierMatches) }),
-                ...(qualifierMinPoints !== undefined && { qualifierMinPoints: parseInt(qualifierMinPoints) }),
-                ...(teamSize !== undefined && { teamSize: teamSize ? parseInt(teamSize) : null }),
-                ...(requireRank !== undefined && { requireRank }),
-                ...(seedingMethod && { seedingMethod }),
-            },
+            data: updateData,
             include: {
                 game: true,
                 _count: { select: { entries: true } },
@@ -337,7 +343,7 @@ tournamentsRouter.patch(
                 userId: user.id,
                 metadata: {
                     tournamentId: updated.id,
-                    changes: Object.keys(req.body).filter(k => k !== 'imageUrl'),
+                    changes: changes,
                     status: updated.status
                 }
             }

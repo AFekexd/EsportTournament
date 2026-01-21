@@ -16,6 +16,7 @@ import {
   Info,
   Shield,
   Calendar,
+  Clock,
 } from "lucide-react";
 import { ConfirmationModal } from "../components/common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
@@ -29,6 +30,8 @@ import {
 } from "../store/slices/teamsSlice";
 import { TeamEditModal } from "../components/teams/TeamEditModal";
 import { MemberCard } from "../components/teams/MemberCard";
+import { API_URL } from "../config";
+import { apiFetch } from "../lib/api-client";
 
 type TabType = "overview" | "members" | "tournaments" | "settings";
 
@@ -56,7 +59,7 @@ export function TeamDetailPage() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => { },
+    onConfirm: () => {},
     variant: "primary",
   });
 
@@ -74,6 +77,33 @@ export function TeamDetailPage() {
       dispatch(clearCurrentTeam());
     };
   }, [id, dispatch]);
+
+  // Check for pending requests
+  const [pendingRequest, setPendingRequest] = useState<any>(null);
+
+  useEffect(() => {
+    if (!id || !user) return;
+
+    const checkPendingRequests = async () => {
+      try {
+        const res = await apiFetch(`${API_URL}/change-requests/my-requests`);
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data)) {
+          // Find latest PENDING team profile request for this team
+          const pending = data.data.find(
+            (r: any) =>
+              r.status === "PENDING" &&
+              r.type === "TEAM_PROFILE" &&
+              r.entityId === id,
+          );
+          setPendingRequest(pending);
+        }
+      } catch (error) {
+        console.error("Failed to check pending request", error);
+      }
+    };
+    checkPendingRequests();
+  }, [id, user]);
 
   const handleCopyJoinCode = () => {
     if (currentTeam?.joinCode) {
@@ -169,7 +199,7 @@ export function TeamDetailPage() {
                 <img
                   src={currentTeam.coverUrl}
                   alt="Cover"
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className={`absolute inset-0 w-full h-full object-cover ${pendingRequest ? "grayscale-[0.5]" : ""}`}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1a1b26] via-[#1a1b26]/50 to-transparent"></div>
               </>
@@ -177,17 +207,26 @@ export function TeamDetailPage() {
               <div className="absolute inset-0 bg-gradient-to-r from-purple-900/40 via-blue-900/40 to-primary/40"></div>
             )}
             <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]"></div>
-            {!currentTeam.coverUrl && <div className="absolute inset-0 bg-gradient-to-t from-[#1a1b26] to-transparent"></div>}
+            {!currentTeam.coverUrl && (
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1a1b26] to-transparent"></div>
+            )}
 
             {isOwner && (
               <div className="absolute top-6 right-6 flex gap-3 z-20">
-                <button
-                  onClick={() => setShowEditModal(true)}
-                  className="p-2 bg-black/40 hover:bg-black/60 text-white backdrop-blur-md border border-white/10 rounded-full transition-all hover:scale-105"
-                  title="Szerkesztés"
-                >
-                  <Edit size={20} />
-                </button>
+                {pendingRequest ? (
+                  <div className="flex items-center gap-2 px-4 py-2 bg-yellow-500/20 backdrop-blur-md border border-yellow-500/50 rounded-full text-yellow-500 font-bold animate-pulse">
+                    <Clock size={16} />
+                    <span>Módosítás függőben</span>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setShowEditModal(true)}
+                    className="p-2 bg-black/40 hover:bg-black/60 text-white backdrop-blur-md border border-white/10 rounded-full transition-all hover:scale-105"
+                    title="Szerkesztés"
+                  >
+                    <Edit size={20} />
+                  </button>
+                )}
               </div>
             )}
           </div>
@@ -239,7 +278,7 @@ export function TeamDetailPage() {
                       <span>
                         Létrehozva:{" "}
                         {new Date(currentTeam.createdAt).toLocaleDateString(
-                          "hu-HU"
+                          "hu-HU",
                         )}
                       </span>
                     </span>
@@ -317,16 +356,17 @@ export function TeamDetailPage() {
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === tab
-                      ? "border-primary text-primary bg-primary/5"
-                      : "border-transparent text-gray-400 hover:text-white hover:bg-white/5"
-                      }`}
+                    className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                      activeTab === tab
+                        ? "border-primary text-primary bg-primary/5"
+                        : "border-transparent text-gray-400 hover:text-white hover:bg-white/5"
+                    }`}
                   >
                     <Icon size={18} />
                     {labels[tab]}
                   </button>
                 );
-              }
+              },
             )}
           </div>
         </div>
@@ -440,12 +480,13 @@ export function TeamDetailPage() {
                           {entry.tournament?.name}
                         </h3>
                         <div
-                          className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border ${entry.tournament?.status === "REGISTRATION"
-                            ? "bg-green-500/10 text-green-500 border-green-500/20"
-                            : entry.tournament?.status === "IN_PROGRESS"
-                              ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
-                              : "bg-red-500/10 text-red-500 border-red-500/20"
-                            }`}
+                          className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border ${
+                            entry.tournament?.status === "REGISTRATION"
+                              ? "bg-green-500/10 text-green-500 border-green-500/20"
+                              : entry.tournament?.status === "IN_PROGRESS"
+                                ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
+                                : "bg-red-500/10 text-red-500 border-red-500/20"
+                          }`}
                         >
                           {entry.tournament?.status}
                         </div>
@@ -458,7 +499,7 @@ export function TeamDetailPage() {
                         <Calendar size={12} />
                         <span>
                           {new Date(
-                            entry.tournament?.startDate || ""
+                            entry.tournament?.startDate || "",
                           ).toLocaleDateString("hu-HU")}
                         </span>
                       </div>

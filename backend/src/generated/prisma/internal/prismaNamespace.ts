@@ -2732,6 +2732,10 @@ export const ChangeRequestScalarFieldEnum = {
   requesterId: 'requesterId',
   data: 'data',
   status: 'status',
+  rejectionReason: 'rejectionReason',
+  adminNote: 'adminNote',
+  processedById: 'processedById',
+  processedAt: 'processedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

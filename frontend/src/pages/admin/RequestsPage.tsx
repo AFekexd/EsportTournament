@@ -23,13 +23,28 @@ interface ChangeRequest {
   data: any;
   currentData?: any;
   status: "PENDING" | "APPROVED" | "REJECTED";
+  rejectionReason?: string;
+  adminNote?: string;
+  processedById?: string;
+  processedAt?: string;
   createdAt: string;
 }
 
 export default function RequestsPage() {
   const [requests, setRequests] = useState<ChangeRequest[]>([]);
   const [loading, setLoading] = useState(true);
-  // const { user } = useAppSelector((state) => state.auth);
+  const [activeTab, setActiveTab] = useState<"pending" | "history">("pending");
+
+  // Rejection Modal State
+  const [rejectModal, setRejectModal] = useState<{
+    isOpen: boolean;
+    request: ChangeRequest | null;
+    reason: string;
+  }>({
+    isOpen: false,
+    request: null,
+    reason: "",
+  });
 
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
@@ -49,7 +64,11 @@ export default function RequestsPage() {
   const fetchRequests = async () => {
     try {
       setLoading(true);
-      const res = await apiFetch(`${API_URL}/change-requests`);
+      const statusParam =
+        activeTab === "pending" ? "PENDING" : "APPROVED,REJECTED";
+      const res = await apiFetch(
+        `${API_URL}/change-requests?status=${statusParam}`,
+      );
       const data = await res.json();
       if (data.success) {
         setRequests(data.data);
@@ -64,61 +83,95 @@ export default function RequestsPage() {
 
   useEffect(() => {
     fetchRequests();
-  }, []);
+  }, [activeTab]);
 
   const handleAction = (
     request: ChangeRequest,
-    action: "approve" | "reject"
+    action: "approve" | "reject",
   ) => {
+    if (action === "reject") {
+      setRejectModal({
+        isOpen: true,
+        request,
+        reason: "",
+      });
+      return;
+    }
+
     setConfirmModal({
       isOpen: true,
-      title:
-        action === "approve" ? "Kérelem jóváhagyása" : "Kérelem elutasítása",
-      message: `Biztosan ${
-        action === "approve" ? "jóváhagyod" : "elutasítod"
-      } ezt a kérelmet?`,
-      variant: action === "approve" ? "success" : "danger",
-      confirmLabel: action === "approve" ? "Jóváhagyás" : "Elutasítás",
+      title: "Kérelem jóváhagyása",
+      message: "Biztosan jóváhagyod ezt a kérelmet?",
+      variant: "success",
+      confirmLabel: "Jóváhagyás",
       onConfirm: async () => {
         try {
           const res = await apiFetch(
-            `${API_URL}/change-requests/${request.id}/${action}`,
+            `${API_URL}/change-requests/${request.id}/approve`,
             {
               method: "POST",
-            }
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({}),
+            },
           );
           const data = await res.json();
           if (data.success) {
-            toast.success(
-              `Kérelem sikeresen ${
-                action === "approve" ? "jóváhagyva" : "elutasítva"
-              }`
-            );
+            toast.success("Kérelem sikeresen jóváhagyva");
             setRequests((prev) => prev.filter((r) => r.id !== request.id));
             setConfirmModal((prev) => ({ ...prev, isOpen: false }));
-            // Trigger update in sidebar
             window.dispatchEvent(new CustomEvent("requests-updated"));
           } else {
             throw new Error(data.error?.message || "Hiba történt");
           }
         } catch (error: any) {
-          console.error(`Failed to ${action} request`, error);
-          toast.error(
-            error.message ||
-              `Nem sikerült ${
-                action === "approve" ? "jóváhagyni" : "elutasítani"
-              } a kérelmet`
-          );
+          console.error(`Failed to approve request`, error);
+          toast.error(error.message || "Nem sikerült jóváhagyni a kérelmet");
         }
       },
     });
+  };
+
+  const handleRejectConfirm = async () => {
+    if (!rejectModal.request || !rejectModal.reason.trim()) {
+      toast.error("Kérlek add meg az elutasítás indokát!");
+      return;
+    }
+
+    try {
+      const res = await apiFetch(
+        `${API_URL}/change-requests/${rejectModal.request.id}/reject`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reason: rejectModal.reason }),
+        },
+      );
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Kérelem törölve/elutasítva");
+        setRequests((prev) =>
+          prev.filter((r) => r.id !== rejectModal.request!.id),
+        );
+        setRejectModal((prev) => ({ ...prev, isOpen: false }));
+        window.dispatchEvent(new CustomEvent("requests-updated"));
+      } else {
+        throw new Error(data.error?.message || "Hiba történt");
+      }
+    } catch (error: any) {
+      console.error(`Failed to reject request`, error);
+      toast.error(error.message || "Nem sikerült elutasítani a kérelmet");
+    }
   };
 
   const closeConfirmModal = () =>
     setConfirmModal((prev) => ({ ...prev, isOpen: false }));
 
   if (loading) {
-    return <div className="p-8 text-center text-gray-400">Betöltés...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
   return (
@@ -130,25 +183,52 @@ export default function RequestsPage() {
             Jóváhagyásra váró profil és csapat módosítások
           </p>
         </div>
-        <button
-          onClick={fetchRequests}
-          className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors text-white"
-        >
-          <RefreshCw size={20} />
-          Frissítés
-        </button>
+
+        <div className="flex items-center gap-4">
+          <div className="flex bg-white/5 rounded-lg p-1 border border-white/10">
+            <button
+              onClick={() => setActiveTab("pending")}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                activeTab === "pending"
+                  ? "bg-primary text-white shadow-lg"
+                  : "text-gray-400 hover:text-white"
+              }`}
+            >
+              Váratlanok
+            </button>
+            <button
+              onClick={() => setActiveTab("history")}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                activeTab === "history"
+                  ? "bg-primary text-white shadow-lg"
+                  : "text-gray-400 hover:text-white"
+              }`}
+            >
+              Előzmények
+            </button>
+          </div>
+          <button
+            onClick={fetchRequests}
+            className="flex items-center gap-2 p-2.5 bg-white/5 hover:bg-white/10 rounded-lg transition-colors text-white border border-white/10"
+            title="Frissítés"
+          >
+            <RefreshCw size={20} />
+          </button>
+        </div>
       </div>
 
       {requests.length === 0 ? (
-        <div className="bg-[#1a1b26] border border-white/5 rounded-2xl p-12 text-center">
+        <div className="bg-[#1a1b26] border border-white/5 rounded-2xl p-12 text-center animate-fade-in">
           <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
             <Check className="text-green-500" size={32} />
           </div>
           <h3 className="text-xl font-medium text-white mb-2">
-            Nincs függőben lévő kérelem
+            Nincs {activeTab === "pending" ? "függőben lévő" : ""} kérelem
           </h3>
           <p className="text-gray-400">
-            Jelenleg minden kérelem fel van dolgozva.
+            {activeTab === "pending"
+              ? "Jelenleg minden kérelem fel van dolgozva."
+              : "Még nincsenek előzmények."}
           </p>
         </div>
       ) : (
@@ -156,7 +236,7 @@ export default function RequestsPage() {
           {requests.map((request) => (
             <div
               key={request.id}
-              className="bg-[#1a1b26] border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-colors"
+              className="bg-[#1a1b26] border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-colors animate-slide-up"
             >
               <div className="p-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
@@ -178,6 +258,20 @@ export default function RequestsPage() {
                         <span className="text-gray-400 font-normal text-sm">
                           • {request.entityName}
                         </span>
+                        {/* Status Badge for History Tab */}
+                        {activeTab === "history" && (
+                          <span
+                            className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border ml-2 ${
+                              request.status === "APPROVED"
+                                ? "bg-green-500/10 text-green-500 border-green-500/20"
+                                : "bg-red-500/10 text-red-500 border-red-500/20"
+                            }`}
+                          >
+                            {request.status === "APPROVED"
+                              ? "Elfogadva"
+                              : "Elutasítva"}
+                          </span>
+                        )}
                       </h3>
                       <div className="text-sm text-gray-400 flex items-center gap-2">
                         <span>Kérelmező: {request.requester.username}</span>
@@ -186,28 +280,56 @@ export default function RequestsPage() {
                           {format(
                             new Date(request.createdAt),
                             "yyyy. MM. dd. HH:mm",
-                            { locale: hu }
+                            { locale: hu },
                           )}
                         </span>
                       </div>
+
+                      {/* Processed By info for History */}
+                      {activeTab === "history" && request.processedAt && (
+                        <div className="text-xs text-gray-500 mt-1">
+                          Feldolgozva:{" "}
+                          {format(
+                            new Date(request.processedAt),
+                            "yyyy. MM. dd. HH:mm",
+                            { locale: hu },
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => handleAction(request, "reject")}
-                      className="px-4 py-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors flex items-center gap-2 font-medium"
-                    >
-                      <X size={18} /> Elutasítás
-                    </button>
-                    <button
-                      onClick={() => handleAction(request, "approve")}
-                      className="px-4 py-2 rounded-lg bg-green-500/10 text-green-500 hover:bg-green-500/20 transition-colors flex items-center gap-2 font-medium"
-                    >
-                      <Check size={18} /> Jóváhagyás
-                    </button>
-                  </div>
+                  {activeTab === "pending" && (
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => handleAction(request, "reject")}
+                        className="px-4 py-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors flex items-center gap-2 font-medium"
+                      >
+                        <X size={18} /> Elutasítás
+                      </button>
+                      <button
+                        onClick={() => handleAction(request, "approve")}
+                        className="px-4 py-2 rounded-lg bg-green-500/10 text-green-500 hover:bg-green-500/20 transition-colors flex items-center gap-2 font-medium"
+                      >
+                        <Check size={18} /> Jóváhagyás
+                      </button>
+                    </div>
+                  )}
                 </div>
+
+                {/* Rejection Reason display in History */}
+                {activeTab === "history" &&
+                  request.status === "REJECTED" &&
+                  request.rejectionReason && (
+                    <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-4 mb-4">
+                      <div className="text-red-400 text-xs font-bold uppercase tracking-wider mb-1">
+                        Elutasítás indoka
+                      </div>
+                      <div className="text-white text-sm">
+                        {request.rejectionReason}
+                      </div>
+                    </div>
+                  )}
 
                 <div className="bg-black/20 rounded-xl p-4 border border-white/5">
                   <h4 className="text-sm font-medium text-gray-400 mb-3 uppercase tracking-wider">
@@ -300,6 +422,49 @@ export default function RequestsPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Reject Modal */}
+      {rejectModal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="bg-[#1a1b26] border border-white/10 rounded-2xl w-full max-w-md shadow-2xl p-6 animate-scale-in">
+            <h3 className="text-xl font-bold text-white mb-2">
+              Kérelem elutasítása
+            </h3>
+            <p className="text-gray-400 text-sm mb-4">
+              Kérlek pótold az elutasítás okát, amit a felhasználó is meg fog
+              kapni.
+            </p>
+
+            <textarea
+              value={rejectModal.reason}
+              onChange={(e) =>
+                setRejectModal((prev) => ({ ...prev, reason: e.target.value }))
+              }
+              className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-white placeholder-gray-600 focus:outline-none focus:border-red-500/50 min-h-[100px] mb-6 resize-none"
+              placeholder="Pl.: Nem megfelelő profilkép, trágár kifejezés..."
+              autoFocus
+            />
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() =>
+                  setRejectModal((prev) => ({ ...prev, isOpen: false }))
+                }
+                className="px-4 py-2 hover:bg-white/5 rounded-lg text-gray-400 transition-colors"
+              >
+                Mégse
+              </button>
+              <button
+                onClick={handleRejectConfirm}
+                disabled={!rejectModal.reason.trim()}
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Elutasítás
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

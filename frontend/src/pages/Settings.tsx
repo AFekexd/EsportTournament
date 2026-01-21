@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Save,
   Bell,
@@ -14,6 +14,7 @@ import {
   Calendar,
   AlertCircle,
   Newspaper,
+  Clock,
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useAppDispatch } from "../hooks/useRedux";
@@ -63,6 +64,28 @@ export function SettingsPage() {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [steamId, setSteamId] = useState(user?.steamId || "");
   const [syncLoading, setSyncLoading] = useState(false);
+
+  // Pending Request State
+  const [pendingRequest, setPendingRequest] = useState<any>(null);
+
+  useEffect(() => {
+    const checkPendingRequests = async () => {
+      try {
+        const res = await apiFetch(`${API_URL}/change-requests/my-requests`);
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data)) {
+          // Find latest PENDING user profile request
+          const pending = data.data.find(
+            (r: any) => r.status === "PENDING" && r.type === "USER_PROFILE",
+          );
+          setPendingRequest(pending);
+        }
+      } catch (error) {
+        console.error("Failed to check pending requests", error);
+      }
+    };
+    checkPendingRequests();
+  }, []);
 
   const emailPreferences: EmailPreference[] = [
     {
@@ -227,10 +250,30 @@ export function SettingsPage() {
         </p>
       </div>
 
+      {pendingRequest && (
+        <div className="max-w-6xl mx-auto mb-8 animate-fade-in">
+          <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-4 flex items-center gap-4">
+            <div className="p-2 bg-yellow-500/20 rounded-full text-yellow-500">
+              <Clock size={24} />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-bold text-white">
+                Módosítás jóváhagyásra vár
+              </h3>
+              <p className="text-gray-400 text-sm">
+                A profilodon végzett legutóbbi módosításaidat egy
+                adminisztrátornak jóvá kell hagynia. Amíg a kérelem függőben
+                van, nem indíthatsz újabb módosítást.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
         {/* Profile Card */}
         <div
-          className="glass-card rounded-2xl p-8 hover:scale-[1.01] transition-transform animate-slide-up"
+          className={`glass-card rounded-2xl p-8 hover:scale-[1.01] transition-transform animate-slide-up ${pendingRequest ? "opacity-75 pointer-events-none grayscale-[0.3]" : ""}`}
           style={{ animationDelay: "0.1s" }}
         >
           <div className="flex items-center gap-4 mb-8">
@@ -275,10 +318,12 @@ export function SettingsPage() {
                   type="text"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  disabled={!isAdmin}
+                  disabled={!isAdmin || !!pendingRequest}
                   maxLength={50}
                   className={`w-full px-5 py-4 bg-[#0a0a0f]/50 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-lg ${
-                    !isAdmin ? "opacity-50 cursor-not-allowed" : ""
+                    !isAdmin || !!pendingRequest
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
                   }`}
                   placeholder="pl. GamerPro123"
                 />
@@ -327,12 +372,13 @@ export function SettingsPage() {
                   type="text"
                   value={steamId}
                   onChange={(e) => setSteamId(e.target.value)}
-                  className="flex-1 px-5 py-4 bg-[#0a0a0f]/50 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
+                  disabled={!!pendingRequest}
+                  className="flex-1 px-5 py-4 bg-[#0a0a0f]/50 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   placeholder="76561198..."
                 />
                 <button
                   onClick={handleSteamSync}
-                  disabled={!steamId || syncLoading}
+                  disabled={!steamId || syncLoading || !!pendingRequest}
                   className="px-4 py-2 bg-[#0f1015] border border-white/10 rounded-xl hover:bg-primary/20 hover:border-primary/50 hover:text-white transition-all text-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Játékok szinkronizálása"
                 >
@@ -425,7 +471,7 @@ export function SettingsPage() {
 
             {/* Master Toggle */}
             <div
-              className="flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-neon-pink/10 border border-primary/20 rounded-xl mb-4 cursor-pointer"
+              className={`flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-neon-pink/10 border border-primary/20 rounded-xl mb-4 cursor-pointer ${pendingRequest ? "opacity-50 pointer-events-none" : ""}`}
               onClick={() => setEmailNotifications(!emailNotifications)}
             >
               <div className="flex items-center gap-4">
@@ -463,7 +509,7 @@ export function SettingsPage() {
 
             {/* Individual Preferences */}
             <div
-              className={`space-y-2 ${!emailNotifications ? "opacity-50 pointer-events-none" : ""}`}
+              className={`space-y-2 ${!emailNotifications || pendingRequest ? "opacity-50 pointer-events-none" : ""}`}
             >
               {emailPreferences.map((pref) => (
                 <div
@@ -519,12 +565,12 @@ export function SettingsPage() {
         <div className="pointer-events-auto">
           <button
             onClick={handleSave}
-            disabled={saveLoading}
+            disabled={saveLoading || !!pendingRequest}
             className={`flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg transform hover:-translate-y-1 ${
               saveSuccess
                 ? "bg-green-500 hover:bg-green-600 shadow-green-500/25 text-white"
                 : "bg-gradient-to-r from-primary to-neon-pink hover:brightness-110 shadow-primary/25 text-white"
-            } ${saveLoading ? "opacity-75 cursor-wait" : ""}`}
+            } ${saveLoading || !!pendingRequest ? "opacity-75 cursor-wait grayscale" : ""}`}
           >
             {saveLoading ? (
               <>
@@ -535,6 +581,11 @@ export function SettingsPage() {
               <>
                 <Shield size={20} />
                 Sikeresen Mentve!
+              </>
+            ) : pendingRequest ? (
+              <>
+                <Clock size={20} />
+                Jóváhagyásra Vár...
               </>
             ) : (
               <>

@@ -6,6 +6,7 @@ import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { logSystemActivity } from '../services/logService.js';
 import { UserRole } from '../utils/enums.js';
 import { notificationService } from '../services/notificationService.js';
+import { calculateDiff } from '../utils/diffUtils.js';
 
 export const changeRequestsRouter: Router = Router();
 
@@ -20,8 +21,19 @@ changeRequestsRouter.get(
             throw new ApiError('Nincs jogosultságod a kérelmek megtekintéséhez', 403, 'FORBIDDEN');
         }
 
+        // Parse status from query, default to PENDING if not specified
+        // Allow comma-separated values e.g. "PENDING,APPROVED"
+        const statusParam = req.query.status as string;
+        let statusFilter: any = 'PENDING';
+        
+        if (statusParam) {
+            const statuses = statusParam.split(',').map(s => s.trim().toUpperCase());
+            // If explicit status provided, use "in" filter
+            statusFilter = { in: statuses };
+        }
+
         const requests = await prisma.changeRequest.findMany({
-            where: { status: 'PENDING' },
+            where: { status: statusFilter },
             include: {
                 requester: {
                     select: {
@@ -113,8 +125,31 @@ changeRequestsRouter.get(
     })
 );
 
+// Get User's own requests (All statuses)
+changeRequestsRouter.get(
+    '/my-requests',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({ 
+            where: { keycloakId: req.user!.sub },
+            select: { id: true }
+        });
+
+        if (!user) {
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
+        }
+
+        const myRequests = await prisma.changeRequest.findMany({
+            where: { requesterId: user.id },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        res.json({ success: true, data: myRequests });
+    })
+);
+
 // Helper to approve a single request
-async function approveRequestInternal(requestId: string, admin: any) {
+async function approveRequestInternal(requestId: string, admin: any, note?: string) {
     const request = await prisma.changeRequest.findUnique({ where: { id: requestId } });
 
     if (!request) {
@@ -126,8 +161,12 @@ async function approveRequestInternal(requestId: string, admin: any) {
     }
 
     const data = request.data as any;
+    let changes: any = {};
 
     if (request.type === 'USER_PROFILE') {
+        const currentUser = await prisma.user.findUnique({ where: { id: request.entityId } });
+        changes = calculateDiff(currentUser, data);
+
         await prisma.user.update({
             where: { id: request.entityId },
             data: {
@@ -137,10 +176,18 @@ async function approveRequestInternal(requestId: string, admin: any) {
                 ...(data.emailNotifications !== undefined && { emailNotifications: data.emailNotifications })
             }
         });
+        
         await logSystemActivity(
             'USER_UPDATE_APPROVED',
             `User update approved by ${admin.username}`,
-            { adminId: admin.id, userId: request.entityId }
+            { 
+                adminId: admin.id, 
+                userId: request.entityId,
+                metadata: {
+                    changes: Object.keys(changes).length > 0 ? changes : data,
+                    adminNote: note
+                }
+            }
         );
 
         // Notify User
@@ -157,6 +204,9 @@ async function approveRequestInternal(requestId: string, admin: any) {
         await webSyncService.onUserUpdate(request.entityId);
 
     } else if (request.type === 'TEAM_PROFILE') {
+        const currentTeam = await prisma.team.findUnique({ where: { id: request.entityId } });
+        changes = calculateDiff(currentTeam, data);
+
         await prisma.team.update({
             where: { id: request.entityId },
             data: {
@@ -166,15 +216,21 @@ async function approveRequestInternal(requestId: string, admin: any) {
                 ...(data.coverUrl !== undefined && { coverUrl: data.coverUrl })
             }
         });
+        
         await logSystemActivity(
             'TEAM_UPDATE_APPROVED',
             `Team update approved by ${admin.username}`,
-            { adminId: admin.id, metadata: { teamId: request.entityId } }
+            { 
+                adminId: admin.id, 
+                metadata: { 
+                    teamId: request.entityId,
+                    changes: Object.keys(changes).length > 0 ? changes : data,
+                    adminNote: note
+                } 
+            }
         );
 
-        // Notify Team Owner? Probably overkill for now, but consistent
-        // For Teams, entityId is TeamId. We need the owner or requester.
-        // Assuming requesterId is the user to notify.
+        // Notify User
         await notificationService.createNotification({
             userId: request.requesterId,
             type: 'SYSTEM',
@@ -186,7 +242,12 @@ async function approveRequestInternal(requestId: string, admin: any) {
 
     return prisma.changeRequest.update({
         where: { id: request.id },
-        data: { status: 'APPROVED' }
+        data: { 
+            status: 'APPROVED',
+            processedById: admin.id,
+            processedAt: new Date(),
+            adminNote: note
+        }
     });
 }
 
@@ -239,7 +300,6 @@ changeRequestsRouter.post(
             throw new ApiError('Nincs kiválasztva elem', 400, 'NO_SELECTION');
         }
 
-        // Parallel processing for reject is safer/easier than approve usually, but sequential is fine
         const result = await prisma.changeRequest.updateMany({
             where: {
                 id: { in: ids },
@@ -248,18 +308,11 @@ changeRequestsRouter.post(
             data: { status: 'REJECTED' }
         });
 
-        // Log mass rejection
         await logSystemActivity(
             'BULK_REJECT',
             `${result.count} requests rejected by ${admin.username}`,
             { adminId: admin.id, metadata: { count: result.count, ids } }
         );
-
-        // Notify users (Batch notification effectively)
-        // We need to fetch the requests to know WHO to notify, but they are updated now.
-        // For simplicity/performance in bulk, we might skip individual notifications or handle it smarter.
-        // Given the constraints, let's leave bulk notification for now or do a simple loop if needed.
-        // Let's rely on individual reject for detailed feedback usually.
 
         res.json({ success: true, data: { count: result.count } });
     })
@@ -277,9 +330,9 @@ changeRequestsRouter.post(
         }
 
         try {
-            const updatedRequest = await approveRequestInternal(req.params.id, admin);
+            const { note } = req.body;
+            const updatedRequest = await approveRequestInternal(req.params.id, admin, note);
             if (!updatedRequest) {
-                // Might happen if it wasn't PENDING
                 throw new ApiError('A kérelem már feldolgozásra került', 400, 'ALREADY_PROCESSED');
             }
             res.json({ success: true, data: updatedRequest });
@@ -313,22 +366,51 @@ changeRequestsRouter.post(
             throw new ApiError('Ez a kérelem már feldolgozásra került', 400, 'ALREADY_PROCESSED');
         }
 
+        const { reason } = req.body;
+        if (!reason || typeof reason !== 'string' || reason.trim() === '') {
+             throw new ApiError('Indoklás megadása kötelező az elutasításhoz', 400, 'REASON_REQUIRED');
+        }
+
+        // Calculate diff for logging purposes (what would have changed)
+        let changes: any = {};
+        if (request.type === 'USER_PROFILE') {
+            const currentUser = await prisma.user.findUnique({ where: { id: request.entityId } });
+            changes = calculateDiff(currentUser, request.data);
+        } else if (request.type === 'TEAM_PROFILE') {
+            const currentTeam = await prisma.team.findUnique({ where: { id: request.entityId } });
+            changes = calculateDiff(currentTeam, request.data);
+        }
+
         const updatedRequest = await prisma.changeRequest.update({
             where: { id: request.id },
-            data: { status: 'REJECTED' }
+            data: { 
+                status: 'REJECTED',
+                rejectionReason: reason,
+                processedById: admin.id,
+                processedAt: new Date()
+            }
         });
 
         await logSystemActivity(
             'REQUEST_REJECTED',
             `Request rejected by ${admin.username}`,
-            { adminId: admin.id, metadata: { requestId: request.id, type: request.type } }
+            { 
+                adminId: admin.id, 
+                metadata: { 
+                    requestId: request.id, 
+                    type: request.type, 
+                    reason,
+                    changes: Object.keys(changes).length > 0 ? changes : request.data,
+                    originalData: request.data // Also keep raw data just in case
+                } 
+            }
         );
 
         await notificationService.createNotification({
             userId: request.requesterId,
             type: 'SYSTEM',
             title: 'Módosítási kérelem elutasítva',
-            message: `A profil/csapat módosítási kérelmedet elutasították.`,
+            message: `A profil/csapat módosítási kérelmedet elutasították. Indoklás: ${reason}`,
             link: '/settings'
         });
 

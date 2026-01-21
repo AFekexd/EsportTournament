@@ -380,30 +380,27 @@ usersRouter.patch(
             });
         }
 
+
         // 3. Handle Immediate Update
         let updatedUser = currentUser;
 
         if (Object.keys(immediateData).length > 0) {
+            const { calculateDiff } = await import('../utils/diffUtils.js');
+            const detailedChanges = calculateDiff(currentUser, immediateData);
+
             updatedUser = await prisma.user.update({
                 where: { id: targetUserId },
                 data: immediateData,
             });
 
-            // Log immediate changes
-            const changes: string[] = [];
-            if (immediateData.displayName !== undefined) changes.push(`Display Name ('${immediateData.displayName}')`);
-            if (immediateData.avatarUrl !== undefined) changes.push('Avatar');
-            if (immediateData.emailNotifications !== undefined) changes.push(`Notifications (${immediateData.emailNotifications})`);
-            if (immediateData.steamId !== undefined) changes.push(`Steam ID ('${immediateData.steamId}')`);
-
             const isSelf = currentUser.id === targetUserId;
             await logSystemActivity(
                 'USER_PROFILE_UPDATE',
-                `User ${updatedUser.username} profile updated by ${isSelf ? 'themselves' : currentUser.username}. Changes: ${changes.join(', ')}`,
+                `User ${updatedUser.username} profile updated by ${isSelf ? 'themselves' : currentUser.username}`,
                 {
                     userId: updatedUser.id,
                     adminId: isSelf ? undefined : currentUser.id,
-                    metadata: { changes, updatedFields: immediateData }
+                    metadata: { changes: detailedChanges }
                 }
             );
 
@@ -411,6 +408,8 @@ usersRouter.patch(
             const { webSyncService } = await import('../services/webSyncService.js');
             await webSyncService.onUserUpdate(updatedUser.id);
         }
+
+
 
         // 4. Response
         // If we created a pending request BUT also updated some fields, we should return 200 with the updated user,

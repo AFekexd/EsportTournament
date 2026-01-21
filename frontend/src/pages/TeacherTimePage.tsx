@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { authService } from "../lib/auth-service";
 import { UserTimeModal } from "../components/admin/UserTimeModal";
 import { API_URL } from "../config";
@@ -15,6 +16,7 @@ interface User {
 }
 
 export function TeacherTimePage() {
+  const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -56,7 +58,7 @@ export function TeacherTimePage() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       const data = await response.json();
@@ -182,11 +184,15 @@ export function TeacherTimePage() {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div
-                            className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center text-sm font-bold overflow-hidden ${
+                            className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center text-sm font-bold overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all ${
                               user.role === "TEACHER"
                                 ? "bg-green-500/20 text-green-400"
                                 : "bg-primary/20 text-primary"
                             }`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/profile/${user.id}`);
+                            }}
                           >
                             {user.avatarUrl ? (
                               <img
@@ -200,8 +206,14 @@ export function TeacherTimePage() {
                                 .toUpperCase()
                             )}
                           </div>
-                          <div>
-                            <div className="font-medium text-white group-hover:text-primary transition-colors">
+                          <div
+                            className="cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/profile/${user.id}`);
+                            }}
+                          >
+                            <div className="font-medium text-white group-hover:text-primary transition-colors hover:underline">
                               {user.displayName || user.username}
                             </div>
                             <div className="text-sm text-gray-500">

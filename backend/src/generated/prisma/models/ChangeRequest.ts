@@ -30,6 +30,10 @@ export type ChangeRequestMinAggregateOutputType = {
   entityId: string | null
   requesterId: string | null
   status: $Enums.RequestStatus | null
+  rejectionReason: string | null
+  adminNote: string | null
+  processedById: string | null
+  processedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -40,6 +44,10 @@ export type ChangeRequestMaxAggregateOutputType = {
   entityId: string | null
   requesterId: string | null
   status: $Enums.RequestStatus | null
+  rejectionReason: string | null
+  adminNote: string | null
+  processedById: string | null
+  processedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -51,6 +59,10 @@ export type ChangeRequestCountAggregateOutputType = {
   requesterId: number
   data: number
   status: number
+  rejectionReason: number
+  adminNote: number
+  processedById: number
+  processedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -63,6 +75,10 @@ export type ChangeRequestMinAggregateInputType = {
   entityId?: true
   requesterId?: true
   status?: true
+  rejectionReason?: true
+  adminNote?: true
+  processedById?: true
+  processedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -73,6 +89,10 @@ export type ChangeRequestMaxAggregateInputType = {
   entityId?: true
   requesterId?: true
   status?: true
+  rejectionReason?: true
+  adminNote?: true
+  processedById?: true
+  processedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -84,6 +104,10 @@ export type ChangeRequestCountAggregateInputType = {
   requesterId?: true
   data?: true
   status?: true
+  rejectionReason?: true
+  adminNote?: true
+  processedById?: true
+  processedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -168,6 +192,10 @@ export type ChangeRequestGroupByOutputType = {
   requesterId: string
   data: runtime.JsonValue
   status: $Enums.RequestStatus
+  rejectionReason: string | null
+  adminNote: string | null
+  processedById: string | null
+  processedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: ChangeRequestCountAggregateOutputType | null
@@ -200,6 +228,10 @@ export type ChangeRequestWhereInput = {
   requesterId?: Prisma.StringFilter<"ChangeRequest"> | string
   data?: Prisma.JsonFilter<"ChangeRequest">
   status?: Prisma.EnumRequestStatusFilter<"ChangeRequest"> | $Enums.RequestStatus
+  rejectionReason?: Prisma.StringNullableFilter<"ChangeRequest"> | string | null
+  adminNote?: Prisma.StringNullableFilter<"ChangeRequest"> | string | null
+  processedById?: Prisma.StringNullableFilter<"ChangeRequest"> | string | null
+  processedAt?: Prisma.DateTimeNullableFilter<"ChangeRequest"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ChangeRequest"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ChangeRequest"> | Date | string
   requester?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -212,6 +244,10 @@ export type ChangeRequestOrderByWithRelationInput = {
   requesterId?: Prisma.SortOrder
   data?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  adminNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  processedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  processedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   requester?: Prisma.UserOrderByWithRelationInput
@@ -227,6 +263,10 @@ export type ChangeRequestWhereUniqueInput = Prisma.AtLeast<{
   requesterId?: Prisma.StringFilter<"ChangeRequest"> | string
   data?: Prisma.JsonFilter<"ChangeRequest">
   status?: Prisma.EnumRequestStatusFilter<"ChangeRequest"> | $Enums.RequestStatus
+  rejectionReason?: Prisma.StringNullableFilter<"ChangeRequest"> | string | null
+  adminNote?: Prisma.StringNullableFilter<"ChangeRequest"> | string | null
+  processedById?: Prisma.StringNullableFilter<"ChangeRequest"> | string | null
+  processedAt?: Prisma.DateTimeNullableFilter<"ChangeRequest"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ChangeRequest"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ChangeRequest"> | Date | string
   requester?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -239,6 +279,10 @@ export type ChangeRequestOrderByWithAggregationInput = {
   requesterId?: Prisma.SortOrder
   data?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  adminNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  processedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  processedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ChangeRequestCountOrderByAggregateInput
@@ -256,6 +300,10 @@ export type ChangeRequestScalarWhereWithAggregatesInput = {
   requesterId?: Prisma.StringWithAggregatesFilter<"ChangeRequest"> | string
   data?: Prisma.JsonWithAggregatesFilter<"ChangeRequest">
   status?: Prisma.EnumRequestStatusWithAggregatesFilter<"ChangeRequest"> | $Enums.RequestStatus
+  rejectionReason?: Prisma.StringNullableWithAggregatesFilter<"ChangeRequest"> | string | null
+  adminNote?: Prisma.StringNullableWithAggregatesFilter<"ChangeRequest"> | string | null
+  processedById?: Prisma.StringNullableWithAggregatesFilter<"ChangeRequest"> | string | null
+  processedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ChangeRequest"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ChangeRequest"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ChangeRequest"> | Date | string
 }
@@ -266,6 +314,10 @@ export type ChangeRequestCreateInput = {
   entityId: string
   data: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.RequestStatus
+  rejectionReason?: string | null
+  adminNote?: string | null
+  processedById?: string | null
+  processedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   requester: Prisma.UserCreateNestedOneWithoutChangeRequestsInput
@@ -278,6 +330,10 @@ export type ChangeRequestUncheckedCreateInput = {
   requesterId: string
   data: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.RequestStatus
+  rejectionReason?: string | null
+  adminNote?: string | null
+  processedById?: string | null
+  processedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -288,6 +344,10 @@ export type ChangeRequestUpdateInput = {
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   data?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   requester?: Prisma.UserUpdateOneRequiredWithoutChangeRequestsNestedInput
@@ -300,6 +360,10 @@ export type ChangeRequestUncheckedUpdateInput = {
   requesterId?: Prisma.StringFieldUpdateOperationsInput | string
   data?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -311,6 +375,10 @@ export type ChangeRequestCreateManyInput = {
   requesterId: string
   data: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.RequestStatus
+  rejectionReason?: string | null
+  adminNote?: string | null
+  processedById?: string | null
+  processedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -321,6 +389,10 @@ export type ChangeRequestUpdateManyMutationInput = {
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   data?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -332,6 +404,10 @@ export type ChangeRequestUncheckedUpdateManyInput = {
   requesterId?: Prisma.StringFieldUpdateOperationsInput | string
   data?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -353,6 +429,10 @@ export type ChangeRequestCountOrderByAggregateInput = {
   requesterId?: Prisma.SortOrder
   data?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
+  adminNote?: Prisma.SortOrder
+  processedById?: Prisma.SortOrder
+  processedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -363,6 +443,10 @@ export type ChangeRequestMaxOrderByAggregateInput = {
   entityId?: Prisma.SortOrder
   requesterId?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
+  adminNote?: Prisma.SortOrder
+  processedById?: Prisma.SortOrder
+  processedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -373,6 +457,10 @@ export type ChangeRequestMinOrderByAggregateInput = {
   entityId?: Prisma.SortOrder
   requesterId?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
+  adminNote?: Prisma.SortOrder
+  processedById?: Prisma.SortOrder
+  processedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -433,6 +521,10 @@ export type ChangeRequestCreateWithoutRequesterInput = {
   entityId: string
   data: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.RequestStatus
+  rejectionReason?: string | null
+  adminNote?: string | null
+  processedById?: string | null
+  processedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -443,6 +535,10 @@ export type ChangeRequestUncheckedCreateWithoutRequesterInput = {
   entityId: string
   data: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.RequestStatus
+  rejectionReason?: string | null
+  adminNote?: string | null
+  processedById?: string | null
+  processedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -483,6 +579,10 @@ export type ChangeRequestScalarWhereInput = {
   requesterId?: Prisma.StringFilter<"ChangeRequest"> | string
   data?: Prisma.JsonFilter<"ChangeRequest">
   status?: Prisma.EnumRequestStatusFilter<"ChangeRequest"> | $Enums.RequestStatus
+  rejectionReason?: Prisma.StringNullableFilter<"ChangeRequest"> | string | null
+  adminNote?: Prisma.StringNullableFilter<"ChangeRequest"> | string | null
+  processedById?: Prisma.StringNullableFilter<"ChangeRequest"> | string | null
+  processedAt?: Prisma.DateTimeNullableFilter<"ChangeRequest"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ChangeRequest"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ChangeRequest"> | Date | string
 }
@@ -493,6 +593,10 @@ export type ChangeRequestCreateManyRequesterInput = {
   entityId: string
   data: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.RequestStatus
+  rejectionReason?: string | null
+  adminNote?: string | null
+  processedById?: string | null
+  processedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -503,6 +607,10 @@ export type ChangeRequestUpdateWithoutRequesterInput = {
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   data?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -513,6 +621,10 @@ export type ChangeRequestUncheckedUpdateWithoutRequesterInput = {
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   data?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -523,6 +635,10 @@ export type ChangeRequestUncheckedUpdateManyWithoutRequesterInput = {
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   data?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -536,6 +652,10 @@ export type ChangeRequestSelect<ExtArgs extends runtime.Types.Extensions.Interna
   requesterId?: boolean
   data?: boolean
   status?: boolean
+  rejectionReason?: boolean
+  adminNote?: boolean
+  processedById?: boolean
+  processedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   requester?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -548,6 +668,10 @@ export type ChangeRequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   requesterId?: boolean
   data?: boolean
   status?: boolean
+  rejectionReason?: boolean
+  adminNote?: boolean
+  processedById?: boolean
+  processedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   requester?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -560,6 +684,10 @@ export type ChangeRequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   requesterId?: boolean
   data?: boolean
   status?: boolean
+  rejectionReason?: boolean
+  adminNote?: boolean
+  processedById?: boolean
+  processedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   requester?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -572,11 +700,15 @@ export type ChangeRequestSelectScalar = {
   requesterId?: boolean
   data?: boolean
   status?: boolean
+  rejectionReason?: boolean
+  adminNote?: boolean
+  processedById?: boolean
+  processedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ChangeRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "entityId" | "requesterId" | "data" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["changeRequest"]>
+export type ChangeRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "entityId" | "requesterId" | "data" | "status" | "rejectionReason" | "adminNote" | "processedById" | "processedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["changeRequest"]>
 export type ChangeRequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   requester?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -599,6 +731,10 @@ export type $ChangeRequestPayload<ExtArgs extends runtime.Types.Extensions.Inter
     requesterId: string
     data: runtime.JsonValue
     status: $Enums.RequestStatus
+    rejectionReason: string | null
+    adminNote: string | null
+    processedById: string | null
+    processedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["changeRequest"]>
@@ -1031,6 +1167,10 @@ export interface ChangeRequestFieldRefs {
   readonly requesterId: Prisma.FieldRef<"ChangeRequest", 'String'>
   readonly data: Prisma.FieldRef<"ChangeRequest", 'Json'>
   readonly status: Prisma.FieldRef<"ChangeRequest", 'RequestStatus'>
+  readonly rejectionReason: Prisma.FieldRef<"ChangeRequest", 'String'>
+  readonly adminNote: Prisma.FieldRef<"ChangeRequest", 'String'>
+  readonly processedById: Prisma.FieldRef<"ChangeRequest", 'String'>
+  readonly processedAt: Prisma.FieldRef<"ChangeRequest", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"ChangeRequest", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ChangeRequest", 'DateTime'>
 }

@@ -322,38 +322,31 @@ teamsRouter.patch(
             return;
         }
 
+
+        const updateData: any = {
+            ...(name && { name }),
+            ...(description !== undefined && { description }),
+            ...(processedLogoUrl !== undefined && { logoUrl: processedLogoUrl }),
+            ...(processedCoverUrl !== undefined && { coverUrl: processedCoverUrl }),
+        };
+
+        const { calculateDiff } = await import('../utils/diffUtils.js');
+        const changes = calculateDiff(team, updateData);
+
         const updatedTeam = await prisma.team.update({
             where: { id: req.params.id },
-            data: {
-                ...(name && { name }),
-                ...(description !== undefined && { description }),
-                ...(processedLogoUrl !== undefined && { logoUrl: processedLogoUrl }),
-                ...(processedCoverUrl !== undefined && { coverUrl: processedCoverUrl }),
-            },
+            data: updateData,
         });
 
         // Log team update
-        // Log team update
-        const changes: string[] = [];
-        if (name) changes.push(`Name ('${name}')`);
-        if (description !== undefined) changes.push('Description');
-        if (processedLogoUrl !== undefined) changes.push('Logo');
-        if (processedCoverUrl !== undefined) changes.push('Cover');
-
         await logSystemActivity(
             'TEAM_UPDATE',
-            `Team '${updatedTeam.name}' updated by ${user.username}. Changes: ${changes.join(', ')}`,
+            `Team '${updatedTeam.name}' updated by ${user.username}`,
             {
                 userId: user.id,
                 metadata: {
                     teamId: updatedTeam.id,
-                    changes,
-                    updatedFields: {
-                        ...(name && { name }),
-                        ...(description !== undefined && { description }),
-                        ...(processedLogoUrl !== undefined && { logoUrl: 'updated' }),
-                        ...(processedCoverUrl !== undefined && { coverUrl: 'updated' })
-                    }
+                    changes: changes
                 }
             }
         );

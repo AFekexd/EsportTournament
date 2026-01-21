@@ -151,6 +151,7 @@ gamesRouter.patch(
             processedImageUrl = await processImage(imageUrl);
         }
 
+
         // Process PDF if base64
         let processedPdfUrl = undefined;
         if (rulesPdf !== undefined) {
@@ -163,38 +164,22 @@ gamesRouter.patch(
             processedPdfUrl = rulesPdf;
         }
 
+        const updateData: any = {
+            ...(name && { name }),
+            ...(description !== undefined && { description }),
+            ...(processedImageUrl !== undefined && { imageUrl: processedImageUrl }),
+            ...(rules !== undefined && { rules }),
+            ...(rulesPdf !== undefined && { rulesPdfUrl: processedPdfUrl }),
+            ...(teamSize && { teamSize }),
+        };
+
+        const { calculateDiff } = await import('../utils/diffUtils.js');
+        const changes = calculateDiff(originalGame, updateData);
+
         const game = await prisma.game.update({
             where: { id: req.params.id as string },
-            data: {
-                ...(name && { name }),
-                ...(description !== undefined && { description }),
-                ...(processedImageUrl !== undefined && { imageUrl: processedImageUrl }),
-                ...(rules !== undefined && { rules }),
-                ...(rulesPdf !== undefined && { rulesPdfUrl: processedPdfUrl }),
-                ...(teamSize && { teamSize }),
-            },
+            data: updateData,
         });
-
-        // Build changes object for detailed logging
-        const changes: Record<string, { from: any; to: any }> = {};
-        if (name && name !== originalGame.name) {
-            changes.name = { from: originalGame.name, to: name };
-        }
-        if (description !== undefined && description !== originalGame.description) {
-            changes.description = { from: originalGame.description?.substring(0, 100), to: description?.substring(0, 100) };
-        }
-        if (processedImageUrl !== undefined && processedImageUrl !== originalGame.imageUrl) {
-            changes.imageUrl = { from: '(régi kép)', to: '(új kép)' };
-        }
-        if (rules !== undefined && rules !== originalGame.rules) {
-            changes.rules = { from: originalGame.rules?.substring(0, 100), to: rules?.substring(0, 100) };
-        }
-        if (rulesPdf !== undefined) {
-            changes.rulesPdfUrl = { from: originalGame.rulesPdfUrl ? '(volt PDF)' : '(nem volt PDF)', to: rulesPdf ? '(új PDF)' : '(törölt PDF)' };
-        }
-        if (teamSize && teamSize !== originalGame.teamSize) {
-            changes.teamSize = { from: originalGame.teamSize, to: teamSize };
-        }
 
         // Log update with detailed payload
         await logSystemActivity('GAME_UPDATE', `Game '${game.name}' updated by ${user.username}`, {

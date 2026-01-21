@@ -20,8 +20,10 @@ import {
   ListTodo,
   MoreHorizontal,
   Filter,
+  ExternalLink,
 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../../lib/api-client";
 import { API_URL } from "../../config";
 import { LogsToolbar } from "./logs/LogsToolbar";
@@ -55,6 +57,7 @@ interface Log {
 
 export function AdminLogs() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [logs, setLogs] = useState<Log[]>([]);
 
   // Filter State
@@ -68,7 +71,7 @@ export function AdminLogs() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [filterUserId, setFilterUserId] = useState<string | undefined>(
-    undefined
+    undefined,
   );
 
   // Debounce search
@@ -95,7 +98,7 @@ export function AdminLogs() {
       if (filterUserId) queryParams.append("userId", filterUserId);
 
       const response = await apiFetch(
-        `${API_URL}/logs?${queryParams.toString()}`
+        `${API_URL}/logs?${queryParams.toString()}`,
       );
 
       const data = await response.json();
@@ -157,7 +160,7 @@ export function AdminLogs() {
     link.setAttribute("href", url);
     link.setAttribute(
       "download",
-      `esport_logs_${format(new Date(), "yyyyMMdd_HHmm")}.csv`
+      `esport_logs_${format(new Date(), "yyyyMMdd_HHmm")}.csv`,
     );
     document.body.appendChild(link);
     link.click();
@@ -381,7 +384,7 @@ export function AdminLogs() {
                       }`}
                       onClick={() =>
                         setExpandedLogId(
-                          expandedLogId === log.id ? null : log.id
+                          expandedLogId === log.id ? null : log.id,
                         )
                       }
                     >
@@ -411,13 +414,13 @@ export function AdminLogs() {
                         {format(
                           new Date(log.createdAt),
                           "yyyy. MM. dd. HH:mm:ss",
-                          { locale: hu }
+                          { locale: hu },
                         )}
                       </td>
                       <td className="p-4">
                         <span
                           className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ${getLogColor(
-                            log.type
+                            log.type,
                           )}`}
                         >
                           {getLogIcon(log.type)}
@@ -437,8 +440,12 @@ export function AdminLogs() {
                       <td className="p-4">
                         {log.admin ? (
                           <div
-                            className="flex items-center gap-2 group/user"
-                            title={`Admin ID: ${log.admin.id}`}
+                            className="flex items-center gap-2 group/user hover:opacity-80 transition-opacity cursor-pointer"
+                            title={`Admin ID: ${log.admin.id} - Kattints a profil megtekintéséhez`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/profile/${log.admin!.id}`);
+                            }}
                           >
                             <div className="w-6 h-6 rounded-full bg-indigo-500/20 flex items-center justify-center text-[10px] font-bold text-indigo-400 border border-indigo-500/30">
                               {log.admin.avatarUrl ? (
@@ -452,7 +459,7 @@ export function AdminLogs() {
                                   .toUpperCase()
                               )}
                             </div>
-                            <span className="text-gray-400 text-xs font-medium group-hover/user:text-white transition-colors truncate max-w-[120px]">
+                            <span className="text-gray-400 text-xs font-medium group-hover/user:text-white transition-colors truncate max-w-[120px] hover:underline">
                               {log.admin.displayName || log.admin.username}
                             </span>
                           </div>
@@ -462,31 +469,44 @@ export function AdminLogs() {
                       </td>
                       <td className="p-4">
                         {log.user ? (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setFilterUserId(log.user!.id);
-                              setPage(1);
-                            }}
-                            className="flex items-center gap-2 group/user hover:bg-white/5 px-2 py-1 -ml-2 rounded-lg transition-colors text-left"
-                            title="Kattints a szűréshez erre a felhasználóra"
-                          >
-                            <div className="w-6 h-6 rounded-full bg-gray-800 flex items-center justify-center text-[10px] font-bold text-gray-400 border border-white/10">
-                              {log.user.avatarUrl ? (
-                                <img
-                                  src={log.user.avatarUrl}
-                                  className="w-full h-full rounded-full object-cover"
-                                />
-                              ) : (
-                                (log.user.displayName || log.user.username)
-                                  .charAt(0)
-                                  .toUpperCase()
-                              )}
-                            </div>
-                            <span className="text-gray-400 text-xs font-medium group-hover/user:text-white transition-colors truncate max-w-[120px]">
-                              {log.user.displayName || log.user.username}
-                            </span>
-                          </button>
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setFilterUserId(log.user!.id);
+                                setPage(1);
+                              }}
+                              className="flex items-center gap-2 group/user hover:bg-white/5 px-2 py-1 -ml-2 rounded-lg transition-colors text-left"
+                              title="Kattints a szűréshez erre a felhasználóra"
+                            >
+                              <div className="w-6 h-6 rounded-full bg-gray-800 flex items-center justify-center text-[10px] font-bold text-gray-400 border border-white/10">
+                                {log.user.avatarUrl ? (
+                                  <img
+                                    src={log.user.avatarUrl}
+                                    className="w-full h-full rounded-full object-cover"
+                                  />
+                                ) : (
+                                  (log.user.displayName || log.user.username)
+                                    .charAt(0)
+                                    .toUpperCase()
+                                )}
+                              </div>
+                              <span className="text-gray-400 text-xs font-medium group-hover/user:text-white transition-colors truncate max-w-[100px]">
+                                {log.user.displayName || log.user.username}
+                              </span>
+                            </button>
+
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/profile/${log.user!.id}`);
+                              }}
+                              className="p-1 text-gray-500 hover:text-primary hover:bg-white/5 rounded-md transition-colors"
+                              title="Profil megtekintése"
+                            >
+                              <ExternalLink size={12} />
+                            </button>
+                          </div>
                         ) : (
                           <span className="text-gray-600 italic text-xs">
                             Rendszer
