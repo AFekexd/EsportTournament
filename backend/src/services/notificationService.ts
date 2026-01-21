@@ -319,6 +319,47 @@ class NotificationService {
         });
     }
 
+    async notifyTimeBalanceUpdate(userId: string, amount: number, newBalance: number, reason: string) {
+        const isPositive = amount >= 0;
+        const title = isPositive ? 'Idő jóváírás' : 'Idő levonás';
+        const absAmount = Math.abs(amount);
+        const hours = Math.floor(absAmount / 3600);
+        const minutes = Math.floor((absAmount % 3600) / 60);
+        
+        let amountText = '';
+        if (hours > 0) amountText += `${hours} óra `;
+        if (minutes > 0 || hours === 0) amountText += `${minutes} perc`;
+        amountText = amountText.trim();
+        
+        const message = `${isPositive ? '+' : '-'}${amountText} - ${reason}`;
+
+        // Create in-app notification
+        await this.createNotification({
+            userId,
+            type: 'SYSTEM',
+            title,
+            message,
+            link: '/profile', // Redirect to profile to see balance
+        });
+
+        // Send email
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { email: true, username: true, displayName: true }
+        });
+
+        if (user?.email) {
+            await emailService.sendTimeBalanceUpdate(
+                user.email,
+                user.displayName || user.username,
+                amount,
+                newBalance,
+                reason,
+                userId
+            );
+        }
+    }
+
     async markAsRead(notificationId: string, userId: string) {
         return prisma.notification.updateMany({
             where: {

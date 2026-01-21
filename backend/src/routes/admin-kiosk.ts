@@ -87,6 +87,14 @@ adminKioskRouter.post('/users/:id/add-time', authenticate, requireRole('ADMIN', 
             }
         });
 
+        // Notify User
+        await notificationService.notifyTimeBalanceUpdate(
+            user.id,
+            secondsNum,
+            user.timeBalanceSeconds,
+            reason
+        );
+
         res.json(user);
     } catch (error) {
         console.error(error);

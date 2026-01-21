@@ -10,6 +10,9 @@ import {
   CalendarDays,
   List,
   Info,
+  CalendarX,
+  ArrowLeft,
+  ArrowRight,
 } from "lucide-react";
 import { ConfirmationModal } from "../components/common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
@@ -48,25 +51,24 @@ export function BookingPage() {
   } = useAppSelector((state) => state.bookings);
 
   const [activeTab, setActiveTab] = useState<"booking" | "my-bookings">(
-    "booking"
+    "booking",
   );
 
   // Booking Create Modal State
   const [selectedComputer, setSelectedComputer] = useState<Computer | null>(
-    null
+    null,
   );
   const [selectedDuration, setSelectedDuration] = useState<number>(60);
   const [selectedStartHour, setSelectedStartHour] = useState<number | null>(
-    null
+    null,
   );
   const [selectedStartMinute, setSelectedStartMinute] = useState<number>(0);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [bookingError, setBookingError] = useState<string | null>(null);
 
-
   // Computer Info Toggle State
   const [expandedComputerId, setExpandedComputerId] = useState<string | null>(
-    null
+    null,
   );
 
   const [confirmModal, setConfirmModal] = useState<{
@@ -80,7 +82,7 @@ export function BookingPage() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => { },
+    onConfirm: () => {},
     variant: "primary",
   });
 
@@ -107,7 +109,7 @@ export function BookingPage() {
   const dayOfWeek = selectedDateObj.getDay();
   const todaySchedule = useMemo(
     () => schedules.find((s) => s.dayOfWeek === dayOfWeek && s.isActive),
-    [schedules, dayOfWeek]
+    [schedules, dayOfWeek],
   );
 
   const availableSlots = useMemo(() => {
@@ -125,7 +127,7 @@ export function BookingPage() {
 
   const isComputerBooked = (
     computerId: string,
-    hour: number
+    hour: number,
   ): Booking | undefined => {
     const startOfSlot = new Date(selectedDate);
     startOfSlot.setHours(hour, 0, 0, 0);
@@ -166,7 +168,7 @@ export function BookingPage() {
     computer: Computer,
     hour: number,
     minute: number = 0,
-    dateStr?: string
+    dateStr?: string,
   ) => {
     if (!isAuthenticated) {
       setBookingError("Jelentkezz be a foglaláshoz!");
@@ -202,7 +204,7 @@ export function BookingPage() {
           date: selectedDate, // API expects YYYY-MM-DD
           startTime: startTime.toISOString(),
           endTime: endTime.toISOString(),
-        })
+        }),
       ).unwrap();
 
       setShowBookingModal(false);
@@ -217,7 +219,7 @@ export function BookingPage() {
       }
     } catch (err) {
       setBookingError(
-        err instanceof Error ? err.message : "Sikertelen foglalás"
+        err instanceof Error ? err.message : "Sikertelen foglalás",
       );
     }
   };
@@ -279,7 +281,8 @@ export function BookingPage() {
         </p>
 
         <p className="text-xs md:text-sm !text-gray-400 max-w-2xl mx-auto mb-2 md:mb-2 italic">
-          Note: Bejelentkezni csak Felhasználónév és Jelszó segítségével lehetséges!
+          Note: Bejelentkezni csak Felhasználónév és Jelszó segítségével
+          lehetséges!
         </p>
 
         {user && (
@@ -299,20 +302,22 @@ export function BookingPage() {
       <div className="mb-6 md:mb-8 border-b border-white/10 overflow-x-auto">
         <div className="flex gap-4 md:gap-8 min-w-max">
           <button
-            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${activeTab === "booking"
-              ? "border-primary text-primary"
-              : "border-transparent text-gray-400 hover:text-gray-300"
-              }`}
+            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${
+              activeTab === "booking"
+                ? "border-primary text-primary"
+                : "border-transparent text-gray-400 hover:text-gray-300"
+            }`}
             onClick={() => setActiveTab("booking")}
           >
             <LayoutGrid size={16} className="md:w-[18px] md:h-[18px]" />
             Foglalás
           </button>
           <button
-            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${activeTab === "my-bookings"
-              ? "border-primary text-primary"
-              : "border-transparent text-gray-400 hover:text-gray-300"
-              }`}
+            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${
+              activeTab === "my-bookings"
+                ? "border-primary text-primary"
+                : "border-transparent text-gray-400 hover:text-gray-300"
+            }`}
             onClick={() => setActiveTab("my-bookings")}
           >
             <List size={16} className="md:w-[18px] md:h-[18px]" />
@@ -329,9 +334,7 @@ export function BookingPage() {
         </div>
       )}
 
-      {activeTab === "my-bookings" && (
-        <MyBookings />
-      )}
+      {activeTab === "my-bookings" && <MyBookings />}
 
       {activeTab === "booking" && (
         <>
@@ -339,20 +342,22 @@ export function BookingPage() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <div className="flex bg-[#1a1b26] p-1 rounded-xl border border-white/5 w-full md:w-auto">
               <button
-                className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${viewMode === "daily"
-                  ? "bg-[#0f1015] text-white shadow-lg"
-                  : "text-gray-400 hover:text-gray-300"
-                  }`}
+                className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${
+                  viewMode === "daily"
+                    ? "bg-[#0f1015] text-white shadow-lg"
+                    : "text-gray-400 hover:text-gray-300"
+                }`}
                 onClick={() => dispatch(setViewMode("daily"))}
               >
                 <LayoutGrid size={16} />
                 Napi
               </button>
               <button
-                className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${viewMode === "weekly"
-                  ? "bg-[#0f1015] text-white shadow-lg"
-                  : "text-gray-400 hover:text-gray-300"
-                  }`}
+                className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${
+                  viewMode === "weekly"
+                    ? "bg-[#0f1015] text-white shadow-lg"
+                    : "text-gray-400 hover:text-gray-300"
+                }`}
                 onClick={() => dispatch(setViewMode("weekly"))}
               >
                 <CalendarDays size={16} />
@@ -361,18 +366,58 @@ export function BookingPage() {
             </div>
 
             {viewMode === "daily" && (
-              <div className="w-full md:w-auto flex items-center gap-3 bg-[#1a1b26] px-4 py-2 rounded-xl border border-white/5">
-                <Calendar size={18} className="text-primary flex-shrink-0" />
-                <input
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => dispatch(setSelectedDate(e.target.value))}
-                  min={new Date().toISOString().split("T")[0]}
-                  className="bg-transparent border-none text-white font-medium cursor-pointer focus:outline-none w-full md:w-auto"
-                />
-                <span className="text-gray-400 text-sm hidden md:inline min-w-[140px]">
+              <div className="w-full md:w-auto flex items-center justify-between md:justify-start gap-2 md:gap-3 bg-[#1a1b26] p-1.5 md:px-4 md:py-2 rounded-xl border border-white/5">
+                <button
+                  onClick={() => {
+                    const date = new Date(selectedDate);
+                    date.setDate(date.getDate() - 1);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    if (date >= today) {
+                      dispatch(
+                        setSelectedDate(date.toISOString().split("T")[0]),
+                      );
+                    }
+                  }}
+                  className="p-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  disabled={
+                    new Date(selectedDate) <=
+                    new Date(new Date().setHours(0, 0, 0, 0))
+                  }
+                  title="Előző nap"
+                >
+                  <ArrowLeft size={18} />
+                </button>
+
+                <div className="flex items-center gap-2">
+                  <Calendar
+                    size={18}
+                    className="text-primary flex-shrink-0 hidden md:block"
+                  />
+                  <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => dispatch(setSelectedDate(e.target.value))}
+                    min={new Date().toISOString().split("T")[0]}
+                    className="bg-transparent border-none text-white font-medium cursor-pointer focus:outline-none w-[110px] md:w-auto text-center md:text-left"
+                  />
+                </div>
+
+                <span className="text-gray-400 text-sm hidden md:inline min-w-[140px] text-center border-l border-white/10 pl-3">
                   {formatDate(selectedDate)}
                 </span>
+
+                <button
+                  onClick={() => {
+                    const date = new Date(selectedDate);
+                    date.setDate(date.getDate() + 1);
+                    dispatch(setSelectedDate(date.toISOString().split("T")[0]));
+                  }}
+                  className="p-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white transition-colors"
+                  title="Következő nap"
+                >
+                  <ArrowRight size={18} />
+                </button>
               </div>
             )}
           </div>
@@ -383,7 +428,6 @@ export function BookingPage() {
                 onSlotClick={(computer, date, hour, minute) =>
                   openCreateModal(computer, hour, minute, date)
                 }
-
               />
             </div>
           ) : (
@@ -444,13 +488,15 @@ export function BookingPage() {
                             </span>
                           </div>
 
-                          <div className={`flex-1 p-4 flex flex-col gap-4 overflow-x-auto `}>
+                          <div
+                            className={`flex-1 p-4 flex flex-col gap-4 overflow-x-auto `}
+                          >
                             {computersByRow.map((row, rowIndex) => (
                               <div key={rowIndex} className="flex gap-4">
                                 {row.map((computer) => {
                                   const booking = isComputerBooked(
                                     computer.id,
-                                    hour
+                                    hour,
                                   );
                                   const isOwn =
                                     !!user && booking?.userId === user?.id;
@@ -480,25 +526,27 @@ export function BookingPage() {
                                   return (
                                     <div
                                       key={computer.id}
-                                      className={`flex-1 relative bg-[#0f1015] rounded-lg p-3 border border-white/5 transition-all duration-300 ${isExpanded
-                                        ? "min-w-[320px] md:min-w-[450px] z-10 shadow-xl ring-1 ring-white/10"
-                                        : "min-w-[140px]"
-                                        }`}
+                                      className={`flex-1 relative bg-[#0f1015] rounded-lg p-3 border border-white/5 transition-all duration-300 ${
+                                        isExpanded
+                                          ? "min-w-[320px] md:min-w-[450px] z-10 shadow-xl ring-1 ring-white/10"
+                                          : "min-w-[140px]"
+                                      }`}
                                     >
                                       <div className="flex justify-between items-center mb-2 pb-2 border-b border-white/5">
                                         <span className="text-sm font-semibold text-gray-300 truncate pr-2">
                                           {computer.name}
                                         </span>
                                         <button
-                                          className={`p-1 rounded transition-colors ${isExpanded
-                                            ? "text-primary bg-primary/10"
-                                            : "text-gray-500 hover:text-primary hover:bg-primary/10"
-                                            }`}
+                                          className={`p-1 rounded transition-colors ${
+                                            isExpanded
+                                              ? "text-primary bg-primary/10"
+                                              : "text-gray-500 hover:text-primary hover:bg-primary/10"
+                                          }`}
                                           onClick={() =>
                                             setExpandedComputerId(
                                               isExpanded
                                                 ? null
-                                                : `${computer.id}-${hour}`
+                                                : `${computer.id}-${hour}`,
                                             )
                                           }
                                         >
@@ -507,16 +555,17 @@ export function BookingPage() {
                                       </div>
 
                                       <button
-                                        className={`w-full h-12 rounded-lg flex items-center justify-center transition-all ${isOwn
-                                          ? "bg-gradient-to-br from-primary/30 to-indigo-500/30 text-white border-2 border-primary/60 shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)] hover:shadow-[0_0_20px_-3px_rgba(139,92,246,0.5)] hover:border-primary cursor-pointer backdrop-blur-sm transform hover:-translate-y-0.5"
-                                          : isBooked
-                                            ? "bg-red-500/10 text-red-400 border-2 border-red-500/20 cursor-default"
-                                            : isMaintained || isOutOfOrder
-                                              ? "bg-gray-800/50 text-gray-600 border-2 border-gray-700/20 cursor-not-allowed opacity-50"
-                                              : isPast
-                                                ? "bg-gray-800/20 text-gray-600 border-2 border-gray-800/20 cursor-not-allowed opacity-50"
-                                                : "bg-green-500/10 text-green-400 border-2 border-green-500/20 hover:bg-green-500/20 cursor-pointer group"
-                                          }`}
+                                        className={`w-full h-12 rounded-lg flex items-center justify-center transition-all ${
+                                          isOwn
+                                            ? "bg-gradient-to-br from-primary/30 to-indigo-500/30 text-white border-2 border-primary/60 shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)] hover:shadow-[0_0_20px_-3px_rgba(139,92,246,0.5)] hover:border-primary cursor-pointer backdrop-blur-sm transform hover:-translate-y-0.5"
+                                            : isBooked
+                                              ? "bg-red-500/10 text-red-400 border-2 border-red-500/20 cursor-default"
+                                              : isMaintained || isOutOfOrder
+                                                ? "bg-gray-800/50 text-gray-600 border-2 border-gray-700/20 cursor-not-allowed opacity-50"
+                                                : isPast
+                                                  ? "bg-gray-800/20 text-gray-600 border-2 border-gray-800/20 cursor-not-allowed opacity-50"
+                                                  : "bg-green-500/10 text-green-400 border-2 border-green-500/20 hover:bg-green-500/20 cursor-pointer group"
+                                        }`}
                                         onClick={() =>
                                           handleComputerClick(computer, hour)
                                         }
@@ -613,10 +662,11 @@ export function BookingPage() {
                 {[30, 60, 90, 120].map((mins) => (
                   <button
                     key={mins}
-                    className={`py-3 px-2 rounded-lg border-2 font-medium transition-all ${selectedDuration === mins
-                      ? "bg-primary border-primary text-white shadow-lg shadow-primary/20"
-                      : "bg-[#0f1015] border-white/10 text-gray-400 hover:border-primary/50 hover:text-gray-300"
-                      }`}
+                    className={`py-3 px-2 rounded-lg border-2 font-medium transition-all ${
+                      selectedDuration === mins
+                        ? "bg-primary border-primary text-white shadow-lg shadow-primary/20"
+                        : "bg-[#0f1015] border-white/10 text-gray-400 hover:border-primary/50 hover:text-gray-300"
+                    }`}
                     onClick={() => setSelectedDuration(mins)}
                   >
                     {mins < 60 ? `${mins} perc` : `${mins / 60} óra`}
@@ -640,8 +690,8 @@ export function BookingPage() {
                     return `${selectedStartHour}:${startMin
                       .toString()
                       .padStart(2, "0")} - ${endHour}:${endMin
-                        .toString()
-                        .padStart(2, "0")}`;
+                      .toString()
+                      .padStart(2, "0")}`;
                   })()}
                 </span>
               </div>
@@ -657,13 +707,13 @@ export function BookingPage() {
                     <span
                       className={
                         user.role !== "ADMIN" &&
-                          user.timeBalanceSeconds - selectedDuration * 60 < 0
+                        user.timeBalanceSeconds - selectedDuration * 60 < 0
                           ? "text-red-400"
                           : "text-green-400"
                       }
                     >
                       {formatBalance(
-                        user.timeBalanceSeconds - selectedDuration * 60
+                        user.timeBalanceSeconds - selectedDuration * 60,
                       )}
                     </span>
                   </div>

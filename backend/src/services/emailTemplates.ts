@@ -510,3 +510,64 @@ export function adminBroadcastTemplate(title: string, message: string, senderNam
         footer: 'Ez egy adminisztrátori közlemény.'
     });
 }
+
+// ===================================
+// TIME BALANCE TEMPLATE
+// ===================================
+
+export function timeBalanceUpdateTemplate(userName: string, amount: number, newBalance: number, reason: string): string {
+    const isPositive = amount >= 0;
+    const color = isPositive ? '#22c55e' : '#ef4444';
+    const bg = isPositive ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)';
+    const emoji = isPositive ? '⏱️' : '⏳';
+    const title = isPositive ? 'Idő jóváírás' : 'Idő levonás';
+    
+    // Format seconds to HH:MM:SS or similar readable format if feasible, 
+    // but typically balance is stored in seconds. Let's just show minutes if practical or raw seconds / formatted.
+    // Let's stick to a simple formatted string for the amount.
+    const formatTime = (seconds: number) => {
+        const absSeconds = Math.abs(seconds);
+        const hours = Math.floor(absSeconds / 3600);
+        const minutes = Math.floor((absSeconds % 3600) / 60);
+        
+        let text = '';
+        if (hours > 0) text += `${hours} óra `;
+        if (minutes > 0 || hours === 0) text += `${minutes} perc`;
+        return text.trim();
+    };
+
+    const amountText = `${isPositive ? '+' : '-'}${formatTime(amount)}`;
+    const balanceText = formatTime(newBalance);
+
+    return generateEmailTemplate({
+        title,
+        content: `
+            <div style="text-align: center; margin-bottom: 24px;">
+                <div style="display: inline-block; width: 64px; height: 64px; line-height: 64px; font-size: 32px; background: ${bg}; border-radius: 50%; border: 2px solid ${color};">
+                    ${emoji}
+                </div>
+            </div>
+            
+            <p style="margin: 0 0 16px; color: #fff; text-align: center;">
+                ${isPositive ? 'Időt írtak jóvá a számládon.' : 'Időt vontak le a számládról.'}
+            </p>
+            
+            <div style="padding: 20px; background: ${bg}; border-radius: 12px; margin-bottom: 24px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <span style="color: #888;">Változás</span>
+                    <span style="font-weight: 700; color: ${color}; font-size: 18px;">${amountText}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: #888;">Új egyenleg</span>
+                    <span style="font-weight: 700; color: #fff;">${balanceText}</span>
+                </div>
+            </div>
+            
+            <div style="padding: 16px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                <p style="margin: 0 0 4px; font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px;">Indoklás</p>
+                <p style="margin: 0; color: #fff; font-style: italic;">"${reason}"</p>
+            </div>
+        `,
+        footer: 'Ezt az értesítést a rendszer küldte az egyenleg változásáról.'
+    });
+}

@@ -721,6 +721,35 @@ class EmailService {
     }
 
     // ===================================
+    // TIME BALANCE EMAIL
+    // ===================================
+
+    async sendTimeBalanceUpdate(
+        to: string, 
+        userName: string, 
+        amount: number, 
+        newBalance: number, 
+        reason: string, 
+        userId?: string
+    ) {
+        if (userId && !(await this.shouldSendEmail(userId, 'SYSTEM'))) {
+            return false;
+        }
+
+        const isPositive = amount >= 0;
+        const title = isPositive ? 'Idő jóváírás' : 'Idő levonás';
+        const html = templates.timeBalanceUpdateTemplate(userName, amount, newBalance, reason);
+
+        return this.sendEmail({
+            to,
+            subject: `${title}`,
+            html,
+            type: 'SYSTEM',
+            metadata: { userName, amount, newBalance, reason }
+        });
+    }
+
+    // ===================================
     // BULK OPERATIONS
     // ===================================
 
