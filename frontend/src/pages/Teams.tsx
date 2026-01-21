@@ -114,7 +114,7 @@ function TeamCard({ team }: { team: Team }) {
 export function TeamsPage() {
   const dispatch = useAppDispatch();
   const { teams, isLoading, pagination } = useAppSelector(
-    (state) => state.teams
+    (state) => state.teams,
   );
   const { isAuthenticated } = useAuth();
   const [searchParams] = useSearchParams();
@@ -127,7 +127,7 @@ export function TeamsPage() {
 
   useEffect(() => {
     dispatch(
-      fetchTeams({ page: 1, search: search || undefined, my: filterMyTeams })
+      fetchTeams({ page: 1, search: search || undefined, my: filterMyTeams }),
     );
   }, [dispatch, search, filterMyTeams]);
 
@@ -142,11 +142,11 @@ export function TeamsPage() {
   // ESC kezelés a Join Modal-hoz
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setShowJoinModal(false);
+      if (e.key === "Escape") setShowJoinModal(false);
     };
     if (showJoinModal) {
-      document.addEventListener('keydown', handleEsc);
-      return () => document.removeEventListener('keydown', handleEsc);
+      document.addEventListener("keydown", handleEsc);
+      return () => document.removeEventListener("keydown", handleEsc);
     }
   }, [showJoinModal]);
 
@@ -176,16 +176,21 @@ export function TeamsPage() {
           Böngészd a csapatokat vagy hozz létre sajátot és versenyezz együtt!
         </p>
         <p className="text-sm text-gray-400 max-w-2xl mx-auto mb-6">
-          <span className="font-bold">Note:</span> Egynél több csapatot is létrehozhatsz és szerepelhetsz is bennük, de <span className="font-bold">egy versenyben csak egy csapatban versenyezhetsz.</span>
+          <span className="font-bold">Note:</span> Egynél több csapatot is
+          létrehozhatsz és szerepelhetsz is bennük, de{" "}
+          <span className="font-bold">
+            egy versenyben csak egy csapatban versenyezhetsz.
+          </span>
         </p>
 
         {isAuthenticated && (
           <div className="flex flex-wrap justify-center gap-4">
             <button
-              className={`flex items-center gap-2 px-6 py-3 border rounded-xl font-semibold transition-all ${filterMyTeams
-                ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
-                : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border-white/10"
-                }`}
+              className={`flex items-center gap-2 px-6 py-3 border rounded-xl font-semibold transition-all ${
+                filterMyTeams
+                  ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
+                  : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border-white/10"
+              }`}
               onClick={() => setFilterMyTeams(!filterMyTeams)}
             >
               <Users size={18} />
@@ -215,7 +220,7 @@ export function TeamsPage() {
         <div className="relative max-w-xl mx-auto flex items-center">
           <Search
             size={18}
-            className="absolute left-4 text-gray-500 pointer-events-none z-10"
+            className="absolute right-4 text-gray-500 pointer-events-none z-10"
           />
           <input
             type="text"
@@ -275,17 +280,18 @@ export function TeamsPage() {
           {[...Array(pagination.pages)].map((_, i) => (
             <button
               key={i}
-              className={`px-4 py-2 rounded-lg font-medium transition-all ${pagination.page === i + 1
-                ? "bg-primary text-white shadow-lg shadow-primary/20"
-                : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border border-white/10"
-                }`}
+              className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                pagination.page === i + 1
+                  ? "bg-primary text-white shadow-lg shadow-primary/20"
+                  : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border border-white/10"
+              }`}
               onClick={() =>
                 dispatch(
                   fetchTeams({
                     page: i + 1,
                     search: search || undefined,
                     my: filterMyTeams,
-                  })
+                  }),
                 )
               }
             >
