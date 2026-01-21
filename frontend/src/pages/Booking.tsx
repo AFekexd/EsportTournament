@@ -10,7 +10,6 @@ import {
   CalendarDays,
   List,
   Info,
-  CalendarX,
   ArrowLeft,
   ArrowRight,
 } from "lucide-react";
