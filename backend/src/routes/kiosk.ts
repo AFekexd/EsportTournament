@@ -468,3 +468,50 @@ kioskRouter.post('/register', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+// Log Declaration Acceptance
+kioskRouter.post('/declaration/accept', async (req, res) => {
+    const { userId, username, machineId } = req.body;
+
+    try {
+        // Find user
+        let user = null;
+        if (userId) {
+            user = await prisma.user.findUnique({ where: { id: userId } });
+        }
+        if (!user && username) {
+            user = await prisma.user.findUnique({ where: { username } });
+        }
+
+        // Find machine
+        let machine = null;
+        if (machineId) {
+            machine = await prisma.computer.findUnique({ where: { hostname: machineId } });
+            if (!machine) {
+                machine = await prisma.computer.findFirst({ where: { id: machineId } });
+            }
+        }
+
+        // Log the acceptance
+        await logSystemActivity(
+            'DECLARATION_ACCEPTED',
+            `User ${user?.username || username || 'unknown'} accepted usage declaration on ${machine?.name || machineId || 'unknown machine'}`,
+            {
+                userId: user?.id,
+                computerId: machine?.id,
+                metadata: {
+                    acceptedAt: new Date().toISOString(),
+                    machineHostname: machineId
+                }
+            }
+        );
+
+        console.log(`[DECLARATION] User ${user?.username || username} accepted declaration on ${machine?.hostname || machineId}`);
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('[DECLARATION] Error logging acceptance:', error);
+        // Don't fail the request, just log the error
+        res.json({ success: true, warning: 'Failed to log acceptance' });
+    }
+});

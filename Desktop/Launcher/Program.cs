@@ -97,20 +97,54 @@ namespace EsportLauncher
             {
                 statusLabel.Text = $"Updating to {latestVersion}...";
                 
-                // 3. Download
+                // 3. Download to TEMP folder (no admin rights needed)
+                string tempFolder = Path.GetTempPath();
+                string zipPath = Path.Combine(tempFolder, "esport_update.zip");
+                
                 var zipBytes = await client.GetByteArrayAsync($"{API_BASE_URL}/download");
-                string zipPath = "update.zip";
                 await File.WriteAllBytesAsync(zipPath, zipBytes);
 
-                // 4. Extract (Overwrite)
-                // Use a temporary folder or extract directly? Direct is risky if files locked.
-                // Assuming Launcher is separate from Main App files regarding locking.
-                // Best practice: Extract to 'temp', then move/overwrite.
-                // For 'Easiest': Just overwrite. If MainApp is closed, it works.
+                // 4. Extract to install directory
+                string installDir = AppDomain.CurrentDomain.BaseDirectory;
                 
                 try
                 {
-                    ZipFile.ExtractToDirectory(zipPath, AppDomain.CurrentDomain.BaseDirectory, true);
+                    // Extract files one by one to handle locked files gracefully
+                    using (var archive = ZipFile.OpenRead(zipPath))
+                    {
+                        foreach (var entry in archive.Entries)
+                        {
+                            string destinationPath = Path.Combine(installDir, entry.FullName);
+                            
+                            // Skip directories (they're created automatically)
+                            if (string.IsNullOrEmpty(entry.Name))
+                            {
+                                Directory.CreateDirectory(destinationPath);
+                                continue;
+                            }
+                            
+                            // Ensure directory exists
+                            string destDir = Path.GetDirectoryName(destinationPath);
+                            if (!string.IsNullOrEmpty(destDir) && !Directory.Exists(destDir))
+                            {
+                                Directory.CreateDirectory(destDir);
+                            }
+                            
+                            try
+                            {
+                                entry.ExtractToFile(destinationPath, true);
+                            }
+                            catch (IOException)
+                            {
+                                // File might be locked - skip and continue
+                                // This is OK for non-critical files
+                            }
+                        }
+                    }
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    throw new Exception($"Permission denied. Please run as Administrator or check folder permissions.\n{installDir}\n\nDetails: {ex.Message}");
                 }
                 catch (Exception ex)
                 {
@@ -118,11 +152,11 @@ namespace EsportLauncher
                 }
                 finally
                 {
-                    File.Delete(zipPath);
+                    try { File.Delete(zipPath); } catch { }
                 }
 
                 // Update local version file
-                await File.WriteAllTextAsync(VERSION_FILE, latestVersion);
+                await File.WriteAllTextAsync(Path.Combine(installDir, VERSION_FILE), latestVersion);
             }
         }
 

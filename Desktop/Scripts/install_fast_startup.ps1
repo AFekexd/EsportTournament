@@ -79,15 +79,23 @@ try {
     Write-Host "   [SUCCESS] Task '$TaskName' created successfully." -ForegroundColor Green
     
     # 4. Lock Down Folder Permissions (Security)
-    Write-Host "4. Securing installation directory (Preventing deletion by users)..."
+    Write-Host "4. Securing installation directory (Allowing updates but preventing deletion)..."
     # Reset inheritance (/inheritance:r)
     # Grant Admins (S-1-5-32-544) -> Full Control (F)
     # Grant SYSTEM -> Full Control (F)
-    # Grant Users (S-1-5-32-545) -> Read & Execute (RX) ONLY
-    $aclArgs = "`"$ScriptDir`" /inheritance:r /grant:r *S-1-5-32-544:(OI)(CI)F /grant:r SYSTEM:(OI)(CI)F /grant:r *S-1-5-32-545:(OI)(CI)RX /Q"
+    # Grant Users (S-1-5-32-545) -> Modify (M) - Allows reading, writing, executing, but we deny delete below
+    $aclArgs = "`"$ScriptDir`" /inheritance:r /grant:r *S-1-5-32-544:(OI)(CI)F /grant:r SYSTEM:(OI)(CI)F /grant:r *S-1-5-32-545:(OI)(CI)M /Q"
     
     Start-Process -FilePath "icacls.exe" -ArgumentList $aclArgs -NoNewWindow -Wait
-    Write-Host "   [OK] Folder permissions locked. Users can only Read & Execute." -ForegroundColor Green
+    
+    # Deny Users the ability to delete the main folder itself (but allow modifying files inside)
+    # DE = Delete (folder)
+    # DC = Delete Child (delete files/subfolders inside)
+    # We only deny DE on the folder itself, not DC, so updates can replace files
+    $denyArgs = "`"$ScriptDir`" /deny *S-1-5-32-545:(DE) /Q"
+    Start-Process -FilePath "icacls.exe" -ArgumentList $denyArgs -NoNewWindow -Wait
+    
+    Write-Host "   [OK] Folder permissions set. Users can update but cannot delete the main folder." -ForegroundColor Green
 
     # Verify
     $taskState = (Get-ScheduledTask -TaskName $TaskName).State

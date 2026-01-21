@@ -765,6 +765,25 @@ namespace EsportManager
 
                         await Task.Delay(500);
                         
+                        // Show declaration dialog - user must accept before proceeding
+                        bool declarationAccepted = ShowDeclarationDialog();
+                        
+                        if (!declarationAccepted)
+                        {
+                            // User declined - end session and return to locked screen
+                            _statusLabel.Text = "A nyilatkozat elfogadása kötelező a használathoz.";
+                            _statusLabel.ForeColor = Color.Orange;
+                            await EndSession();
+                            _loginButton.Enabled = true;
+                            Console.WriteLine("[LOGIN] ✗ User declined declaration");
+                            return;
+                        }
+                        
+                        Console.WriteLine("[LOGIN] ✓ Declaration accepted");
+                        
+                        // Log declaration acceptance to backend
+                        await LogDeclarationAcceptance(username);
+                        
                         // Alkalmazás elrejtése
                         UnlockAndHide();
                         
@@ -1058,6 +1077,38 @@ namespace EsportManager
             catch (Exception ex)
             {
                 Console.WriteLine($"[SESSION] End error: {ex.Message}");
+            }
+        }
+
+        private async Task LogDeclarationAcceptance(string username)
+        {
+            try
+            {
+                var payload = new 
+                { 
+                    userId = _currentUserId,
+                    username = username,
+                    machineId = Environment.MachineName 
+                };
+                var json = JsonSerializer.Serialize(payload);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                string declarationUrl = BaseApiUrl + "/kiosk/declaration/accept";
+                var response = await _httpClient.PostAsync(declarationUrl, content);
+                
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"[DECLARATION] ✓ Logged acceptance for {username}");
+                }
+                else
+                {
+                    Console.WriteLine($"[DECLARATION] ✗ Failed to log acceptance: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Don't fail the login if logging fails, just log the error
+                Console.WriteLine($"[DECLARATION] ✗ Error logging acceptance: {ex.Message}");
             }
         }
 
@@ -1383,35 +1434,198 @@ namespace EsportManager
 
                 if (failsafeForm.ShowDialog() == DialogResult.OK)
                 {
-                    // Compute Hash of input
-                    using (var sha256 = System.Security.Cryptography.SHA256.Create())
+                    try
                     {
-                        var bytes = System.Text.Encoding.UTF8.GetBytes(textBox.Text);
-                        var hash = BitConverter.ToString(sha256.ComputeHash(bytes)).Replace("-", "").ToLower();
-                        
-                        if (hash == FailSafePassword.ToLower())
+                        // Compute Hash of input
+                        using (var sha256 = System.Security.Cryptography.SHA256.Create())
                         {
-                            // Kilépés
-                            try 
+                            var inputText = textBox.Text ?? "";
+                            var bytes = System.Text.Encoding.UTF8.GetBytes(inputText);
+                            var hash = BitConverter.ToString(sha256.ComputeHash(bytes)).Replace("-", "").ToLower();
+                            
+                            // Safely get the failsafe password with null check
+                            string expectedHash;
+                            try
                             {
-                                File.Create(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "EsportManager_Stop.signal")).Close();
+                                expectedHash = FailSafePassword?.ToLower() ?? "";
                             }
-                            catch (Exception ex)
+                            catch
                             {
-                                Console.WriteLine($"[FAILSAFE] Could not create stop signal: {ex.Message}");
+                                expectedHash = "25487c1b7dae15d895fcb2be6c08b9140fe0e1913925dcf4c6059b385a74058c"; // Fallback hash
                             }
+                            
+                            if (hash == expectedHash)
+                            {
+                                // Kilépés - set flag first to prevent closing issues
+                                _allowClose = true;
+                                
+                                // Stop timers safely
+                                try { _timer?.Stop(); } catch { }
+                                try { _sessionTimer?.Stop(); } catch { }
+                                try { _clockTimer?.Stop(); } catch { }
+                                try { _notificationHideTimer?.Stop(); } catch { }
+                                
+                                // Hide notification overlay
+                                try { _notificationOverlay?.Hide(); } catch { }
+                                
+                                // Hide tray icon
+                                try { if (_notifyIcon != null) _notifyIcon.Visible = false; } catch { }
+                                
+                                // Unhook keyboard
+                                try { _keyboardHook?.Unhook(); } catch { }
+                                
+                                // Create stop signal for watchdog
+                                try 
+                                {
+                                    File.Create(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "EsportManager_Stop.signal")).Close();
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine($"[FAILSAFE] Could not create stop signal: {ex.Message}");
+                                }
+                                
+                                // Re-enable Task Manager before exit
+                                try { SetTaskMgrEnabled(true); } catch { }
 
-                            _allowClose = true;
-                            _timer.Stop();
-                            if (_notifyIcon != null) _notifyIcon.Visible = false;
-                            Application.Exit();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Hibás jelszó!", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                // Exit application
+                                Application.Exit();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Hibás jelszó!", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[FAILSAFE] Error during exit: {ex.Message}");
+                        MessageBox.Show($"Hiba történt: {ex.Message}", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Shows a declaration dialog that users must accept before starting their session.
+        /// Returns true if accepted, false if declined.
+        /// </summary>
+        private bool ShowDeclarationDialog()
+        {
+            using (Form declarationForm = new Form())
+            {
+                declarationForm.Text = "Nyilatkozat Elfogadása";
+                declarationForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                declarationForm.StartPosition = FormStartPosition.CenterScreen;
+                declarationForm.Size = new Size(700, 550);
+                declarationForm.MaximizeBox = false;
+                declarationForm.MinimizeBox = false;
+                declarationForm.TopMost = true;
+                declarationForm.BackColor = Color.FromArgb(30, 30, 35);
+
+                // Title Label
+                Label titleLabel = new Label
+                {
+                    Text = "FELHASZNÁLÁSI FELTÉTELEK ÉS NYILATKOZAT",
+                    ForeColor = Color.White,
+                    Font = new Font("Segoe UI", 14, FontStyle.Bold),
+                    Location = new Point(20, 15),
+                    Size = new Size(650, 30),
+                    TextAlign = ContentAlignment.MiddleCenter
+                };
+
+                // Load declaration text from external file
+                string declarationText;
+                string declarationFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "nyilatkozat.txt");
+                
+                try
+                {
+                    if (File.Exists(declarationFilePath))
+                    {
+                        declarationText = File.ReadAllText(declarationFilePath, Encoding.UTF8);
+                    }
+                    else
+                    {
+                        // Fallback text if file not found
+                        declarationText = "A nyilatkozat fájl nem található.\n\nKérjük, helyezze el a 'nyilatkozat.txt' fájlt a Resources mappába.\n\nFájl helye: " + declarationFilePath;
+                        Console.WriteLine($"[DECLARATION] Warning: nyilatkozat.txt not found at {declarationFilePath}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    declarationText = "Hiba a nyilatkozat betöltésekor: " + ex.Message;
+                    Console.WriteLine($"[DECLARATION] Error loading declaration file: {ex.Message}");
+                }
+                
+                // Add current date/time at the end
+                declarationText += "\n\nDátum: " + DateTime.Now.ToString("yyyy.MM.dd HH:mm");
+
+                // Scrollable text area
+                RichTextBox textBox = new RichTextBox
+                {
+                    Text = declarationText,
+                    Location = new Point(20, 55),
+                    Size = new Size(645, 350),
+                    ReadOnly = true,
+                    BackColor = Color.FromArgb(45, 45, 50),
+                    ForeColor = Color.White,
+                    Font = new Font("Segoe UI", 10),
+                    BorderStyle = BorderStyle.None,
+                    ScrollBars = RichTextBoxScrollBars.Vertical
+                };
+
+                // Checkbox for acceptance
+                CheckBox acceptCheckBox = new CheckBox
+                {
+                    Text = "Elolvastam és elfogadom a fenti nyilatkozatot",
+                    ForeColor = Color.White,
+                    Font = new Font("Segoe UI", 10),
+                    Location = new Point(20, 420),
+                    Size = new Size(400, 25),
+                    Checked = false
+                };
+
+                // Accept button
+                Button acceptButton = new Button
+                {
+                    Text = "Elfogadom",
+                    DialogResult = DialogResult.OK,
+                    Location = new Point(460, 460),
+                    Size = new Size(100, 40),
+                    BackColor = Color.FromArgb(50, 150, 50),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Enabled = false
+                };
+                acceptButton.FlatAppearance.BorderSize = 0;
+
+                // Cancel button
+                Button cancelButton = new Button
+                {
+                    Text = "Elutasítom",
+                    DialogResult = DialogResult.Cancel,
+                    Location = new Point(570, 460),
+                    Size = new Size(100, 40),
+                    BackColor = Color.FromArgb(150, 50, 50),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat
+                };
+                cancelButton.FlatAppearance.BorderSize = 0;
+
+                // Enable accept button only when checkbox is checked
+                acceptCheckBox.CheckedChanged += (s, e) =>
+                {
+                    acceptButton.Enabled = acceptCheckBox.Checked;
+                    acceptButton.BackColor = acceptCheckBox.Checked 
+                        ? Color.FromArgb(50, 180, 50) 
+                        : Color.FromArgb(50, 150, 50);
+                };
+
+                declarationForm.Controls.AddRange(new Control[] { titleLabel, textBox, acceptCheckBox, acceptButton, cancelButton });
+                declarationForm.AcceptButton = acceptButton;
+                declarationForm.CancelButton = cancelButton;
+
+                DialogResult result = declarationForm.ShowDialog();
+                return result == DialogResult.OK && acceptCheckBox.Checked;
             }
         }
 

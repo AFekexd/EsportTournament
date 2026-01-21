@@ -1,0 +1,36 @@
+FELHASZNÁLÁSI FELTÉTELEK ÉS NYILATKOZAT
+
+Kérjük, olvassa el és fogadja el az alábbi nyilatkozatot a rendszer használatához:
+
+1. ÁLTALÁNOS RENDELKEZÉSEK
+A jelen nyilatkozat elfogadásával Ön tudomásul veszi és elfogadja az Esport Manager rendszer felhasználási feltételeit. A rendszer használatával Ön kötelezi magát ezen feltételek betartására.
+
+2. FELHASZNÁLÓI MAGATARTÁS
+A felhasználó vállalja, hogy:
+• A rendszert kizárólag a rendeltetésének megfelelően használja
+• Nem próbálja megkerülni a biztonsági intézkedéseket
+• Tiszteletben tartja a többi felhasználó jogait
+• Nem használja a rendszert illegális vagy káros tevékenységekre
+• A kapott hozzáférési adatokat bizalmasan kezeli
+
+3. IDŐKORLÁTOK ÉS HASZNÁLAT
+• Az Ön számára meghatározott játékidő-korlátokat be kell tartani
+• Az időkorlát lejártakor a rendszer automatikusan kijelentkezteti Önt
+• A játékidő szüneteltetése korlátozott ideig lehetséges
+
+4. FELELŐSSÉG
+• A rendszer használata során okozott károkért a felhasználó felel
+• Az intézmény fenntartja a jogot a hozzáférés megvonására szabálysértés esetén
+• A felhasználó tudomásul veszi, hogy tevékenysége naplózásra kerül
+
+5. ADATKEZELÉS
+A rendszer a működéshez szükséges személyes adatokat (felhasználónév, OM azonosító, bejelentkezési időpontok) kezeli. Az adatkezelés az intézmény adatvédelmi szabályzata szerint történik.
+
+6. HÁZIRENDEK
+A felhasználó köteles betartani:
+• Az intézmény házirendjét
+• A számítógéptermek használati szabályzatát
+• A hálózathasználati szabályzatot
+
+7. ELFOGADÁS
+Az "Elfogadom" gomb megnyomásával Ön kijelenti, hogy a fenti feltételeket elolvasta, megértette és elfogadja azokat.

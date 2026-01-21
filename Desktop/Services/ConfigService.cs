@@ -39,7 +39,7 @@ namespace EsportManager.Services
                         PropertyNameCaseInsensitive = true,
                         ReadCommentHandling = JsonCommentHandling.Skip
                     };
-                    _config = JsonSerializer.Deserialize<AppConfig>(json, options);
+                    _config = JsonSerializer.Deserialize<AppConfig>(json, options) ?? new AppConfig();
                 }
                 else
                 {
