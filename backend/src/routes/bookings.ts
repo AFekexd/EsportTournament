@@ -403,11 +403,11 @@ bookingsRouter.post(
                 const dailyTotalMs = dailyBookings.reduce((sum, b) => sum + (b.endTime.getTime() - b.startTime.getTime()), 0);
                 const newDailyTotalMs = dailyTotalMs + duration;
 
-                if (newDailyTotalMs > 7200000) {
-                    const remainingMs = Math.max(0, 7200000 - dailyTotalMs);
+                if (newDailyTotalMs > 86400000) {
+                    const remainingMs = Math.max(0, 86400000 - dailyTotalMs);
                     const remainingMinutes = Math.floor(remainingMs / 60000);
                     throw new ApiError(
-                        `Naponta maximum 2 óra foglalható. Még foglalható: ${remainingMinutes} perc.`,
+                        `Naponta maximum 4 óra foglalható. Még foglalható: ${remainingMinutes} perc.`,
                         400,
                         'DAILY_LIMIT_EXCEEDED'
                     );
