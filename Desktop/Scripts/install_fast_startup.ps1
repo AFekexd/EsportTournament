@@ -87,36 +87,15 @@ try {
     
     Write-Host "   [SUCCESS] Task '$TaskName' created successfully." -ForegroundColor Green
     
-    # 4. Lock Down Folder Permissions (Security)
-    Write-Host "4. Securing installation directory (Allowing updates but preventing deletion)..."
+    # 4. Permissions Skipped (User Request)
+    Write-Host "4. Skipping folder permissions (Managed manually via rescue_folder.ps1 if needed)..."
     
-    # Target the Application Root (Parent of Scripts)
-    $AppRoot = Split-Path -Parent $ScriptDir
-    Write-Host "   Targeting App Root: $AppRoot"
-
-    # Reset inheritance (/inheritance:r)
-    # Grant Admins (S-1-5-32-544) -> Full Control (F)
-    # Grant SYSTEM -> Full Control (F)
-    # Grant Users (S-1-5-32-545) -> Modify (M) - Allows reading, writing, executing, but we deny delete below
-    # /T = Recursive (Critical for existing files like 'en/resources.dll')
-    $aclArgs = "`"$AppRoot`" /inheritance:r /grant:r *S-1-5-32-544:(OI)(CI)F /grant:r SYSTEM:(OI)(CI)F /grant:r *S-1-5-32-545:(OI)(CI)M /T /Q"
-    
-    Start-Process -FilePath "icacls.exe" -ArgumentList $aclArgs -NoNewWindow -Wait
-    
-    # Deny rule REMOVED because it locks out Administrators too (Admin is part of Users group).
-    # Standard "Modify" permission is sufficient.
-    
-    Write-Host "   [OK] Folder permissions set." -ForegroundColor Green
-
-    # 5. Create ProgramData Log Directory and Grant Permissions
+    # 5. Create ProgramData Log Directory
     $LogDir = "$env:ProgramData\EsportManager"
     if (-not (Test-Path $LogDir)) {
         New-Item -Path $LogDir -ItemType Directory -Force | Out-Null
+        Write-Host "   [OK] Log directory created." -ForegroundColor Green
     }
-    # Grant Modify to Users so the watchdog (running as User) can write logs
-    $logAclArgs = "`"$LogDir`" /grant *S-1-5-32-545:(OI)(CI)M /Q"
-    Start-Process -FilePath "icacls.exe" -ArgumentList $logAclArgs -NoNewWindow -Wait
-    Write-Host "   [OK] Log directory created and permissions set." -ForegroundColor Green
 
     # Verify
     $taskState = (Get-ScheduledTask -TaskName $TaskName).State
