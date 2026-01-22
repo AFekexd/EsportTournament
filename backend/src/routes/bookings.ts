@@ -70,11 +70,27 @@ bookingsRouter.delete(
             throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
-        await prisma.computer.delete({
-            where: { id: req.params.id as string },
+        const computerId = req.params.id as string;
+
+        await prisma.$transaction(async (tx) => {
+            // Unlink Logs (computerId is optional on Log)
+            await tx.log.updateMany({
+                where: { computerId },
+                data: { computerId: null }
+            });
+
+            // Delete Sessions (computerId is required on Session)
+            await tx.session.deleteMany({
+                where: { computerId }
+            });
+
+            // Delete Computer (Cascade will handle Booking and Waitlist)
+            await tx.computer.delete({
+                where: { id: computerId },
+            });
         });
 
-        await logSystemActivity('COMPUTER_DELETE', `Computer ID ${req.params.id} deleted by ${user.username}`, { adminId: user.id });
+        await logSystemActivity('COMPUTER_DELETE', `Computer ID ${computerId} deleted by ${user.username}`, { adminId: user.id });
 
         res.json({ success: true, message: 'Computer deleted' });
     })
