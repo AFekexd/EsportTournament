@@ -6,11 +6,19 @@ $WorkDir = $ScriptDir
 
 # Dev Environment Detection: If Launcher is missing, try to find the compiled App directly
 if (-not (Test-Path $AppPath)) {
-    $DevPath = Join-Path (Split-Path -Parent $ScriptDir) "bin\Release\net8.0-windows\EsportManager.exe"
-    if (Test-Path $DevPath) {
-        $AppPath = $DevPath
+    # Check parent directory (Standard Install)
+    $ParentPath = Join-Path (Split-Path -Parent $ScriptDir) "EsportManager.exe"
+    if (Test-Path $ParentPath) {
+        $AppPath = $ParentPath
         $WorkDir = Split-Path -Parent $AppPath
-        Write-Host "Dev Environment Detected: Using build output at $AppPath" -ForegroundColor Cyan
+    } else {
+        # Check Dev Path
+        $DevPath = Join-Path (Split-Path -Parent $ScriptDir) "bin\Release\net8.0-windows\EsportManager.exe"
+        if (Test-Path $DevPath) {
+            $AppPath = $DevPath
+            $WorkDir = Split-Path -Parent $AppPath
+            Write-Host "Dev Environment Detected: Using build output at $AppPath" -ForegroundColor Cyan
+        }
     }
 }
 
