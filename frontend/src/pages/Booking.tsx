@@ -483,11 +483,9 @@ export function BookingPage() {
                             </span>
                           </div>
 
-                          <div
-                            className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4`}
-                          >
+                          <div className="flex flex-col gap-8 p-4">
                             {computersByRow.map((row, rowIndex) => (
-                              <div key={rowIndex} className="flex gap-4">
+                              <div key={rowIndex} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {row.map((computer) => {
                                   const booking = isComputerBooked(
                                     computer.id,
@@ -521,9 +519,9 @@ export function BookingPage() {
                                   return (
                                     <div
                                       key={computer.id}
-                                      className={`flex-1 relative bg-[#0f1015] rounded-lg p-3 border border-white/5 transition-all duration-300 ${isExpanded
-                                        ? "min-w-[320px] md:min-w-[450px] z-10 shadow-xl ring-1 ring-white/10"
-                                        : "min-w-[140px]"
+                                      className={`relative bg-[#0f1015] rounded-lg p-3 border border-white/5 transition-all duration-300 ${isExpanded
+                                        ? "z-10 shadow-xl ring-1 ring-white/10"
+                                        : ""
                                         }`}
                                     >
                                       <div className="flex justify-between items-center mb-2 pb-2 border-b border-white/5">
