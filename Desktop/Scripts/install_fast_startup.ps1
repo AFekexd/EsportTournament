@@ -103,13 +103,10 @@ try {
     
     Start-Process -FilePath "icacls.exe" -ArgumentList $aclArgs -NoNewWindow -Wait
     
-    # Deny Users the ability to delete the main folder itself (but allow modifying files inside)
-    # DE = Delete (folder)
-    # DC = Delete Child (delete files/subfolders inside)
-    $denyArgs = "`"$AppRoot`" /deny *S-1-5-32-545:(DE) /Q"
-    Start-Process -FilePath "icacls.exe" -ArgumentList $denyArgs -NoNewWindow -Wait
+    # Deny rule REMOVED because it locks out Administrators too (Admin is part of Users group).
+    # Standard "Modify" permission is sufficient.
     
-    Write-Host "   [OK] Folder permissions set. Users can update but cannot delete the main folder." -ForegroundColor Green
+    Write-Host "   [OK] Folder permissions set." -ForegroundColor Green
 
     # 5. Create ProgramData Log Directory and Grant Permissions
     $LogDir = "$env:ProgramData\EsportManager"
