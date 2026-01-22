@@ -12,6 +12,8 @@ import {
   Info,
   ArrowLeft,
   ArrowRight,
+  Filter,
+  ChevronDown,
 } from "lucide-react";
 import { ConfirmationModal } from "../components/common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
@@ -69,6 +71,10 @@ export function BookingPage() {
   const [expandedComputerId, setExpandedComputerId] = useState<string | null>(
     null,
   );
+
+  // Filter State
+  const [filteredComputerId, setFilteredComputerId] = useState<string | null>(null);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
@@ -243,15 +249,25 @@ export function BookingPage() {
   };
 
   const computersByRow = useMemo(() => {
+    // Filter computers if needed
+    const visibleComputers = filteredComputerId
+      ? computers.filter(c => c.id === filteredComputerId)
+      : computers;
+
     const rows: Computer[][] = [[], []];
-    computers.forEach((c) => {
-      if (c.row === 0) rows[0].push(c);
-      else rows[1].push(c);
+    visibleComputers.forEach((c) => {
+      // If filtered, just put in first row for simplicity, or keep original row logic
+      if (filteredComputerId) {
+        rows[0].push(c);
+      } else {
+        if (c.row === 0) rows[0].push(c);
+        else rows[1].push(c);
+      }
     });
     rows[0].sort((a, b) => a.position - b.position);
     rows[1].sort((a, b) => a.position - b.position);
     return rows;
-  }, [computers]);
+  }, [computers, filteredComputerId]);
 
   const dayNames = [
     "Vasárnap",
@@ -450,6 +466,83 @@ export function BookingPage() {
                       Idősávok ({todaySchedule.startHour}:00 -{" "}
                       {todaySchedule.endHour}:00)
                     </h2>
+
+                    {/* Filter Dropdown */}
+                    <div className="relative z-50">
+                      <button
+                        onClick={() => setIsFilterOpen(!isFilterOpen)}
+                        className="flex items-center gap-2 px-3 py-1.5 bg-[#1a1b26] border border-white/10 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:border-white/20 transition-all min-w-[180px] justify-between"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Filter size={14} className="text-primary" />
+                          <span>
+                            {filteredComputerId
+                              ? computers.find((c) => c.id === filteredComputerId)?.name ||
+                              "Kiválasztott gép"
+                              : `Összes gép (${computers.length})`}
+                          </span>
+                        </div>
+                        <ChevronDown
+                          size={14}
+                          className={`transition-transform duration-200 ${isFilterOpen ? "rotate-180" : ""
+                            }`}
+                        />
+                      </button>
+
+                      {isFilterOpen && (
+                        <>
+                          <div
+                            className="fixed inset-0 z-40"
+                            onClick={() => setIsFilterOpen(false)}
+                          />
+                          <div className="absolute top-full right-0 mt-2 w-full min-w-[200px] bg-[#1a1b26] border border-white/10 rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
+                            <div className="max-h-[300px] overflow-y-auto p-1 custom-scrollbar">
+                              <button
+                                onClick={() => {
+                                  setFilteredComputerId(null);
+                                  setIsFilterOpen(false);
+                                }}
+                                className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${!filteredComputerId
+                                  ? "bg-primary/20 text-white"
+                                  : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
+                                  }`}
+                              >
+                                <LayoutGrid size={14} />
+                                <span>Összes gép ({computers.length})</span>
+                                {!filteredComputerId && (
+                                  <Check size={14} className="ml-auto text-primary" />
+                                )}
+                              </button>
+
+                              <div className="h-px bg-white/5 my-1" />
+
+                              {computers
+                                .slice()
+                                .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
+                                .map((computer) => (
+                                  <button
+                                    key={computer.id}
+                                    onClick={() => {
+                                      setFilteredComputerId(computer.id);
+                                      setIsFilterOpen(false);
+                                    }}
+                                    className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${filteredComputerId === computer.id
+                                      ? "bg-primary/20 text-white"
+                                      : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
+                                      }`}
+                                  >
+                                    <Monitor size={14} />
+                                    <span>{computer.name}</span>
+                                    {filteredComputerId === computer.id && (
+                                      <Check size={14} className="ml-auto text-primary" />
+                                    )}
+                                  </button>
+                                ))}
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
 
                     <div className="flex flex-wrap gap-4">
                       <span className="flex items-center gap-2 text-xs md:text-sm">

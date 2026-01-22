@@ -64,8 +64,8 @@ export function MyBookings() {
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("hu-HU", {
-      weekday: "short",
-      month: "short",
+      weekday: "long",
+      month: "long",
       day: "numeric",
     });
   };
@@ -92,89 +92,96 @@ export function MyBookings() {
   const getStatusLabel = (status: "upcoming" | "active" | "checked-in") => {
     switch (status) {
       case "checked-in":
-        return { label: "Bejelentkezve", class: "status-checked-in" };
+        return { label: "Bejelentkezve", color: "text-green-400 bg-green-500/10 border-green-500/20" };
       case "active":
-        return { label: "Aktív", class: "status-active" };
+        return { label: "Aktív", color: "text-primary bg-primary/10 border-primary/20" };
       default:
-        return { label: "Közelgő", class: "status-upcoming" };
+        return { label: "Közelgő", color: "text-blue-400 bg-blue-500/10 border-blue-500/20" };
     }
   };
 
   if (!isAuthenticated) {
     return (
-      <div className="my-bookings-empty">
-        <AlertCircle size={32} />
-        <p>Jelentkezz be a foglalásaid megtekintéséhez</p>
+      <div className="flex flex-col items-center justify-center p-12 text-center bg-[#1a1b26] rounded-2xl border border-white/5">
+        <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
+          <AlertCircle size={32} className="text-gray-400" />
+        </div>
+        <p className="text-gray-400 text-lg">Jelentkezz be a foglalásaid megtekintéséhez</p>
       </div>
     );
   }
 
   if (isLoading) {
     return (
-      <div className="my-bookings-loading">
-        <div className="spinner" />
-        <p>Betöltés...</p>
+      <div className="flex items-center justify-center p-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   if (myBookings.length === 0) {
     return (
-      <div className="my-bookings-empty">
-        <Calendar size={32} />
-        <p>Nincs aktív foglalásod</p>
+      <div className="flex flex-col items-center justify-center p-12 text-center bg-[#1a1b26] rounded-2xl border border-white/5">
+        <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
+          <Calendar size={32} className="text-gray-400" />
+        </div>
+        <p className="text-gray-400 text-lg">Nincs aktív foglalásod</p>
       </div>
     );
   }
 
   return (
-    <div className="my-bookings">
-      <h3 className="my-bookings-title">
-        <Calendar size={20} />
-        Saját foglalásaim ({myBookings.length})
+    <div className="w-full">
+      <h3 className="flex items-center gap-2 text-xl font-bold text-white mb-6">
+        <Calendar size={24} className="text-primary" />
+        Saját foglalásaim <span className="text-gray-500 text-lg font-normal">({myBookings.length})</span>
       </h3>
 
-      <div className="my-bookings-list">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {myBookings.map((booking) => {
           const status = getBookingStatus(booking);
           const statusInfo = getStatusLabel(status);
 
           return (
-            <div key={booking.id} className={`booking-card ${status}`}>
-              <div className="booking-card-header">
-                <div className="booking-computer">
-                  <Monitor size={18} />
-                  <span>{booking.computer.name}</span>
+            <div
+              key={booking.id}
+              className="group relative bg-[#1a1b26] rounded-xl border border-white/5 p-5 hover:border-primary/50 transition-all duration-300 hover:shadow-[0_0_20px_-5px_rgba(139,92,246,0.15)] flex flex-col"
+            >
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-[#0f1015] flex items-center justify-center border border-white/5 group-hover:border-primary/20 transition-colors">
+                    <Monitor size={20} className="text-gray-400 group-hover:text-primary transition-colors" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white group-hover:text-primary transition-colors">{booking.computer.name}</h4>
+                    <span className="text-xs text-gray-500">Számítógép</span>
+                  </div>
                 </div>
-                <span className={`booking-status ${statusInfo.class}`}>
-                  {status === "checked-in" && <CheckCircle size={14} />}
+                <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${statusInfo.color} flex items-center gap-1.5`}>
+                  {status === "checked-in" && <CheckCircle size={12} />}
                   {statusInfo.label}
                 </span>
               </div>
 
-              <div className="booking-card-body">
-                <div className="booking-datetime">
-                  <div className="booking-date">
-                    <Calendar size={16} />
-                    <span>{formatDate(booking.date)}</span>
-                  </div>
-                  <div className="booking-time">
-                    <Clock size={16} />
-                    <span>
-                      {formatTime(booking.startTime)} -{" "}
-                      {formatTime(booking.endTime)}
-                    </span>
-                  </div>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-3 text-sm text-gray-300">
+                  <Calendar size={16} className="text-gray-500" />
+                  <span className="capitalize">{formatDate(booking.date)}</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-gray-300">
+                  <Clock size={16} className="text-gray-500" />
+                  <span>
+                    {formatTime(booking.startTime)} - {formatTime(booking.endTime)}
+                  </span>
                 </div>
               </div>
 
-              <div className="booking-card-actions ">
-
+              <div className="mt-auto pt-4 border-t border-white/5 flex justify-end">
                 {status === "upcoming" && (
                   <button
-                    className="btn-icon btn-delete"
+                    className="p-2 rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
                     onClick={() => handleDelete(booking.id)}
-                    title="Törlés"
+                    title="Foglalás törlése"
                   >
                     <Trash2 size={18} />
                   </button>
