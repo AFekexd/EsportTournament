@@ -268,7 +268,7 @@ export function BookingPage() {
     (user?.timeBalanceSeconds || 0) - selectedDuration * 60 < 0;
 
   return (
-    <div className="container mx-auto px-4 py-4 md:py-8">
+    <div className="w-full mx-auto px-4 py-4 md:py-8">
       {/* Modern Header with Gradient */}
       <div className="mb-8 md:mb-12 text-center relative">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 md:w-32 md:h-32 bg-primary/20 blur-3xl rounded-full -z-10" />
