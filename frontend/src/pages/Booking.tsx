@@ -484,7 +484,7 @@ export function BookingPage() {
                           </div>
 
                           <div
-                            className={`flex-1 p-4 flex flex-col gap-4 overflow-x-auto `}
+                            className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4`}
                           >
                             {computersByRow.map((row, rowIndex) => (
                               <div key={rowIndex} className="flex gap-4">

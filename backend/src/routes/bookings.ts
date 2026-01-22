@@ -307,14 +307,33 @@ bookingsRouter.post(
         const endOfDay = new Date(bookingDate);
         endOfDay.setHours(23, 59, 59, 999);
 
-        // Check schedule (read-only, can be outside transaction usually, but safer inside if schedules change dynamically)
-        const dayOfWeek = bookingDate.getDay();
+        // Check schedule (read-only)
+        // Fix: Convert to Hungary time for correct day/hour validation
+        const getHungaryDate = (d: Date) => {
+            const dateString = d.toLocaleString('en-US', { timeZone: 'Europe/Budapest' });
+            return new Date(dateString);
+        };
+
+        const localStart = getHungaryDate(start);
+        const localEnd = getHungaryDate(end);
+
+        const dayOfWeek = localStart.getDay();
+        const startHour = localStart.getHours();
+        const endHour = localEnd.getHours();
+
+        // Special handling for booking ending at midnight (00:00)
+        // If localEnd is 00:00, it effectively means 24:00 for the previous day's schedule
+        let effectiveEndHour = endHour;
+        if (effectiveEndHour === 0 && end.getSeconds() === 0 && end.getMinutes() === 0) {
+            effectiveEndHour = 24;
+        }
+
         const schedule = await prisma.bookingSchedule.findFirst({
             where: {
                 dayOfWeek,
                 isActive: true,
-                startHour: { lte: start.getHours() },
-                endHour: { gte: end.getHours() },
+                startHour: { lte: startHour },
+                endHour: { gte: effectiveEndHour },
             },
         });
 
