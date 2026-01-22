@@ -302,8 +302,8 @@ export function BookingPage() {
         <div className="flex gap-4 md:gap-8 min-w-max">
           <button
             className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${activeTab === "booking"
-                ? "border-primary text-primary"
-                : "border-transparent text-gray-400 hover:text-gray-300"
+              ? "border-primary text-primary"
+              : "border-transparent text-gray-400 hover:text-gray-300"
               }`}
             onClick={() => setActiveTab("booking")}
           >
@@ -312,8 +312,8 @@ export function BookingPage() {
           </button>
           <button
             className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${activeTab === "my-bookings"
-                ? "border-primary text-primary"
-                : "border-transparent text-gray-400 hover:text-gray-300"
+              ? "border-primary text-primary"
+              : "border-transparent text-gray-400 hover:text-gray-300"
               }`}
             onClick={() => setActiveTab("my-bookings")}
           >
@@ -340,8 +340,8 @@ export function BookingPage() {
             <div className="flex bg-[#1a1b26] p-1 rounded-xl border border-white/5 w-full md:w-auto">
               <button
                 className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${viewMode === "daily"
-                    ? "bg-[#0f1015] text-white shadow-lg"
-                    : "text-gray-400 hover:text-gray-300"
+                  ? "bg-[#0f1015] text-white shadow-lg"
+                  : "text-gray-400 hover:text-gray-300"
                   }`}
                 onClick={() => dispatch(setViewMode("daily"))}
               >
@@ -350,8 +350,8 @@ export function BookingPage() {
               </button>
               <button
                 className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${viewMode === "weekly"
-                    ? "bg-[#0f1015] text-white shadow-lg"
-                    : "text-gray-400 hover:text-gray-300"
+                  ? "bg-[#0f1015] text-white shadow-lg"
+                  : "text-gray-400 hover:text-gray-300"
                   }`}
                 onClick={() => dispatch(setViewMode("weekly"))}
               >
@@ -472,19 +472,19 @@ export function BookingPage() {
                       {availableSlots.map((hour) => (
                         <div
                           key={hour}
-                          className="flex border-b border-white/5 last:border-b-0"
+                          className="flex border-b border-white/5 last:border-b-0 hover:bg-white/2 transition-colors duration-200"
                         >
-                          <div className="sticky left-0 z-10 w-24 flex-shrink-0 bg-[#0f1015] border-r border-white/5 flex flex-col justify-center items-center py-4 shadow-[4px_0_24px_-4px_rgba(0,0,0,0.5)]">
-                            <span className="text-lg font-bold text-white">
+                          <div className="sticky left-0 z-10 w-24 flex-shrink-0 bg-[#0f1015]/90 backdrop-blur-md border-r border-white/10 flex flex-col justify-center items-center py-4 shadow-[4px_0_24px_-4px_rgba(0,0,0,0.5)]">
+                            <span className="text-xl font-bold text-white tracking-wider text-glow">
                               {hour}:00
                             </span>
-                            <span className="text-xs text-gray-500">
+                            <span className="text-xs text-gray-400 font-medium mt-1">
                               {hour}:00 - {hour + 1}:00
                             </span>
                           </div>
 
                           <div
-                            className={`flex-1 p-4 flex flex-col gap-4 overflow-x-auto `}
+                            className={`flex-1 p-4 flex flex-col gap-4 min-w-max`}
                           >
                             {computersByRow.map((row, rowIndex) => (
                               <div key={rowIndex} className="flex gap-4">
@@ -521,19 +521,19 @@ export function BookingPage() {
                                   return (
                                     <div
                                       key={computer.id}
-                                      className={`flex-1 relative bg-[#0f1015] rounded-lg p-3 border border-white/5 transition-all duration-300 ${isExpanded
-                                          ? "min-w-[320px] md:min-w-[450px] z-10 shadow-xl ring-1 ring-white/10"
-                                          : "min-w-[140px]"
+                                      className={`flex-1 relative bg-[#0f1015]/80 backdrop-blur-sm rounded-xl p-3 border border-white/5 transition-all duration-300 ${isExpanded
+                                        ? "min-w-[320px] md:min-w-[450px] z-10 shadow-glow-primary ring-1 ring-primary/50"
+                                        : "min-w-[160px] hover:border-white/10 hover:shadow-lg hover:bg-[#1a1b24]"
                                         }`}
                                     >
                                       <div className="flex justify-between items-center mb-2 pb-2 border-b border-white/5">
-                                        <span className="text-sm font-semibold text-gray-300 truncate pr-2">
+                                        <span className="text-sm font-bold text-gray-200 truncate pr-2 group-hover:text-white transition-colors">
                                           {computer.name}
                                         </span>
                                         <button
-                                          className={`p-1 rounded transition-colors ${isExpanded
-                                              ? "text-primary bg-primary/10"
-                                              : "text-gray-500 hover:text-primary hover:bg-primary/10"
+                                          className={`p-1.5 rounded-md transition-all ${isExpanded
+                                            ? "text-primary bg-primary/10 shadow-[0_0_10px_rgba(168,85,247,0.2)]"
+                                            : "text-gray-500 hover:text-primary hover:bg-white/5"
                                             }`}
                                           onClick={() =>
                                             setExpandedComputerId(
@@ -548,34 +548,38 @@ export function BookingPage() {
                                       </div>
 
                                       <button
-                                        className={`w-full h-12 rounded-lg flex items-center justify-center transition-all ${isOwn
-                                            ? "bg-gradient-to-br from-primary/30 to-indigo-500/30 text-white border-2 border-primary/60 shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)] hover:shadow-[0_0_20px_-3px_rgba(139,92,246,0.5)] hover:border-primary cursor-pointer backdrop-blur-sm transform hover:-translate-y-0.5"
-                                            : isBooked
-                                              ? "bg-red-500/10 text-red-400 border-2 border-red-500/20 cursor-default"
-                                              : isMaintained || isOutOfOrder
-                                                ? "bg-gray-800/50 text-gray-600 border-2 border-gray-700/20 cursor-not-allowed opacity-50"
-                                                : isPast
-                                                  ? "bg-gray-800/20 text-gray-600 border-2 border-gray-800/20 cursor-not-allowed opacity-50"
-                                                  : "bg-green-500/10 text-green-400 border-2 border-green-500/20 hover:bg-green-500/20 cursor-pointer group"
+                                        className={`w-full h-12 rounded-lg flex items-center justify-center transition-all duration-300 ${isOwn
+                                          ? "bg-gradient-to-r from-primary/20 to-indigo-500/20 text-white border border-primary/50 shadow-[0_0_15px_rgba(139,92,246,0.2)] hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:border-primary cursor-pointer backdrop-blur-md"
+                                          : isBooked
+                                            ? "bg-red-500/5 text-red-300 border border-red-500/10 cursor-default"
+                                            : isMaintained || isOutOfOrder
+                                              ? "bg-gray-800/40 text-gray-600 border border-gray-700/20 cursor-not-allowed"
+                                              : isPast
+                                                ? "bg-gray-800/20 text-gray-600 border border-gray-800/20 cursor-not-allowed opacity-60"
+                                                : "bg-emerald-500/5 text-emerald-400 border border-emerald-500/10 hover:bg-emerald-500/10 hover:border-emerald-500/30 hover:shadow-[0_0_15px_rgba(16,185,129,0.1)] cursor-pointer group"
                                           }`}
                                         onClick={() =>
                                           handleComputerClick(computer, hour)
                                         }
                                         disabled={isDisabled && !isOwn}
                                       >
-                                        {isOwn && <Check size={18} />}
+                                        {isOwn && <Check size={20} className="drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]" />}
                                         {isBooked && !isOwn && (
-                                          <Monitor size={18} />
+                                          <span className="text-xs font-medium text-red-300/80 px-2 line-clamp-1">Foglalt</span>
                                         )}
                                         {!isBooked &&
                                           !isMaintained &&
                                           !isOutOfOrder &&
                                           !isPast && (
-                                            <Plus
-                                              size={18}
-                                              className="opacity-0 group-hover:opacity-100 transition-opacity"
-                                            />
+                                            <div className="flex items-center gap-2">
+                                              <span className="text-sm font-medium">Foglalás</span>
+                                              <Plus
+                                                size={16}
+                                                className="opacity-60 group-hover:opacity-100 transition-opacity"
+                                              />
+                                            </div>
                                           )}
+                                        {(isMaintained || isOutOfOrder) && <span className="text-xs">Karbantartás</span>}
                                       </button>
 
                                       {isBooked &&
@@ -655,8 +659,8 @@ export function BookingPage() {
                   <button
                     key={mins}
                     className={`py-3 px-2 rounded-lg border-2 font-medium transition-all ${selectedDuration === mins
-                        ? "bg-primary border-primary text-white shadow-lg shadow-primary/20"
-                        : "bg-[#0f1015] border-white/10 text-gray-400 hover:border-primary/50 hover:text-gray-300"
+                      ? "bg-primary border-primary text-white shadow-lg shadow-primary/20"
+                      : "bg-[#0f1015] border-white/10 text-gray-400 hover:border-primary/50 hover:text-gray-300"
                       }`}
                     onClick={() => setSelectedDuration(mins)}
                   >
