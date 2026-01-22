@@ -927,12 +927,39 @@ bookingsRouter.patch(
         console.log('Update computer request:', req.body);
         const { specs, installedGames, status, isActive, name, row, position } = req.body;
 
+        // Check for position conflict
+        if (row !== undefined || position !== undefined) {
+            const currentComputer = await prisma.computer.findUnique({
+                where: { id: req.params.id as string },
+                select: { row: true, position: true }
+            });
+
+            if (!currentComputer) {
+                throw new ApiError('Computer not found', 404, 'NOT_FOUND');
+            }
+
+            const targetRow = row !== undefined ? parseInt(row) : currentComputer.row;
+            const targetPosition = position !== undefined ? parseInt(position) : currentComputer.position;
+
+            const conflict = await prisma.computer.findFirst({
+                where: {
+                    row: targetRow,
+                    position: targetPosition,
+                    id: { not: req.params.id as string }
+                }
+            });
+
+            if (conflict) {
+                throw new ApiError(`A megadott sor/pozíció (${targetRow}/${targetPosition}) már foglalt`, 400, 'POSITION_OCCUPIED');
+            }
+        }
+
         const computer = await prisma.computer.update({
             where: { id: req.params.id as string },
             data: {
                 ...(name !== undefined && { name }),
-                ...(row !== undefined && { row }),
-                ...(position !== undefined && { position }),
+                ...(row !== undefined && { row: parseInt(row) }),
+                ...(position !== undefined && { position: parseInt(position) }),
                 ...(specs !== undefined && { specs }),
                 ...(installedGames !== undefined && { installedGames }),
                 ...(status !== undefined && { status }),

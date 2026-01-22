@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { ChevronLeft, ChevronRight, Monitor, Clock } from "lucide-react";
+import { useMemo, useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight, Monitor, Clock, Filter } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import {
   setSelectedWeekStart,
@@ -28,6 +28,21 @@ export function WeeklyCalendar({
   const { user } = useAuth();
   const { computers, weeklyBookings, schedules, selectedWeekStart, isLoading } =
     useAppSelector((state) => state.bookings);
+
+  const [selectedComputerId, setSelectedComputerId] = useState<string>("all");
+
+  // Reset selection if computers change significantly or on mount if needed
+  useEffect(() => {
+    if (computers.length > 0 && selectedComputerId === "all" && computers.length > 5) {
+      // Optional: Default to first computer if many? 
+      // For now keeping "all" as default option but user can switch.
+    }
+  }, [computers.length]);
+
+  const filteredComputers = useMemo(() => {
+    if (selectedComputerId === "all") return computers;
+    return computers.filter((c) => c.id === selectedComputerId);
+  }, [computers, selectedComputerId]);
 
   const weekDays = useMemo(() => {
     const days: { date: Date; dateStr: string; dayName: string }[] = [];
@@ -148,13 +163,29 @@ export function WeeklyCalendar({
   return (
     <div className="weekly-calendar">
       <div className="weekly-calendar-header">
-        <button className="nav-btn" onClick={() => navigateWeek("prev")}>
-          <ChevronLeft size={20} />
-        </button>
-        <span className="week-range">{formatWeekRange()}</span>
-        <button className="nav-btn" onClick={() => navigateWeek("next")}>
-          <ChevronRight size={20} />
-        </button>
+        <div className="flex items-center gap-2">
+          <button className="nav-btn" onClick={() => navigateWeek("prev")}>
+            <ChevronLeft size={20} />
+          </button>
+          <span className="week-range">{formatWeekRange()}</span>
+          <button className="nav-btn" onClick={() => navigateWeek("next")}>
+            <ChevronRight size={20} />
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2 ml-4">
+          <Filter size={16} className="text-gray-400" />
+          <select
+            className="bg-[#0f1015] border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-primary"
+            value={selectedComputerId}
+            onChange={(e) => setSelectedComputerId(e.target.value)}
+          >
+            <option value="all">Összes gép ({computers.length})</option>
+            {computers.map(c => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="weekly-calendar-grid">
@@ -175,7 +206,7 @@ export function WeeklyCalendar({
         </div>
 
         {/* Computer Rows */}
-        {computers.slice(0, 5).map((computer) => (
+        {filteredComputers.map((computer) => (
           <div key={computer.id} className="computer-section">
             <div className="computer-label">
               <Monitor size={14} />

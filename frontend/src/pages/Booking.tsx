@@ -81,7 +81,7 @@ export function BookingPage() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => {},
+    onConfirm: () => { },
     variant: "primary",
   });
 
@@ -301,22 +301,20 @@ export function BookingPage() {
       <div className="mb-6 md:mb-8 border-b border-white/10 overflow-x-auto">
         <div className="flex gap-4 md:gap-8 min-w-max">
           <button
-            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${
-              activeTab === "booking"
+            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${activeTab === "booking"
                 ? "border-primary text-primary"
                 : "border-transparent text-gray-400 hover:text-gray-300"
-            }`}
+              }`}
             onClick={() => setActiveTab("booking")}
           >
             <LayoutGrid size={16} className="md:w-[18px] md:h-[18px]" />
             Foglalás
           </button>
           <button
-            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${
-              activeTab === "my-bookings"
+            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${activeTab === "my-bookings"
                 ? "border-primary text-primary"
                 : "border-transparent text-gray-400 hover:text-gray-300"
-            }`}
+              }`}
             onClick={() => setActiveTab("my-bookings")}
           >
             <List size={16} className="md:w-[18px] md:h-[18px]" />
@@ -341,22 +339,20 @@ export function BookingPage() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <div className="flex bg-[#1a1b26] p-1 rounded-xl border border-white/5 w-full md:w-auto">
               <button
-                className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${
-                  viewMode === "daily"
+                className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${viewMode === "daily"
                     ? "bg-[#0f1015] text-white shadow-lg"
                     : "text-gray-400 hover:text-gray-300"
-                }`}
+                  }`}
                 onClick={() => dispatch(setViewMode("daily"))}
               >
                 <LayoutGrid size={16} />
                 Napi
               </button>
               <button
-                className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${
-                  viewMode === "weekly"
+                className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${viewMode === "weekly"
                     ? "bg-[#0f1015] text-white shadow-lg"
                     : "text-gray-400 hover:text-gray-300"
-                }`}
+                  }`}
                 onClick={() => dispatch(setViewMode("weekly"))}
               >
                 <CalendarDays size={16} />
@@ -478,7 +474,7 @@ export function BookingPage() {
                           key={hour}
                           className="flex border-b border-white/5 last:border-b-0"
                         >
-                          <div className="w-24 flex-shrink-0 bg-[#0f1015] border-r border-white/5 flex flex-col justify-center items-center py-4">
+                          <div className="sticky left-0 z-10 w-24 flex-shrink-0 bg-[#0f1015] border-r border-white/5 flex flex-col justify-center items-center py-4 shadow-[4px_0_24px_-4px_rgba(0,0,0,0.5)]">
                             <span className="text-lg font-bold text-white">
                               {hour}:00
                             </span>
@@ -525,22 +521,20 @@ export function BookingPage() {
                                   return (
                                     <div
                                       key={computer.id}
-                                      className={`flex-1 relative bg-[#0f1015] rounded-lg p-3 border border-white/5 transition-all duration-300 ${
-                                        isExpanded
+                                      className={`flex-1 relative bg-[#0f1015] rounded-lg p-3 border border-white/5 transition-all duration-300 ${isExpanded
                                           ? "min-w-[320px] md:min-w-[450px] z-10 shadow-xl ring-1 ring-white/10"
                                           : "min-w-[140px]"
-                                      }`}
+                                        }`}
                                     >
                                       <div className="flex justify-between items-center mb-2 pb-2 border-b border-white/5">
                                         <span className="text-sm font-semibold text-gray-300 truncate pr-2">
                                           {computer.name}
                                         </span>
                                         <button
-                                          className={`p-1 rounded transition-colors ${
-                                            isExpanded
+                                          className={`p-1 rounded transition-colors ${isExpanded
                                               ? "text-primary bg-primary/10"
                                               : "text-gray-500 hover:text-primary hover:bg-primary/10"
-                                          }`}
+                                            }`}
                                           onClick={() =>
                                             setExpandedComputerId(
                                               isExpanded
@@ -554,8 +548,7 @@ export function BookingPage() {
                                       </div>
 
                                       <button
-                                        className={`w-full h-12 rounded-lg flex items-center justify-center transition-all ${
-                                          isOwn
+                                        className={`w-full h-12 rounded-lg flex items-center justify-center transition-all ${isOwn
                                             ? "bg-gradient-to-br from-primary/30 to-indigo-500/30 text-white border-2 border-primary/60 shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)] hover:shadow-[0_0_20px_-3px_rgba(139,92,246,0.5)] hover:border-primary cursor-pointer backdrop-blur-sm transform hover:-translate-y-0.5"
                                             : isBooked
                                               ? "bg-red-500/10 text-red-400 border-2 border-red-500/20 cursor-default"
@@ -564,7 +557,7 @@ export function BookingPage() {
                                                 : isPast
                                                   ? "bg-gray-800/20 text-gray-600 border-2 border-gray-800/20 cursor-not-allowed opacity-50"
                                                   : "bg-green-500/10 text-green-400 border-2 border-green-500/20 hover:bg-green-500/20 cursor-pointer group"
-                                        }`}
+                                          }`}
                                         onClick={() =>
                                           handleComputerClick(computer, hour)
                                         }
@@ -661,11 +654,10 @@ export function BookingPage() {
                 {[30, 60, 90, 120].map((mins) => (
                   <button
                     key={mins}
-                    className={`py-3 px-2 rounded-lg border-2 font-medium transition-all ${
-                      selectedDuration === mins
+                    className={`py-3 px-2 rounded-lg border-2 font-medium transition-all ${selectedDuration === mins
                         ? "bg-primary border-primary text-white shadow-lg shadow-primary/20"
                         : "bg-[#0f1015] border-white/10 text-gray-400 hover:border-primary/50 hover:text-gray-300"
-                    }`}
+                      }`}
                     onClick={() => setSelectedDuration(mins)}
                   >
                     {mins < 60 ? `${mins} perc` : `${mins / 60} óra`}
@@ -689,8 +681,8 @@ export function BookingPage() {
                     return `${selectedStartHour}:${startMin
                       .toString()
                       .padStart(2, "0")} - ${endHour}:${endMin
-                      .toString()
-                      .padStart(2, "0")}`;
+                        .toString()
+                        .padStart(2, "0")}`;
                   })()}
                 </span>
               </div>
@@ -706,7 +698,7 @@ export function BookingPage() {
                     <span
                       className={
                         user.role !== "ADMIN" &&
-                        user.timeBalanceSeconds - selectedDuration * 60 < 0
+                          user.timeBalanceSeconds - selectedDuration * 60 < 0
                           ? "text-red-400"
                           : "text-green-400"
                       }
