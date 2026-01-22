@@ -32,7 +32,6 @@ import {
   MyBookings,
   WeeklyCalendar,
   ComputerInfo,
-  WaitlistButton,
 } from "../components/booking";
 
 export function BookingPage() {
@@ -467,157 +466,141 @@ export function BookingPage() {
                     </div>
                   </div>
 
-                  <div className="relative min-w-[800px]">
-                    {/* Sticky Header Row */}
-                    <div className="flex sticky top-0 z-20 bg-[#0f1015]/95 backdrop-blur-md border-b border-white/10 shadow-lg">
-                      <div className="sticky left-0 z-30 w-48 flex-shrink-0 p-4 bg-[#0f1015] border-r border-white/10 flex items-center shadow-[4px_0_24px_-4px_rgba(0,0,0,0.5)]">
-                        <span className="text-sm font-bold text-gray-400 uppercase tracking-widest">
-                          Számítógépek
-                        </span>
-                      </div>
-                      <div className="flex bg-[#0f1015]/50">
-                        {availableSlots.map((hour) => (
-                          <div
-                            key={hour}
-                            className="w-32 flex-shrink-0 flex flex-col justify-center items-center py-3 border-r border-white/5 last:border-r-0"
-                          >
-                            <span className="text-lg font-bold text-white text-glow">
+                  <div className="overflow-x-auto">
+                    <div className="min-w-[800px]">
+                      {availableSlots.map((hour) => (
+                        <div
+                          key={hour}
+                          className="flex border-b border-white/5 last:border-b-0"
+                        >
+                          <div className="sticky left-0 z-10 w-24 flex-shrink-0 bg-[#0f1015] border-r border-white/5 flex flex-col justify-center items-center py-4 shadow-[4px_0_24px_-4px_rgba(0,0,0,0.5)]">
+                            <span className="text-lg font-bold text-white">
                               {hour}:00
                             </span>
-                            <span className="text-[10px] text-gray-500 font-medium">
+                            <span className="text-xs text-gray-500">
                               {hour}:00 - {hour + 1}:00
                             </span>
                           </div>
-                        ))}
-                      </div>
-                    </div>
 
-                    {/* Computer Rows */}
-                    <div className="flex flex-col">
-                      {computers.map((computer) => (
-                        <div
-                          key={computer.id}
-                          className="flex flex-col border-b border-white/5 last:border-b-0 hover:bg-white/[0.02] transition-colors"
-                        >
-                          <div className="flex">
-                            {/* Sticky Computer Name Column */}
-                            <div className="sticky left-0 z-10 w-48 flex-shrink-0 p-4 bg-[#0f1015]/95 backdrop-blur-sm border-r border-white/10 flex items-center justify-between shadow-[4px_0_24px_-4px_rgba(0,0,0,0.5)] group">
-                              <div className="flex items-center gap-3">
-                                <Monitor
-                                  size={18}
-                                  className="text-primary group-hover:text-white transition-colors"
-                                />
-                                <span className="font-bold text-sm text-gray-200 group-hover:text-white transition-colors">
-                                  {computer.name}
-                                </span>
-                              </div>
-                              <button
-                                onClick={() =>
-                                  setExpandedComputerId(
-                                    expandedComputerId === computer.id
-                                      ? null
-                                      : computer.id
-                                  )
-                                }
-                                className={`p-1.5 rounded-md transition-colors ${expandedComputerId === computer.id
-                                  ? "text-primary bg-primary/10"
-                                  : "text-gray-500 hover:text-primary hover:bg-white/5"
-                                  }`}
-                              >
-                                <Info size={14} />
-                              </button>
-                            </div>
+                          <div
+                            className={`flex-1 p-4 flex flex-col gap-4 overflow-x-auto `}
+                          >
+                            {computersByRow.map((row, rowIndex) => (
+                              <div key={rowIndex} className="flex gap-4">
+                                {row.map((computer) => {
+                                  const booking = isComputerBooked(
+                                    computer.id,
+                                    hour,
+                                  );
+                                  const isOwn =
+                                    !!user && booking?.userId === user?.id;
+                                  const isBooked = !!booking;
+                                  const isMaintained =
+                                    computer.status === "MAINTENANCE";
+                                  const isOutOfOrder =
+                                    computer.status === "OUT_OF_ORDER";
 
-                            {/* Timeline Slots */}
-                            <div className="flex">
-                              {availableSlots.map((hour) => {
-                                const booking = isComputerBooked(
-                                  computer.id,
-                                  hour
-                                );
-                                const isOwn =
-                                  !!user && booking?.userId === user?.id;
-                                const isBooked = !!booking;
-                                const isMaintained =
-                                  computer.status === "MAINTENANCE";
-                                const isOutOfOrder =
-                                  computer.status === "OUT_OF_ORDER";
+                                  // Check if slot is in the past
+                                  const now = new Date();
+                                  const slotTime = new Date(selectedDate);
+                                  slotTime.setHours(hour, 0, 0, 0);
+                                  const isPast = slotTime < now && !isBooked;
 
-                                const now = new Date();
-                                const slotTime = new Date(selectedDate);
-                                slotTime.setHours(hour, 0, 0, 0);
-                                const isPast = slotTime < now && !isBooked;
+                                  const isDisabled =
+                                    isBooked ||
+                                    isMaintained ||
+                                    isOutOfOrder ||
+                                    isLoading ||
+                                    isPast;
 
-                                const isDisabled =
-                                  isBooked ||
-                                  isMaintained ||
-                                  isOutOfOrder ||
-                                  isLoading ||
-                                  isPast;
+                                  const isExpanded =
+                                    expandedComputerId ===
+                                    `${computer.id}-${hour}`;
 
-                                return (
-                                  <div
-                                    key={hour}
-                                    className="w-32 flex-shrink-0 border-r border-white/5 last:border-r-0 p-1"
-                                  >
-                                    <button
-                                      disabled={isDisabled && !isOwn}
-                                      onClick={() => {
-                                        if (isMaintained) return;
-                                        handleComputerClick(computer, hour);
-                                      }}
-                                      className={`
-                                            w-full h-full min-h-[50px] rounded-lg transition-all duration-300
-                                            flex flex-col items-center justify-center gap-1 group relative
-                                            ${isMaintained || isOutOfOrder
-                                          ? "bg-gray-800/30 border border-gray-700/20 cursor-not-allowed opacity-50"
-                                          : isOwn
-                                            ? "bg-primary/20 border border-primary/50 shadow-[inset_0_0_10px_rgba(168,85,247,0.2)] hover:bg-primary/30 z-10"
-                                            : isBooked
-                                              ? "bg-red-500/10 border border-red-500/20 cursor-default"
-                                              : isPast
-                                                ? "bg-gray-900/50 border border-white/5 opacity-50 cursor-not-allowed"
-                                                : "bg-emerald-500/5 border border-emerald-500/10 hover:bg-emerald-500/15 hover:border-emerald-500/30 hover:shadow-[0_0_15px_rgba(16,185,129,0.1)] cursor-pointer"
-                                        }
-                                          `}
+                                  return (
+                                    <div
+                                      key={computer.id}
+                                      className={`flex-1 relative bg-[#0f1015] rounded-lg p-3 border border-white/5 transition-all duration-300 ${isExpanded
+                                        ? "min-w-[320px] md:min-w-[450px] z-10 shadow-xl ring-1 ring-white/10"
+                                        : "min-w-[140px]"
+                                        }`}
                                     >
-                                      {isOwn ? (
-                                        <>
-                                          <Check size={16} className="text-white drop-shadow-[0_0_5px_rgba(168,85,247,1)]" />
-                                          <span className="text-[10px] font-bold text-white">Saját</span>
-                                        </>
-                                      ) : isBooked ? (
-                                        <>
-                                          {/* Removed Monitor icon for cleaner look, just showing status */}
-                                          <span className="text-[10px] font-medium text-red-300/80">Foglalt</span>
-                                        </>
-                                      ) : isMaintained ? (
-                                        <span className="text-[10px] text-gray-500">Karb.</span>
-                                      ) : isOutOfOrder ? (
-                                        <span className="text-[10px] text-gray-500">Hibás</span>
-                                      ) : !isPast ? (
-                                        <>
-                                          <span className="text-[10px] font-medium text-emerald-500/70 group-hover:text-emerald-400 transition-colors">
-                                            Foglalás
-                                          </span>
-                                        </>
-                                      ) : (
-                                        <span className="text-[10px] text-gray-600">-</span>
-                                      )}
-                                    </button>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
+                                      <div className="flex justify-between items-center mb-2 pb-2 border-b border-white/5">
+                                        <span className="text-sm font-semibold text-gray-300 truncate pr-2">
+                                          {computer.name}
+                                        </span>
+                                        <button
+                                          className={`p-1 rounded transition-colors ${isExpanded
+                                            ? "text-primary bg-primary/10"
+                                            : "text-gray-500 hover:text-primary hover:bg-primary/10"
+                                            }`}
+                                          onClick={() =>
+                                            setExpandedComputerId(
+                                              isExpanded
+                                                ? null
+                                                : `${computer.id}-${hour}`,
+                                            )
+                                          }
+                                        >
+                                          <Info size={14} />
+                                        </button>
+                                      </div>
 
-                          {expandedComputerId === computer.id && (
-                            <div className="p-4 bg-white/[0.02] border-t border-white/5 animate-in fade-in slide-in-from-top-2">
-                              <div className="max-w-3xl ml-48">
-                                <ComputerInfo computer={computer} />
+                                      <button
+                                        className={`w-full h-12 rounded-lg flex items-center justify-center transition-all ${isOwn
+                                          ? "bg-gradient-to-br from-primary/30 to-indigo-500/30 text-white border-2 border-primary/60 shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)] hover:shadow-[0_0_20px_-3px_rgba(139,92,246,0.5)] hover:border-primary cursor-pointer backdrop-blur-sm transform hover:-translate-y-0.5"
+                                          : isBooked
+                                            ? "bg-red-500/10 text-red-400 border-2 border-red-500/20 cursor-default"
+                                            : isMaintained || isOutOfOrder
+                                              ? "bg-gray-800/50 text-gray-600 border-2 border-gray-700/20 cursor-not-allowed opacity-50"
+                                              : isPast
+                                                ? "bg-gray-800/20 text-gray-600 border-2 border-gray-800/20 cursor-not-allowed opacity-50"
+                                                : "bg-green-500/10 text-green-400 border-2 border-green-500/20 hover:bg-green-500/20 cursor-pointer group"
+                                          }`}
+                                        onClick={() =>
+                                          handleComputerClick(computer, hour)
+                                        }
+                                        disabled={isDisabled && !isOwn}
+                                      >
+                                        {isOwn && <Check size={18} />}
+                                        {isBooked && !isOwn && (
+                                          <Monitor size={18} />
+                                        )}
+                                        {!isBooked &&
+                                          !isMaintained &&
+                                          !isOutOfOrder &&
+                                          !isPast && (
+                                            <Plus
+                                              size={18}
+                                              className="opacity-0 group-hover:opacity-100 transition-opacity"
+                                            />
+                                          )}
+                                      </button>
+
+                                      {isBooked &&
+                                        !isOwn &&
+                                        isAuthenticated && (
+                                          <div className="mt-2 pt-2 border-t border-white/5 flex justify-center">
+                                            <WaitlistButton
+                                              computerId={computer.id}
+                                              date={selectedDate}
+                                              startHour={hour}
+                                              endHour={hour + 1}
+                                            />
+                                          </div>
+                                        )}
+
+                                      {isExpanded && (
+                                        <div className="mt-4 animate-in fade-in slide-in-from-top-2">
+                                          <ComputerInfo computer={computer} />
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
                               </div>
-                            </div>
-                          )}
+                            ))}
+                          </div>
                         </div>
                       ))}
                     </div>
