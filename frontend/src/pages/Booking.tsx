@@ -32,6 +32,7 @@ import {
   MyBookings,
   WeeklyCalendar,
   ComputerInfo,
+  WaitlistButton
 } from "../components/booking";
 
 export function BookingPage() {
