@@ -61,13 +61,22 @@ try {
     $Action = New-ScheduledTaskAction -Execute "wscript.exe" -Argument "`"$VbsPath`""
     $Trigger = New-ScheduledTaskTrigger -AtLogon
     
-    # Resolve the "Users" group name dynamically (Handles Hungarian "Felhasználók" etc.)
-    $usersSid = New-Object System.Security.Principal.SecurityIdentifier("S-1-5-32-545")
-    $usersGroupName = $usersSid.Translate([System.Security.Principal.NTAccount]).Value
-    Write-Host "   [INFO] Resolved Users group to: '$usersGroupName'"
+    # Detect the actual interactive user (the one running the desktop)
+    # This is critical because "Users" group usually cannot launch interactive tasks with High privileges correctly
+    $targetUser = $env:USERNAME
+    try {
+        $explorerProc = Get-Process -Name explorer -IncludeUserName -ErrorAction SilentlyContinue | Select-Object -First 1
+        if ($explorerProc -and $explorerProc.UserName) {
+            $targetUser = $explorerProc.UserName
+            Write-Host "   [INFO] Detected active desktop user: $targetUser"
+        }
+    } catch {
+        Write-Warning "   [WARN] Could not detect desktop user from explorer process. Defaulting to current: $targetUser"
+    }
 
-    # Create Principal for "Users" group with Highest privileges
-    $Principal = New-ScheduledTaskPrincipal -GroupId $usersGroupName -RunLevel Highest
+    # Create Principal for the specific user with Highest privileges
+    # LogonType Interactive ensuring it runs visible for that user
+    $Principal = New-ScheduledTaskPrincipal -UserId $targetUser -LogonType Interactive -RunLevel Highest
     
     $Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit (New-TimeSpan -Days 0) -Priority 0
 
@@ -80,22 +89,37 @@ try {
     
     # 4. Lock Down Folder Permissions (Security)
     Write-Host "4. Securing installation directory (Allowing updates but preventing deletion)..."
+    
+    # Target the Application Root (Parent of Scripts)
+    $AppRoot = Split-Path -Parent $ScriptDir
+    Write-Host "   Targeting App Root: $AppRoot"
+
     # Reset inheritance (/inheritance:r)
     # Grant Admins (S-1-5-32-544) -> Full Control (F)
     # Grant SYSTEM -> Full Control (F)
     # Grant Users (S-1-5-32-545) -> Modify (M) - Allows reading, writing, executing, but we deny delete below
-    $aclArgs = "`"$ScriptDir`" /inheritance:r /grant:r *S-1-5-32-544:(OI)(CI)F /grant:r SYSTEM:(OI)(CI)F /grant:r *S-1-5-32-545:(OI)(CI)M /Q"
+    # /T = Recursive (Critical for existing files like 'en/resources.dll')
+    $aclArgs = "`"$AppRoot`" /inheritance:r /grant:r *S-1-5-32-544:(OI)(CI)F /grant:r SYSTEM:(OI)(CI)F /grant:r *S-1-5-32-545:(OI)(CI)M /T /Q"
     
     Start-Process -FilePath "icacls.exe" -ArgumentList $aclArgs -NoNewWindow -Wait
     
     # Deny Users the ability to delete the main folder itself (but allow modifying files inside)
     # DE = Delete (folder)
     # DC = Delete Child (delete files/subfolders inside)
-    # We only deny DE on the folder itself, not DC, so updates can replace files
-    $denyArgs = "`"$ScriptDir`" /deny *S-1-5-32-545:(DE) /Q"
+    $denyArgs = "`"$AppRoot`" /deny *S-1-5-32-545:(DE) /Q"
     Start-Process -FilePath "icacls.exe" -ArgumentList $denyArgs -NoNewWindow -Wait
     
     Write-Host "   [OK] Folder permissions set. Users can update but cannot delete the main folder." -ForegroundColor Green
+
+    # 5. Create ProgramData Log Directory and Grant Permissions
+    $LogDir = "$env:ProgramData\EsportManager"
+    if (-not (Test-Path $LogDir)) {
+        New-Item -Path $LogDir -ItemType Directory -Force | Out-Null
+    }
+    # Grant Modify to Users so the watchdog (running as User) can write logs
+    $logAclArgs = "`"$LogDir`" /grant *S-1-5-32-545:(OI)(CI)M /Q"
+    Start-Process -FilePath "icacls.exe" -ArgumentList $logAclArgs -NoNewWindow -Wait
+    Write-Host "   [OK] Log directory created and permissions set." -ForegroundColor Green
 
     # Verify
     $taskState = (Get-ScheduledTask -TaskName $TaskName).State

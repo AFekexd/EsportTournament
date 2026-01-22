@@ -66,7 +66,7 @@ namespace EsportManager
         private const int SPIF_SENDWININICHANGE = 0x02;
 
         // Kiosk Security
-        private Services.KeyboardHook _keyboardHook;
+        private Services.KeyboardHook? _keyboardHook;
 
         // Form beállítások a Kiosk módhoz
         public Form1()
@@ -372,7 +372,8 @@ namespace EsportManager
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                 g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-                // 1. Háttér (Sötét gradiens)
+                // 1. Háttér (Kép betöltése)
+                // 1. Háttér (Mindig átmenetes)
                 using (var brush = new System.Drawing.Drawing2D.LinearGradientBrush(
                     this.ClientRectangle, 
                     Color.FromArgb(10, 10, 20), 
@@ -384,20 +385,23 @@ namespace EsportManager
 
                 int centerY = this.Height / 2;
                 int centerX = this.Width / 2;
-                int currentY = centerY - 150;
+                int currentY;
 
-                // 2. Logo drawing
+                // 2. Logo
                 if (logo != null)
                 {
-                    int logoW = 200; // Méretezzük a logót
+                    int logoW = 200; 
                     int logoH = (int)((float)logo.Height / logo.Width * logoW);
-                    g.DrawImage(logo, centerX - (logoW / 2), currentY - 50, logoW, logoH);
-                    currentY += logoH + 20;
+                    int logoY = centerY - 150; // Pozícionálás
+                    g.DrawImage(logo, centerX - (logoW / 2), logoY, logoW, logoH);
+                    
+                    // Szöveg a logó alá kerüljön
+                    currentY = logoY + logoH + 20;
                 }
                 else
                 {
-                    // Fallback logo text if image missing
-                    currentY += 50;
+                    // Ha nincs logó, akkor csak középről indulunk
+                    currentY = centerY - 50;
                 }
 
                 // 3. Text: "ZÁROLVA"
@@ -465,15 +469,18 @@ namespace EsportManager
                 Font = new Font("Segoe UI", 12, FontStyle.Regular),
                 ForeColor = Color.FromArgb(100, 100, 100),
                 AutoSize = true,
-                BackColor = Color.Transparent,
-                Anchor = AnchorStyles.Bottom | AnchorStyles.Right
+                BackColor = Color.Transparent
+                // Anchor removed to use manual positioning in Resize
             };
             
-            // Position at bottom-right
-            lockedVersionLabel.Location = new Point(
-                (Screen.PrimaryScreen?.Bounds.Width ?? 1920) - 150, 
-                (Screen.PrimaryScreen?.Bounds.Height ?? 1080) - 50
-            );
+            // Initial Position (Bottom-Left)
+            lockedVersionLabel.Location = new Point(20, _lockedPanel.Height - 50);
+
+            // Dynamic Positioning
+            _lockedPanel.Resize += (s, e) => 
+            {
+                lockedVersionLabel.Location = new Point(20, _lockedPanel.Height - 50);
+            };
             
             _lockedPanel.Controls.Add(lockedVersionLabel);
 
@@ -1795,17 +1802,30 @@ namespace EsportManager
                     g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                     g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-                    // 1. Background Gradient (Dark Blue/Purple aesthetic)
-                    using (var brush = new System.Drawing.Drawing2D.LinearGradientBrush(
-                        new Rectangle(0, 0, width, height), 
-                        Color.FromArgb(10, 10, 30), 
-                        Color.FromArgb(30, 0, 40), 
-                        45F))
+                    // 1. Background Image
+                    string bgPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "esportteremhatter.png");
+                    if (File.Exists(bgPath))
                     {
-                        g.FillRectangle(brush, 0, 0, width, height);
+                         using (Image bg = Image.FromFile(bgPath))
+                         {
+                             g.DrawImage(bg, 0, 0, width, height);
+                         }
+                    }
+                    else
+                    {
+                        // Fallback Gradient
+                        using (var brush = new System.Drawing.Drawing2D.LinearGradientBrush(
+                            new Rectangle(0, 0, width, height), 
+                            Color.FromArgb(10, 10, 30), 
+                            Color.FromArgb(30, 0, 40), 
+                            45F))
+                        {
+                            g.FillRectangle(brush, 0, 0, width, height);
+                        }
                     }
                     
-                    // 2. Load Logo
+                    // 2. Logo REMOVED as requested
+                    /*
                     string logoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "esportlogo.png");
                     if (File.Exists(logoPath))
                     {
@@ -1831,8 +1851,10 @@ namespace EsportManager
                             g.DrawString(watermark, titleFont, titleBrush, (width - watermarkSize.Width) / 2, (height / 2) - 150);
                         }
                     }
+                    */
 
                     // 3. User Info
+                    // 3. User Info - Bottom Right
                     using (Font font = new Font("Segoe UI", 28, FontStyle.Bold))
                     using (Brush brush = new SolidBrush(Color.White))
                     {
@@ -1843,7 +1865,13 @@ namespace EsportManager
                         }
                         
                         SizeF textSize = g.MeasureString(text, font);
-                        g.DrawString(text, font, brush, (width - textSize.Width) / 2, (height / 2) + 100);
+                        
+                        // Calculated positions for Bottom-Left
+                        float x = 50;
+                        float y = height - textSize.Height - 150;
+                        
+                        // Draw with right alignment effectively
+                        g.DrawString(text, font, brush, x, y);
                     }
                     
                     string tempPath = Path.Combine(Path.GetTempPath(), "esport_wallpaper.png");
