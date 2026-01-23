@@ -3,7 +3,6 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import rateLimit from 'express-rate-limit';
 import { createServer } from 'http';
 import { Server } from 'socket.io'; // Socket.IO
 
@@ -79,34 +78,12 @@ matchReminderService.startScheduler();
 
 const PORT = process.env.PORT || 3000;
 
-// Import shared IP utility
-import { getClientIp } from './utils/ip.js';
-
-// Rate limiting - magasabb limit iskolai környezethez (NAT mögött sok felhasználó)
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 perc
-  max: 1500, // max 1000 request per IP (iskolai NAT miatt magasabb)
-  message: { error: 'Túl sok kérés, próbáld újra később' },
-  standardHeaders: true,
-  legacyHeaders: false,
-  // Use real client IP instead of proxy IP
-  keyGenerator: (req) => {
-    const clientIp = getClientIp(req);
-    // Log occasionally for debugging (only first request from each IP)
-    if (Math.random() < 0.01) { // 1% chance to log
-      console.log(`[RATE-LIMIT] Client IP: ${clientIp} (X-Forwarded-For: ${req.headers['x-forwarded-for'] || 'none'})`);
-    }
-    return clientIp;
-  },
-});
-
 // Middleware
 app.use(helmet());
 app.use(cors({
   origin: corsOrigins,
   credentials: true,
 }));
-app.use('/api/', limiter);
 app.use(morgan('dev'));
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ limit: '20mb', extended: true }));
