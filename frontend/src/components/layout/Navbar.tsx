@@ -144,13 +144,6 @@ export function Navbar() {
           >
             <MenuIcon size={20} />
           </button>
-
-          {/* Mobile Logo/Title when sidebar is hidden/overlay */}
-          <div className="md:hidden flex items-center gap-2">
-            <span className="text-lg font-bold text-white tracking-tight">
-              EsportHub
-            </span>
-          </div>
         </div>
 
         <div className="flex items-center gap-4">

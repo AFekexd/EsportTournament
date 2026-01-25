@@ -80,6 +80,7 @@ export function AdminPage() {
     registeredUsers: 0,
     createdTeams: 0,
     playedMatches: 0,
+    recentRegistrations: [] as any[],
   });
   const [showGameModal, setShowGameModal] = useState(false);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
@@ -386,20 +387,7 @@ export function AdminPage() {
                 </h3>
                 <div className="flex-1">
                   {(() => {
-                    const allEntries = tournaments.flatMap((t) =>
-                      (t.entries || []).map((e) => ({
-                        ...e,
-                        tournamentName: t.name,
-                        gameName: t.game?.name,
-                      })),
-                    );
-                    const recentEntries = allEntries
-                      .sort(
-                        (a, b) =>
-                          new Date(b.registeredAt).getTime() -
-                          new Date(a.registeredAt).getTime(),
-                      )
-                      .slice(0, 5);
+                    const recentEntries = stats.recentRegistrations || [];
 
                     if (recentEntries.length === 0) {
                       return (
@@ -422,6 +410,10 @@ export function AdminPage() {
                           const avatar = isSolo
                             ? entry.user?.avatarUrl
                             : entry.team?.logoUrl;
+
+                          const tournamentName =
+                            entry.tournament?.name || "Ismeretlen verseny";
+                          const gameName = entry.tournament?.game?.name;
 
                           return (
                             <div
@@ -447,7 +439,13 @@ export function AdminPage() {
                                     {name}
                                   </p>
                                   <p className="text-xs text-gray-500">
-                                    {entry.tournamentName}
+                                    {tournamentName}
+                                    {gameName && (
+                                      <span className="opacity-50">
+                                        {" "}
+                                        • {gameName}
+                                      </span>
+                                    )}
                                   </p>
                                 </div>
                               </div>

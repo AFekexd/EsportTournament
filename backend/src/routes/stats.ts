@@ -15,6 +15,7 @@ router.get('/', async (req, res, next) => {
       createdTeamsCount,
       playedMatchesCount,
       usersByRole,
+      recentRegistrations,
     ] = await Promise.all([
       // Count active tournaments (REGISTRATION or IN_PROGRESS)
       prisma.tournament.count({
@@ -43,6 +44,22 @@ router.get('/', async (req, res, next) => {
         _count: {
           role: true
         }
+      }),
+      // Get recent registrations
+      prisma.tournamentEntry.findMany({
+        take: 5,
+        orderBy: { registeredAt: 'desc' },
+        include: {
+          user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
+          team: { select: { id: true, name: true, logoUrl: true } },
+          tournament: { 
+             select: { 
+               id: true, 
+               name: true,
+               game: { select: { name: true } }
+             } 
+          }
+        }
       })
     ]);
 
@@ -56,7 +73,8 @@ router.get('/', async (req, res, next) => {
       registeredUsers: registeredUsersCount,
       createdTeams: createdTeamsCount,
       playedMatches: playedMatchesCount,
-      usersByRole: roleCounts
+      usersByRole: roleCounts,
+      recentRegistrations
     });
   } catch (error) {
     next(error);

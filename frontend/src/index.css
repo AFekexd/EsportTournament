@@ -100,8 +100,16 @@
   --color-error: hsl(0, 72%, 51%);
   --color-error-hover: hsl(0, 72%, 56%);
 
-  --gradient-primary: linear-gradient(135deg, var(--color-primary), var(--neon-pink));
-  --gradient-accent: linear-gradient(135deg, var(--neon-cyan), var(--color-accent));
+  --gradient-primary: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--neon-pink)
+  );
+  --gradient-accent: linear-gradient(
+    135deg,
+    var(--neon-cyan),
+    var(--color-accent)
+  );
 
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -142,11 +150,15 @@
   }
 
   .text-glow {
-    text-shadow: 0 0 10px hsla(var(--primary), 0.8), 0 0 20px hsla(var(--primary), 0.4);
+    text-shadow:
+      0 0 10px hsla(var(--primary), 0.8),
+      0 0 20px hsla(var(--primary), 0.4);
   }
 
   .text-glow-accent {
-    text-shadow: 0 0 10px hsla(var(--accent), 0.8), 0 0 20px hsla(var(--accent), 0.4);
+    text-shadow:
+      0 0 10px hsla(var(--accent), 0.8),
+      0 0 20px hsla(var(--accent), 0.4);
   }
 
   .neon-border {
@@ -292,7 +304,11 @@ a:hover {
 .page-title {
   font-size: 2.5rem;
   font-weight: 700;
-  background: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--neon-pink)));
+  background: linear-gradient(
+    135deg,
+    hsl(var(--accent)),
+    hsl(var(--neon-pink))
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -573,7 +589,6 @@ select {
 }
 
 @media (max-width: 640px) {
-
   .grid-4,
   .grid-3,
   .grid-2 {
@@ -582,26 +597,7 @@ select {
 }
 
 /* Flex utilities */
-.flex {
-  display: flex;
-}
-
-.flex-col {
-  flex-direction: column;
-}
-
-.items-center {
-  align-items: center;
-}
-
-.justify-center {
-  justify-content: center;
-}
-
-.justify-between {
-  justify-content: space-between;
-}
-
+/* Flex utilities removed (use Tailwind) */
 .gap-sm {
   gap: var(--spacing-sm);
 }
@@ -615,9 +611,7 @@ select {
 }
 
 /* Text utilities */
-.text-center {
-  text-align: center;
-}
+/* Text utilities */
 
 .text-muted {
   color: var(--color-text-muted);
@@ -691,7 +685,6 @@ select {
 }
 
 @keyframes pulse {
-
   0%,
   100% {
     opacity: 1;
@@ -703,14 +696,15 @@ select {
 }
 
 @keyframes glow {
-
   0%,
   100% {
     box-shadow: 0 0 5px var(--color-primary-glow);
   }
 
   50% {
-    box-shadow: 0 0 20px var(--color-primary-glow), 0 0 30px var(--color-primary-glow);
+    box-shadow:
+      0 0 20px var(--color-primary-glow),
+      0 0 30px var(--color-primary-glow);
   }
 }
 
@@ -732,10 +726,12 @@ select {
 
 /* Skeleton loading */
 .skeleton {
-  background: linear-gradient(90deg,
-      var(--color-bg-tertiary) 25%,
-      var(--color-bg-elevated) 50%,
-      var(--color-bg-tertiary) 75%);
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-tertiary) 25%,
+    var(--color-bg-elevated) 50%,
+    var(--color-bg-tertiary) 75%
+  );
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s infinite;
   border-radius: var(--radius-md);
