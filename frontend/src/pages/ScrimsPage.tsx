@@ -9,8 +9,6 @@ import {
   Clock,
   Filter,
   Plus,
-  Trophy,
-  Users,
   Search,
   MessageSquare,
 } from "lucide-react";
@@ -88,7 +86,7 @@ export function ScrimsPage() {
   }, [filterDate, searchGame]); // Re-fetch when date changes, client filter game for now or server? Server supports gameId but searching by name is easier on client if list is small.
   // Actually server supports gameId, let's keep client search by name for simplicity unless list grows huge.
 
-  const handleAccept = (scrim: Scrim) => {
+  const handleAccept = (_scrim: Scrim) => {
     // We need to know which team the user is accepting for.
     // Ideally open a modal to select team if user has multiple captain roles.
     // For MVP, if user is owner of exactly one team, auto-select?
