@@ -927,7 +927,16 @@ namespace EsportManager
                                 : "";
                             
                             Console.WriteLine($"[AUTH] ✗ Keycloak hiba: {error} - {errorDesc}");
-                            _statusLabel.Text = $"Hiba: {error}";
+                            
+                            // Barátságos hibaüzenetek
+                            if (error == "invalid_grant")
+                                _statusLabel.Text = "Hibás felhasználónév vagy jelszó.";
+                            else if (error == "account_disabled")
+                                _statusLabel.Text = "A fiókod le van tiltva. Keress fel egy admint.";
+                            else if (error == "unauthorized_client")
+                                _statusLabel.Text = "Jogosultsági hiba.";
+                            else
+                                _statusLabel.Text = $"Bejelentkezési hiba ({error})";
                         }
                     }
                     catch
@@ -942,14 +951,16 @@ namespace EsportManager
             {
                 Console.WriteLine($"[AUTH] ✗ Hálózati hiba: {ex.Message}");
                 Console.WriteLine($"[AUTH] ✗ InnerException: {ex.InnerException?.Message}");
-                _statusLabel.Text = $"Kapcsolódási hiba: {ex.Message}";
+                Console.WriteLine($"[AUTH] ✗ InnerException: {ex.InnerException?.Message}");
+                _statusLabel.Text = "Nem sikerült kapcsolódni a szerverhez.";
                 return false;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[AUTH] ✗ Váratlan hiba: {ex.GetType().Name}: {ex.Message}");
                 Console.WriteLine($"[AUTH] StackTrace: {ex.StackTrace}");
-                _statusLabel.Text = $"Hiba: {ex.Message}";
+                Console.WriteLine($"[AUTH] StackTrace: {ex.StackTrace}");
+                _statusLabel.Text = "Váratlan rendszerhiba történt.";
                 return false;
             }
         }
@@ -1327,10 +1338,9 @@ namespace EsportManager
                     {
                         if (!_isUnlocked)
                         {
-                            _isUnlocked = true;
-                            this.Hide();
-
-                            _notifyIcon.Visible = true;
+                            // Teljes feloldás inicializálással (TaskMgr engedélyezés, Timer létrehozás stb.)
+                            UnlockAndHide();
+                            // Üzenet felülírása
                             _notifyIcon.ShowBalloonTip(3000, "Esport Manager", "Verseny mód aktív.", ToolTipIcon.Info);
                         }
                         
@@ -1338,6 +1348,12 @@ namespace EsportManager
                         if (_sessionTimer != null && _sessionTimer.Enabled) _sessionTimer.Stop();
                         if (_notificationHideTimer != null && _notificationHideTimer.Enabled) _notificationHideTimer.Stop();
                         if (_notificationOverlay != null) _notificationOverlay.Hide();
+                        
+                        // Tálca szöveg frissítése
+                        if (_notifyIcon != null && _notifyIcon.Text != "Esport Manager - Verseny Mód")
+                        {
+                            _notifyIcon.Text = "Esport Manager - Verseny Mód";
+                        }
                     }
                     else if (status != null && status.Locked && _isUnlocked)
                     {
@@ -1359,6 +1375,19 @@ namespace EsportManager
                     }
                     else if (status != null && !status.Locked && _isUnlocked)
                     {
+                        // Ha verseny módból jövünk vissza, vagy áll az óra, indítsuk újra
+                        if (_sessionTimer == null)
+                        {
+                            _sessionTimer = new System.Windows.Forms.Timer { Interval = 1000 };
+                            _sessionTimer.Tick += SessionTimer_Tick;
+                        }
+                        
+                        if (!_sessionTimer.Enabled)
+                        {
+                            _sessionTimer.Start();
+                            Console.WriteLine("[SYNC] Session timer restarted.");
+                        }
+
                         // Sync time if provided
                         if (status.RemainingSeconds.HasValue)
                         {
@@ -1377,10 +1406,15 @@ namespace EsportManager
                     }
                 }
             }
-            catch (HttpRequestException ex)
+            catch (TaskCanceledException)
             {
-                // Ha a szerver nem elérhető, maradjon zárolva
-                Console.WriteLine($"Hálózati hiba: {ex.Message}");
+                // Timeout hibák logolása, de nem dobunk hibát
+                Console.WriteLine($"[SYNC] Időtúllépés a szerver elérésekor.");
+            }
+            catch (Exception ex)
+            {
+                // Minden egyéb hiba elkapása, hogy ne haljon meg az app
+                Console.WriteLine($"[SYNC] Hiba: {ex.Message}");
             }
         }
 

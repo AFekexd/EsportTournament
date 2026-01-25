@@ -161,7 +161,7 @@ export function TournamentBracket({
       setIsDragging(true);
       setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
     },
-    [pan]
+    [pan],
   );
 
   const handleMouseMove = useCallback(
@@ -172,10 +172,40 @@ export function TournamentBracket({
         y: e.clientY - dragStart.y,
       });
     },
-    [isDragging, dragStart]
+    [isDragging, dragStart],
   );
 
   const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  // Touch Support
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      if (e.touches.length !== 1) return;
+      setIsDragging(true);
+      setDragStart({
+        x: e.touches[0].clientX - pan.x,
+        y: e.touches[0].clientY - pan.y,
+      });
+    },
+    [pan],
+  );
+
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      if (!isDragging || e.touches.length !== 1) return;
+      // Prevent default to stop scrolling the whole page while dragging bracket
+      // e.preventDefault(); // Note: might need passive: false listener if we want to prevent default
+      setPan({
+        x: e.touches[0].clientX - dragStart.x,
+        y: e.touches[0].clientY - dragStart.y,
+      });
+    },
+    [isDragging, dragStart],
+  );
+
+  const handleTouchEnd = useCallback(() => {
     setIsDragging(false);
   }, []);
 
@@ -285,7 +315,7 @@ export function TournamentBracket({
 
       const upperMatches =
         tournament.matches?.filter(
-          (m) => m.bracketType === "UPPER" || !m.bracketType
+          (m) => m.bracketType === "UPPER" || !m.bracketType,
         ) || [];
       const lowerMatches =
         tournament.matches?.filter((m) => m.bracketType === "LOWER") || [];
@@ -326,7 +356,7 @@ export function TournamentBracket({
           // Assumption: Last match of upper bracket feeds into Grand Final
           const maxUpperRound = Math.max(...upperMatches.map((m) => m.round));
           const upperFinal = upperMatches.find(
-            (m) => m.round === maxUpperRound
+            (m) => m.round === maxUpperRound,
           ); // Assuming single final match
 
           if (upperFinal) {
@@ -346,7 +376,7 @@ export function TournamentBracket({
           if (lowerMatches.length > 0) {
             const maxLowerRound = Math.max(...lowerMatches.map((m) => m.round));
             const lowerFinal = lowerMatches.find(
-              (m) => m.round === maxLowerRound
+              (m) => m.round === maxLowerRound,
             );
 
             if (lowerFinal) {
@@ -391,13 +421,13 @@ export function TournamentBracket({
 
   // Group matches by bracket type and round
   const upperMatches = tournament.matches.filter(
-    (m) => m.bracketType === "UPPER" || !m.bracketType
+    (m) => m.bracketType === "UPPER" || !m.bracketType,
   );
   const lowerMatches = tournament.matches.filter(
-    (m) => m.bracketType === "LOWER"
+    (m) => m.bracketType === "LOWER",
   );
   const grandFinalMatches = tournament.matches.filter(
-    (m) => m.bracketType === "GRAND_FINAL"
+    (m) => m.bracketType === "GRAND_FINAL",
   );
   const isDoubleElimination = tournament.format === "DOUBLE_ELIMINATION";
 
@@ -409,7 +439,7 @@ export function TournamentBracket({
       byRound[match.round].push(match);
     });
     Object.values(byRound).forEach((arr) =>
-      arr.sort((a, b) => a.position - b.position)
+      arr.sort((a, b) => a.position - b.position),
     );
     return byRound;
   };
@@ -426,7 +456,7 @@ export function TournamentBracket({
   const getRoundName = (
     round: number,
     totalRounds: number,
-    isLower = false
+    isLower = false,
   ) => {
     if (isLower) return `Alsó ${round}. kör`;
     const left = totalRounds - rounds.indexOf(round);
@@ -460,6 +490,9 @@ export function TournamentBracket({
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         <div
           ref={contentRef}

@@ -170,7 +170,7 @@ function TournamentCard({ tournament }: { tournament: Tournament }) {
 export function TournamentsPage() {
   const dispatch = useAppDispatch();
   const { tournaments, isLoading, pagination } = useAppSelector(
-    (state) => state.tournaments
+    (state) => state.tournaments,
   );
   const { games } = useAppSelector((state) => state.games);
 
@@ -181,7 +181,7 @@ export function TournamentsPage() {
 
   useEffect(() => {
     dispatch(
-      fetchTournaments({ page: 1, status: statusFilter, gameId: gameFilter })
+      fetchTournaments({ page: 1, status: statusFilter, gameId: gameFilter }),
     );
     dispatch(fetchGames());
   }, [dispatch, statusFilter, gameFilter]);
@@ -228,7 +228,7 @@ export function TournamentsPage() {
         </div>
 
         {/* Filter Group */}
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative">
             <Filter
               size={16}
@@ -328,7 +328,7 @@ export function TournamentsPage() {
                     page: i + 1,
                     status: statusFilter,
                     gameId: gameFilter,
-                  })
+                  }),
                 )
               }
             >

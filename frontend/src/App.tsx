@@ -31,7 +31,7 @@ import RequestsPage from "./pages/admin/RequestsPage";
 import { AdminLogs } from "./components/admin/AdminLogs";
 import ReleasesPage from "./pages/admin/ReleasesPage";
 import { PuffLoader } from "react-spinners";
-import { Toaster } from "./components/ui/sonner";
+import { Toaster, toast } from "sonner";
 
 function AppContent() {
   const dispatch = useAppDispatch();
@@ -56,6 +56,10 @@ function AppContent() {
   useEffect(() => {
     if (error) {
       console.error("Auth error:", error);
+      // Csak akkor jelezzük, ha van konkrét hibaüzenet
+      if (error !== "Failed to initialize authentication service") {
+        toast.error(error, { duration: 5000 });
+      }
     }
   }, [error]);
 

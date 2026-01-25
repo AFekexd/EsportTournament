@@ -76,8 +76,28 @@ export async function apiFetchJson<T = any>(
     } catch (error) {
         // If JSON parsing failed and response was not ok, provide generic error
         if (!response.ok) {
+            // Check if this is a known handled error (401/403 already handled in apiFetch)
+            if (response.status !== 401 && response.status !== 403) {
+                // Show toast for 500s or other errors
+                if (response.status >= 500) {
+                     toast.error('Szerver hiba történt. Kérjük próbáld újra később.', { duration: 5000 });
+                } else {
+                     toast.error(`Hiba történt: ${response.status}`, { duration: 4000 });
+                }
+            }
             throw new Error(`HTTP error! status: ${response.status}`);
         }
+        
+        // Network errors or JSON parsing errors
+        const msg = error instanceof Error ? error.message : 'Ismeretlen hiba történt';
+        if (msg !== 'Unauthorized - Token expired' && msg !== 'Forbidden - Insufficient permissions') {
+             // Avoid double toasting handled errors
+             // Also check for network errors specifically?
+             if (msg.includes('NetworkError') || msg.includes('Failed to fetch')) {
+                 toast.error('Hálózati hiba. Ellenőrizd az internet kapcsolatod.', { duration: 5000 });
+             }
+        }
+        
         // Re-throw other errors (like JSON parsing errors for successful responses)
         throw error;
     }

@@ -173,9 +173,9 @@ export function Sidebar() {
       />
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex h-screen flex-col border-r border-white/5 bg-background/60 backdrop-blur-xl transition-all duration-300 ease-in-out ${
+        className={`fixed inset-y-0 left-0 z-50 flex h-screen flex-col border-r border-white/5 bg-background/95 backdrop-blur-xl transition-all duration-300 ease-in-out ${
           isOpen
-            ? "w-64 translate-x-0"
+            ? "w-full md:w-64 translate-x-0"
             : "-translate-x-full md:w-20 md:translate-x-0"
         }`}
       >
@@ -212,6 +212,12 @@ export function Sidebar() {
                 <Link
                   key={item.to}
                   to={item.to}
+                  onClick={() => {
+                    // Automatikus bezárás mobilon kattintáskor
+                    if (window.innerWidth < 768) {
+                      dispatch(toggleSidebar());
+                    }
+                  }}
                   className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
                     isActive(item.to)
                       ? "bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
@@ -242,6 +248,11 @@ export function Sidebar() {
                     <Link
                       key={item.to}
                       to={item.to}
+                      onClick={() => {
+                        if (window.innerWidth < 768) {
+                          dispatch(toggleSidebar());
+                        }
+                      }}
                       className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
                         isActive(item.to)
                           ? "bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
@@ -280,9 +291,45 @@ export function Sidebar() {
             </div>
           )}
 
+          {/* Mobile User Profile Section */}
+          {isAuthenticated && user && (
+            <div
+              className={`mt-auto mb-2 border-t border-white/5 pt-4 md:hidden ${isOpen ? "mx-3" : "hidden"}`}
+            >
+              <Link
+                to="/profile"
+                className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors"
+              >
+                <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border border-white/10">
+                  {user.avatarUrl ? (
+                    <img
+                      src={user.avatarUrl}
+                      alt={user.username}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-zinc-800 text-sm font-bold text-white">
+                      {(user.displayName || user.username)
+                        .charAt(0)
+                        .toUpperCase()}
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-col overflow-hidden">
+                  <span className="truncate text-sm font-medium text-white">
+                    {user.displayName || user.username}
+                  </span>
+                  <span className="truncate text-xs text-gray-400">
+                    {user.role}
+                  </span>
+                </div>
+              </Link>
+            </div>
+          )}
+
           {/* Version Footer */}
           <div
-            className={`mt-auto border-t border-white/5 transition-all duration-300 ${
+            className={`border-t border-white/5 transition-all duration-300 ${
               isOpen
                 ? "mx-3 px-6 pb-6 pt-4"
                 : "mx-0 px-2 py-4 flex justify-center"

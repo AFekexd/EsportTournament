@@ -56,7 +56,7 @@ class AuthService {
             return authenticated;
         } catch (error) {
             console.error('Keycloak initialization failed:', error);
-            const errorMessage = error instanceof Error ? error.message : 'Failed to initialize authentication service';
+            const errorMessage = error instanceof Error ? error.message : 'Nem sikerült inicializálni a hitelesítést.';
             store.dispatch(setError(errorMessage));
             this._initialized = false;
             return false;
@@ -260,7 +260,7 @@ class AuthService {
             console.error('Error syncing user with backend:', error);
             // Don't throw - allow the app to continue even if sync fails
             // The user is still authenticated with Keycloak
-            store.dispatch(setError('Failed to sync user data. Some features may be limited.'));
+            store.dispatch(setError('Nem sikerült szinkronizálni a felhasználói adatokat. Egyes funkciók korlátozva lehetnek.'));
         }
     }
 }

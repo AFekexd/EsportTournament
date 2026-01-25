@@ -59,7 +59,7 @@ export function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
       <div className="bg-[#1a1b26] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-white/5">
+        <div className="flex items-center justify-between p-4 md:p-6 border-b border-white/5">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
               <GitCommit size={20} />
@@ -82,7 +82,7 @@ export function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-8 custom-scrollbar">
           {loading ? (
             <div className="py-12 text-center text-gray-400">Betöltés...</div>
           ) : changelogs.length === 0 ? (
@@ -115,8 +115,8 @@ export function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
                         log.type === "MAJOR"
                           ? "bg-red-500/20 text-red-400"
                           : log.type === "MINOR"
-                          ? "bg-blue-500/20 text-blue-400"
-                          : "bg-gray-500/20 text-gray-400"
+                            ? "bg-blue-500/20 text-blue-400"
+                            : "bg-gray-500/20 text-gray-400"
                       }`}
                     >
                       {log.type}

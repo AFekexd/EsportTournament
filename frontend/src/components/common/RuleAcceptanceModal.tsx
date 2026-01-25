@@ -29,7 +29,7 @@ export function RuleAcceptanceModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="sticky top-0 bg-[#1a1b26] border-b border-white/10 p-6 flex items-center justify-between z-10">
+        <div className="sticky top-0 bg-[#1a1b26] border-b border-white/10 p-4 md:p-6 flex items-center justify-between z-10 w-full">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-primary/10 rounded-lg text-primary">
               <ScrollText size={24} />
@@ -122,7 +122,7 @@ export function RuleAcceptanceModal({
                 </span>
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex flex-col-reverse md:flex-row gap-3">
                 <Button
                   variant="ghost"
                   className="flex-1 text-gray-400 hover:text-white hover:bg-white/5"
@@ -131,7 +131,7 @@ export function RuleAcceptanceModal({
                   Mégse
                 </Button>
                 <Button
-                  className="flex-1 bg-primary hover:bg-primary/90 text-white font-bold"
+                  className="flex-1 bg-primary hover:bg-primary/90 text-white font-bold whitespace-normal h-auto py-3 md:py-2"
                   onClick={onAccept}
                   disabled={!accepted}
                 >

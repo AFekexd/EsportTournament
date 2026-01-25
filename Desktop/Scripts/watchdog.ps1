@@ -54,6 +54,12 @@ if (-not (Test-Path $AppPath)) {
 
 Log-Message "Monitoring $AppName..."
 
+# Clear any stale stop signal from previous sessions
+if (Test-Path "$env:ProgramData\EsportManager_Stop.signal") {
+    Log-Message "Cleaning up stale stop signal from previous session."
+    Remove-Item "$env:ProgramData\EsportManager_Stop.signal" -ErrorAction SilentlyContinue
+}
+
 while ($true) {
     if (Test-Path "$env:ProgramData\EsportManager_Stop.signal") {
         Log-Message "Stop signal detected. Exiting watchdog."

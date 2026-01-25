@@ -19,6 +19,8 @@ export interface Computer {
     row: number;
     position: number;
     isActive: boolean;
+    isLocked: boolean;
+    isCompetitionMode: boolean;
     status: ComputerStatus;
     specs?: ComputerSpecs;
     installedGames: string[];

@@ -73,7 +73,7 @@ export function Navbar() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => { },
+    onConfirm: () => {},
     variant: "primary",
   });
 
@@ -135,16 +135,22 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 w-full">
-      <div className="relative flex h-16 items-center justify-between border-b border-white/5 bg-background/60 px-6 backdrop-blur-xl supports-[backdrop-filter]:bg-background/20">
+      <div className="relative flex h-16 items-center justify-between border-b border-white/5 bg-background/60 px-4 md:px-6 backdrop-blur-xl supports-[backdrop-filter]:bg-background/20">
         <div className="flex items-center gap-4">
           <button
-            className={`ml-auto flex md:invisible  h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-white/10 hover:text-white ${!isOpen && "mx-auto"
-              }`}
+            className={`flex md:hidden h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-white/10 hover:text-white`}
             onClick={() => dispatch(toggleSidebar())}
             aria-label={isOpen ? "Collapse sidebar" : "Expand sidebar"}
           >
-            {!isOpen ? <MenuIcon /> : null}
+            <MenuIcon size={20} />
           </button>
+
+          {/* Mobile Logo/Title when sidebar is hidden/overlay */}
+          <div className="md:hidden flex items-center gap-2">
+            <span className="text-lg font-bold text-white tracking-tight">
+              EsportHub
+            </span>
+          </div>
         </div>
 
         <div className="flex items-center gap-4">
@@ -195,8 +201,9 @@ export function Navbar() {
                           {notifications.slice(0, 5).map((notification) => (
                             <div
                               key={notification.id}
-                              className={`relative group transition-colors hover:bg-white/5 ${!notification.read ? "bg-primary/5" : ""
-                                }`}
+                              className={`relative group transition-colors hover:bg-white/5 ${
+                                !notification.read ? "bg-primary/5" : ""
+                              }`}
                             >
                               <Link
                                 to={notification.link || "/notifications"}
@@ -210,23 +217,25 @@ export function Navbar() {
                               >
                                 <div className="flex gap-3">
                                   <div
-                                    className={`mt-1 h-2 w-2 flex-shrink-0 rounded-full ${!notification.read
-                                      ? "bg-primary"
-                                      : "bg-gray-600"
-                                      }`}
+                                    className={`mt-1 h-2 w-2 flex-shrink-0 rounded-full ${
+                                      !notification.read
+                                        ? "bg-primary"
+                                        : "bg-gray-600"
+                                    }`}
                                   />
                                   <div className="flex-1 min-w-0">
                                     <p
-                                      className={`text-sm ${!notification.read
-                                        ? "text-white font-medium"
-                                        : "text-gray-400"
-                                        } pr-6 break-words`}
+                                      className={`text-sm ${
+                                        !notification.read
+                                          ? "text-white font-medium"
+                                          : "text-gray-400"
+                                      } pr-6 break-words`}
                                     >
                                       {notification.message}
                                     </p>
                                     <p className="text-xs text-gray-500 mt-1">
                                       {new Date(
-                                        notification.createdAt
+                                        notification.createdAt,
                                       ).toLocaleString("hu-HU", {
                                         month: "short",
                                         day: "numeric",
@@ -271,14 +280,14 @@ export function Navbar() {
                   to="/profile"
                   className="flex items-center gap-3 transition-opacity hover:opacity-80"
                 >
-                  <div className="hidden sm:flex sm:flex-col sm:items-end">
+                  <div className="hidden md:flex md:flex-col md:items-end">
                     <span className="text-sm font-medium text-white/90">
                       {user.displayName || user.username}
                     </span>
                     {user.role !== "STUDENT" && (
                       <span
                         className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${getRoleColor(
-                          user.role
+                          user.role,
                         )}`}
                       >
                         {getRoleIcon(user.role)}
