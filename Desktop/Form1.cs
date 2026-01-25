@@ -46,6 +46,7 @@ namespace EsportManager
         private NotifyIcon _notifyIcon = null!;
         private ContextMenuStrip _contextMenuStrip = null!;
         private Label _clockLabel = null!;
+        private Label _machineNameLabel = null!; // Display Registered Name
         private System.Windows.Forms.Timer _clockTimer = null!;
         
         // Session
@@ -203,6 +204,18 @@ namespace EsportManager
                     if (msg.Contains("not registered", StringComparison.OrdinalIgnoreCase))
                     {
                         needsRegistration = true;
+                    }
+                }
+
+                if (doc.RootElement.TryGetProperty("MachineName", out var nameProp))
+                {
+                    string name = nameProp.GetString() ?? "";
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                         // Ensure UI thread
+                         this.Invoke((MethodInvoker)delegate {
+                             if (_machineNameLabel != null) _machineNameLabel.Text = name;
+                         });
                     }
                 }
 
@@ -438,6 +451,18 @@ namespace EsportManager
             _clockLabel.Location = new Point(Screen.PrimaryScreen?.Bounds.Width ?? 1920 - 200, 30);
             
             _lockedPanel.Controls.Add(_clockLabel);
+
+            // Machine Name Label (Top-Left)
+            _machineNameLabel = new Label
+            {
+                Text = "", // Will be populated by status check
+                Font = new Font("Segoe UI", 24, FontStyle.Bold),
+                ForeColor = Color.White,
+                AutoSize = true,
+                BackColor = Color.Transparent,
+                Location = new Point(30, 30) // Top-Left corner
+            };
+            _lockedPanel.Controls.Add(_machineNameLabel);
 
             // Clock Timer
             _clockTimer = new System.Windows.Forms.Timer { Interval = 1000 };
@@ -1334,6 +1359,12 @@ namespace EsportManager
                     string jsonResponse = await response.Content.ReadAsStringAsync();
                     var status = JsonSerializer.Deserialize<ServerStatus>(jsonResponse);
 
+                    if (status != null && !string.IsNullOrEmpty(status.MachineName))
+                    {
+                        if (_machineNameLabel.Text != status.MachineName)
+                            _machineNameLabel.Text = status.MachineName;
+                    }
+
                     if (status != null && status.IsCompetitionMode)
                     {
                         if (!_isUnlocked)
@@ -1750,6 +1781,7 @@ namespace EsportManager
             public string? Message { get; set; }
             public int? RemainingSeconds { get; set; }
             public bool IsCompetitionMode { get; set; }
+            public string? MachineName { get; set; }
         }
 
         private class StartSessionResponse

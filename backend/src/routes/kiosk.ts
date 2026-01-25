@@ -307,12 +307,12 @@ kioskRouter.get('/status/:machineId', async (req, res) => {
         }).catch(e => console.error("Failed to update heartbeat", e));
 
         if (machine.isLocked) {
-            res.json({ Locked: true, Message: "Admin locked this machine" });
+            res.json({ Locked: true, Message: "Admin locked this machine", MachineName: machine.name });
             return;
         }
 
         if (machine.isCompetitionMode) {
-            res.json({ Locked: false, IsCompetitionMode: true, Message: "Competition Mode" });
+            res.json({ Locked: false, IsCompetitionMode: true, Message: "Competition Mode", MachineName: machine.name });
             return;
         }
 
@@ -330,7 +330,7 @@ kioskRouter.get('/status/:machineId', async (req, res) => {
 
             if (remaining <= 0 && !isUnlimited) {
                 // Time up!
-                res.json({ Locked: true, Message: "Time expired" });
+                res.json({ Locked: true, Message: "Time expired", MachineName: machine.name });
             } else {
                 // CLAMP to booking end time (CHAINED)
                 // If booking ends in 5 mins, but balance is 1 hour, we must return 5 mins.
@@ -376,11 +376,11 @@ kioskRouter.get('/status/:machineId', async (req, res) => {
                         const finalRemaining = bookingTimeLeft;
 
                         if (finalRemaining <= 0) {
-                            res.json({ Locked: true, Message: "Booking time expired" });
+                            res.json({ Locked: true, Message: "Booking time expired", MachineName: machine.name });
                             return;
                         }
 
-                        res.json({ Locked: false, RemainingSeconds: finalRemaining });
+                        res.json({ Locked: false, RemainingSeconds: finalRemaining, MachineName: machine.name });
                         return;
                     } else {
                         // No active booking covers NOW? 
@@ -394,16 +394,16 @@ kioskRouter.get('/status/:machineId', async (req, res) => {
                         // Original logic: res.json({ Locked: false, RemainingSeconds: remaining });
 
                         // But if we want to enforce booking times:
-                        res.json({ Locked: true, Message: "No active booking found" });
+                        res.json({ Locked: true, Message: "No active booking found", MachineName: machine.name });
                         return;
                     }
                 }
 
-                res.json({ Locked: false, RemainingSeconds: remaining });
+                res.json({ Locked: false, RemainingSeconds: remaining, MachineName: machine.name });
             }
         } else {
             // No active session, machine should be locked
-            res.json({ Locked: true, Message: "No active session" });
+            res.json({ Locked: true, Message: "No active session", MachineName: machine.name });
         }
 
     } catch (error) {
