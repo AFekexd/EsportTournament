@@ -409,7 +409,9 @@ export const ModelName = {
   EmailLog: 'EmailLog',
   DiscordLog: 'DiscordLog',
   MatchCheckIn: 'MatchCheckIn',
-  MatchPrediction: 'MatchPrediction'
+  MatchPrediction: 'MatchPrediction',
+  Scrim: 'Scrim',
+  NewsPost: 'NewsPost'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -425,7 +427,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "team" | "teamMember" | "game" | "tournament" | "tournamentEntry" | "match" | "gameStats" | "rank" | "userRank" | "notification" | "event" | "discordSettings" | "computer" | "booking" | "session" | "log" | "waitlist" | "bookingSchedule" | "clientVersion" | "changeRequest" | "changelog" | "emailLog" | "discordLog" | "matchCheckIn" | "matchPrediction"
+    modelProps: "user" | "team" | "teamMember" | "game" | "tournament" | "tournamentEntry" | "match" | "gameStats" | "rank" | "userRank" | "notification" | "event" | "discordSettings" | "computer" | "booking" | "session" | "log" | "waitlist" | "bookingSchedule" | "clientVersion" | "changeRequest" | "changelog" | "emailLog" | "discordLog" | "matchCheckIn" | "matchPrediction" | "scrim" | "newsPost"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2353,6 +2355,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Scrim: {
+      payload: Prisma.$ScrimPayload<ExtArgs>
+      fields: Prisma.ScrimFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ScrimFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScrimPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ScrimFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScrimPayload>
+        }
+        findFirst: {
+          args: Prisma.ScrimFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScrimPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ScrimFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScrimPayload>
+        }
+        findMany: {
+          args: Prisma.ScrimFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScrimPayload>[]
+        }
+        create: {
+          args: Prisma.ScrimCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScrimPayload>
+        }
+        createMany: {
+          args: Prisma.ScrimCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ScrimCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScrimPayload>[]
+        }
+        delete: {
+          args: Prisma.ScrimDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScrimPayload>
+        }
+        update: {
+          args: Prisma.ScrimUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScrimPayload>
+        }
+        deleteMany: {
+          args: Prisma.ScrimDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ScrimUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ScrimUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScrimPayload>[]
+        }
+        upsert: {
+          args: Prisma.ScrimUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScrimPayload>
+        }
+        aggregate: {
+          args: Prisma.ScrimAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateScrim>
+        }
+        groupBy: {
+          args: Prisma.ScrimGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ScrimGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ScrimCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ScrimCountAggregateOutputType> | number
+        }
+      }
+    }
+    NewsPost: {
+      payload: Prisma.$NewsPostPayload<ExtArgs>
+      fields: Prisma.NewsPostFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.NewsPostFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsPostPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.NewsPostFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsPostPayload>
+        }
+        findFirst: {
+          args: Prisma.NewsPostFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsPostPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.NewsPostFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsPostPayload>
+        }
+        findMany: {
+          args: Prisma.NewsPostFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsPostPayload>[]
+        }
+        create: {
+          args: Prisma.NewsPostCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsPostPayload>
+        }
+        createMany: {
+          args: Prisma.NewsPostCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.NewsPostCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsPostPayload>[]
+        }
+        delete: {
+          args: Prisma.NewsPostDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsPostPayload>
+        }
+        update: {
+          args: Prisma.NewsPostUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsPostPayload>
+        }
+        deleteMany: {
+          args: Prisma.NewsPostDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.NewsPostUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.NewsPostUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsPostPayload>[]
+        }
+        upsert: {
+          args: Prisma.NewsPostUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsPostPayload>
+        }
+        aggregate: {
+          args: Prisma.NewsPostAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateNewsPost>
+        }
+        groupBy: {
+          args: Prisma.NewsPostGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NewsPostGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.NewsPostCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NewsPostCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2477,6 +2627,7 @@ export const TournamentScalarFieldEnum = {
   name: 'name',
   description: 'description',
   imageUrl: 'imageUrl',
+  streamUrl: 'streamUrl',
   gameId: 'gameId',
   format: 'format',
   status: 'status',
@@ -2813,6 +2964,39 @@ export const MatchPredictionScalarFieldEnum = {
 } as const
 
 export type MatchPredictionScalarFieldEnum = (typeof MatchPredictionScalarFieldEnum)[keyof typeof MatchPredictionScalarFieldEnum]
+
+
+export const ScrimScalarFieldEnum = {
+  id: 'id',
+  requesterTeamId: 'requesterTeamId',
+  gameId: 'gameId',
+  opponentTeamId: 'opponentTeamId',
+  scheduledAt: 'scheduledAt',
+  durationMinutes: 'durationMinutes',
+  notes: 'notes',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ScrimScalarFieldEnum = (typeof ScrimScalarFieldEnum)[keyof typeof ScrimScalarFieldEnum]
+
+
+export const NewsPostScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  slug: 'slug',
+  content: 'content',
+  excerpt: 'excerpt',
+  coverImage: 'coverImage',
+  isPublished: 'isPublished',
+  publishedAt: 'publishedAt',
+  authorId: 'authorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NewsPostScalarFieldEnum = (typeof NewsPostScalarFieldEnum)[keyof typeof NewsPostScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -3171,6 +3355,20 @@ export type ListEnumDiscordLogStatusFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
+ * Reference to a field of type 'ScrimStatus'
+ */
+export type EnumScrimStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ScrimStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ScrimStatus[]'
+ */
+export type ListEnumScrimStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ScrimStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -3304,6 +3502,8 @@ export type GlobalOmitConfig = {
   discordLog?: Prisma.DiscordLogOmit
   matchCheckIn?: Prisma.MatchCheckInOmit
   matchPrediction?: Prisma.MatchPredictionOmit
+  scrim?: Prisma.ScrimOmit
+  newsPost?: Prisma.NewsPostOmit
 }
 
 /* Types for Logging */

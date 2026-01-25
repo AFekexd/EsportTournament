@@ -147,3 +147,13 @@ export type MatchCheckIn = Prisma.MatchCheckInModel
  * 
  */
 export type MatchPrediction = Prisma.MatchPredictionModel
+/**
+ * Model Scrim
+ * 
+ */
+export type Scrim = Prisma.ScrimModel
+/**
+ * Model NewsPost
+ * 
+ */
+export type NewsPost = Prisma.NewsPostModel

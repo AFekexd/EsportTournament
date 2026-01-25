@@ -469,64 +469,96 @@ export function TournamentDetailPage() {
 
   return (
     <div className="min-h-screen pb-12">
-      {/* Hero Section */}
-      <div className="relative min-h-[300px] md:min-h-[400px] h-auto w-full mb-8 group">
-        <div className="absolute inset-0 overflow-hidden">
+      <div className="relative min-h-[350px] md:min-h-[450px] w-full mb-8 group">
+        <div className="absolute inset-0 overflow-hidden rounded-b-3xl">
           {currentTournament.imageUrl ? (
             <img
               src={currentTournament.imageUrl}
               alt={currentTournament.name}
-              className="w-full h-full object-cover filter brightness-[0.3] group-hover:brightness-[0.4] transition-all duration-700"
+              className="w-full h-full object-cover filter brightness-[0.4] group-hover:brightness-[0.45] transition-all duration-700"
             />
           ) : currentTournament.game?.imageUrl ? (
             <img
               src={currentTournament.game.imageUrl}
               alt={currentTournament.game.name}
-              className="w-full h-full object-cover filter brightness-[0.3] group-hover:brightness-[0.4] transition-all duration-700"
+              className="w-full h-full object-cover filter brightness-[0.4] group-hover:brightness-[0.45] transition-all duration-700"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-gray-900 to-black" />
+            <div className="w-full h-full bg-gradient-to-br from-[#0f1016] to-[#1a1b26]" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0f1016] via-[#0f1016]/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0f1016] via-[#0f1016]/60 to-transparent" />
         </div>
 
-        <div className="container mx-auto px-4 h-full relative flex flex-col justify-end py-12 md:pb-12">
-          {/* Badges - Desktop: Absolute bottom left */}
-          <div className="hidden md:flex absolute bottom-4 left-4 flex-wrap items-center gap-3 z-10">
-            <span
-              className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${
-                statusLabels[currentTournament.status]?.class ||
-                "bg-gray-500/20 text-gray-400 border-gray-500/50"
-              }`}
-            >
-              <StatusIcon size={14} />
-              {statusLabels[currentTournament.status]?.label ||
-                currentTournament.status}
-            </span>
-            {currentTournament.game && (
-              <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-white border border-white/10 backdrop-blur-md">
-                {currentTournament.game.name}
-              </span>
+        <div className="container mx-auto px-4 h-full relative flex flex-col justify-end pb-8">
+          <Link
+            to="/tournaments"
+            className="absolute top-8 left-4 md:left-4 inline-flex items-center gap-2 text-white/70 hover:text-white bg-black/40 hover:bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/5 transition-all text-sm font-medium z-20"
+          >
+            <ArrowLeft size={16} />
+            Vissza a versenyekhez
+          </Link>
+
+          {/* Top Right Actions */}
+          <div className="absolute top-8 right-4 md:right-4 flex items-center gap-2 z-20">
+            {user?.role === "ADMIN" && (
+              <Button
+                onClick={() => setShowStatusModal(true)}
+                className="bg-black/40 hover:bg-black/60 border border-white/10 text-white font-medium h-10 w-10 p-0 rounded-full backdrop-blur-md transition-all"
+                title="Státusz módosítása"
+              >
+                <Edit2 size={16} />
+              </Button>
             )}
-            <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-purple-500/20 text-purple-400 border border-purple-500/50 backdrop-blur-md">
-              <Users size={14} />
-              {requiredTeamSize}v{requiredTeamSize}
-            </span>
+
+            <Button
+              onClick={() => {
+                const shareUrl = `${window.location.protocol}//${window.location.hostname}/share/tournaments/${currentTournament.id}`;
+                navigator.clipboard.writeText(shareUrl);
+                toast.success("Link másolva!");
+              }}
+              className="bg-black/40 hover:bg-black/60 border border-white/10 text-white font-medium h-10 w-10 p-0 rounded-full backdrop-blur-md transition-all"
+              title="Megosztás"
+            >
+              <Share2 size={16} />
+            </Button>
+
+            {(user?.role === "ADMIN" || user?.role === "ORGANIZER") && (
+              <Button
+                className="bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 h-10 w-10 p-0 rounded-full backdrop-blur-md transition-all"
+                onClick={() => {
+                  setConfirmModal({
+                    isOpen: true,
+                    title: "Verseny törlése",
+                    message: "Biztosan törölni szeretnéd ezt a versenyt?",
+                    variant: "danger",
+                    confirmLabel: "Törlés",
+                    onConfirm: async () => {
+                      try {
+                        await dispatch(
+                          deleteTournament(currentTournament.id),
+                        ).unwrap();
+                        toast.success("Törölve");
+                        navigate("/tournaments");
+                      } catch (error) {
+                        toast.error("Hiba a törléskor");
+                      }
+                    },
+                  });
+                }}
+                title="Törlés"
+              >
+                <Trash2 size={16} />
+              </Button>
+            )}
           </div>
 
-          <button
-            className="absolute top-2 md:top-8 left-5 md:left-4 flex items-center gap-2 text-gray-400 hover:text-white transition-colors bg-black/30 hover:bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full border border-white/5"
-            onClick={() => navigate("/tournaments")}
-          >
-            <ArrowLeft size={18} />
-            Vissza
-          </button>
-
-          <div className="flex flex-col md:flex-row md:items-end gap-8 mt-16 md:mt-4">
-            <div className="flex-grow space-y-4">
-              <div className="flex md:!hidden flex-wrap items-center gap-3 mb-2">
+          <div className="flex flex-col lg:flex-row lg:items-end gap-6 mt-20">
+            {/* Left Content */}
+            <div className="flex-grow space-y-6">
+              {/* Badges Row */}
+              <div className="flex flex-wrap items-center gap-3">
                 <span
-                  className={`flex  items-center gap-2 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${
+                  className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md shadow-lg ${
                     statusLabels[currentTournament.status]?.class ||
                     "bg-gray-500/20 text-gray-400 border-gray-500/50"
                   }`}
@@ -535,34 +567,48 @@ export function TournamentDetailPage() {
                   {statusLabels[currentTournament.status]?.label ||
                     currentTournament.status}
                 </span>
+
                 {currentTournament.game && (
-                  <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-white border border-white/10 backdrop-blur-md">
+                  <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-white border border-white/10 backdrop-blur-md shadow-lg">
                     {currentTournament.game.name}
                   </span>
                 )}
-                <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-purple-500/20 text-purple-400 border border-purple-500/50 backdrop-blur-md">
+
+                <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 backdrop-blur-md shadow-lg">
                   <Users size={14} />
                   {requiredTeamSize}v{requiredTeamSize}
                 </span>
+
+                {currentTournament.requireRank && (
+                  <span
+                    className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 backdrop-blur-md shadow-lg"
+                    title="Kötelező rangot beállítani a profilban"
+                  >
+                    <Shield size={14} />
+                    Rank limitált
+                  </span>
+                )}
               </div>
 
-              <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-                {currentTournament.name}
-              </h1>
+              <div>
+                <h1 className="text-4xl md:text-6xl font-black text-white leading-tight drop-shadow-2xl tracking-tight mb-4">
+                  {currentTournament.name}
+                </h1>
 
-              {currentTournament.description && (
-                <p className="text-lg text-gray-300 max-w-2xl leading-relaxed">
-                  {currentTournament.description}
-                </p>
-              )}
+                {currentTournament.description && (
+                  <p className="text-lg text-gray-300 max-w-3xl leading-relaxed drop-shadow-md">
+                    {currentTournament.description}
+                  </p>
+                )}
+              </div>
 
-              <div className="flex flex-col gap-2 pt-2">
-                <div className="flex flex-wrap gap-6 text-sm text-gray-300">
-                  <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-6">
+                {/* Date & Participants */}
+                <div className="flex flex-wrap gap-x-8 gap-y-2 text-sm md:text-base font-medium text-gray-300">
+                  <div className="flex items-center gap-2.5">
                     <Calendar size={18} className="text-primary" />
-                    <span>
+                    <span className="drop-shadow-md">
                       {startDate.toLocaleDateString("hu-HU", {
-                        year: "numeric",
                         month: "long",
                         day: "numeric",
                         hour: "2-digit",
@@ -570,9 +616,9 @@ export function TournamentDetailPage() {
                       })}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2.5">
                     <Users size={18} className="text-primary" />
-                    <span>
+                    <span className="drop-shadow-md">
                       {currentTournament.participantsCount ??
                         (currentTournament._count?.entries || 0)}{" "}
                       / {currentTournament.maxTeams} résztvevő
@@ -580,98 +626,66 @@ export function TournamentDetailPage() {
                   </div>
                 </div>
 
-                {currentTournament.requireRank && (
-                  <div className="flex items-center gap-2 text-yellow-500 bg-yellow-500/10 px-3 py-2 rounded-lg border border-yellow-500/20 w-fit">
-                    <Shield size={16} />
-                    <span className="text-sm font-semibold">
-                      Kötelező rangot beállítani a profilban a részvételhez!
-                    </span>
-                  </div>
-                )}
+                {/* CTA Buttons - Inline with stats or below */}
+                {isRegistrationOpen &&
+                  isAuthenticated &&
+                  !isAlreadyRegistered && (
+                    <Button
+                      onClick={() => setShowRegisterModal(true)}
+                      className="bg-primary hover:bg-primary-hover text-white font-bold px-8 py-2.5 rounded-xl shadow-lg shadow-primary/20 hover:scale-105 transition-all"
+                    >
+                      <UserPlus size={18} className="mr-2" />
+                      Nevezés
+                    </Button>
+                  )}
+
+                {isRegistrationOpen &&
+                  isAuthenticated &&
+                  isAlreadyRegistered &&
+                  myEntry && (
+                    <Button
+                      onClick={() => handleUnregister(myEntry)}
+                      className="bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 font-bold px-8 py-2.5 rounded-xl hover:scale-105 transition-all"
+                    >
+                      <LogOut size={18} className="mr-2" />
+                      Leiratkozás
+                    </Button>
+                  )}
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 min-w-[200px] mb-5">
-              {isRegistrationOpen &&
-                isAuthenticated &&
-                !isAlreadyRegistered && (
-                  <Button
-                    onClick={() => setShowRegisterModal(true)}
-                    className="w-full bg-primary hover:bg-primary/80 text-white"
-                  >
-                    <UserPlus size={18} />
-                    Regisztráció
-                  </Button>
-                )}
-
-              {isRegistrationOpen &&
-                isAuthenticated &&
-                isAlreadyRegistered &&
-                myEntry && (
-                  <Button
-                    onClick={() => handleUnregister(myEntry)}
-                    className="w-full bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30"
-                  >
-                    <LogOut size={18} />
-                    Leiratkozás
-                  </Button>
-                )}
-
-              {user?.role === "ADMIN" && (
-                <Button
-                  onClick={() => setShowStatusModal(true)}
-                  className="w-full bg-white/10 hover:bg-white/20 border-white/10"
-                >
-                  Státusz módosítása
-                </Button>
-              )}
-
-              <Button
-                onClick={() => {
-                  const shareUrl = `${window.location.protocol}//${window.location.hostname}/share/tournaments/${currentTournament.id}`;
-                  navigator.clipboard.writeText(shareUrl);
-                  toast.success("Megosztási link másolva a vágólapra!");
-                }}
-                className="w-full bg-white/10 hover:bg-white/20 border-white/10"
-              >
-                <Share2 size={18} />
-                Megosztás
-              </Button>
-
-              {(user?.role === "ADMIN" || user?.role === "ORGANIZER") && (
-                <Button
-                  className="btn btn-secondary w-full bg-red-500/10 hover:bg-red-500/20 text-red-500 hover:text-red-400 border-red-500/20"
-                  onClick={() => {
-                    setConfirmModal({
-                      isOpen: true,
-                      title: "Verseny törlése",
-                      message:
-                        "Biztosan törölni szeretnéd ezt a versenyt? Ez a művelet nem visszavonható, és minden hozzá tartozó adat (meccsek, eredmények) törlődni fog!",
-                      variant: "danger",
-                      confirmLabel: "Törlés véglegesen",
-                      onConfirm: async () => {
-                        try {
-                          await dispatch(
-                            deleteTournament(currentTournament.id),
-                          ).unwrap();
-                          toast.success("Verseny sikeresen törölve");
-                          navigate("/tournaments");
-                        } catch (error) {
-                          console.error("Failed to delete tournament:", error);
-                          toast.error("Nem sikerült törölni a versenyt");
-                        }
-                      },
-                    });
-                  }}
-                >
-                  <Trash2 size={18} />
-                  Verseny törlése
-                </Button>
-              )}
-            </div>
+            {/* Empty Right Column (used to be buttons) - kept for flex spacing if needed, or removed */}
+            <div className="hidden lg:block w-0"></div>
           </div>
         </div>
       </div>
+
+      {/* Stream Section */}
+      {currentTournament.streamUrl && (
+        <div className="container mx-auto px-4 mb-4 animate-fade-in-up">
+          <div className="relative w-full pt-[56.25%] bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-primary/10">
+            {currentTournament.streamUrl.includes("twitch.tv") ? (
+              <iframe
+                src={`https://player.twitch.tv/?channel=${currentTournament.streamUrl.split("/").pop()}&parent=${window.location.hostname}`}
+                className="absolute top-0 left-0 w-full h-full"
+                allowFullScreen
+              ></iframe>
+            ) : currentTournament.streamUrl.includes("youtube.com") ||
+              currentTournament.streamUrl.includes("youtu.be") ? (
+              <iframe
+                src={`https://www.youtube.com/embed/${currentTournament.streamUrl.includes("v=") ? currentTournament.streamUrl.split("v=")[1].split("&")[0] : currentTournament.streamUrl.split("/").pop()}`}
+                className="absolute top-0 left-0 w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            ) : (
+              <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center text-gray-400">
+                Ismeretlen stream szolgáltató
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="container mx-auto px-4">
         {/* Stats Grid */}

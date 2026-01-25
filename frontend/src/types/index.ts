@@ -109,6 +109,7 @@ export interface Tournament {
     name: string;
     description?: string;
     imageUrl?: string;  // Custom tournament image
+    streamUrl?: string; // Twitch/YouTube stream URL
     gameId: string;
     game?: Game;
     format: 'SINGLE_ELIMINATION' | 'DOUBLE_ELIMINATION' | 'ROUND_ROBIN' | 'SWISS';
@@ -281,4 +282,23 @@ export interface ClientVersion {
     version: string;
     isActive: boolean;
     createdAt: string;
+}
+
+export interface NewsPost {
+    id: string;
+    title: string;
+    slug: string;
+    content: string;
+    excerpt?: string;
+    coverImage?: string;
+    isPublished: boolean;
+    publishedAt?: string;
+    createdAt: string;
+    updatedAt: string;
+    authorId: string;
+    author: {
+        username: string;
+        displayName?: string;
+        avatarUrl?: string;
+    };
 }

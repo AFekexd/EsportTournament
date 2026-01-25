@@ -26,6 +26,9 @@ import {
   TournamentEmbedPage,
   TVDisplayPage,
   TVRecruitmentPage,
+  ScrimsPage,
+  NewsPage,
+  NewsDetailPage,
 } from "./pages";
 import RequestsPage from "./pages/admin/RequestsPage";
 import { AdminLogs } from "./components/admin/AdminLogs";
@@ -102,6 +105,9 @@ function AppContent() {
             <Route path="admin/logs" element={<AdminLogs />} />
             <Route path="teacher/time" element={<TeacherTimePage />} />
             <Route path="booking" element={<BookingPage />} />
+            <Route path="scrims" element={<ScrimsPage />} />
+            <Route path="news" element={<NewsPage />} />
+            <Route path="news/:slug" element={<NewsDetailPage />} />
           </Route>
           <Route
             path="/embed/tournaments/:id"

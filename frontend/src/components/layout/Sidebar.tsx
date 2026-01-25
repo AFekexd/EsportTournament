@@ -15,6 +15,8 @@ import {
   ClipboardList,
   FileQuestion,
   GitCommit,
+  Newspaper,
+  Swords,
 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { useAppSelector, useAppDispatch } from "../../hooks/useRedux";
@@ -39,7 +41,9 @@ const navItems: NavItem[] = [
   { to: "/tournaments", icon: <Trophy size={20} />, label: "Versenyek" },
   { to: "/games", icon: <Gamepad2 size={20} />, label: "Játékok" },
   { to: "/calendar", icon: <Calendar size={20} />, label: "Naptár" },
+  { to: "/news", icon: <Newspaper size={20} />, label: "Hírek" },
   { to: "/leaderboards", icon: <TrendingUp size={20} />, label: "Ranglisták" },
+  { to: "/scrims", icon: <Swords size={20} />, label: "Gyakorló (Scrims)" },
   { to: "/settings", icon: <Settings size={20} />, label: "Beállítások" },
 ];
 

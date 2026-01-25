@@ -18,3 +18,6 @@ export { TeacherTimePage } from './TeacherTimePage';
 export { TournamentEmbedPage } from './embed/TournamentEmbedPage';
 export { TVDisplayPage } from './TVDisplayPage';
 export { TVRecruitmentPage } from './TVRecruitmentPage';
+export { ScrimsPage } from './ScrimsPage';
+export { NewsPage } from './NewsPage';
+export { NewsDetailPage } from './NewsDetailPage';

@@ -136,6 +136,7 @@ model User {
   ranks              UserRank[]
   changeRequests     ChangeRequest[]
   authoredChangelogs Changelog[]
+  posts              NewsPost[]
   
   // Discord relations
   discordLogs        DiscordLog[]
@@ -165,6 +166,10 @@ model Team {
   homeMatches       Match[]           @relation("HomeTeam")
   awayMatches       Match[]           @relation("AwayTeam")
   wonMatches        Match[]           @relation("WinnerTeam")
+  
+  // Scrim relations
+  createdScrims     Scrim[]           @relation("ScrimRequester")
+  acceptedScrims    Scrim[]           @relation("ScrimOpponent")
 }
 
 // Csapattag
@@ -193,6 +198,7 @@ model Game {
 
   tournaments Tournament[]
   gameStats   GameStats[]
+  scrims      Scrim[]
 
   ranks     Rank[]
   userRanks UserRank[]
@@ -204,6 +210,7 @@ model Tournament {
   name                 String
   description          String?
   imageUrl             String? // Custom tournament image
+  streamUrl            String? // Twitch/YouTube stream URL
   gameId               String
   game                 Game             @relation(fields: [gameId], references: [id])
   format               TournamentFormat @default(SINGLE_ELIMINATION)
@@ -679,4 +686,64 @@ model MatchPrediction {
   @@index([matchId])
   @@index([predictorId])
   @@index([isCorrect])
+}
+
+// ============================================
+// SCRIM FINDER
+// ============================================
+
+enum ScrimStatus {
+  OPEN
+  ACCEPTED
+  CANCELLED
+}
+
+model Scrim {
+  id              String      @id @default(uuid())
+  requesterTeamId String
+  requesterTeam   Team        @relation("ScrimRequester", fields: [requesterTeamId], references: [id], onDelete: Cascade)
+  
+  gameId          String
+  game            Game        @relation(fields: [gameId], references: [id])
+  
+  opponentTeamId  String?
+  opponentTeam    Team?       @relation("ScrimOpponent", fields: [opponentTeamId], references: [id])
+  
+  scheduledAt     DateTime
+  durationMinutes Int         @default(60)
+  notes           String?
+  status          ScrimStatus @default(OPEN)
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([gameId])
+  @@index([scheduledAt])
+  @@index([status])
+  @@map("Scrims")
+}
+
+// ============================================
+// NEWS & BLOG
+// ============================================
+
+model NewsPost {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  content     String   @db.Text
+  excerpt     String?  @db.Text
+  coverImage  String?
+  isPublished Boolean  @default(false)
+  publishedAt DateTime?
+  
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id])
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+  @@index([isPublished])
+  @@index([createdAt])
 }

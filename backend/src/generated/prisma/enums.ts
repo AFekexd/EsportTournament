@@ -178,3 +178,12 @@ export const DiscordLogStatus = {
 } as const
 
 export type DiscordLogStatus = (typeof DiscordLogStatus)[keyof typeof DiscordLogStatus]
+
+
+export const ScrimStatus = {
+  OPEN: 'OPEN',
+  ACCEPTED: 'ACCEPTED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type ScrimStatus = (typeof ScrimStatus)[keyof typeof ScrimStatus]

@@ -76,7 +76,9 @@ export const ModelName = {
   EmailLog: 'EmailLog',
   DiscordLog: 'DiscordLog',
   MatchCheckIn: 'MatchCheckIn',
-  MatchPrediction: 'MatchPrediction'
+  MatchPrediction: 'MatchPrediction',
+  Scrim: 'Scrim',
+  NewsPost: 'NewsPost'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -180,6 +182,7 @@ export const TournamentScalarFieldEnum = {
   name: 'name',
   description: 'description',
   imageUrl: 'imageUrl',
+  streamUrl: 'streamUrl',
   gameId: 'gameId',
   format: 'format',
   status: 'status',
@@ -516,6 +519,39 @@ export const MatchPredictionScalarFieldEnum = {
 } as const
 
 export type MatchPredictionScalarFieldEnum = (typeof MatchPredictionScalarFieldEnum)[keyof typeof MatchPredictionScalarFieldEnum]
+
+
+export const ScrimScalarFieldEnum = {
+  id: 'id',
+  requesterTeamId: 'requesterTeamId',
+  gameId: 'gameId',
+  opponentTeamId: 'opponentTeamId',
+  scheduledAt: 'scheduledAt',
+  durationMinutes: 'durationMinutes',
+  notes: 'notes',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ScrimScalarFieldEnum = (typeof ScrimScalarFieldEnum)[keyof typeof ScrimScalarFieldEnum]
+
+
+export const NewsPostScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  slug: 'slug',
+  content: 'content',
+  excerpt: 'excerpt',
+  coverImage: 'coverImage',
+  isPublished: 'isPublished',
+  publishedAt: 'publishedAt',
+  authorId: 'authorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NewsPostScalarFieldEnum = (typeof NewsPostScalarFieldEnum)[keyof typeof NewsPostScalarFieldEnum]
 
 
 export const SortOrder = {

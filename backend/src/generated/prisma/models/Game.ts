@@ -242,6 +242,7 @@ export type GameWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Game"> | Date | string
   tournaments?: Prisma.TournamentListRelationFilter
   gameStats?: Prisma.GameStatsListRelationFilter
+  scrims?: Prisma.ScrimListRelationFilter
   ranks?: Prisma.RankListRelationFilter
   userRanks?: Prisma.UserRankListRelationFilter
 }
@@ -257,6 +258,7 @@ export type GameOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   tournaments?: Prisma.TournamentOrderByRelationAggregateInput
   gameStats?: Prisma.GameStatsOrderByRelationAggregateInput
+  scrims?: Prisma.ScrimOrderByRelationAggregateInput
   ranks?: Prisma.RankOrderByRelationAggregateInput
   userRanks?: Prisma.UserRankOrderByRelationAggregateInput
 }
@@ -275,6 +277,7 @@ export type GameWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Game"> | Date | string
   tournaments?: Prisma.TournamentListRelationFilter
   gameStats?: Prisma.GameStatsListRelationFilter
+  scrims?: Prisma.ScrimListRelationFilter
   ranks?: Prisma.RankListRelationFilter
   userRanks?: Prisma.UserRankListRelationFilter
 }, "id" | "name">
@@ -320,6 +323,7 @@ export type GameCreateInput = {
   createdAt?: Date | string
   tournaments?: Prisma.TournamentCreateNestedManyWithoutGameInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutGameInput
+  scrims?: Prisma.ScrimCreateNestedManyWithoutGameInput
   ranks?: Prisma.RankCreateNestedManyWithoutGameInput
   userRanks?: Prisma.UserRankCreateNestedManyWithoutGameInput
 }
@@ -335,6 +339,7 @@ export type GameUncheckedCreateInput = {
   createdAt?: Date | string
   tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutGameInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutGameInput
+  scrims?: Prisma.ScrimUncheckedCreateNestedManyWithoutGameInput
   ranks?: Prisma.RankUncheckedCreateNestedManyWithoutGameInput
   userRanks?: Prisma.UserRankUncheckedCreateNestedManyWithoutGameInput
 }
@@ -350,6 +355,7 @@ export type GameUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournaments?: Prisma.TournamentUpdateManyWithoutGameNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutGameNestedInput
+  scrims?: Prisma.ScrimUpdateManyWithoutGameNestedInput
   ranks?: Prisma.RankUpdateManyWithoutGameNestedInput
   userRanks?: Prisma.UserRankUpdateManyWithoutGameNestedInput
 }
@@ -365,6 +371,7 @@ export type GameUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutGameNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutGameNestedInput
+  scrims?: Prisma.ScrimUncheckedUpdateManyWithoutGameNestedInput
   ranks?: Prisma.RankUncheckedUpdateManyWithoutGameNestedInput
   userRanks?: Prisma.UserRankUncheckedUpdateManyWithoutGameNestedInput
 }
@@ -504,6 +511,20 @@ export type GameUpdateOneRequiredWithoutUserRanksNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.GameUpdateToOneWithWhereWithoutUserRanksInput, Prisma.GameUpdateWithoutUserRanksInput>, Prisma.GameUncheckedUpdateWithoutUserRanksInput>
 }
 
+export type GameCreateNestedOneWithoutScrimsInput = {
+  create?: Prisma.XOR<Prisma.GameCreateWithoutScrimsInput, Prisma.GameUncheckedCreateWithoutScrimsInput>
+  connectOrCreate?: Prisma.GameCreateOrConnectWithoutScrimsInput
+  connect?: Prisma.GameWhereUniqueInput
+}
+
+export type GameUpdateOneRequiredWithoutScrimsNestedInput = {
+  create?: Prisma.XOR<Prisma.GameCreateWithoutScrimsInput, Prisma.GameUncheckedCreateWithoutScrimsInput>
+  connectOrCreate?: Prisma.GameCreateOrConnectWithoutScrimsInput
+  upsert?: Prisma.GameUpsertWithoutScrimsInput
+  connect?: Prisma.GameWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GameUpdateToOneWithWhereWithoutScrimsInput, Prisma.GameUpdateWithoutScrimsInput>, Prisma.GameUncheckedUpdateWithoutScrimsInput>
+}
+
 export type GameCreateWithoutTournamentsInput = {
   id?: string
   name: string
@@ -514,6 +535,7 @@ export type GameCreateWithoutTournamentsInput = {
   teamSize?: number | null
   createdAt?: Date | string
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutGameInput
+  scrims?: Prisma.ScrimCreateNestedManyWithoutGameInput
   ranks?: Prisma.RankCreateNestedManyWithoutGameInput
   userRanks?: Prisma.UserRankCreateNestedManyWithoutGameInput
 }
@@ -528,6 +550,7 @@ export type GameUncheckedCreateWithoutTournamentsInput = {
   teamSize?: number | null
   createdAt?: Date | string
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutGameInput
+  scrims?: Prisma.ScrimUncheckedCreateNestedManyWithoutGameInput
   ranks?: Prisma.RankUncheckedCreateNestedManyWithoutGameInput
   userRanks?: Prisma.UserRankUncheckedCreateNestedManyWithoutGameInput
 }
@@ -558,6 +581,7 @@ export type GameUpdateWithoutTournamentsInput = {
   teamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   gameStats?: Prisma.GameStatsUpdateManyWithoutGameNestedInput
+  scrims?: Prisma.ScrimUpdateManyWithoutGameNestedInput
   ranks?: Prisma.RankUpdateManyWithoutGameNestedInput
   userRanks?: Prisma.UserRankUpdateManyWithoutGameNestedInput
 }
@@ -572,6 +596,7 @@ export type GameUncheckedUpdateWithoutTournamentsInput = {
   teamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutGameNestedInput
+  scrims?: Prisma.ScrimUncheckedUpdateManyWithoutGameNestedInput
   ranks?: Prisma.RankUncheckedUpdateManyWithoutGameNestedInput
   userRanks?: Prisma.UserRankUncheckedUpdateManyWithoutGameNestedInput
 }
@@ -586,6 +611,7 @@ export type GameCreateWithoutGameStatsInput = {
   teamSize?: number | null
   createdAt?: Date | string
   tournaments?: Prisma.TournamentCreateNestedManyWithoutGameInput
+  scrims?: Prisma.ScrimCreateNestedManyWithoutGameInput
   ranks?: Prisma.RankCreateNestedManyWithoutGameInput
   userRanks?: Prisma.UserRankCreateNestedManyWithoutGameInput
 }
@@ -600,6 +626,7 @@ export type GameUncheckedCreateWithoutGameStatsInput = {
   teamSize?: number | null
   createdAt?: Date | string
   tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutGameInput
+  scrims?: Prisma.ScrimUncheckedCreateNestedManyWithoutGameInput
   ranks?: Prisma.RankUncheckedCreateNestedManyWithoutGameInput
   userRanks?: Prisma.UserRankUncheckedCreateNestedManyWithoutGameInput
 }
@@ -630,6 +657,7 @@ export type GameUpdateWithoutGameStatsInput = {
   teamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournaments?: Prisma.TournamentUpdateManyWithoutGameNestedInput
+  scrims?: Prisma.ScrimUpdateManyWithoutGameNestedInput
   ranks?: Prisma.RankUpdateManyWithoutGameNestedInput
   userRanks?: Prisma.UserRankUpdateManyWithoutGameNestedInput
 }
@@ -644,6 +672,7 @@ export type GameUncheckedUpdateWithoutGameStatsInput = {
   teamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutGameNestedInput
+  scrims?: Prisma.ScrimUncheckedUpdateManyWithoutGameNestedInput
   ranks?: Prisma.RankUncheckedUpdateManyWithoutGameNestedInput
   userRanks?: Prisma.UserRankUncheckedUpdateManyWithoutGameNestedInput
 }
@@ -659,6 +688,7 @@ export type GameCreateWithoutRanksInput = {
   createdAt?: Date | string
   tournaments?: Prisma.TournamentCreateNestedManyWithoutGameInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutGameInput
+  scrims?: Prisma.ScrimCreateNestedManyWithoutGameInput
   userRanks?: Prisma.UserRankCreateNestedManyWithoutGameInput
 }
 
@@ -673,6 +703,7 @@ export type GameUncheckedCreateWithoutRanksInput = {
   createdAt?: Date | string
   tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutGameInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutGameInput
+  scrims?: Prisma.ScrimUncheckedCreateNestedManyWithoutGameInput
   userRanks?: Prisma.UserRankUncheckedCreateNestedManyWithoutGameInput
 }
 
@@ -703,6 +734,7 @@ export type GameUpdateWithoutRanksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournaments?: Prisma.TournamentUpdateManyWithoutGameNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutGameNestedInput
+  scrims?: Prisma.ScrimUpdateManyWithoutGameNestedInput
   userRanks?: Prisma.UserRankUpdateManyWithoutGameNestedInput
 }
 
@@ -717,6 +749,7 @@ export type GameUncheckedUpdateWithoutRanksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutGameNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutGameNestedInput
+  scrims?: Prisma.ScrimUncheckedUpdateManyWithoutGameNestedInput
   userRanks?: Prisma.UserRankUncheckedUpdateManyWithoutGameNestedInput
 }
 
@@ -731,6 +764,7 @@ export type GameCreateWithoutUserRanksInput = {
   createdAt?: Date | string
   tournaments?: Prisma.TournamentCreateNestedManyWithoutGameInput
   gameStats?: Prisma.GameStatsCreateNestedManyWithoutGameInput
+  scrims?: Prisma.ScrimCreateNestedManyWithoutGameInput
   ranks?: Prisma.RankCreateNestedManyWithoutGameInput
 }
 
@@ -745,6 +779,7 @@ export type GameUncheckedCreateWithoutUserRanksInput = {
   createdAt?: Date | string
   tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutGameInput
   gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutGameInput
+  scrims?: Prisma.ScrimUncheckedCreateNestedManyWithoutGameInput
   ranks?: Prisma.RankUncheckedCreateNestedManyWithoutGameInput
 }
 
@@ -775,6 +810,7 @@ export type GameUpdateWithoutUserRanksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournaments?: Prisma.TournamentUpdateManyWithoutGameNestedInput
   gameStats?: Prisma.GameStatsUpdateManyWithoutGameNestedInput
+  scrims?: Prisma.ScrimUpdateManyWithoutGameNestedInput
   ranks?: Prisma.RankUpdateManyWithoutGameNestedInput
 }
 
@@ -789,7 +825,84 @@ export type GameUncheckedUpdateWithoutUserRanksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutGameNestedInput
   gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutGameNestedInput
+  scrims?: Prisma.ScrimUncheckedUpdateManyWithoutGameNestedInput
   ranks?: Prisma.RankUncheckedUpdateManyWithoutGameNestedInput
+}
+
+export type GameCreateWithoutScrimsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  imageUrl?: string | null
+  rules?: string | null
+  rulesPdfUrl?: string | null
+  teamSize?: number | null
+  createdAt?: Date | string
+  tournaments?: Prisma.TournamentCreateNestedManyWithoutGameInput
+  gameStats?: Prisma.GameStatsCreateNestedManyWithoutGameInput
+  ranks?: Prisma.RankCreateNestedManyWithoutGameInput
+  userRanks?: Prisma.UserRankCreateNestedManyWithoutGameInput
+}
+
+export type GameUncheckedCreateWithoutScrimsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  imageUrl?: string | null
+  rules?: string | null
+  rulesPdfUrl?: string | null
+  teamSize?: number | null
+  createdAt?: Date | string
+  tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutGameInput
+  gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutGameInput
+  ranks?: Prisma.RankUncheckedCreateNestedManyWithoutGameInput
+  userRanks?: Prisma.UserRankUncheckedCreateNestedManyWithoutGameInput
+}
+
+export type GameCreateOrConnectWithoutScrimsInput = {
+  where: Prisma.GameWhereUniqueInput
+  create: Prisma.XOR<Prisma.GameCreateWithoutScrimsInput, Prisma.GameUncheckedCreateWithoutScrimsInput>
+}
+
+export type GameUpsertWithoutScrimsInput = {
+  update: Prisma.XOR<Prisma.GameUpdateWithoutScrimsInput, Prisma.GameUncheckedUpdateWithoutScrimsInput>
+  create: Prisma.XOR<Prisma.GameCreateWithoutScrimsInput, Prisma.GameUncheckedCreateWithoutScrimsInput>
+  where?: Prisma.GameWhereInput
+}
+
+export type GameUpdateToOneWithWhereWithoutScrimsInput = {
+  where?: Prisma.GameWhereInput
+  data: Prisma.XOR<Prisma.GameUpdateWithoutScrimsInput, Prisma.GameUncheckedUpdateWithoutScrimsInput>
+}
+
+export type GameUpdateWithoutScrimsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulesPdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tournaments?: Prisma.TournamentUpdateManyWithoutGameNestedInput
+  gameStats?: Prisma.GameStatsUpdateManyWithoutGameNestedInput
+  ranks?: Prisma.RankUpdateManyWithoutGameNestedInput
+  userRanks?: Prisma.UserRankUpdateManyWithoutGameNestedInput
+}
+
+export type GameUncheckedUpdateWithoutScrimsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rules?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rulesPdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutGameNestedInput
+  gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutGameNestedInput
+  ranks?: Prisma.RankUncheckedUpdateManyWithoutGameNestedInput
+  userRanks?: Prisma.UserRankUncheckedUpdateManyWithoutGameNestedInput
 }
 
 
@@ -800,6 +913,7 @@ export type GameUncheckedUpdateWithoutUserRanksInput = {
 export type GameCountOutputType = {
   tournaments: number
   gameStats: number
+  scrims: number
   ranks: number
   userRanks: number
 }
@@ -807,6 +921,7 @@ export type GameCountOutputType = {
 export type GameCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tournaments?: boolean | GameCountOutputTypeCountTournamentsArgs
   gameStats?: boolean | GameCountOutputTypeCountGameStatsArgs
+  scrims?: boolean | GameCountOutputTypeCountScrimsArgs
   ranks?: boolean | GameCountOutputTypeCountRanksArgs
   userRanks?: boolean | GameCountOutputTypeCountUserRanksArgs
 }
@@ -838,6 +953,13 @@ export type GameCountOutputTypeCountGameStatsArgs<ExtArgs extends runtime.Types.
 /**
  * GameCountOutputType without action
  */
+export type GameCountOutputTypeCountScrimsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ScrimWhereInput
+}
+
+/**
+ * GameCountOutputType without action
+ */
 export type GameCountOutputTypeCountRanksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.RankWhereInput
 }
@@ -861,6 +983,7 @@ export type GameSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   tournaments?: boolean | Prisma.Game$tournamentsArgs<ExtArgs>
   gameStats?: boolean | Prisma.Game$gameStatsArgs<ExtArgs>
+  scrims?: boolean | Prisma.Game$scrimsArgs<ExtArgs>
   ranks?: boolean | Prisma.Game$ranksArgs<ExtArgs>
   userRanks?: boolean | Prisma.Game$userRanksArgs<ExtArgs>
   _count?: boolean | Prisma.GameCountOutputTypeDefaultArgs<ExtArgs>
@@ -903,6 +1026,7 @@ export type GameOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type GameInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tournaments?: boolean | Prisma.Game$tournamentsArgs<ExtArgs>
   gameStats?: boolean | Prisma.Game$gameStatsArgs<ExtArgs>
+  scrims?: boolean | Prisma.Game$scrimsArgs<ExtArgs>
   ranks?: boolean | Prisma.Game$ranksArgs<ExtArgs>
   userRanks?: boolean | Prisma.Game$userRanksArgs<ExtArgs>
   _count?: boolean | Prisma.GameCountOutputTypeDefaultArgs<ExtArgs>
@@ -915,6 +1039,7 @@ export type $GamePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     tournaments: Prisma.$TournamentPayload<ExtArgs>[]
     gameStats: Prisma.$GameStatsPayload<ExtArgs>[]
+    scrims: Prisma.$ScrimPayload<ExtArgs>[]
     ranks: Prisma.$RankPayload<ExtArgs>[]
     userRanks: Prisma.$UserRankPayload<ExtArgs>[]
   }
@@ -1323,6 +1448,7 @@ export interface Prisma__GameClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   tournaments<T extends Prisma.Game$tournamentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Game$tournamentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   gameStats<T extends Prisma.Game$gameStatsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Game$gameStatsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GameStatsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  scrims<T extends Prisma.Game$scrimsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Game$scrimsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ScrimPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ranks<T extends Prisma.Game$ranksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Game$ranksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RankPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   userRanks<T extends Prisma.Game$userRanksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Game$userRanksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserRankPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1795,6 +1921,30 @@ export type Game$gameStatsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.GameStatsScalarFieldEnum | Prisma.GameStatsScalarFieldEnum[]
+}
+
+/**
+ * Game.scrims
+ */
+export type Game$scrimsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Scrim
+   */
+  select?: Prisma.ScrimSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Scrim
+   */
+  omit?: Prisma.ScrimOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ScrimInclude<ExtArgs> | null
+  where?: Prisma.ScrimWhereInput
+  orderBy?: Prisma.ScrimOrderByWithRelationInput | Prisma.ScrimOrderByWithRelationInput[]
+  cursor?: Prisma.ScrimWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ScrimScalarFieldEnum | Prisma.ScrimScalarFieldEnum[]
 }
 
 /**
