@@ -500,22 +500,9 @@ usersRouter.get(
 
         const user = await prisma.user.findUnique({
             where: { id: userId },
-            select: {
-                id: true,
-                username: true,
-                displayName: true,
-                avatarUrl: true,
-                role: true,
-                steamId: true,
-                steamAvatar: true,
-                steamUrl: true,
-                steamLevel: true,
-                steamPersonaname: true,
-                steamCreatedAt: true,
-                perfectGamesCount: true,
-                createdAt: true,
+            include: {
                 teamMemberships: {
-                    select: {
+                    include: {
                         team: {
                             include: {
                                 members: {
@@ -534,9 +521,7 @@ usersRouter.get(
                     }
                 },
                 ranks: {
-                    select: {
-                        id: true,
-                        gameId: true,
+                    include: {
                         rank: true,
                         game: true
                     }
@@ -552,9 +537,10 @@ usersRouter.get(
         const publicProfile = {
             id: user.id,
             username: user.username,
-            displayName: user?.displayName,
-            avatarUrl: user?.avatarUrl,
+            displayName: user.displayName,
+            avatarUrl: user.avatarUrl,
             role: user.role,
+            elo: user.elo,
             steamId: user.steamId,
             steamAvatar: user.steamAvatar,
             steamUrl: user.steamUrl,
