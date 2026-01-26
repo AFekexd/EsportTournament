@@ -549,7 +549,10 @@ usersRouter.get(
             steamCreatedAt: user.steamCreatedAt,
             perfectGamesCount: user.perfectGamesCount,
             createdAt: user.createdAt,
-            teams: user.teamMemberships.map(tm => tm.team),
+            teams: user.teamMemberships.map(tm => ({
+                ...tm.team,
+                currentUserRole: tm.role
+            })),
             ranks: user.ranks.map(ur => ({
                 id: ur.id,
                 gameId: ur.gameId,

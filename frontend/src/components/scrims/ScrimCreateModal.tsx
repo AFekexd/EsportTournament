@@ -59,24 +59,21 @@ export function ScrimCreateModal({
         });
 
       // Fetch User's Teams (Owned or Captain)
-      // Since we don't have a direct endpoint for "my manageable teams", we might need to filter client side or use existing teams logic.
-      // Assuming /api/teams/my exists or similar.
-      // Or fetch all user teams via /api/users/me?include=teams
       if (user) {
-        apiFetch(`${API_URL}/users/${user.id}`)
+        apiFetch(`${API_URL}/users/${user.id}/public`)
           .then((res) => res.json())
           .then((data) => {
-            if (data.success && data.data.teamMemberships) {
-              const manageableTeams = data.data.teamMemberships
+            if (data.success && data.data.teams) {
+              const manageableTeams = data.data.teams
                 .filter(
-                  (m: any) =>
-                    m.team.ownerId === user.id || m.role === "CAPTAIN",
+                  (team: any) =>
+                    team.ownerId === user.id || team.currentUserRole === "CAPTAIN"
                 )
-                .map((m: any) => ({
-                  id: m.team.id,
-                  name: m.team.name,
-                  ownerId: m.team.ownerId,
-                  currentUserRole: m.role,
+                .map((team: any) => ({
+                  id: team.id,
+                  name: team.name,
+                  ownerId: team.ownerId,
+                  currentUserRole: team.ownerId === user.id ? "OWNER" : team.currentUserRole,
                 }));
               setTeams(manageableTeams);
               if (manageableTeams.length > 0) {
@@ -153,11 +150,10 @@ export function ScrimCreateModal({
                 {teams.map((team) => (
                   <label
                     key={team.id}
-                    className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
-                      formData.teamId === team.id
-                        ? "bg-primary/20 border-primary text-white"
-                        : "bg-black/20 border-white/5 text-gray-400 hover:bg-white/5"
-                    }`}
+                    className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${formData.teamId === team.id
+                      ? "bg-primary/20 border-primary text-white"
+                      : "bg-black/20 border-white/5 text-gray-400 hover:bg-white/5"
+                      }`}
                   >
                     <input
                       type="radio"
