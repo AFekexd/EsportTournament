@@ -343,8 +343,6 @@ usersRouter.patch(
             emailPrefBookings,
             emailPrefSystem,
             emailPrefWeeklyDigest,
-            emailPrefSystem,
-            emailPrefWeeklyDigest,
             steamId,
             favoriteGameId
         } = req.body as {
@@ -574,15 +572,10 @@ usersRouter.get(
                 rankName: ur.rank.name,
                 rankValue: ur.rank.value,
                 rankImage: ur.rank.image
-            }))
-        }))
+            })),
+            favoriteGame: user.favoriteGame || undefined
         };
 
-// Add favoriteGame if exists
-if (user.favoriteGame) {
-    (publicProfile as any).favoriteGame = user.favoriteGame;
-}
-
-res.json({ success: true, data: publicProfile });
+        res.json({ success: true, data: publicProfile });
     })
 );
