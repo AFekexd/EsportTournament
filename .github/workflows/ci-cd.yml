@@ -102,3 +102,4 @@ jobs:
             VITE_KEYCLOAK_URL=https://keycloak.pollak.info
             VITE_KEYCLOAK_REALM=master
             VITE_KEYCLOAK_CLIENT_ID=esportadmin
+            VITE_DISCORD_CLIENT_ID=1452377400208789706
