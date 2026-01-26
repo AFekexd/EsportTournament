@@ -155,3 +155,31 @@ authRouter.get(
         res.json({ success: true, data: user });
     })
 );
+
+// Link Discord via OAuth
+authRouter.post(
+    '/discord/oauth',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const { code } = req.body;
+
+        const keycloakId = req.user!.sub;
+        const user = await prisma.user.findUnique({ where: { keycloakId } });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        if (!code) {
+            return res.status(400).json({ success: false, message: 'Missing OAuth code' });
+        }
+
+        const result = await discordService.linkUserViaOAuth(user.id, code);
+
+        if (result.success) {
+            res.json(result);
+        } else {
+            res.status(400).json(result);
+        }
+    })
+);

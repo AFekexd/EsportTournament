@@ -29,6 +29,7 @@ import {
   ScrimsPage,
   NewsPage,
   NewsDetailPage,
+  DiscordCallbackPage,
 } from "./pages";
 import RequestsPage from "./pages/admin/RequestsPage";
 import { AdminLogs } from "./components/admin/AdminLogs";
@@ -95,6 +96,7 @@ function AppContent() {
             <Route path="leaderboards" element={<LeaderboardsPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
             <Route path="discord-settings" element={<DiscordAdminPage />} />
+            <Route path="auth/discord/callback" element={<DiscordCallbackPage />} />
             <Route path="calendar" element={<CalendarPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="profile/:id" element={<ProfilePage />} />

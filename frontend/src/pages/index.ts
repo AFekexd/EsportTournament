@@ -21,3 +21,4 @@ export { TVRecruitmentPage } from './TVRecruitmentPage';
 export { ScrimsPage } from './ScrimsPage';
 export { NewsPage } from './NewsPage';
 export { NewsDetailPage } from './NewsDetailPage';
+export { DiscordCallbackPage } from './DiscordCallbackPage';

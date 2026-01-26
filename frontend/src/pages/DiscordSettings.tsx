@@ -405,7 +405,7 @@ export function DiscordAdminPage() {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-1">
-                                        <span className="font-medium text-white">Esport Bot</span>
+                                        <span className="font-medium text-white">Gémer János</span>
                                         <span className="bg-[#5865F2] text-white text-[10px] px-1.5 rounded uppercase font-bold tracking-wide py-[1px]">BOT</span>
                                         <span className="text-xs text-gray-400 ml-1">Most</span>
                                     </div>

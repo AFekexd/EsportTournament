@@ -507,6 +507,120 @@ class DiscordService {
         }
     }
 
+    // ==========================================
+    // OAuth 2.0 Implementation
+    // ==========================================
+
+    public async linkUserViaOAuth(userId: string, code: string): Promise<{ success: boolean; message?: string }> {
+        try {
+            // 1. Exchange Code for Token
+            const tokenData = await this.exchangeCodeForToken(code);
+            if (!tokenData || !tokenData.access_token) {
+                return { success: false, message: 'Invalid OAuth code or token exchange failed' };
+            }
+
+            // 2. Get Discord User Info
+            const discordUser = await this.getDiscordUser(tokenData.access_token);
+            if (!discordUser || !discordUser.id) {
+                return { success: false, message: 'Failed to fetch Discord user info' };
+            }
+
+            // 3. User Database Check
+            // Check if this Discord ID is already linked to another user
+            const existingLinkedUser = await prisma.user.findFirst({
+                where: { discordId: discordUser.id }
+            });
+
+            if (existingLinkedUser) {
+                if (existingLinkedUser.id === userId) {
+                    // Already linked to CURRENT user
+                    // Perform a sync just in case
+                    await this.syncUser(userId);
+                    return { success: true, message: 'A fiókod már össze volt kapcsolva. Adatok frissítve.' };
+                } else {
+                    // Linked to ANOTHER user
+                    return { success: false, message: 'Ez a Discord fiók már egy másik felhasználóhoz van rendelve!' };
+                }
+            }
+
+            // Check if current user is already linked (optional, maybe allow overwrite?)
+            const currentUser = await prisma.user.findUnique({ where: { id: userId } });
+            if (currentUser?.discordId) {
+                // If they are re-linking effectively (maybe different discord account), allowed.
+                // Just proceeding to update.
+            }
+
+            // 4. Update User Record
+            await prisma.user.update({
+                where: { id: userId },
+                data: { discordId: discordUser.id }
+            });
+
+            console.log(`🔗 OAuth: Linked user ${currentUser?.username} to Discord ID ${discordUser.id}`);
+
+            // 5. Trigger Sync (Nickname, Roles)
+            // We use the fire-and-forget approach or await it. Since the user is waiting, awaiting is better for feedback.
+            const syncResult = await this.syncUser(userId);
+
+            if (!syncResult.success) {
+                return { success: true, message: `Sikeres összekötés, de a szinkronizálásban hiba történt: ${syncResult.message}` };
+            }
+
+            return { success: true, message: 'Fiók sikeresen összekötve és szinkronizálva!' };
+
+        } catch (error: any) {
+            console.error('OAuth Link Error:', error);
+            return { success: false, message: 'System error during linking' };
+        }
+    }
+
+    private async exchangeCodeForToken(code: string) {
+        const { DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET, DISCORD_REDIRECT_URI } = process.env;
+
+        if (!DISCORD_CLIENT_ID || !DISCORD_CLIENT_SECRET || !DISCORD_REDIRECT_URI) {
+            throw new Error('Discord OAuth credentials not configured');
+        }
+
+        const params = new URLSearchParams({
+            client_id: DISCORD_CLIENT_ID,
+            client_secret: DISCORD_CLIENT_SECRET,
+            grant_type: 'authorization_code',
+            code,
+            redirect_uri: DISCORD_REDIRECT_URI,
+        });
+
+        const response = await fetch('https://discord.com/api/oauth2/token', {
+            method: 'POST',
+            body: params,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Discord Token Exchange Failed:', errorText);
+            return null;
+        }
+
+        return await response.json(); // { access_token, token_type, expires_in, refresh_token, scope }
+    }
+
+    private async getDiscordUser(accessToken: string) {
+        const response = await fetch('https://discord.com/api/users/@me', {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+
+        if (!response.ok) {
+            console.error('Discord User Info Failed:', await response.text());
+            return null;
+        }
+
+        return await response.json(); // { id, username, discriminator, avatar, ... }
+    }
+
     private async handleRecheckCommand(interaction: ChatInputCommandInteraction) {
         // Double check admin permission just in case
         if (!interaction.memberPermissions?.has(PermissionsBitField.Flags.Administrator)) {
