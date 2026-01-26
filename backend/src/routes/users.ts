@@ -157,6 +157,58 @@ usersRouter.post(
     })
 );
 
+// Delete own rank
+usersRouter.delete(
+    '/me/ranks/:gameId',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const currentUser = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!currentUser) {
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
+        }
+
+        const { gameId } = req.params;
+
+        // Check if exists
+        const existing = await prisma.userRank.findUnique({
+            where: {
+                userId_gameId: {
+                    userId: currentUser.id,
+                    gameId
+                }
+            }
+        });
+
+        if (!existing) {
+            throw new ApiError('Nem található rang ehhez a játékhoz', 404, 'RANK_NOT_FOUND');
+        }
+
+        await prisma.userRank.delete({
+            where: {
+                userId_gameId: {
+                    userId: currentUser.id,
+                    gameId
+                }
+            }
+        });
+
+        // Log the change
+        await logSystemActivity(
+            'USER_RANK_DELETE',
+            `User ${currentUser.username} removed rank for game ${gameId}`,
+            { userId: currentUser.id, metadata: { gameId } }
+        );
+
+        res.json({
+            success: true,
+            data: { gameId }
+        });
+    })
+);
+
 // Delete user (Admin only)
 usersRouter.delete(
     '/:id',
@@ -282,16 +334,19 @@ usersRouter.patch(
             throw new ApiError('Nincs jogosultságod a profil szerkesztéséhez', 403, 'FORBIDDEN');
         }
 
-        const { 
-            displayName, 
-            avatarUrl, 
+        const {
+            displayName,
+            avatarUrl,
             emailNotifications,
             emailPrefTournaments,
             emailPrefMatches,
             emailPrefBookings,
             emailPrefSystem,
             emailPrefWeeklyDigest,
-            steamId 
+            emailPrefSystem,
+            emailPrefWeeklyDigest,
+            steamId,
+            favoriteGameId
         } = req.body as {
             displayName?: string;
             avatarUrl?: string;
@@ -302,6 +357,7 @@ usersRouter.patch(
             emailPrefSystem?: boolean;
             emailPrefWeeklyDigest?: boolean;
             steamId?: string;
+            favoriteGameId?: string | null;
         };
 
         // --- SPLIT UPDATE LOGIC ---
@@ -330,6 +386,7 @@ usersRouter.patch(
             if (emailPrefSystem !== undefined) immediateData.emailPrefSystem = emailPrefSystem;
             if (emailPrefWeeklyDigest !== undefined) immediateData.emailPrefWeeklyDigest = emailPrefWeeklyDigest;
             if (steamId !== undefined) immediateData.steamId = steamId;
+            if (favoriteGameId !== undefined) immediateData.favoriteGameId = favoriteGameId;
         } else {
             // If Admin or no restricted changes, everything is immediate
             if (displayName !== undefined) immediateData.displayName = displayName;
@@ -341,6 +398,7 @@ usersRouter.patch(
             if (emailPrefSystem !== undefined) immediateData.emailPrefSystem = emailPrefSystem;
             if (emailPrefWeeklyDigest !== undefined) immediateData.emailPrefWeeklyDigest = emailPrefWeeklyDigest;
             if (steamId !== undefined) immediateData.steamId = steamId;
+            if (favoriteGameId !== undefined) immediateData.favoriteGameId = favoriteGameId;
         }
 
         // 2. Handle Pending Request (Atomic creation)
@@ -471,6 +529,12 @@ usersRouter.get(
                         }
                     }
                 },
+                favoriteGame: {
+                    select: {
+                        id: true,
+                        imageUrl: true
+                    }
+                },
                 ranks: {
                     select: {
                         id: true,
@@ -511,8 +575,14 @@ usersRouter.get(
                 rankValue: ur.rank.value,
                 rankImage: ur.rank.image
             }))
+        }))
         };
 
-        res.json({ success: true, data: publicProfile });
+// Add favoriteGame if exists
+if (user.favoriteGame) {
+    (publicProfile as any).favoriteGame = user.favoriteGame;
+}
+
+res.json({ success: true, data: publicProfile });
     })
 );

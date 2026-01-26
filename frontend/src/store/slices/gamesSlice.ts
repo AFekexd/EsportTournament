@@ -201,6 +201,23 @@ export const setUserRank = createAsyncThunk(
     }
 );
 
+export const deleteUserRank = createAsyncThunk(
+    'games/deleteUserRank',
+    async (gameId: string, { getState }) => {
+        const state = getState() as RootState;
+        const token = getToken(state);
+        if (!token) throw new Error('Nincs bejelentkezve!');
+
+        const response = await fetch(`${API_URL}/users/me/ranks/${gameId}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await response.json();
+        if (!data.success) throw new Error(data.error?.message || 'Failed to delete rank');
+        return gameId;
+    }
+);
+
 const gamesSlice = createSlice({
     name: 'games',
     initialState,
@@ -292,6 +309,9 @@ const gamesSlice = createSlice({
                 } else {
                     state.userRanks.push(action.payload);
                 }
+            })
+            .addCase(deleteUserRank.fulfilled, (state, action) => {
+                state.userRanks = state.userRanks.filter(ur => ur.gameId !== action.payload);
             });
     },
 });

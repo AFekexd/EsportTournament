@@ -145,6 +145,10 @@ model User {
 
   // Achievements (stored as JSON array)
   achievements       Json?  @default("[]") // Array of { id: string, unlockedAt: Date }
+
+  // Favorite Game for Profile Cover
+  favoriteGameId     String?
+  favoriteGame       Game?    @relation("UserFavoriteGame", fields: [favoriteGameId], references: [id])
 }
 
 // Csapat
@@ -202,6 +206,7 @@ model Game {
 
   ranks     Rank[]
   userRanks UserRank[]
+  favoritedBy User[] @relation("UserFavoriteGame")
 }
 
 // Verseny

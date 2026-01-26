@@ -35,6 +35,11 @@ export interface User {
     steamPersonaname?: string;
     steamCreatedAt?: string;
     perfectGamesCount?: number;
+    favoriteGameId?: string | null;
+    favoriteGame?: {
+        id: string;
+        imageUrl: string;
+    };
     omId?: string | null;
 }
 

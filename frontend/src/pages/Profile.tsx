@@ -14,7 +14,10 @@ import {
   FileText,
   X,
   Gamepad2,
-  ChevronRight
+  ChevronRight,
+  Plus,
+  Trash2,
+  Star
 } from "lucide-react";
 import MatchHistory from "../components/profile/MatchHistory";
 import MatchHistoryModal from "../components/profile/MatchHistoryModal";
@@ -30,6 +33,7 @@ import {
   fetchGames,
   fetchUserRanks,
   setUserRank,
+  deleteUserRank,
   fetchRanks,
 } from "../store/slices/gamesSlice";
 import { fetchMyTeams } from "../store/slices/teamsSlice";
@@ -56,6 +60,9 @@ export function ProfilePage() {
   const [localSteamId, setLocalSteamId] = useState("");
   const [isAvatarOpen, setIsAvatarOpen] = useState(false);
   const [isMatchHistoryOpen, setIsMatchHistoryOpen] = useState(false);
+  const [isAddGameModalOpen, setIsAddGameModalOpen] = useState(false);
+  // Track games that are temporarily visible (user added them but hasn't selected a rank yet)
+  const [visibleGameIds, setVisibleGameIds] = useState<string[]>([]);
 
   // ESC kezelés az Avatar Lightbox-hoz
   useEffect(() => {
@@ -116,14 +123,47 @@ export function ProfilePage() {
   }, [dispatch, games, gameRanks]);
 
   const handleRankChange = async (gameId: string, rankId: string) => {
-    if (!rankId || !isOwnProfile) return;
+    if (!isOwnProfile) return;
     try {
-      await dispatch(setUserRank({ gameId, rankId })).unwrap();
+      if (!rankId) {
+        // Remove rank
+        await dispatch(deleteUserRank(gameId)).unwrap();
+
+        // Remove from visible set if cleared
+        setVisibleGameIds(prev => prev.filter(id => id !== gameId));
+
+        toast.success("Rang törölve");
+      } else {
+        // Set rank
+        await dispatch(setUserRank({ gameId, rankId })).unwrap();
+        toast.success("Rang frissítve");
+      }
     } catch (error) {
       console.error("Failed to update rank", error);
       toast.error("Hiba történt a rang frissítésekor");
     }
   };
+
+  const toggleGameVisibility = (gameId: string) => {
+    setVisibleGameIds(prev => prev.includes(gameId) ? prev : [...prev, gameId]);
+  }
+
+  // Determine which games to display
+  // Show games that:
+  // 1. Have a userRank (isOwnProfile ? userRanks : currentProfile?.ranks)
+  // 2. OR are in visibleGameIds (only relevant for own profile)
+  const displayedGames = games.filter(game => {
+    if (isOwnProfile) {
+      const hasRank = userRanks.some(ur => ur.gameId === game.id);
+      const isVisible = visibleGameIds.includes(game.id);
+      return hasRank || isVisible;
+    } else {
+      // Public profile: only show ranked games
+      // Note: currentProfile.ranks structure is slightly different in filtered games?
+      // publicProfile returns ranks array
+      return currentProfile?.ranks?.some(r => r.gameId === game.id);
+    }
+  });
 
   const handleSteamSync = async () => {
     if (!localSteamId) return;
@@ -257,6 +297,15 @@ export function ProfilePage() {
   };
 
   const getTopGameImage = () => {
+    // 1. Check favorite game
+    if (isOwnProfile && user?.favoriteGame) {
+      return user.favoriteGame.imageUrl;
+    }
+    if (!isOwnProfile && (currentProfile as any)?.favoriteGame) {
+      return (currentProfile as any).favoriteGame.imageUrl;
+    }
+
+    // 2. Fallback to ranks
     let relevantRanks: { gameId: string; value: number }[] = [];
 
     if (isOwnProfile) {
@@ -407,10 +456,10 @@ export function ProfilePage() {
               </div>
 
               {/* Info & Stats Wrapper */}
-              <div className="flex-1 flex flex-col md:flex-row items-center md:items-end w-full gap-6 md:pb-4">
+              <div className="flex-1 flex flex-col items-center md:items-start w-full gap-4">
                 {/* Info */}
-                <div className="text-center md:text-left space-y-2 flex-1">
-                  <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight flex flex-col md:flex-row items-center md:items-baseline gap-3">
+                <div className="text-center md:text-left space-y-2 w-full">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight flex flex-col sm:flex-row items-center sm:items-baseline gap-2 sm:gap-3">
                     {profileUser?.displayName || profileUser?.username}
                     <span
                       className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-widest ${getRoleBadgeStyle(
@@ -421,24 +470,23 @@ export function ProfilePage() {
                     </span>
                   </h1>
 
-                  <div className="flex flex-col md:flex-row items-center gap-4 text-gray-400">
+                  <div className="flex flex-wrap justify-center md:justify-start items-center gap-2 sm:gap-4 text-gray-400 text-sm">
                     {profileUser?.displayName && (
-                      <span className="font-medium text-lg text-primary">
+                      <span className="font-medium text-primary">
                         {profileUser?.username?.includes('@') ? profileUser?.username : `@${profileUser?.username}`}
                       </span>
                     )}
 
-                    <div className="hidden md:block w-1 h-1 bg-gray-600 rounded-full"></div>
+                    <div className="hidden sm:block w-1 h-1 bg-gray-600 rounded-full"></div>
 
-                    <div className="flex items-center gap-2 text-sm">
+                    <div className="flex items-center gap-2">
                       <Calendar size={14} />
-                      <span>
-                        Tag mióta:{" "}
+                      <span className="whitespace-nowrap">
                         {new Date(
                           profileUser?.createdAt || Date.now()
                         ).toLocaleDateString("hu-HU", {
                           year: "numeric",
-                          month: "long",
+                          month: "short",
                           day: "numeric",
                         })}
                       </span>
@@ -446,14 +494,11 @@ export function ProfilePage() {
 
                     {isOwnProfile && user?.omId && (
                       <>
-                        <div className="hidden md:block w-1 h-1 bg-gray-600 rounded-full"></div>
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
+                        <div className="hidden sm:block w-1 h-1 bg-gray-600 rounded-full"></div>
+                        <div className="flex items-center gap-2 text-gray-400">
                           <FileText size={14} />
-                          <span>
-                            OM:{" "}
-                            <span className="text-white font-mono tracking-wider">
-                              {user.omId}
-                            </span>
+                          <span className="whitespace-nowrap">
+                            OM: <span className="text-white font-mono">{user.omId}</span>
                           </span>
                         </div>
                       </>
@@ -462,38 +507,38 @@ export function ProfilePage() {
                 </div>
 
                 {/* Stats */}
-                <div className="flex items-center gap-3">
-                  <div className="bg-[#0f1015] rounded-xl p-4 border border-white/5 text-center min-w-[100px] hover:border-primary/50 transition-all group relative overflow-hidden">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full">
+                  <div className="bg-[#0f1015] rounded-xl p-3 sm:p-4 border border-white/5 text-center hover:border-primary/50 transition-all group relative overflow-hidden">
                     <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors"></div>
                     <div className="relative z-10">
                       <div className="text-gray-500 text-[10px] uppercase tracking-widest font-bold mb-1 group-hover:text-primary transition-colors">
                         Csapat
                       </div>
-                      <div className="text-2xl font-black text-white">
+                      <div className="text-xl sm:text-2xl font-black text-white">
                         {effectiveTeams.length}
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-[#0f1015] rounded-xl p-4 border border-white/5 text-center min-w-[100px] hover:border-purple-500/50 transition-all group relative overflow-hidden">
+                  <div className="bg-[#0f1015] rounded-xl p-3 sm:p-4 border border-white/5 text-center hover:border-purple-500/50 transition-all group relative overflow-hidden">
                     <div className="absolute inset-0 bg-purple-500/5 group-hover:bg-purple-500/10 transition-colors"></div>
                     <div className="relative z-10">
                       <div className="text-gray-500 text-[10px] uppercase tracking-widest font-bold mb-1 group-hover:text-purple-400 transition-colors">
                         Verseny
                       </div>
-                      <div className="text-2xl font-black text-white">
+                      <div className="text-xl sm:text-2xl font-black text-white">
                         {effectiveTournaments.length}
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-[#0f1015] rounded-xl p-4 border border-white/5 text-center min-w-[100px] hover:border-blue-500/50 transition-all group relative overflow-hidden">
+                  <div className="bg-[#0f1015] rounded-xl p-3 sm:p-4 border border-white/5 text-center hover:border-blue-500/50 transition-all group relative overflow-hidden">
                     <div className="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors"></div>
                     <div className="relative z-10">
                       <div className="text-gray-500 text-[10px] uppercase tracking-widest font-bold mb-1 group-hover:text-blue-400 transition-colors">
                         ELO
                       </div>
-                      <div className="text-2xl font-black text-white">
+                      <div className="text-xl sm:text-2xl font-black text-white">
                         {isOwnProfile
                           ? user?.elo || 1000
                           : (currentProfile as any)?.elo || 1000}
@@ -502,13 +547,13 @@ export function ProfilePage() {
                   </div>
 
                   {isOwnProfile && (
-                    <div className="bg-[#0f1015] rounded-xl p-4 border border-white/5 text-center min-w-[100px] hover:border-green-500/50 transition-all group relative overflow-hidden">
+                    <div className="bg-[#0f1015] rounded-xl p-3 sm:p-4 border border-white/5 text-center hover:border-green-500/50 transition-all group relative overflow-hidden">
                       <div className="absolute inset-0 bg-green-500/5 group-hover:bg-green-500/10 transition-colors"></div>
                       <div className="relative z-10">
                         <div className="text-gray-500 text-[10px] uppercase tracking-widest font-bold mb-1 group-hover:text-green-400 transition-colors">
                           Időegyenleg
                         </div>
-                        <div className="text-2xl font-black text-white">
+                        <div className="text-xl sm:text-2xl font-black text-white">
                           {formatTimeBalance(user?.timeBalanceSeconds || 0)}
                         </div>
                       </div>
@@ -559,12 +604,20 @@ export function ProfilePage() {
           {/* Main Column */}
           <div className="lg:col-span-2 space-y-6">
             {/* Skill Levels Section */}
-            <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden">
+            <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-visible">
               <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
                 <h2 className="text-lg font-bold text-white flex items-center gap-2">
                   <Shield size={20} className="text-primary" />
                   Játék Skillek
                 </h2>
+                {isOwnProfile && (
+                  <button
+                    onClick={() => setIsAddGameModalOpen(true)}
+                    className="text-xs font-bold text-primary hover:text-white transition-colors flex items-center gap-1 uppercase tracking-wider"
+                  >
+                    <Plus size={14} /> Játék hozzáadása
+                  </button>
+                )}
               </div>
 
               <div className="p-6">
@@ -574,7 +627,7 @@ export function ProfilePage() {
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {games.map((game) => {
+                    {displayedGames.map((game) => {
                       const ranks = gameRanks[game.id] || [];
                       let userRank;
                       if (isOwnProfile) {
@@ -603,10 +656,11 @@ export function ProfilePage() {
                       return (
                         <div
                           key={game.id}
-                          className="bg-[#0f1015]/50 border border-white/5 rounded-xl p-4 flex items-center justify-between hover:border-primary/30 transition-all group"
+                          className="bg-[#0f1015]/50 border border-white/5 rounded-xl p-4 hover:border-primary/30 transition-all group"
                         >
                           <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-lg bg-[#1a1b26] border border-white/10 flex items-center justify-center shadow-lg overflow-hidden group-hover:scale-105 transition-transform">
+                            {/* Left Side: Game Info */}
+                            <div className="w-12 h-12 rounded-lg bg-[#1a1b26] border border-white/10 flex items-center justify-center shadow-lg overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
                               {game.imageUrl ? (
                                 <img
                                   src={game.imageUrl}
@@ -619,14 +673,14 @@ export function ProfilePage() {
                                 </span>
                               )}
                             </div>
-                            <div>
-                              <h3 className="font-bold text-white group-hover:text-primary transition-colors">
+                            <div className="min-w-0 flex-1">
+                              <h3 className="font-bold text-white group-hover:text-primary transition-colors truncate">
                                 {game.name}
                               </h3>
                               <div className="text-sm text-gray-400 mt-0.5">
                                 {userRank?.rank ? (
-                                  <span className="flex items-center gap-1.5">
-                                    <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                  <span className="flex items-center gap-1.5 whitespace-nowrap">
+                                    <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
                                     {userRank.rank.name}{" "}
                                     <span className="text-white/30">|</span>{" "}
                                     {userRank.rank.value}p
@@ -640,25 +694,126 @@ export function ProfilePage() {
                             </div>
                           </div>
 
+                          {/* Actions Row - Separate row below game info */}
                           {isOwnProfile && (
-                            <div className="relative">
+                            <div className="flex items-center gap-3 mt-4 pt-4 border-t border-white/5">
                               {ranks.length > 0 && (
-                                <RankSelector
-                                  gameId={game.id}
-                                  currentRankId={currentRankId}
-                                  ranks={ranks}
-                                  onSelect={(gId, rId) => handleRankChange(gId, rId)}
-                                />
+                                <>
+                                  {/* Favorite Toggle */}
+                                  <button
+                                    onClick={async () => {
+                                      const isFavorite = user?.favoriteGameId === game.id;
+                                      try {
+                                        const newFavoriteId = isFavorite ? null : game.id;
+
+                                        // Optimistic update
+                                        dispatch(updateUser({ ...user!, favoriteGameId: newFavoriteId, favoriteGame: newFavoriteId ? { id: game.id, imageUrl: game.imageUrl || '' } : undefined }));
+
+                                        await apiFetch(`${API_URL}/users/${user?.id}`, {
+                                          method: "PATCH",
+                                          headers: { "Content-Type": "application/json" },
+                                          body: JSON.stringify({ favoriteGameId: newFavoriteId }),
+                                        });
+                                        toast.success(isFavorite ? "Kedvenc játék eltávolítva" : "Kedvenc játék beállítva");
+                                      } catch (e) {
+                                        console.error(e);
+                                        toast.error("Hiba történt");
+                                      }
+                                    }}
+                                    className={`w-10 h-10 flex items-center justify-center rounded-xl border transition-all shrink-0 ${user?.favoriteGameId === game.id
+                                      ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20 shadow-[0_0_15px_rgba(234,179,8,0.2)]"
+                                      : "bg-[#1a1b26] text-gray-400 border-white/10 hover:text-yellow-500 hover:border-yellow-500/50"
+                                      }`}
+                                    title={user?.favoriteGameId === game.id ? "Kedvenc játék eltávolítása" : "Beállítás kedvencként"}
+                                  >
+                                    <Star size={18} fill={user?.favoriteGameId === game.id ? "currentColor" : "none"} />
+                                  </button>
+
+                                  <div className="shrink-0">
+                                    <RankSelector
+                                      gameId={game.id}
+                                      currentRankId={currentRankId}
+                                      ranks={ranks}
+                                      onSelect={(gId, rId) => handleRankChange(gId, rId)}
+                                    />
+                                  </div>
+
+                                  <button
+                                    onClick={() => handleRankChange(game.id, "")}
+                                    className="w-10 h-10 flex items-center justify-center rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20 transition-all hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] shrink-0"
+                                    title="Játék eltávolítása"
+                                  >
+                                    <Trash2 size={18} />
+                                  </button>
+                                </>
                               )}
                             </div>
                           )}
                         </div>
                       );
                     })}
+                    {displayedGames.length === 0 && (
+                      <div className="col-span-1 md:col-span-2 text-center py-8 border-2 border-dashed border-white/5 rounded-xl">
+                        <p className="text-gray-500">Nincs beállított rang egy játéknál sem.</p>
+                        {isOwnProfile && (
+                          <button
+                            onClick={() => setIsAddGameModalOpen(true)}
+                            className="mt-2 text-primary hover:underline font-medium"
+                          >
+                            Játék hozzáadása
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
             </div>
+
+            {/* Add Game Modal */}
+            {isAddGameModalOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+                <div className="w-full max-w-md bg-[#1a1b26] border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+                  <div className="flex items-center justify-between p-6 border-b border-white/10">
+                    <h2 className="text-xl font-bold text-white">Játék hozzáadása</h2>
+                    <button
+                      onClick={() => setIsAddGameModalOpen(false)}
+                      className="text-gray-400 hover:text-white transition-colors"
+                    >
+                      <X size={20} />
+                    </button>
+                  </div>
+                  <div className="p-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                    <div className="space-y-2">
+                      {games.filter(g => !userRanks.find(ur => ur.gameId === g.id)).length === 0 ? (
+                        <p className="text-center text-gray-500 py-4">Már minden játékot hozzáadtál.</p>
+                      ) : (
+                        games.filter(g => !userRanks.find(ur => ur.gameId === g.id)).map(game => (
+                          <button
+                            key={game.id}
+                            onClick={() => {
+                              toggleGameVisibility(game.id);
+                              setIsAddGameModalOpen(false);
+                            }}
+                            className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/10 group text-left"
+                          >
+                            <div className="w-10 h-10 rounded-lg bg-[#0f1015] flex items-center justify-center overflow-hidden border border-white/5">
+                              {game.imageUrl ? (
+                                <img src={game.imageUrl} alt={game.name} className="w-full h-full object-cover" />
+                              ) : (
+                                <span className="font-bold text-gray-500">{game.name.charAt(0)}</span>
+                              )}
+                            </div>
+                            <span className="font-medium text-white group-hover:text-primary transition-colors">{game.name}</span>
+                            <Plus size={16} className="ml-auto text-gray-500 group-hover:text-primary" />
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Teams Section */}
             <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden">
