@@ -141,6 +141,7 @@ export const createTournament = createAsyncThunk(
             teamSize?: number | null;
             seedingMethod?: 'STANDARD' | 'SEQUENTIAL' | 'RANDOM';
             requireRank?: boolean;
+            streamUrl?: string;
         }
     ) => {
         const token = getToken();
@@ -184,6 +185,7 @@ export const updateTournament = createAsyncThunk(
                 teamSize?: number | null;
                 seedingMethod?: 'STANDARD' | 'SEQUENTIAL' | 'RANDOM';
                 requireRank?: boolean;
+                streamUrl?: string;
             }
         }
 

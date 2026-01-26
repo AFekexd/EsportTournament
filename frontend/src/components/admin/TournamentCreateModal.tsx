@@ -30,6 +30,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
     participationType: "TEAM", // 'INDIVIDUAL' or 'TEAM'
     teamSize: 5,
     requireRank: true,
+    streamUrl: "",
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -87,6 +88,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
           teamSize:
             formData.participationType === "INDIVIDUAL" ? 1 : formData.teamSize,
           requireRank: formData.requireRank,
+          streamUrl: formData.streamUrl || undefined,
         })
       ).unwrap();
 
@@ -191,8 +193,8 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                     })
                   }
                   className={`px-4 py-3 rounded-xl border font-medium transition-all ${formData.participationType === "INDIVIDUAL"
-                      ? "bg-primary/20 border-primary text-primary"
-                      : "bg-[#0f1015] border-white/10 text-gray-400 hover:border-white/20"
+                    ? "bg-primary/20 border-primary text-primary"
+                    : "bg-[#0f1015] border-white/10 text-gray-400 hover:border-white/20"
                     }`}
                 >
                   Egyéni (1v1)
@@ -203,8 +205,8 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                     setFormData({ ...formData, participationType: "TEAM" })
                   }
                   className={`px-4 py-3 rounded-xl border font-medium transition-all ${formData.participationType === "TEAM"
-                      ? "bg-primary/20 border-primary text-primary"
-                      : "bg-[#0f1015] border-white/10 text-gray-400 hover:border-white/20"
+                    ? "bg-primary/20 border-primary text-primary"
+                    : "bg-[#0f1015] border-white/10 text-gray-400 hover:border-white/20"
                     }`}
                 >
                   Csapat
@@ -300,6 +302,25 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
 
             <div>
               <label
+                htmlFor="tournament-streamUrl"
+                className="block text-sm font-medium text-gray-300 mb-2"
+              >
+                Stream URL (Twitch/TikTok/YouTube)
+              </label>
+              <input
+                id="tournament-streamUrl"
+                type="text"
+                className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
+                value={formData.streamUrl}
+                onChange={(e) =>
+                  setFormData({ ...formData, streamUrl: e.target.value })
+                }
+                placeholder="https://twitch.tv/..."
+              />
+            </div>
+
+            <div>
+              <label
                 htmlFor="tournament-maxTeams"
                 className="block text-sm font-medium text-gray-300 mb-2"
               >
@@ -343,8 +364,8 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                 id="tournament-regDeadline"
                 type="datetime-local"
                 className={`w-full px-4 py-3 bg-[#0f1015] border ${errors.registrationDeadline
-                    ? "border-red-500"
-                    : "border-white/10"
+                  ? "border-red-500"
+                  : "border-white/10"
                   } rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
                 value={formData.registrationDeadline}
                 onChange={(e) =>

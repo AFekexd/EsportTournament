@@ -77,6 +77,7 @@ tournamentsRouter.post(
             teamSize,
             requireRank,
             seedingMethod,
+            streamUrl,
         } = req.body;
 
         if (!name || !gameId || !maxTeams || !startDate || !registrationDeadline) {
@@ -116,6 +117,7 @@ tournamentsRouter.post(
                 teamSize: teamSize ? parseInt(teamSize) : undefined,
                 requireRank: requireRank !== undefined ? requireRank : undefined,
                 seedingMethod: seedingMethod || 'STANDARD',
+                streamUrl: streamUrl || undefined,
             },
             include: { game: true },
         });
@@ -290,6 +292,7 @@ tournamentsRouter.patch(
             teamSize,
             requireRank,
             seedingMethod,
+            streamUrl,
         } = req.body;
 
 
@@ -320,7 +323,9 @@ tournamentsRouter.patch(
             ...(qualifierMinPoints !== undefined && { qualifierMinPoints: parseInt(qualifierMinPoints) }),
             ...(teamSize !== undefined && { teamSize: teamSize ? parseInt(teamSize) : null }),
             ...(requireRank !== undefined && { requireRank }),
+            ...(requireRank !== undefined && { requireRank }),
             ...(seedingMethod && { seedingMethod }),
+            ...(streamUrl !== undefined && { streamUrl }),
         };
 
         const { calculateDiff } = await import('../utils/diffUtils.js');
@@ -396,8 +401,8 @@ tournamentsRouter.post(
         // Web-Discord Sync
         const { webSyncService } = await import('../services/webSyncService.js');
         await webSyncService.onTournamentRegister(
-            entry.userId || currentUser.id, 
-            req.params.id, 
+            entry.userId || currentUser.id,
+            req.params.id,
             entry.teamId || undefined
         );
 
