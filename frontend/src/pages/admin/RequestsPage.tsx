@@ -57,7 +57,7 @@ export default function RequestsPage() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => {},
+    onConfirm: () => { },
     variant: "primary",
   });
 
@@ -188,21 +188,19 @@ export default function RequestsPage() {
           <div className="flex bg-white/5 rounded-lg p-1 border border-white/10">
             <button
               onClick={() => setActiveTab("pending")}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                activeTab === "pending"
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${activeTab === "pending"
                   ? "bg-primary text-white shadow-lg"
                   : "text-gray-400 hover:text-white"
-              }`}
+                }`}
             >
               Váratlanok
             </button>
             <button
               onClick={() => setActiveTab("history")}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                activeTab === "history"
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${activeTab === "history"
                   ? "bg-primary text-white shadow-lg"
                   : "text-gray-400 hover:text-white"
-              }`}
+                }`}
             >
               Előzmények
             </button>
@@ -256,16 +254,15 @@ export default function RequestsPage() {
                           ? "Felhasználói Profil"
                           : "Csapat Profil"}
                         <span className="text-gray-400 font-normal text-sm">
-                          • {request.entityName}
+                          • {request.requester.displayName || request.entityName}
                         </span>
                         {/* Status Badge for History Tab */}
                         {activeTab === "history" && (
                           <span
-                            className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border ml-2 ${
-                              request.status === "APPROVED"
+                            className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border ml-2 ${request.status === "APPROVED"
                                 ? "bg-green-500/10 text-green-500 border-green-500/20"
                                 : "bg-red-500/10 text-red-500 border-red-500/20"
-                            }`}
+                              }`}
                           >
                             {request.status === "APPROVED"
                               ? "Elfogadva"
@@ -274,7 +271,7 @@ export default function RequestsPage() {
                         )}
                       </h3>
                       <div className="text-sm text-gray-400 flex items-center gap-2">
-                        <span>Kérelmező: {request.requester.username}</span>
+                        <span>Kérelmező: {request.requester.displayName || request.requester.username}</span>
                         <span>•</span>
                         <span>
                           {format(
