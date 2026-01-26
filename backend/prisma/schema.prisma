@@ -149,6 +149,9 @@ model User {
   // Favorite Game for Profile Cover
   favoriteGameId     String?
   favoriteGame       Game?    @relation("UserFavoriteGame", fields: [favoriteGameId], references: [id])
+  
+  // Terms of Service
+  tosAcceptedAt      DateTime?
 }
 
 // Csapat

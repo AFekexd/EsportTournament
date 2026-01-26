@@ -36,6 +36,7 @@ import { AdminLogs } from "./components/admin/AdminLogs";
 import ReleasesPage from "./pages/admin/ReleasesPage";
 import { PuffLoader } from "react-spinners";
 import { Toaster, toast } from "sonner";
+import { TermsModal } from "./components/common/TermsModal";
 
 function AppContent() {
   const dispatch = useAppDispatch();
@@ -120,6 +121,7 @@ function AppContent() {
         </Routes>
       )}
       <Toaster />
+      <TermsModal />
     </BrowserRouter>
   );
 }

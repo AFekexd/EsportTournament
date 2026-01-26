@@ -41,6 +41,7 @@ export interface User {
         imageUrl: string;
     };
     omId?: string | null;
+    tosAcceptedAt?: string | null;
 }
 
 export interface Team {

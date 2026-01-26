@@ -55,7 +55,8 @@ usersRouter.get(
                     email: true,
                     omId: true,
                     createdAt: true,
-                    timeBalanceSeconds: true
+                    timeBalanceSeconds: true,
+                    tosAcceptedAt: true
                 }
             }),
             prisma.user.count({ where })
@@ -491,6 +492,35 @@ usersRouter.patch(
         }
     })
 );
+
+// Accept Terms of Service
+usersRouter.post(
+    '/me/accept-tos',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const currentUser = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!currentUser) {
+            throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
+        }
+
+        const data = await prisma.user.update({
+            where: { id: currentUser.id },
+            data: { tosAcceptedAt: new Date() }
+        });
+
+        await logSystemActivity(
+            'USER_TOS_ACCEPT',
+            `User ${currentUser.username} accepted Terms of Service`,
+            { userId: currentUser.id }
+        );
+
+        res.json({ success: true, data });
+    })
+);
+
 // Get public user profile
 usersRouter.get(
     '/:id/public',

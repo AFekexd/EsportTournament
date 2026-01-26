@@ -723,40 +723,41 @@ export function ProfilePage() {
                           </div>
 
                           {/* Actions Row - Separate row below game info */}
+                          {/* Actions Row - Separate row below game info */}
                           {isOwnProfile && (
                             <div className="flex items-center gap-3 mt-4 pt-4 border-t border-white/5">
-                              {ranks.length > 0 && (
+                              {/* Favorite Toggle - Always visible */}
+                              <button
+                                onClick={async () => {
+                                  const isFavorite = user?.favoriteGameId === game.id;
+                                  try {
+                                    const newFavoriteId = isFavorite ? null : game.id;
+
+                                    // Optimistic update
+                                    dispatch(updateUser({ ...user!, favoriteGameId: newFavoriteId, favoriteGame: newFavoriteId ? { id: game.id, imageUrl: game.imageUrl || '' } : undefined }));
+
+                                    await apiFetch(`${API_URL}/users/${user?.id}`, {
+                                      method: "PATCH",
+                                      headers: { "Content-Type": "application/json" },
+                                      body: JSON.stringify({ favoriteGameId: newFavoriteId }),
+                                    });
+                                    toast.success(isFavorite ? "Kedvenc játék eltávolítva" : "Kedvenc játék beállítva");
+                                  } catch (e) {
+                                    console.error(e);
+                                    toast.error("Hiba történt");
+                                  }
+                                }}
+                                className={`w-10 h-10 flex items-center justify-center rounded-xl border transition-all shrink-0 ${user?.favoriteGameId === game.id
+                                  ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20 shadow-[0_0_15px_rgba(234,179,8,0.2)]"
+                                  : "bg-[#1a1b26] text-gray-400 border-white/10 hover:text-yellow-500 hover:border-yellow-500/50"
+                                  }`}
+                                title={user?.favoriteGameId === game.id ? "Kedvenc játék eltávolítása" : "Beállítás kedvencként"}
+                              >
+                                <Star size={18} fill={user?.favoriteGameId === game.id ? "currentColor" : "none"} />
+                              </button>
+
+                              {ranks.length > 0 ? (
                                 <>
-                                  {/* Favorite Toggle */}
-                                  <button
-                                    onClick={async () => {
-                                      const isFavorite = user?.favoriteGameId === game.id;
-                                      try {
-                                        const newFavoriteId = isFavorite ? null : game.id;
-
-                                        // Optimistic update
-                                        dispatch(updateUser({ ...user!, favoriteGameId: newFavoriteId, favoriteGame: newFavoriteId ? { id: game.id, imageUrl: game.imageUrl || '' } : undefined }));
-
-                                        await apiFetch(`${API_URL}/users/${user?.id}`, {
-                                          method: "PATCH",
-                                          headers: { "Content-Type": "application/json" },
-                                          body: JSON.stringify({ favoriteGameId: newFavoriteId }),
-                                        });
-                                        toast.success(isFavorite ? "Kedvenc játék eltávolítva" : "Kedvenc játék beállítva");
-                                      } catch (e) {
-                                        console.error(e);
-                                        toast.error("Hiba történt");
-                                      }
-                                    }}
-                                    className={`w-10 h-10 flex items-center justify-center rounded-xl border transition-all shrink-0 ${user?.favoriteGameId === game.id
-                                      ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20 shadow-[0_0_15px_rgba(234,179,8,0.2)]"
-                                      : "bg-[#1a1b26] text-gray-400 border-white/10 hover:text-yellow-500 hover:border-yellow-500/50"
-                                      }`}
-                                    title={user?.favoriteGameId === game.id ? "Kedvenc játék eltávolítása" : "Beállítás kedvencként"}
-                                  >
-                                    <Star size={18} fill={user?.favoriteGameId === game.id ? "currentColor" : "none"} />
-                                  </button>
-
                                   <div className="shrink-0">
                                     <RankSelector
                                       gameId={game.id}
@@ -774,6 +775,18 @@ export function ProfilePage() {
                                     <Trash2 size={18} />
                                   </button>
                                 </>
+                              ) : (
+                                <button
+                                  onClick={() => {
+                                    // Just remove from visible list if no ranks
+                                    setVisibleGameIds(prev => prev.filter(id => id !== game.id));
+                                    toast.success("Játék eltávolítva a nézetből");
+                                  }}
+                                  className="w-10 h-10 flex items-center justify-center rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20 transition-all hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] shrink-0 ml-auto"
+                                  title="Játék eltávolítása"
+                                >
+                                  <Trash2 size={18} />
+                                </button>
                               )}
                             </div>
                           )}

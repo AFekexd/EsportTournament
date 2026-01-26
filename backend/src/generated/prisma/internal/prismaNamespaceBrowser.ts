@@ -131,7 +131,8 @@ export const UserScalarFieldEnum = {
   updatedAt: 'updatedAt',
   lastLogoutAt: 'lastLogoutAt',
   achievements: 'achievements',
-  favoriteGameId: 'favoriteGameId'
+  favoriteGameId: 'favoriteGameId',
+  tosAcceptedAt: 'tosAcceptedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
