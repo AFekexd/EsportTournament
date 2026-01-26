@@ -57,6 +57,7 @@ export function DiscordConnectModal({ isOpen, onClose }: DiscordConnectModalProp
                             </div>
                         </a>
 
+                        <p className="text-center text-sm text-gray-500 mb-4">Majd</p>
                         {/* Option 2: OAuth Link Account */}
                         <button
                             onClick={() => {

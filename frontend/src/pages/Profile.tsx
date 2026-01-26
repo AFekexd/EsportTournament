@@ -23,7 +23,7 @@ import MatchHistory from "../components/profile/MatchHistory";
 import MatchHistoryModal from "../components/profile/MatchHistoryModal";
 import { fetchUserMatches } from "../store/slices/usersSlice";
 import { RankSelector } from "../components/profile/RankSelector";
-
+import { DiscordConnectModal } from "../components/common/DiscordConnectModal";
 import { updateUser } from "../store/slices/authSlice";
 import { apiFetch } from "../lib/api-client";
 import { API_URL } from "../config";
@@ -63,6 +63,7 @@ export function ProfilePage() {
   const [isAddGameModalOpen, setIsAddGameModalOpen] = useState(false);
   // Track games that are temporarily visible (user added them but hasn't selected a rank yet)
   const [visibleGameIds, setVisibleGameIds] = useState<string[]>([]);
+  const [isDiscordModalOpen, setIsDiscordModalOpen] = useState(false);
 
   // ESC kezelés az Avatar Lightbox-hoz
   useEffect(() => {
@@ -503,6 +504,28 @@ export function ProfilePage() {
                         </div>
                       </>
                     )}
+
+                    <div className="hidden sm:block w-1 h-1 bg-gray-600 rounded-full"></div>
+                    <div className="flex items-center gap-2">
+                      {/* Generic Discord/Gamepad Icon acting as Discord indicator */}
+                      <Gamepad2 size={14} className={profileUser?.discordId ? "text-[#5865F2]" : "text-gray-500"} />
+                      <span className={`whitespace-nowrap ${profileUser?.discordId ? "text-[#5865F2] font-medium" : "text-gray-500"}`}>
+                        {profileUser?.discordId ? (
+                          "Discord: Összekötve"
+                        ) : (
+                          isOwnProfile ? (
+                            <button
+                              onClick={() => setIsDiscordModalOpen(true)}
+                              className="hover:text-[#5865F2] hover:underline transition-colors"
+                            >
+                              Discord: Csatlakozás
+                            </button>
+                          ) : (
+                            "Discord: Nincs összekötve"
+                          )
+                        )}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
@@ -598,6 +621,11 @@ export function ProfilePage() {
           matches={userMatches || []}
           currentUserId={isOwnProfile ? user?.id || '' : (profileUser as any)?.id || ''}
           isAdmin={user?.role === 'ADMIN'}
+        />
+
+        <DiscordConnectModal
+          isOpen={isDiscordModalOpen}
+          onClose={() => setIsDiscordModalOpen(false)}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

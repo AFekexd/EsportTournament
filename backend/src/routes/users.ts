@@ -562,7 +562,8 @@ usersRouter.get(
                 rankValue: ur.rank.value,
                 rankImage: ur.rank.image
             })),
-            favoriteGame: user.favoriteGame || undefined
+            favoriteGame: user.favoriteGame || undefined,
+            discordId: user.discordId
         };
 
         res.json({ success: true, data: publicProfile });

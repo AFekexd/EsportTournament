@@ -27,6 +27,7 @@ interface PublicProfile {
     rankValue: number;
     rankImage: string | null;
   }[];
+  discordId?: string;
 }
 
 export interface Match {
