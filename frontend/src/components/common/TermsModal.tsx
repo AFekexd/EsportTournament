@@ -92,11 +92,25 @@ export function TermsModal() {
                          Assumes rules.pdf is in public folder.
                      */}
                     {!pdfError ? (
-                        <iframe
-                            src={`/rules.pdf?t=${pdfHash}#toolbar=0&navpanes=0`}
-                            className="w-full h-full min-h-[400px] rounded-lg bg-white"
-                            title="Házirend"
-                        />
+                        <div className="relative w-full h-full min-h-[400px]">
+                            <iframe
+                                src={`/rules.pdf?t=${pdfHash}#toolbar=0&navpanes=0`}
+                                className="w-full h-full rounded-lg bg-white"
+                                title="Házirend"
+                            />
+                            {/* Overlay button for fallback access */}
+                            <div className="absolute top-2 right-2">
+                                <a
+                                    href="/rules.pdf"
+                                    target="_blank"
+                                    className="px-4 py-2 bg-black/50 hover:bg-black/80 backdrop-blur text-white text-xs rounded-lg transition-all flex items-center gap-2 border border-white/10"
+                                    title="Ha nem jelenik meg a dokumentum"
+                                >
+                                    <FileText size={14} />
+                                    Megnyitás külön lapon
+                                </a>
+                            </div>
+                        </div>
                     ) : (
                         <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center text-center p-8 bg-[#161722]">
                             <ScrollText size={48} className="text-gray-600 mb-4" />
