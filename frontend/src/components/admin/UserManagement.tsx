@@ -368,6 +368,45 @@ export function UserManagement() {
               </svg>
             </div>
           </div>
+
+          {/* Reset ToS Button */}
+          <button
+            onClick={() => {
+              setConfirmModal({
+                isOpen: true,
+                title: "Házirend Reset",
+                message: "Biztosan alaphelyzetbe állítod MINDEN felhasználó házirend elfogadását? Mindenkinek újra el kell fogadnia a szabályzatot belépéskor!",
+                variant: "danger",
+                confirmLabel: "Igen, Reset",
+                onConfirm: async () => {
+                  try {
+                    const token = authService.keycloak?.token;
+                    if (!token) return;
+
+                    const response = await fetch(`${API_URL}/users/reset-tos`, {
+                      method: 'POST',
+                      headers: { Authorization: `Bearer ${token}` }
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                      toast.success(data.message || "Házirend alaphelyzetbe állítva");
+                      fetchUsers();
+                    } else {
+                      toast.error("Hiba történt");
+                    }
+                  } catch (e) {
+                    console.error(e);
+                    toast.error("Hiba a szerverrel való kommunikációban");
+                  }
+                }
+              });
+            }}
+            className="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-500 border border-red-500/20 rounded-lg hover:bg-red-500 hover:text-white transition-all whitespace-nowrap"
+          >
+            <Shield size={18} />
+            Házirend Reset
+          </button>
         </div>
       </div>
 

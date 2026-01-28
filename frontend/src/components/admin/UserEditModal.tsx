@@ -13,6 +13,7 @@ interface UserEditModalProps {
     displayName: string | null;
     email: string;
     avatarUrl: string | null;
+    elo: number; // Added ELO
   };
   onClose: () => void;
   onSuccess: () => void;
@@ -24,6 +25,7 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
   onSuccess,
 }) => {
   const [displayName, setDisplayName] = useState(user.displayName || "");
+  const [elo, setElo] = useState<number | string>(user.elo); // ELO state
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -58,7 +60,10 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ displayName }),
+        body: JSON.stringify({
+          displayName,
+          elo: typeof elo === 'string' ? parseInt(elo) : elo
+        }),
       });
 
       if (response.ok) {
@@ -201,6 +206,30 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
             </div>
           </div>
 
+          {/* ELO Edit */}
+          <div className="bg-white/5 p-4 rounded-lg border border-white/5">
+            <h3 className="text-sm font-medium text-gray-400 mb-2">Verseny pontszám (ELO)</h3>
+            <div className="flex items-center gap-3">
+              <input
+                type="number"
+                value={elo}
+                onChange={(e) => setElo(e.target.value)}
+                className="flex-1 bg-black/40 border border-white/10 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500"
+                placeholder="1000"
+              />
+              <button
+                onClick={() => setElo(1000)}
+                className="px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded text-sm text-gray-400 hover:text-white transition-colors"
+                title="Visszaállítás alapértelmezettre (1000)"
+              >
+                Reset
+              </button>
+            </div>
+            <p className="text-xs text-gray-500 mt-2">
+              Ezzel módosíthatod a felhasználó rangsorolási pontszámát. Csak indokolt esetben használd!
+            </p>
+          </div>
+
           {/* Quick Actions */}
           <div className="grid grid-cols-1 gap-3">
             {/* Avatar Reset */}
@@ -208,8 +237,8 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
               onClick={handleResetAvatar}
               disabled={!user.avatarUrl || isLoading}
               className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${!user.avatarUrl
-                  ? "opacity-50 cursor-not-allowed border-white/5"
-                  : "hover:bg-red-500/10 border-white/10 hover:border-red-500/30"
+                ? "opacity-50 cursor-not-allowed border-white/5"
+                : "hover:bg-red-500/10 border-white/10 hover:border-red-500/30"
                 }`}
             >
               <div className="flex items-center gap-3">

@@ -345,7 +345,8 @@ usersRouter.patch(
             emailPrefSystem,
             emailPrefWeeklyDigest,
             steamId,
-            favoriteGameId
+            favoriteGameId,
+            elo
         } = req.body as {
             displayName?: string;
             avatarUrl?: string;
@@ -357,6 +358,7 @@ usersRouter.patch(
             emailPrefWeeklyDigest?: boolean;
             steamId?: string;
             favoriteGameId?: string | null;
+            elo?: number;
         };
 
         // --- SPLIT UPDATE LOGIC ---
@@ -398,6 +400,14 @@ usersRouter.patch(
             if (emailPrefWeeklyDigest !== undefined) immediateData.emailPrefWeeklyDigest = emailPrefWeeklyDigest;
             if (steamId !== undefined) immediateData.steamId = steamId;
             if (favoriteGameId !== undefined) immediateData.favoriteGameId = favoriteGameId;
+
+            // ELO Update (Admin only)
+            if (elo !== undefined) {
+                if (currentUser.role !== UserRole.ADMIN) {
+                    throw new ApiError('Csak adminisztrátor módosíthatja az ELO pontszámot', 403, 'FORBIDDEN');
+                }
+                immediateData.elo = elo;
+            }
         }
 
         // 2. Handle Pending Request (Atomic creation)
