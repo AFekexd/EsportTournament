@@ -531,6 +531,33 @@ usersRouter.post(
     })
 );
 
+// Reset all users ToS (Admin only)
+usersRouter.post(
+    '/reset-tos',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const currentUser = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!currentUser || currentUser.role !== UserRole.ADMIN) {
+            throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
+        }
+
+        const result = await prisma.user.updateMany({
+            data: { tosAcceptedAt: null }
+        });
+
+        await logSystemActivity(
+            'SYSTEM_TOS_RESET',
+            `Admin ${currentUser.username} reset ToS acceptance for all users`,
+            { adminId: currentUser.id, count: result.count }
+        );
+
+        res.json({ success: true, message: `Sikeresen alaphelyzetbe állítva ${result.count} felhasználónál.` });
+    })
+);
+
 // Get public user profile
 usersRouter.get(
     '/:id/public',
