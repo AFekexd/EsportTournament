@@ -25,7 +25,7 @@ import {
 } from "../store/slices/tournamentsSlice";
 // fetchTeams moved to TeamManagement
 // import { fetchTeams } from "../store/slices/teamsSlice";
-import { fetchSchedules, fetchComputers } from "../store/slices/bookingsSlice";
+
 import { Link } from "react-router-dom";
 import "./Admin.css";
 
