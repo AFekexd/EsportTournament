@@ -1,48 +1,41 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { apiFetch } from '../../lib/api-client';
 import { API_URL } from '../../config';
 import { useAppDispatch } from '../../hooks/useRedux';
 import { updateUser } from '../../store/slices/authSlice';
 import { toast } from 'sonner';
-import { ScrollText, CheckCircle2, FileText } from 'lucide-react';
+import { ScrollText, CheckCircle2, FileText, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
+
+// Set the worker source for pdf.js
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 export function TermsModal() {
     const { user, isAuthenticated } = useAuth();
     const dispatch = useAppDispatch();
     const [isLoading, setIsLoading] = useState(false);
-    const [pdfError, setPdfError] = useState(false); // Keep pdfError state
-    const [pdfHash, setPdfHash] = useState(Date.now()); // Add pdfHash state
+    const [pdfError, setPdfError] = useState(false);
+    const [numPages, setNumPages] = useState<number | null>(null);
+    const [pageNumber, setPageNumber] = useState(1);
 
     // Only show if authenticated AND tosAcceptedAt is missing
     const shouldShow = isAuthenticated && user && !user.tosAcceptedAt;
 
-    useEffect(() => {
-        if (shouldShow) {
-            const timestamp = Date.now();
-            // Check if PDF exists to avoid iframe recursion (SPA fallback)
-            // Using GET instead of HEAD as some servers might handle HEAD differently
-            fetch(`/rules.pdf?t=${timestamp}`, { method: 'GET' })
-                .then(res => {
-                    const type = res.headers.get('content-type');
-                    console.log('PDF Check:', { ok: res.ok, status: res.status, type });
+    const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
+        setNumPages(numPages);
+        setPdfError(false);
+        setIsLoading(false);
+    }, []);
 
-                    // Strict check: Must be PDF and not HTML
-                    if (!res.ok || (type && !type.includes('application/pdf'))) {
-                        console.error('PDF Check Failed: Not a PDF');
-                        setPdfError(true);
-                    } else {
-                        setPdfError(false);
-                        setPdfHash(timestamp); // Update pdfHash on successful check
-                    }
-                })
-                .catch((e) => {
-                    console.error('PDF Check Error:', e);
-                    setPdfError(true);
-                });
-        }
-    }, [shouldShow]);
+    const onDocumentLoadError = useCallback((error: Error) => {
+        console.error('PDF Load Error:', error);
+        setPdfError(true);
+        setIsLoading(false);
+    }, []);
 
     if (!shouldShow) return null;
 
@@ -69,6 +62,9 @@ export function TermsModal() {
         }
     };
 
+    const goToPrevPage = () => setPageNumber(prev => Math.max(prev - 1, 1));
+    const goToNextPage = () => setPageNumber(prev => Math.min(prev + 1, numPages || 1));
+
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 animate-in fade-in duration-300">
             <div className="bg-[#161722] rounded-2xl border border-white/10 shadow-2xl w-full max-w-5xl h-[85vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-300">
@@ -85,32 +81,54 @@ export function TermsModal() {
                 </div>
 
                 {/* PDF Viewer / Content */}
-                <div className="flex-1 overflow-y-auto bg-[#0f1015] p-1">
-                    {/* Using iframe for PDF display. 
-                         Ideally use a proper PDF viewer lib like react-pdf for better control, 
-                         but iframe is standard for simple display. 
-                         Assumes rules.pdf is in public folder.
-                     */}
+                <div className="flex-1 overflow-y-auto bg-[#0f1015] p-4 flex flex-col items-center">
                     {!pdfError ? (
-                        <div className="relative w-full h-full min-h-[400px]">
-                            <iframe
-                                src={`/rules.pdf?t=${pdfHash}#toolbar=0&navpanes=0`}
-                                className="w-full h-full rounded-lg bg-white"
-                                title="Házirend"
-                            />
-                            {/* Overlay button for fallback access */}
-                            <div className="absolute top-2 right-2">
-                                <a
-                                    href="/rules.pdf"
-                                    target="_blank"
-                                    className="px-4 py-2 bg-black/50 hover:bg-black/80 backdrop-blur text-white text-xs rounded-lg transition-all flex items-center gap-2 border border-white/10"
-                                    title="Ha nem jelenik meg a dokumentum"
-                                >
-                                    <FileText size={14} />
-                                    Megnyitás külön lapon
-                                </a>
-                            </div>
-                        </div>
+                        <>
+                            {/* Page Navigation */}
+                            {numPages && numPages > 1 && (
+                                <div className="flex items-center gap-4 mb-4 sticky top-0 z-10 bg-[#0f1015] py-2 rounded-lg">
+                                    <button
+                                        onClick={goToPrevPage}
+                                        disabled={pageNumber <= 1}
+                                        className="p-2 rounded-lg bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        <ChevronLeft size={20} className="text-white" />
+                                    </button>
+                                    <span className="text-white text-sm">
+                                        {pageNumber} / {numPages}
+                                    </span>
+                                    <button
+                                        onClick={goToNextPage}
+                                        disabled={pageNumber >= numPages}
+                                        className="p-2 rounded-lg bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        <ChevronRight size={20} className="text-white" />
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* PDF Document */}
+                            <Document
+                                file="/rules.pdf"
+                                onLoadSuccess={onDocumentLoadSuccess}
+                                onLoadError={onDocumentLoadError}
+                                loading={
+                                    <div className="flex items-center justify-center p-8">
+                                        <Loader2 className="animate-spin text-primary" size={32} />
+                                        <span className="ml-2 text-white">Dokumentum betöltése...</span>
+                                    </div>
+                                }
+                                className="max-w-full"
+                            >
+                                <Page
+                                    pageNumber={pageNumber}
+                                    renderTextLayer={true}
+                                    renderAnnotationLayer={true}
+                                    className="shadow-2xl rounded-lg overflow-hidden"
+                                    width={Math.min(800, window.innerWidth - 64)}
+                                />
+                            </Document>
+                        </>
                     ) : (
                         <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center text-center p-8 bg-[#161722]">
                             <ScrollText size={48} className="text-gray-600 mb-4" />
