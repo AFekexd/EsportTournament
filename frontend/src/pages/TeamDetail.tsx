@@ -17,7 +17,6 @@ import {
   Shield,
   Calendar,
   Clock,
-  Share2,
 } from "lucide-react";
 import { ConfirmationModal } from "../components/common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
@@ -214,17 +213,7 @@ export function TeamDetailPage() {
 
 
             <div className="absolute top-6 right-6 flex gap-3 z-20">
-              <button
-                onClick={() => {
-                  const shareUrl = `https://esport-backend.pollak.info/share/teams/${currentTeam.id}`;
-                  navigator.clipboard.writeText(shareUrl);
-                  toast.success("Discord megosztási link másolva!");
-                }}
-                className="p-2 bg-black/40 hover:bg-black/60 text-white backdrop-blur-md border border-white/10 rounded-full transition-all hover:scale-105"
-                title="Megosztás Discord-on"
-              >
-                <Share2 size={20} />
-              </button>
+
               {isOwner && (
                 <>
                   {pendingRequest ? (
