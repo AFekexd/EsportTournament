@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { apiFetch } from '../../lib/api-client';
 import { API_URL } from '../../config';
@@ -12,9 +12,26 @@ export function TermsModal() {
     const { user, isAuthenticated } = useAuth();
     const dispatch = useAppDispatch();
     const [isLoading, setIsLoading] = useState(false);
+    const [pdfError, setPdfError] = useState(false);
 
     // Only show if authenticated AND tosAcceptedAt is missing
     const shouldShow = isAuthenticated && user && !user.tosAcceptedAt;
+
+    useEffect(() => {
+        if (shouldShow) {
+            // Check if PDF exists to avoid iframe recursion (SPA fallback)
+            fetch('/rules.pdf', { method: 'HEAD' })
+                .then(res => {
+                    const type = res.headers.get('content-type');
+                    if (!res.ok || (type && type.includes('text/html'))) {
+                        setPdfError(true);
+                    } else {
+                        setPdfError(false);
+                    }
+                })
+                .catch(() => setPdfError(true));
+        }
+    }, [shouldShow]);
 
     if (!shouldShow) return null;
 
@@ -63,11 +80,28 @@ export function TermsModal() {
                          but iframe is standard for simple display. 
                          Assumes rules.pdf is in public folder.
                      */}
-                    <iframe
-                        src="/rules.pdf#toolbar=0&navpanes=0"
-                        className="w-full h-full min-h-[400px] rounded-lg bg-white"
-                        title="Házirend"
-                    />
+                    {!pdfError ? (
+                        <iframe
+                            src="/rules.pdf#toolbar=0&navpanes=0"
+                            className="w-full h-full min-h-[400px] rounded-lg bg-white"
+                            title="Házirend"
+                        />
+                    ) : (
+                        <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center text-center p-8 bg-[#161722]">
+                            <ScrollText size={48} className="text-gray-600 mb-4" />
+                            <h3 className="text-lg font-bold text-white mb-2">A dokumentum nem tölthető be</h3>
+                            <p className="text-gray-400 mb-6 max-w-md">
+                                A házirend dokumentum (rules.pdf) jelenleg nem érhető el a szerveren, vagy hibás.
+                            </p>
+                            <a
+                                href="/rules.pdf"
+                                target="_blank"
+                                className="px-6 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white transition-colors border border-white/10"
+                            >
+                                Megnyitás új lapon (Megpróbálhatod így)
+                            </a>
+                        </div>
+                    )}
                 </div>
 
                 {/* Footer / Actions */}
