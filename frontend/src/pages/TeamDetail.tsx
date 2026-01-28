@@ -17,6 +17,7 @@ import {
   Shield,
   Calendar,
   Clock,
+  Share2,
 } from "lucide-react";
 import { ConfirmationModal } from "../components/common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
@@ -211,24 +212,38 @@ export function TeamDetailPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-[#1a1b26] to-transparent"></div>
             )}
 
-            {isOwner && (
-              <div className="absolute top-6 right-6 flex gap-3 z-20">
-                {pendingRequest ? (
-                  <div className="flex items-center gap-2 px-4 py-2 bg-yellow-500/20 backdrop-blur-md border border-yellow-500/50 rounded-full text-yellow-500 font-bold animate-pulse">
-                    <Clock size={16} />
-                    <span>Módosítás függőben</span>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => setShowEditModal(true)}
-                    className="p-2 bg-black/40 hover:bg-black/60 text-white backdrop-blur-md border border-white/10 rounded-full transition-all hover:scale-105"
-                    title="Szerkesztés"
-                  >
-                    <Edit size={20} />
-                  </button>
-                )}
-              </div>
-            )}
+
+            <div className="absolute top-6 right-6 flex gap-3 z-20">
+              <button
+                onClick={() => {
+                  const shareUrl = `https://esport-backend.pollak.info/share/teams/${currentTeam.id}`;
+                  navigator.clipboard.writeText(shareUrl);
+                  toast.success("Discord megosztási link másolva!");
+                }}
+                className="p-2 bg-black/40 hover:bg-black/60 text-white backdrop-blur-md border border-white/10 rounded-full transition-all hover:scale-105"
+                title="Megosztás Discord-on"
+              >
+                <Share2 size={20} />
+              </button>
+              {isOwner && (
+                <>
+                  {pendingRequest ? (
+                    <div className="flex items-center gap-2 px-4 py-2 bg-yellow-500/20 backdrop-blur-md border border-yellow-500/50 rounded-full text-yellow-500 font-bold animate-pulse">
+                      <Clock size={16} />
+                      <span>Módosítás függőben</span>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setShowEditModal(true)}
+                      className="p-2 bg-black/40 hover:bg-black/60 text-white backdrop-blur-md border border-white/10 rounded-full transition-all hover:scale-105"
+                      title="Szerkesztés"
+                    >
+                      <Edit size={20} />
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
           </div>
 
           <div className="px-8 pb-8">
@@ -256,27 +271,26 @@ export function TeamDetailPage() {
 
               {/* Info & Meta */}
               <div className="flex-1 w-full flex flex-col md:flex-row items-center md:items-end justify-between gap-6 md:pb-4">
-                <div className="text-center md:text-left space-y-2">
-                  <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight">
+                <div className="text-center md:text-left space-y-2 w-full md:w-auto">
+                  <h1 className="text-2xl sm:text-3xl md:text-5xl font-black text-white tracking-tight break-words px-2 md:px-0">
                     {currentTeam.name}
                   </h1>
 
-                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-gray-400">
-                    <span className="flex items-center gap-2 bg-white/5 px-3 py-1 rounded-full text-sm">
-                      <Trophy size={14} className="text-yellow-500" />
+                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 md:gap-4 text-gray-400">
+                    <span className="flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded-full text-xs sm:text-sm">
+                      <Trophy size={14} className="text-yellow-500 shrink-0" />
                       <span className="font-bold text-white">
                         {currentTeam.elo}
                       </span>{" "}
                       ELO
                     </span>
-                    <span className="flex items-center gap-2 bg-white/5 px-3 py-1 rounded-full text-sm">
-                      <Users size={14} className="text-blue-400" />
+                    <span className="flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded-full text-xs sm:text-sm">
+                      <Users size={14} className="text-blue-400 shrink-0" />
                       <span>{currentTeam.members?.length || 0} tag</span>
                     </span>
-                    <span className="flex items-center gap-2 bg-white/5 px-3 py-1 rounded-full text-sm">
-                      <Calendar size={14} className="text-purple-400" />
+                    <span className="flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded-full text-xs sm:text-sm">
+                      <Calendar size={14} className="text-purple-400 shrink-0" />
                       <span>
-                        Létrehozva:{" "}
                         {new Date(currentTeam.createdAt).toLocaleDateString(
                           "hu-HU",
                         )}
@@ -357,8 +371,8 @@ export function TeamDetailPage() {
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === tab
-                        ? "border-primary text-primary bg-primary/5"
-                        : "border-transparent text-gray-400 hover:text-white hover:bg-white/5"
+                      ? "border-primary text-primary bg-primary/5"
+                      : "border-transparent text-gray-400 hover:text-white hover:bg-white/5"
                       }`}
                   >
                     <Icon size={18} />
@@ -480,10 +494,10 @@ export function TeamDetailPage() {
                         </h3>
                         <div
                           className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border ${entry.tournament?.status === "REGISTRATION"
-                              ? "bg-green-500/10 text-green-500 border-green-500/20"
-                              : entry.tournament?.status === "IN_PROGRESS"
-                                ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
-                                : "bg-red-500/10 text-red-500 border-red-500/20"
+                            ? "bg-green-500/10 text-green-500 border-green-500/20"
+                            : entry.tournament?.status === "IN_PROGRESS"
+                              ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
+                              : "bg-red-500/10 text-red-500 border-red-500/20"
                             }`}
                         >
                           {entry.tournament?.status}

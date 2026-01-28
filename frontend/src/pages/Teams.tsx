@@ -14,99 +14,93 @@ import { useAuth } from "../hooks/useAuth";
 import { fetchTeams, joinTeam } from "../store/slices/teamsSlice";
 import type { Team, TeamMember } from "../types";
 
+import { LazyImage } from "../components/common/LazyImage";
+
 function TeamCard({ team }: { team: Team }) {
   return (
     <Link
       to={`/teams/${team.id}`}
-      className="group relative flex flex-col bg-[#1a1b26] rounded-xl overflow-hidden border border-white/5 shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-primary/50 hover:-translate-y-1 p-6"
+      className="group relative flex flex-col bg-[#1a1b26]/60 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/5 transition-all duration-500 hover:shadow-[0_0_40px_rgba(124,58,237,0.15)] hover:border-primary/50 hover:-translate-y-2 p-1"
     >
-      {/* Team Avatar */}
-      <div className="flex items-center gap-4 mb-4">
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg shrink-0">
-          {team.logoUrl ? (
-            <img
-              src={team.logoUrl}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+      <div className="relative bg-[#0f1015]/80 rounded-xl p-5 h-full flex flex-col">
+        {/* Header with Logo & Name */}
+        <div className="flex items-center gap-4 mb-5">
+          <div className="w-16 h-16 rounded-2xl bg-[#1a1b26] p-1 border border-white/10 shadow-lg shrink-0 group-hover:scale-105 transition-transform duration-300">
+            <LazyImage
+              src={team.logoUrl || ""}
               alt={team.name}
-              className="w-full h-full rounded-full object-cover"
+              fallbackText={team.name.charAt(0).toUpperCase()}
+              className="w-full h-full rounded-xl"
             />
-          ) : (
-            <span>{team.name.charAt(0).toUpperCase()}</span>
-          )}
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <h3 className="text-lg font-bold text-white mb-1 group-hover:text-primary transition-colors truncate">
+              {team.name}
+            </h3>
+            {team.description ? (
+              <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed">
+                {team.description}
+              </p>
+            ) : (
+              <p className="text-xs text-gray-600 italic">Nincs leírás</p>
+            )}
+          </div>
         </div>
 
-        <div className="flex-1">
-          <h3 className="text-xl font-bold text-white mb-1 group-hover:text-primary transition-colors line-clamp-1">
-            {team.name}
-          </h3>
-          {team.description && (
-            <p className="text-sm text-gray-400 line-clamp-1 break-words max-w-full">
-              {team.description}
-            </p>
-          )}
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-3 mb-4 pb-4 border-b border-white/5">
-        <div className="flex flex-col items-center gap-1 text-center">
-          <Users size={16} className="text-blue-400" />
-          <span className="text-xs text-gray-400">
-            {team.members?.length || 0} tag
-          </span>
-        </div>
-        <div className="flex flex-col items-center gap-1 text-center">
-          <Trophy size={16} className="text-yellow-500" />
-          <span className="text-xs text-gray-400">
-            {team._count?.tournamentEntries || 0} verseny
-          </span>
-        </div>
-        <div className="flex flex-col items-center gap-1 text-center">
-          <span className="text-lg font-bold text-primary">{team.elo}</span>
-          <span className="text-xs text-gray-400">ELO</span>
-        </div>
-      </div>
-
-      {/* Members Preview */}
-      <div className="flex items-center gap-2 mb-4">
-        <div className="flex -space-x-2">
-          {team.members?.slice(0, 5).map((member: TeamMember) => (
-            <Link
-              key={member.id}
-              to={`/profile/${member.userId}`}
-              className="w-8 h-8 min-w-[2rem] min-h-[2rem] rounded-full bg-gradient-to-br from-gray-700 to-gray-800 border-2 border-[#1a1b26] flex items-center justify-center text-white text-xs font-semibold hover:border-primary transition-colors cursor-pointer shrink-0"
-              title={member.user?.displayName || member.user?.username}
-              onClick={(e) => e.stopPropagation()} // Prevent card click
-            >
-              {member.user?.avatarUrl ? (
-                <img
-                  src={member.user.avatarUrl}
-                  alt={member.user.displayName || member.user.username}
-                  className="w-full h-full rounded-full object-cover"
-                />
-              ) : (
-                <span>
-                  {(member.user?.displayName || member.user?.username || "?")
-                    .charAt(0)
-                    .toUpperCase()}
-                </span>
-              )}
-            </Link>
-          ))}
-          {team.members && team.members.length > 5 && (
-            <div className="w-8 h-8 rounded-full bg-primary/20 border-2 border-[#1a1b26] flex items-center justify-center text-primary text-xs font-bold">
-              +{team.members.length - 5}
+        {/* Stats Grid */}
+        <div className="grid grid-cols-3 gap-2 mb-6 p-3 rounded-lg bg-white/5 border border-white/5">
+          <div className="flex flex-col items-center gap-1 text-center">
+            <Users size={14} className="text-blue-400" />
+            <div className="flex flex-col">
+              <span className="text-lg font-bold text-white leading-none">{team.members?.length || 0}</span>
+              <span className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">tag</span>
             </div>
-          )}
+          </div>
+          <div className="flex flex-col items-center gap-1 text-center border-l border-white/5">
+            <Trophy size={14} className="text-yellow-500" />
+            <div className="flex flex-col">
+              <span className="text-lg font-bold text-white leading-none">{team._count?.tournamentEntries || 0}</span>
+              <span className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">verseny</span>
+            </div>
+          </div>
+          <div className="flex flex-col items-center gap-1 text-center border-l border-white/5">
+            <div className="text-primary font-black text-lg leading-none">{team.elo}</div>
+            <span className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">ELO</span>
+          </div>
         </div>
-      </div>
 
-      {/* Action Link */}
-      <div className="mt-auto flex items-center justify-between text-sm font-semibold text-primary">
-        <span>Csapat megtekintése</span>
-        <ArrowRight
-          size={16}
-          className="transform transition-transform group-hover:translate-x-1"
-        />
+        {/* Member Avatars */}
+        <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between gap-4">
+          <div className="flex -space-x-2 pl-1">
+            {team.members?.slice(0, 4).map((member: TeamMember) => (
+              <div
+                key={member.id}
+                className="w-8 h-8 rounded-full border-2 border-[#0f1015] bg-[#1a1b26] relative z-0 hover:z-10 hover:scale-110 transition-all duration-300 shadow-md"
+                title={member.user?.displayName || member.user?.username}
+              >
+                <LazyImage
+                  src={member.user?.avatarUrl || ""}
+                  alt={member.user?.username || "?"}
+                  fallbackText={(member.user?.username || "?").charAt(0).toUpperCase()}
+                  className="w-full h-full rounded-full"
+                />
+              </div>
+            ))}
+            {team.members && team.members.length > 4 && (
+              <div className="w-8 h-8 rounded-full bg-[#1a1b26] border-2 border-[#0f1015] flex items-center justify-center text-[10px] font-bold text-white z-0 hover:z-10 relative">
+                +{team.members.length - 4}
+              </div>
+            )}
+          </div>
+
+          <div className="text-xs font-bold text-primary group-hover:translate-x-1 transition-transform flex items-center gap-1 whitespace-nowrap">
+            Megtekintés
+            <ArrowRight size={14} />
+          </div>
+        </div>
       </div>
     </Link>
   );
