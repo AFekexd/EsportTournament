@@ -92,22 +92,11 @@ export function TermsModal() {
                          Assumes rules.pdf is in public folder.
                      */}
                     {!pdfError ? (
-                        <object
-                            data={`/rules.pdf?t=${pdfHash}#toolbar=0&navpanes=0`}
-                            type="application/pdf"
+                        <iframe
+                            src={`/rules.pdf?t=${pdfHash}#toolbar=0&navpanes=0`}
                             className="w-full h-full min-h-[400px] rounded-lg bg-white"
-                        >
-                            <div className="flex flex-col items-center justify-center text-center p-8 h-full">
-                                <p className="text-gray-400 mb-4">A PDF megjelenítő nem támogatott a böngésződben.</p>
-                                <a
-                                    href="/rules.pdf"
-                                    target="_blank"
-                                    className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-                                >
-                                    Megnyitás új lapon
-                                </a>
-                            </div>
-                        </object>
+                            title="Házirend"
+                        />
                     ) : (
                         <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center text-center p-8 bg-[#161722]">
                             <ScrollText size={48} className="text-gray-600 mb-4" />
