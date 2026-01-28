@@ -10,11 +10,33 @@ import type { Computer } from "../../types";
 import { ClientVersionList } from "./ClientVersionList";
 import { MachineEditModal } from "./MachineEditModal";
 import { InstallerManager } from "./InstallerManager";
+import { toast } from "sonner";
+import { authService } from "../../lib/auth-service";
+import { API_URL } from "../../config";
+import { ConfirmationModal } from "../common/ConfirmationModal";
+import { Trash2 } from "lucide-react";
 
 export const KioskManager: React.FC = () => {
   const dispatch = useAppDispatch();
   const { machines, isLoading } = useAppSelector((state) => state.kiosk);
   const [editingMachine, setEditingMachine] = useState<Computer | null>(null);
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    variant: "danger" | "warning" | "info" | "primary";
+    confirmLabel?: string;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: () => { },
+    variant: "primary",
+  });
+
+  const closeConfirmModal = () =>
+    setConfirmModal((prev) => ({ ...prev, isOpen: false }));
 
   useEffect(() => {
     dispatch(fetchMachines());
@@ -50,6 +72,45 @@ export const KioskManager: React.FC = () => {
     );
   };
 
+  const handleDeleteMachine = (machineId: string) => {
+    setConfirmModal({
+      isOpen: true,
+      title: "Gép törlése",
+      message: "Biztosan törölni szeretnéd ezt a gépet? Ez a művelet nem visszavonható.",
+      variant: "danger",
+      confirmLabel: "Törlés",
+      onConfirm: async () => {
+        try {
+          const token = authService.keycloak?.token;
+          if (!token) return;
+
+          const response = await fetch(
+            `${API_URL}/bookings/computers/${machineId}`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          const data = await response.json();
+          if (data.success) {
+            toast.success("Gép sikeresen törölve");
+            dispatch(fetchMachines());
+          } else {
+            toast.error("Gép törlése sikertelen");
+          }
+        } catch (error) {
+          console.error("Failed to delete computer:", error);
+          toast.error("Hiba történt a gép törlése során");
+        } finally {
+          closeConfirmModal();
+        }
+      },
+    });
+  };
+
   return (
     <div className="admin-section">
       <h2 className="section-title mb-6 flex items-center gap-2">
@@ -80,6 +141,7 @@ export const KioskManager: React.FC = () => {
                           handleCompetitionToggle(machine)
                         }
                         onEdit={() => setEditingMachine(machine)}
+                        onDelete={() => handleDeleteMachine(machine.id)}
                       />
                     ))
                   ) : (
@@ -129,6 +191,16 @@ export const KioskManager: React.FC = () => {
           onClose={() => setEditingMachine(null)}
         />
       )}
+
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={closeConfirmModal}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        variant={confirmModal.variant}
+        confirmLabel={confirmModal.confirmLabel}
+      />
     </div>
   );
 };
@@ -138,6 +210,7 @@ interface MachineCardProps {
   onLock: () => void;
   onCompetitionToggle: () => void;
   onEdit: () => void;
+  onDelete: () => void;
 }
 
 const MachineCard: React.FC<MachineCardProps> = ({
@@ -145,6 +218,7 @@ const MachineCard: React.FC<MachineCardProps> = ({
   onLock,
   onCompetitionToggle,
   onEdit,
+  onDelete,
 }) => {
   // Determine status color
   let statusColor = "bg-gray-800 border-white/10";
@@ -177,7 +251,7 @@ const MachineCard: React.FC<MachineCardProps> = ({
     <div
       className={`card ${statusColor} p-4 transition-all hover:shadow-lg relative group flex flex-col h-full`}
     >
-      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 flex gap-2">
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -187,6 +261,16 @@ const MachineCard: React.FC<MachineCardProps> = ({
           title="Szerkesztés"
         >
           <Edit2 size={14} />
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete();
+          }}
+          className="p-1.5 rounded-lg bg-black/50 hover:bg-red-900/80 text-gray-300 hover:text-red-400 transition-colors border border-white/10"
+          title="Törlés"
+        >
+          <Trash2 size={14} />
         </button>
       </div>
 
@@ -218,9 +302,8 @@ const MachineCard: React.FC<MachineCardProps> = ({
         <div className="flex justify-between text-sm">
           <span className="text-gray-400">Állapot:</span>
           <span
-            className={`font-medium ${
-              machine.isLocked ? "text-red-400" : "text-gray-200"
-            }`}
+            className={`font-medium ${machine.isLocked ? "text-red-400" : "text-gray-200"
+              }`}
           >
             {isOffline
               ? "OFFLINE"
@@ -234,32 +317,31 @@ const MachineCard: React.FC<MachineCardProps> = ({
         {/* Placeholder for active user if session exists (would require session join in fetch) */}
         {(machine.specs ||
           (machine.installedGames && machine.installedGames.length > 0)) && (
-          <div className="text-[10px] text-gray-500 mt-2 pt-2 border-t border-white/5">
-            {machine.installedGames && machine.installedGames.length > 0 && (
-              <div className="flex gap-1 flex-wrap mb-1">
-                {machine.installedGames.slice(0, 3).map((g, i) => (
-                  <span key={i} className="px-1 py-0.5 bg-white/5 rounded">
-                    {g}
-                  </span>
-                ))}
-                {machine.installedGames.length > 3 && (
-                  <span>+{machine.installedGames.length - 3}</span>
-                )}
-              </div>
-            )}
-            {machine.specs?.gpu && <div title="GPU">{machine.specs.gpu}</div>}
-          </div>
-        )}
+            <div className="text-[10px] text-gray-500 mt-2 pt-2 border-t border-white/5">
+              {machine.installedGames && machine.installedGames.length > 0 && (
+                <div className="flex gap-1 flex-wrap mb-1">
+                  {machine.installedGames.slice(0, 3).map((g, i) => (
+                    <span key={i} className="px-1 py-0.5 bg-white/5 rounded">
+                      {g}
+                    </span>
+                  ))}
+                  {machine.installedGames.length > 3 && (
+                    <span>+{machine.installedGames.length - 3}</span>
+                  )}
+                </div>
+              )}
+              {machine.specs?.gpu && <div title="GPU">{machine.specs.gpu}</div>}
+            </div>
+          )}
       </div>
 
       <div className="grid grid-cols-2 gap-2 mt-auto">
         <button
           onClick={onLock}
-          className={`btn btn-sm flex items-center justify-center gap-1 ${
-            machine.isLocked
-              ? "bg-red-500 hover:bg-red-600 text-white"
-              : "bg-white/5 hover:bg-white/10 text-gray-300"
-          }`}
+          className={`btn btn-sm flex items-center justify-center gap-1 ${machine.isLocked
+            ? "bg-red-500 hover:bg-red-600 text-white"
+            : "bg-white/5 hover:bg-white/10 text-gray-300"
+            }`}
           title={machine.isLocked ? "Feloldás" : "Zárolás"}
         >
           {machine.isLocked ? <Unlock size={14} /> : <Lock size={14} />}
@@ -267,11 +349,10 @@ const MachineCard: React.FC<MachineCardProps> = ({
         </button>
         <button
           onClick={onCompetitionToggle}
-          className={`btn btn-sm flex items-center justify-center gap-1 ${
-            machine.isCompetitionMode
-              ? "bg-purple-500 hover:bg-purple-600 text-white"
-              : "bg-white/5 hover:bg-white/10 text-gray-300"
-          }`}
+          className={`btn btn-sm flex items-center justify-center gap-1 ${machine.isCompetitionMode
+            ? "bg-purple-500 hover:bg-purple-600 text-white"
+            : "bg-white/5 hover:bg-white/10 text-gray-300"
+            }`}
           title="Verseny mód"
         >
           <TrophyIcon size={14} />

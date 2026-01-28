@@ -21,7 +21,7 @@ usersRouter.get(
             throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
-        const { search, page = '1', limit = '20', role } = req.query;
+        const { search, page = '1', limit = '20', role, sortBy = 'createdAt', sortOrder = 'desc' } = req.query;
         const pageNum = Math.max(1, parseInt(page as string));
         const limitNum = Math.min(Math.max(1, parseInt(limit as string)), 100);
         const skip = (pageNum - 1) * limitNum;
@@ -39,10 +39,17 @@ usersRouter.get(
             ];
         }
 
+        // Validate sort params
+        const allowedSortFields = ['username', 'email', 'omId', 'role', 'timeBalanceSeconds', 'elo', 'createdAt'];
+        const pSortBy = allowedSortFields.includes(String(sortBy)) ? String(sortBy) : 'createdAt';
+        const pSortOrder = String(sortOrder) === 'asc' ? 'asc' : 'desc';
+
+        const orderBy = { [pSortBy]: pSortOrder };
+
         const [users, total] = await prisma.$transaction([
             prisma.user.findMany({
                 where,
-                orderBy: { createdAt: 'desc' },
+                orderBy,
                 take: limitNum,
                 skip,
                 select: {
@@ -453,7 +460,15 @@ usersRouter.patch(
 
         if (Object.keys(immediateData).length > 0) {
             const { calculateDiff } = await import('../utils/diffUtils.js');
-            const detailedChanges = calculateDiff(currentUser, immediateData);
+
+            // Fetch target user for accurate diff (if not self)
+            let targetUserForDiff = currentUser;
+            if (currentUser.id !== targetUserId) {
+                const fetchedTarget = await prisma.user.findUnique({ where: { id: targetUserId } });
+                if (fetchedTarget) targetUserForDiff = fetchedTarget;
+            }
+
+            const detailedChanges = calculateDiff(targetUserForDiff, immediateData);
 
             updatedUser = await prisma.user.update({
                 where: { id: targetUserId },

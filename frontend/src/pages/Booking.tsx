@@ -15,6 +15,7 @@ import {
   Filter,
   ChevronDown,
   Trophy,
+  Map,
 } from "lucide-react";
 import { ConfirmationModal } from "../components/common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
@@ -37,6 +38,7 @@ import {
   ComputerInfo,
   WaitlistButton,
 } from "../components/booking";
+import { RoomLayoutModal } from "../components/booking/RoomLayoutModal";
 
 export function BookingPage() {
   const dispatch = useAppDispatch();
@@ -66,6 +68,7 @@ export function BookingPage() {
   );
   const [selectedStartMinute, setSelectedStartMinute] = useState<number>(0);
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const [showMapModal, setShowMapModal] = useState(false);
   const [bookingError, setBookingError] = useState<string | null>(null);
 
   // Computer Info Toggle State
@@ -90,7 +93,7 @@ export function BookingPage() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => {},
+    onConfirm: () => { },
     variant: "primary",
   });
 
@@ -320,22 +323,20 @@ export function BookingPage() {
       <div className="mb-6 md:mb-8 border-b border-white/10 overflow-x-auto">
         <div className="flex gap-4 md:gap-8 min-w-max">
           <button
-            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${
-              activeTab === "booking"
-                ? "border-primary text-primary"
-                : "border-transparent text-gray-400 hover:text-gray-300"
-            }`}
+            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${activeTab === "booking"
+              ? "border-primary text-primary"
+              : "border-transparent text-gray-400 hover:text-gray-300"
+              }`}
             onClick={() => setActiveTab("booking")}
           >
             <LayoutGrid size={16} className="md:w-[18px] md:h-[18px]" />
             Foglalás
           </button>
           <button
-            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${
-              activeTab === "my-bookings"
-                ? "border-primary text-primary"
-                : "border-transparent text-gray-400 hover:text-gray-300"
-            }`}
+            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${activeTab === "my-bookings"
+              ? "border-primary text-primary"
+              : "border-transparent text-gray-400 hover:text-gray-300"
+              }`}
             onClick={() => setActiveTab("my-bookings")}
           >
             <List size={16} className="md:w-[18px] md:h-[18px]" />
@@ -358,28 +359,43 @@ export function BookingPage() {
         <>
           {/* View Toggle */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-            <div className="flex bg-[#1a1b26] p-1 rounded-xl border border-white/5 w-full md:w-auto">
-              <button
-                className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${
-                  viewMode === "daily"
+            <div className="flex gap-4 w-full md:w-auto">
+              <div className="flex bg-[#1a1b26] p-1 rounded-xl border border-white/5 w-full md:w-auto">
+                <button
+                  className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${viewMode === "daily"
                     ? "bg-[#0f1015] text-white shadow-lg"
                     : "text-gray-400 hover:text-gray-300"
-                }`}
-                onClick={() => dispatch(setViewMode("daily"))}
+                    }`}
+                  onClick={() => dispatch(setViewMode("daily"))}
+                >
+                  <LayoutGrid size={16} />
+                  Napi
+                </button>
+                <button
+                  className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${viewMode === "weekly"
+                    ? "bg-[#0f1015] text-white shadow-lg"
+                    : "text-gray-400 hover:text-gray-300"
+                    }`}
+                  onClick={() => dispatch(setViewMode("weekly"))}
+                >
+                  <CalendarDays size={16} />
+                  Heti
+                </button>
+              </div>
+
+              <button
+                className="flex md:hidden items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium transition-all text-sm bg-[#1a1b26] border border-white/5 text-primary hover:bg-white/5"
+                onClick={() => setShowMapModal(true)}
               >
-                <LayoutGrid size={16} />
-                Napi
+                <Map size={18} />
               </button>
+
               <button
-                className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${
-                  viewMode === "weekly"
-                    ? "bg-[#0f1015] text-white shadow-lg"
-                    : "text-gray-400 hover:text-gray-300"
-                }`}
-                onClick={() => dispatch(setViewMode("weekly"))}
+                className="hidden md:flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium transition-all bg-[#1a1b26] border border-white/5 text-primary hover:bg-white/5 hover:text-white"
+                onClick={() => setShowMapModal(true)}
               >
-                <CalendarDays size={16} />
-                Heti
+                <Map size={18} />
+                Térkép
               </button>
             </div>
 
@@ -485,16 +501,15 @@ export function BookingPage() {
                           <span>
                             {filteredComputerId
                               ? computers.find(
-                                  (c) => c.id === filteredComputerId,
-                                )?.name || "Kiválasztott gép"
+                                (c) => c.id === filteredComputerId,
+                              )?.name || "Kiválasztott gép"
                               : `Összes gép (${computers.length})`}
                           </span>
                         </div>
                         <ChevronDown
                           size={14}
-                          className={`transition-transform duration-200 ${
-                            isFilterOpen ? "rotate-180" : ""
-                          }`}
+                          className={`transition-transform duration-200 ${isFilterOpen ? "rotate-180" : ""
+                            }`}
                         />
                       </button>
 
@@ -511,11 +526,10 @@ export function BookingPage() {
                                   setFilteredComputerId(null);
                                   setIsFilterOpen(false);
                                 }}
-                                className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
-                                  !filteredComputerId
-                                    ? "bg-primary/20 text-white"
-                                    : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
-                                }`}
+                                className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${!filteredComputerId
+                                  ? "bg-primary/20 text-white"
+                                  : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
+                                  }`}
                               >
                                 <LayoutGrid size={14} />
                                 <span>Összes gép ({computers.length})</span>
@@ -543,11 +557,10 @@ export function BookingPage() {
                                       setFilteredComputerId(computer.id);
                                       setIsFilterOpen(false);
                                     }}
-                                    className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
-                                      filteredComputerId === computer.id
-                                        ? "bg-primary/20 text-white"
-                                        : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
-                                    }`}
+                                    className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${filteredComputerId === computer.id
+                                      ? "bg-primary/20 text-white"
+                                      : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
+                                      }`}
                                   >
                                     <Monitor size={14} />
                                     <span>{computer.name}</span>
@@ -643,22 +656,20 @@ export function BookingPage() {
                                   return (
                                     <div
                                       key={computer.id}
-                                      className={`relative bg-[#0f1015] rounded-lg p-2 md:p-3 border border-white/5 transition-all duration-300 ${
-                                        isExpanded
-                                          ? "z-10 shadow-xl ring-1 ring-white/10"
-                                          : ""
-                                      }`}
+                                      className={`relative bg-[#0f1015] rounded-lg p-2 md:p-3 border border-white/5 transition-all duration-300 ${isExpanded
+                                        ? "z-10 shadow-xl ring-1 ring-white/10"
+                                        : ""
+                                        }`}
                                     >
                                       <div className="flex justify-between items-center mb-1 md:mb-2 pb-1 md:pb-2 border-b border-white/5">
                                         <span className="text-xs md:text-sm font-semibold text-gray-300 truncate pr-2">
                                           {computer.name}
                                         </span>
                                         <button
-                                          className={`p-1 rounded transition-colors ${
-                                            isExpanded
-                                              ? "text-primary bg-primary/10"
-                                              : "text-gray-500 hover:text-primary hover:bg-primary/10"
-                                          }`}
+                                          className={`p-1 rounded transition-colors ${isExpanded
+                                            ? "text-primary bg-primary/10"
+                                            : "text-gray-500 hover:text-primary hover:bg-primary/10"
+                                            }`}
                                           onClick={() =>
                                             setExpandedComputerId(
                                               isExpanded
@@ -675,19 +686,18 @@ export function BookingPage() {
                                       </div>
 
                                       <button
-                                        className={`w-full h-12 rounded-lg flex items-center justify-center transition-all ${
-                                          isOwn
-                                            ? "bg-gradient-to-br from-primary/30 to-indigo-500/30 text-white border-2 border-primary/60 shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)] hover:shadow-[0_0_20px_-3px_rgba(139,92,246,0.5)] hover:border-primary cursor-pointer backdrop-blur-sm transform hover:-translate-y-0.5"
-                                            : isBooked
-                                              ? "bg-red-500/10 text-red-400 border-2 border-red-500/20 cursor-default"
-                                              : isTournament
-                                                ? "bg-yellow-500/10 text-yellow-400 border-2 border-yellow-500/20 cursor-not-allowed opacity-80"
-                                                : isMaintained || isOutOfOrder
-                                                  ? "bg-gray-800/50 text-gray-600 border-2 border-gray-700/20 cursor-not-allowed opacity-50"
-                                                  : isPast
-                                                    ? "bg-gray-800/20 text-gray-600 border-2 border-gray-800/20 cursor-not-allowed opacity-50"
-                                                    : "bg-green-500/10 text-green-400 border-2 border-green-500/20 hover:bg-green-500/20 cursor-pointer group"
-                                        }`}
+                                        className={`w-full h-12 rounded-lg flex items-center justify-center transition-all ${isOwn
+                                          ? "bg-gradient-to-br from-primary/30 to-indigo-500/30 text-white border-2 border-primary/60 shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)] hover:shadow-[0_0_20px_-3px_rgba(139,92,246,0.5)] hover:border-primary cursor-pointer backdrop-blur-sm transform hover:-translate-y-0.5"
+                                          : isBooked
+                                            ? "bg-red-500/10 text-red-400 border-2 border-red-500/20 cursor-default"
+                                            : isTournament
+                                              ? "bg-yellow-500/10 text-yellow-400 border-2 border-yellow-500/20 cursor-not-allowed opacity-80"
+                                              : isMaintained || isOutOfOrder
+                                                ? "bg-gray-800/50 text-gray-600 border-2 border-gray-700/20 cursor-not-allowed opacity-50"
+                                                : isPast
+                                                  ? "bg-gray-800/20 text-gray-600 border-2 border-gray-800/20 cursor-not-allowed opacity-50"
+                                                  : "bg-green-500/10 text-green-400 border-2 border-green-500/20 hover:bg-green-500/20 cursor-pointer group"
+                                          }`}
                                         onClick={() =>
                                           handleComputerClick(computer, hour)
                                         }
@@ -788,11 +798,10 @@ export function BookingPage() {
                 {[30, 60, 90, 120].map((mins) => (
                   <button
                     key={mins}
-                    className={`py-3 px-2 rounded-lg border-2 font-medium transition-all ${
-                      selectedDuration === mins
-                        ? "bg-primary border-primary text-white shadow-lg shadow-primary/20"
-                        : "bg-[#0f1015] border-white/10 text-gray-400 hover:border-primary/50 hover:text-gray-300"
-                    }`}
+                    className={`py-3 px-2 rounded-lg border-2 font-medium transition-all ${selectedDuration === mins
+                      ? "bg-primary border-primary text-white shadow-lg shadow-primary/20"
+                      : "bg-[#0f1015] border-white/10 text-gray-400 hover:border-primary/50 hover:text-gray-300"
+                      }`}
                     onClick={() => setSelectedDuration(mins)}
                   >
                     {mins < 60 ? `${mins} perc` : `${mins / 60} óra`}
@@ -816,8 +825,8 @@ export function BookingPage() {
                     return `${selectedStartHour}:${startMin
                       .toString()
                       .padStart(2, "0")} - ${endHour}:${endMin
-                      .toString()
-                      .padStart(2, "0")}`;
+                        .toString()
+                        .padStart(2, "0")}`;
                   })()}
                 </span>
               </div>
@@ -833,7 +842,7 @@ export function BookingPage() {
                     <span
                       className={
                         user.role !== "ADMIN" &&
-                        user.timeBalanceSeconds - selectedDuration * 60 < 0
+                          user.timeBalanceSeconds - selectedDuration * 60 < 0
                           ? "text-red-400"
                           : "text-green-400"
                       }
@@ -874,15 +883,13 @@ export function BookingPage() {
         </div>
       )}
 
-      {/* Booking Edit Modal 
-      {editingBooking && (
-        <BookingEditModal
-          booking={editingBooking}
-          isOpen={!!editingBooking}
-          onClose={() => setEditingBooking(null)}
-        />
-      )}
-*/}
+      {/* Room Layout Modal */}
+      <RoomLayoutModal
+        computers={computers}
+        isOpen={showMapModal}
+        onClose={() => setShowMapModal(false)}
+      />
+
       <ConfirmationModal
         isOpen={confirmModal.isOpen}
         onClose={closeConfirmModal}
@@ -895,3 +902,5 @@ export function BookingPage() {
     </div>
   );
 }
+
+

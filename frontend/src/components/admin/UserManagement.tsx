@@ -33,6 +33,12 @@ export function UserManagement() {
   const [totalUsers, setTotalUsers] = useState(0); // From meta.total (filtered)
   const [stats, setStats] = useState<any>(null); // From /api/stats
 
+  // Sorting state
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' }>({
+    key: 'createdAt',
+    direction: 'desc',
+  });
+
   const [roleModalUser, setRoleModalUser] = useState<User | null>(null);
   const [timeModalUser, setTimeModalUser] = useState<User | null>(null);
   const [editModalUser, setEditModalUser] = useState<User | null>(null);
@@ -81,6 +87,8 @@ export function UserManagement() {
       const params = new URLSearchParams({
         page: page.toString(),
         limit: limit.toString(),
+        sortBy: sortConfig.key,
+        sortOrder: sortConfig.direction,
       });
       // We are client-side searching for now based on implementation below,
       // but to get ALL users for client-side search we would need to fetch all?
@@ -134,10 +142,22 @@ export function UserManagement() {
     return () => clearTimeout(timer);
   }, [searchTerm, selectedRole]); // Trigger on role change too
 
-  // Refetch when page changes
+  // Refetch when page or sort changes
   useEffect(() => {
     fetchUsers();
-  }, [page]);
+  }, [page, sortConfig]);
+
+  const handleSort = (key: string) => {
+    setSortConfig((current) => ({
+      key,
+      direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc',
+    }));
+  };
+
+  const getSortIcon = (key: string) => {
+    if (sortConfig.key !== key) return <span className="opacity-30 ml-2">↕</span>;
+    return <span className="ml-2 font-bold">{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>;
+  };
 
   const getRoleBadge = (role: string) => {
     const roleConfig: Record<string, { class: string; label: string }> = {
@@ -455,13 +475,48 @@ export function UserManagement() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-white/10 text-muted text-sm uppercase">
-              <th className="p-3">Felhasználó</th>
-              <th className="p-3">Email</th>
-              <th className="p-3">OM Azonosító</th>
-              <th className="p-3">Szerep</th>
-              <th className="p-3 text-center">Időkeret</th>
-              <th className="p-3 text-center">ELO</th>
-              <th className="p-3">Regisztráció</th>
+              <th
+                className="p-3 cursor-pointer hover:text-white transition-colors"
+                onClick={() => handleSort('username')}
+              >
+                Felhasználó {getSortIcon('username')}
+              </th>
+              <th
+                className="p-3 cursor-pointer hover:text-white transition-colors"
+                onClick={() => handleSort('email')}
+              >
+                Email {getSortIcon('email')}
+              </th>
+              <th
+                className="p-3 cursor-pointer hover:text-white transition-colors"
+                onClick={() => handleSort('omId')}
+              >
+                OM Azonosító {getSortIcon('omId')}
+              </th>
+              <th
+                className="p-3 cursor-pointer hover:text-white transition-colors"
+                onClick={() => handleSort('role')}
+              >
+                Szerep {getSortIcon('role')}
+              </th>
+              <th
+                className="p-3 text-center cursor-pointer hover:text-white transition-colors"
+                onClick={() => handleSort('timeBalanceSeconds')}
+              >
+                Időkeret {getSortIcon('timeBalanceSeconds')}
+              </th>
+              <th
+                className="p-3 text-center cursor-pointer hover:text-white transition-colors"
+                onClick={() => handleSort('elo')}
+              >
+                ELO {getSortIcon('elo')}
+              </th>
+              <th
+                className="p-3 cursor-pointer hover:text-white transition-colors"
+                onClick={() => handleSort('createdAt')}
+              >
+                Regisztráció {getSortIcon('createdAt')}
+              </th>
               <th className="p-3 text-right">Műveletek</th>
             </tr>
           </thead>

@@ -11,6 +11,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import { fetchTournaments } from "../store/slices/tournamentsSlice";
 import { fetchGames } from "../store/slices/gamesSlice";
+import { BlurImage } from "../components/common/BlurImage";
 import type { Tournament, Game } from "../types";
 
 const statusLabels: Record<string, { label: string; colors: string }> = {
@@ -65,10 +66,11 @@ function TournamentCard({ tournament }: { tournament: Tournament }) {
       {/* Game Image Header */}
       <div className="relative w-full h-48 overflow-hidden bg-[#0f1015]">
         {tournament.imageUrl || tournament.game?.imageUrl ? (
-          <img
+          <BlurImage
             src={tournament.imageUrl || tournament.game?.imageUrl}
             alt={tournament.name}
             className="w-full h-full object-cover"
+            containerClassName="w-full h-full"
           />
         ) : (
           <div className="w-full h-full bg-slate-800 flex items-center justify-center">
@@ -317,11 +319,10 @@ export function TournamentsPage() {
           {[...Array(pagination.pages)].map((_, i) => (
             <button
               key={i}
-              className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                pagination.page === i + 1
-                  ? "bg-primary text-white shadow-lg shadow-primary/20"
-                  : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border border-white/10"
-              }`}
+              className={`px-4 py-2 rounded-lg font-medium transition-all ${pagination.page === i + 1
+                ? "bg-primary text-white shadow-lg shadow-primary/20"
+                : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border border-white/10"
+                }`}
               onClick={() =>
                 dispatch(
                   fetchTournaments({

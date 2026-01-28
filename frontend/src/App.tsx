@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import { useAppDispatch, useAppSelector } from "./hooks/useRedux";
@@ -37,6 +37,18 @@ import ReleasesPage from "./pages/admin/ReleasesPage";
 import { PuffLoader } from "react-spinners";
 import { Toaster, toast } from "sonner";
 import { TermsModal } from "./components/common/TermsModal";
+
+// Wrapper to force remount when profile ID changes
+const ProfileWrapper = () => {
+  const { id } = useParams();
+  return <ProfilePage key={id || 'me'} />;
+};
+
+// Wrapper to force remount when tournament ID changes
+const TournamentWrapper = () => {
+  const { id } = useParams();
+  return <TournamentDetailPage key={id} />;
+};
 
 function AppContent() {
   const dispatch = useAppDispatch();
@@ -88,7 +100,7 @@ function AppContent() {
           <Route path="/" element={<Layout />}>
             <Route index element={<HomePage />} />
             <Route path="tournaments" element={<TournamentsPage />} />
-            <Route path="tournaments/:id" element={<TournamentDetailPage />} />
+            <Route path="tournaments/:id" element={<TournamentWrapper />} />
             <Route path="teams" element={<TeamsPage />} />
             <Route path="teams/create" element={<TeamCreatePage />} />
             <Route path="teams/:id" element={<TeamDetailPage />} />
@@ -99,9 +111,10 @@ function AppContent() {
             <Route path="discord-settings" element={<DiscordAdminPage />} />
             <Route path="auth/discord/callback" element={<DiscordCallbackPage />} />
             <Route path="calendar" element={<CalendarPage />} />
-            <Route path="profile" element={<ProfilePage />} />
-            <Route path="profile/:id" element={<ProfilePage />} />
+            <Route path="profile" element={<ProfileWrapper />} />
+            <Route path="profile/:id" element={<ProfileWrapper />} />
             <Route path="settings" element={<SettingsPage />} />
+
             <Route path="admin" element={<AdminPage />} />
             <Route path="admin/requests" element={<RequestsPage />} />
             <Route path="admin/releases" element={<ReleasesPage />} />

@@ -8,6 +8,7 @@ interface UiState {
         message: string;
         type: 'success' | 'error' | 'warning' | 'info';
     };
+    isSearchOpen: boolean;
 }
 
 const initialState: UiState = {
@@ -18,6 +19,7 @@ const initialState: UiState = {
         message: '',
         type: 'info',
     },
+    isSearchOpen: false,
 };
 
 const uiSlice = createSlice({
@@ -48,6 +50,12 @@ const uiSlice = createSlice({
         hideToast: (state) => {
             state.toast.show = false;
         },
+        toggleSearch: (state) => {
+            state.isSearchOpen = !state.isSearchOpen;
+        },
+        setSearchOpen: (state, action: PayloadAction<boolean>) => {
+            state.isSearchOpen = action.payload;
+        },
     },
 });
 
@@ -58,5 +66,7 @@ export const {
     setMobileMenuOpen,
     showToast,
     hideToast,
+    toggleSearch,
+    setSearchOpen,
 } = uiSlice.actions;
 export default uiSlice.reducer;

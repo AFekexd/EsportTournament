@@ -8,6 +8,7 @@ import {
   Star,
   MenuIcon,
   Trash2,
+  Search, // Added Search icon
 } from "lucide-react";
 import { ConfirmationModal } from "../common/ConfirmationModal";
 import { DiscordConnectModal } from "../common/DiscordConnectModal";
@@ -21,7 +22,7 @@ import {
   clearAllNotifications,
 } from "../../store/slices/notificationsSlice";
 import { useEffect, useState, useRef } from "react";
-import { toggleSidebar } from "@/store/slices/uiSlice";
+import { toggleSidebar, toggleSearch } from "@/store/slices/uiSlice";
 
 const getRoleIcon = (role: string) => {
   switch (role) {
@@ -150,6 +151,15 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-4">
+          <button
+            onClick={() => dispatch(toggleSearch())}
+            className="flex h-9 w-9 items-center justify-center rounded-full text-gray-400 transition-all hover:bg-white/10 hover:text-white"
+            aria-label="Search (Ctrl+K)"
+            title="Keresés (Ctrl+K)"
+          >
+            <Search size={20} />
+          </button>
+
           <button
             onClick={() => setIsDiscordModalOpen(true)}
             className="flex h-9 w-9 items-center justify-center rounded-full text-[#5865F2] transition-all hover:bg-[#5865F2]/10 hover:scale-110"

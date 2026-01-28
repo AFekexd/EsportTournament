@@ -1215,6 +1215,7 @@ namespace EsportManager
         {
             _isUnlocked = true;
             this.Hide();
+            _warningsShown.Clear(); // Reset warning history for new session
 
             // Disable keyboard hook when in tray
             if (_keyboardHook != null) _keyboardHook.Unhook();
@@ -1803,11 +1804,23 @@ namespace EsportManager
         {
             private Label _messageLabel;
 
+            [System.Runtime.InteropServices.DllImport("user32.dll")]
+            private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+            
+            [System.Runtime.InteropServices.DllImport("user32.dll")]
+            private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+            private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
+            private const uint SWP_NOACTIVATE = 0x0010;
+            private const uint SWP_NOMOVE = 0x0002;
+            private const uint SWP_NOSIZE = 0x0001;
+            private const uint SWP_SHOWWINDOW = 0x0040;
+
             public NotificationOverlay()
             {
                 this.FormBorderStyle = FormBorderStyle.None;
                 this.ShowInTaskbar = false;
-                this.TopMost = true;
+                this.TopMost = true; // Still keep this as backup
                 this.Size = new Size(600, 60);
                 this.BackColor = Color.DarkRed;
                 this.Opacity = 0.85;
@@ -1831,8 +1844,10 @@ namespace EsportManager
                 Rectangle screen = Screen.PrimaryScreen?.Bounds ?? Screen.AllScreens[0].Bounds;
                 this.Location = new Point((screen.Width - this.Width) / 2, 0);
                 
-                // Megjelenítés aktiválás nélkül
-                ShowWindow(this.Handle, 4); // SW_SHOWNOACTIVATE = 4
+                // FORCE TOPMOST using SetWindowPos
+                // SWP_NOACTIVATE is critical to not steal focus from games
+                SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0, 
+                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
             }
 
             protected override bool ShowWithoutActivation => true;
@@ -1849,9 +1864,6 @@ namespace EsportManager
                     return cp;
                 }
             }
-
-            [System.Runtime.InteropServices.DllImport("user32.dll")]
-            private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
         }
 
         private void SetUserWallpaper(string username, string? omNumber)

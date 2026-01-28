@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Gamepad2, Users, Trophy, ArrowRight } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import { fetchGames } from "../store/slices/gamesSlice";
+import { BlurImage } from "../components/common/BlurImage";
 import type { Game } from "../types";
 
 function GameCard({ game }: { game: Game }) {
@@ -14,10 +15,11 @@ function GameCard({ game }: { game: Game }) {
       {/* Image Container */}
       <div className="relative w-full aspect-video overflow-hidden">
         {game.imageUrl ? (
-          <img
+          <BlurImage
             src={game.imageUrl}
             alt={game.name}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            className="w-full h-full object-cover group-hover:scale-110"
+            containerClassName="w-full h-full"
           />
         ) : (
           <div className="w-full h-full bg-slate-800 flex items-center justify-center">

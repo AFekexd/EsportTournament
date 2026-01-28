@@ -1,14 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import {
+  Calendar,
+  Clock,
+  Plus,
+  Trash2,
   BarChart3,
   Edit2,
-  AlertCircle,
-  Plus,
-  Monitor,
-  Clock,
-  Trash2,
-  Calendar,
 } from "lucide-react";
 import { AdminBookingList } from "./AdminBookingList";
 import { ConfirmationModal } from "../common/ConfirmationModal";
@@ -16,12 +14,10 @@ import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import {
   createSchedule,
   deleteSchedule,
+  fetchSchedules,
   fetchComputers,
 } from "../../store/slices/bookingsSlice";
 import { AdminBookingStats } from "./AdminBookingStats";
-import { MachineEditModal } from "../admin/MachineEditModal";
-import { authService } from "../../lib/auth-service";
-import { API_URL } from "../../config";
 import {
   Card,
   CardContent,
@@ -31,23 +27,25 @@ import {
 } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Badge } from "../ui/badge";
 
 export function BookingManagement() {
   const dispatch = useAppDispatch();
-  const { schedules, computers } = useAppSelector((state) => state.bookings);
+  const { schedules } = useAppSelector((state) => state.bookings);
 
   const [bookingSubTab, setBookingSubTab] = useState<"management" | "stats" | "bookings">(
     "stats"
   );
+
+  useEffect(() => {
+    dispatch(fetchSchedules());
+    dispatch(fetchComputers());
+  }, [dispatch]);
+
   const [newSchedule, setNewSchedule] = useState({
     dayOfWeek: 5,
     startHour: 14,
     endHour: 18,
   });
-  const [showMachineEditModal, setShowMachineEditModal] = useState(false);
-  const [editingComputer, setEditingComputer] = useState<any>(null);
-
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
     title: string;
@@ -65,40 +63,6 @@ export function BookingManagement() {
 
   const closeConfirmModal = () =>
     setConfirmModal((prev) => ({ ...prev, isOpen: false }));
-
-  const handleDeleteComputer = (computerId: string) => {
-    setConfirmModal({
-      isOpen: true,
-      title: "Gép törlése",
-      message: "Biztosan törölni szeretnéd ezt a gépet?",
-      variant: "danger",
-      confirmLabel: "Törlés",
-      onConfirm: async () => {
-        try {
-          const token = authService.keycloak?.token;
-          if (!token) return;
-
-          const response = await fetch(
-            `${API_URL}/bookings/computers/${computerId}`,
-            {
-              method: "DELETE",
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-
-          const data = await response.json();
-          if (data.success) {
-            dispatch(fetchComputers());
-          }
-        } catch (error) {
-          console.error("Failed to delete computer:", error);
-          toast.error("Hiba történt a gép törlése során");
-        }
-      },
-    });
-  };
 
   return (
     <div className="space-y-6">
@@ -150,116 +114,6 @@ export function BookingManagement() {
         </div>
       ) : (
         <div className="space-y-8">
-          {/* Computer Management Section */}
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-xl font-semibold flex items-center gap-2 text-primary">
-                <Monitor size={20} />
-                Gépek kezelése
-              </h3>
-              <Button
-                onClick={() => {
-                  setEditingComputer(null);
-                  setShowMachineEditModal(true);
-                }}
-                className="gap-2"
-              >
-                <Plus size={16} />
-                Új gép
-              </Button>
-            </div>
-
-            {computers.length === 0 ? (
-              <Card className="bg-muted/30 border-dashed">
-                <CardContent className="flex flex-col items-center justify-center py-8 text-center">
-                  <AlertCircle className="h-10 w-10 text-muted-foreground mb-4" />
-                  <h4 className="text-lg font-semibold">
-                    Nincs gép létrehozva
-                  </h4>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Adj hozzá új gépeket a rendszerhez.
-                  </p>
-                  <Button
-                    onClick={() => {
-                      setEditingComputer(null);
-                      setShowMachineEditModal(true);
-                    }}
-                    variant="outline"
-                  >
-                    Új gép hozzáadása
-                  </Button>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {computers.map((computer) => (
-                  <Card
-                    key={computer.id}
-                    className="bg-card/50 backdrop-blur-sm border-white/5 hover:border-primary/50 transition-colors group"
-                  >
-                    <CardHeader className="pb-3">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <CardTitle className="text-lg mb-1">
-                            {computer.name}
-                          </CardTitle>
-                          <CardDescription>
-                            Sor {computer.row + 1}, Hely {computer.position + 1}
-                          </CardDescription>
-                        </div>
-                        <Badge
-                          variant={
-                            computer.isActive ? "secondary" : "destructive"
-                          }
-                          className={
-                            computer.isActive
-                              ? "bg-green-500/10 text-green-400 border-green-500/20"
-                              : ""
-                          }
-                        >
-                          {computer.isActive ? "Aktív" : "Inaktív"}
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        {computer.specs && (
-                          <div className="text-xs text-muted-foreground bg-black/20 p-2 rounded">
-                            {typeof computer.specs === "string"
-                              ? computer.specs
-                              : "Specifikációk elérhetők"}
-                          </div>
-                        )}
-
-                        <div className="flex gap-2 pt-2 opacity-60 group-hover:opacity-100 transition-opacity flex-wrap">
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            className="flex-1 gap-2 h-8 min-w-[80px]"
-                            onClick={() => {
-                              setEditingComputer(computer);
-                              setShowMachineEditModal(true);
-                            }}
-                          >
-                            <Edit2 size={14} /> Szerkesztés
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-red-400 hover:text-red-300 hover:bg-red-900/20 h-8 w-8 p-0 shrink-0"
-                            onClick={() => handleDeleteComputer(computer.id)}
-                          >
-                            <Trash2 size={14} />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
-
           {/* Schedule Section */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 mb-2">
@@ -407,17 +261,6 @@ export function BookingManagement() {
             </div>
           </div>
         </div>
-      )}
-
-      {showMachineEditModal && (
-        <MachineEditModal
-          computer={editingComputer}
-          isOpen={showMachineEditModal}
-          onClose={() => {
-            setShowMachineEditModal(false);
-            setEditingComputer(null);
-          }}
-        />
       )}
 
       <ConfirmationModal
