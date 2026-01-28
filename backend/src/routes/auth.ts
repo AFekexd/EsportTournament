@@ -142,6 +142,7 @@ authRouter.get(
                     },
                 },
                 ownedTeams: true,
+                favoriteGame: true,
             },
         });
 

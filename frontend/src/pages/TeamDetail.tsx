@@ -59,7 +59,7 @@ export function TeamDetailPage() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => {},
+    onConfirm: () => { },
     variant: "primary",
   });
 
@@ -177,7 +177,7 @@ export function TeamDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f1015] text-white p-4 md:p-8 rounded-sm">
+    <div className="min-h-screen  text-white p-4 md:p-8 rounded-sm">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Back Button */}
         <div>
@@ -356,11 +356,10 @@ export function TeamDetailPage() {
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
-                      activeTab === tab
+                    className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === tab
                         ? "border-primary text-primary bg-primary/5"
                         : "border-transparent text-gray-400 hover:text-white hover:bg-white/5"
-                    }`}
+                      }`}
                   >
                     <Icon size={18} />
                     {labels[tab]}
@@ -480,13 +479,12 @@ export function TeamDetailPage() {
                           {entry.tournament?.name}
                         </h3>
                         <div
-                          className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border ${
-                            entry.tournament?.status === "REGISTRATION"
+                          className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border ${entry.tournament?.status === "REGISTRATION"
                               ? "bg-green-500/10 text-green-500 border-green-500/20"
                               : entry.tournament?.status === "IN_PROGRESS"
                                 ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
                                 : "bg-red-500/10 text-red-500 border-red-500/20"
-                          }`}
+                            }`}
                         >
                           {entry.tournament?.status}
                         </div>

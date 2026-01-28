@@ -24,6 +24,7 @@ import {
   BookingPage,
   TeacherTimePage,
   TournamentEmbedPage,
+  TeamEmbedPage,
   TVDisplayPage,
   TVRecruitmentPage,
   ScrimsPage,
@@ -128,6 +129,10 @@ function AppContent() {
           <Route
             path="/embed/tournaments/:id"
             element={<TournamentEmbedPage />}
+          />
+          <Route
+            path="/embed/teams/:id"
+            element={<TeamEmbedPage />}
           />
           <Route path="/tv" element={<TVDisplayPage />} />
           <Route path="/tv2" element={<TVRecruitmentPage />} />

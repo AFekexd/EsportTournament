@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
 import {
   Users,
   Search,
@@ -125,6 +126,8 @@ export function TeamsPage() {
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [joinError, setJoinError] = useState("");
 
+  const [isJoining, setIsJoining] = useState(false);
+
   useEffect(() => {
     dispatch(
       fetchTeams({ page: 1, search: search || undefined, my: filterMyTeams }),
@@ -151,16 +154,22 @@ export function TeamsPage() {
   }, [showJoinModal]);
 
   const handleJoin = async () => {
-    if (!joinCode.trim()) return;
+    if (!joinCode.trim() || isJoining) return;
+
+    setIsJoining(true);
+    setJoinError("");
 
     try {
       await dispatch(joinTeam(joinCode)).unwrap();
+      toast.success("Sikeresen csatlakoztál a csapathoz!");
       setShowJoinModal(false);
       setJoinCode("");
-      setJoinError("");
     } catch (error: unknown) {
       const err = error as { message?: string };
       setJoinError(err.message || "Hibás kód");
+      toast.error(err.message || "Hiba történt a csatlakozáskor");
+    } finally {
+      setIsJoining(false);
     }
   };
 
@@ -186,11 +195,10 @@ export function TeamsPage() {
         {isAuthenticated && (
           <div className="flex flex-wrap justify-center gap-4">
             <button
-              className={`flex items-center gap-2 px-6 py-3 border rounded-xl font-semibold transition-all ${
-                filterMyTeams
-                  ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
-                  : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border-white/10"
-              }`}
+              className={`flex items-center gap-2 px-6 py-3 border rounded-xl font-semibold transition-all ${filterMyTeams
+                ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
+                : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border-white/10"
+                }`}
               onClick={() => setFilterMyTeams(!filterMyTeams)}
             >
               <Users size={18} />
@@ -280,11 +288,10 @@ export function TeamsPage() {
           {[...Array(pagination.pages)].map((_, i) => (
             <button
               key={i}
-              className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                pagination.page === i + 1
-                  ? "bg-primary text-white shadow-lg shadow-primary/20"
-                  : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border border-white/10"
-              }`}
+              className={`px-4 py-2 rounded-lg font-medium transition-all ${pagination.page === i + 1
+                ? "bg-primary text-white shadow-lg shadow-primary/20"
+                : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border border-white/10"
+                }`}
               onClick={() =>
                 dispatch(
                   fetchTeams({
@@ -329,16 +336,22 @@ export function TeamsPage() {
             )}
             <div className="flex gap-4">
               <button
-                className="flex-1 px-6 py-3 bg-[#0f1015] hover:bg-[#1a1b26] border border-white/10 text-white rounded-xl font-semibold transition-all"
+                className="flex-1 px-6 py-3 bg-[#0f1015] hover:bg-[#1a1b26] border border-white/10 text-white rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={() => setShowJoinModal(false)}
+                disabled={isJoining}
               >
                 Mégse
               </button>
               <button
-                className="flex-1 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold transition-all shadow-lg shadow-primary/20"
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={handleJoin}
+                disabled={isJoining}
               >
-                Csatlakozás
+                {isJoining ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  "Csatlakozás"
+                )}
               </button>
             </div>
           </div>

@@ -157,7 +157,8 @@ export function ProfilePage() {
     if (isOwnProfile) {
       const hasRank = userRanks.some(ur => ur.gameId === game.id);
       const isVisible = visibleGameIds.includes(game.id);
-      return hasRank || isVisible;
+      const isFavorite = user?.favoriteGameId === game.id;
+      return hasRank || isVisible || isFavorite;
     } else {
       // Public profile: only show ranked games
       // Note: currentProfile.ranks structure is slightly different in filtered games?

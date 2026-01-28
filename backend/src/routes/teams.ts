@@ -218,7 +218,7 @@ teamsRouter.get(
                 owner: { select: { id: true, username: true, displayName: true } },
                 members: {
                     include: {
-                        user: { select: { id: true, username: true, displayName: true, avatarUrl: true, elo: true } },
+                        user: { select: { id: true, username: true, displayName: true, avatarUrl: true, elo: true, role: true } },
                     },
                 },
                 tournamentEntries: {

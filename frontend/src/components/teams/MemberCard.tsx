@@ -1,4 +1,4 @@
-import { UserMinus, Crown } from "lucide-react";
+import { UserMinus, Crown, Shield, Trophy, GraduationCap } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { TeamMember } from "../../types";
 
@@ -58,8 +58,40 @@ export function MemberCard({
           to={`/profile/${member.userId}`}
           className="block group-hover:translate-x-1 transition-transform duration-300"
         >
-          <h3 className="text-lg font-bold text-white mb-0.5 whitespace-nowrap overflow-hidden text-ellipsis group-hover:text-primary transition-colors">
+          <h3 className="text-lg font-bold text-white mb-0.5 whitespace-nowrap overflow-hidden text-ellipsis group-hover:text-primary transition-colors flex items-center gap-2">
             {member.user?.displayName || member.user?.username}
+            {member.user?.role === "ADMIN" && (
+              <div title="Adminisztrátor">
+                <Shield
+                  size={16}
+                  className="text-red-500 fill-red-500/10"
+                />
+              </div>
+            )}
+            {member.user?.role === "ORGANIZER" && (
+              <div title="Szervező">
+                <Trophy
+                  size={16}
+                  className="text-purple-500 fill-purple-500/10"
+                />
+              </div>
+            )}
+            {member.user?.role === "MODERATOR" && (
+              <div title="Moderátor">
+                <Shield
+                  size={16}
+                  className="text-green-500 fill-green-500/10"
+                />
+              </div>
+            )}
+            {member.user?.role === "TEACHER" && (
+              <div title="Tanár">
+                <GraduationCap
+                  size={16}
+                  className="text-blue-500 fill-blue-500/10"
+                />
+              </div>
+            )}
           </h3>
           <p className="text-xs font-medium text-gray-500 mb-2 font-mono">
             @{member.user?.username}
@@ -75,8 +107,8 @@ export function MemberCard({
 
           <span
             className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded border ${member.role === "CAPTAIN"
-                ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
-                : "bg-blue-500/10 text-blue-500 border-blue-500/20"
+              ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
+              : "bg-blue-500/10 text-blue-500 border-blue-500/20"
               }`}
           >
             {member.role === "CAPTAIN" ? "Kapitány" : "Tag"}
