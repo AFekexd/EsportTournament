@@ -12,25 +12,29 @@ export function TermsModal() {
     const { user, isAuthenticated } = useAuth();
     const dispatch = useAppDispatch();
     const [isLoading, setIsLoading] = useState(false);
-    const [pdfError, setPdfError] = useState(false);
+    const [pdfError, setPdfError] = useState(false); // Keep pdfError state
+    const [pdfHash, setPdfHash] = useState(Date.now()); // Add pdfHash state
 
     // Only show if authenticated AND tosAcceptedAt is missing
     const shouldShow = isAuthenticated && user && !user.tosAcceptedAt;
 
     useEffect(() => {
         if (shouldShow) {
+            const timestamp = Date.now();
             // Check if PDF exists to avoid iframe recursion (SPA fallback)
-            // Added timestamp to prevent caching of 404s
-            fetch(`/rules.pdf?t=${Date.now()}`, { method: 'HEAD' })
+            // Using GET instead of HEAD as some servers might handle HEAD differently
+            fetch(`/rules.pdf?t=${timestamp}`, { method: 'GET' })
                 .then(res => {
                     const type = res.headers.get('content-type');
                     console.log('PDF Check:', { ok: res.ok, status: res.status, type });
 
-                    if (!res.ok || (type && type.includes('text/html'))) {
-                        console.error('PDF Check Failed: File missing or is HTML fallback');
+                    // Strict check: Must be PDF and not HTML
+                    if (!res.ok || (type && !type.includes('application/pdf'))) {
+                        console.error('PDF Check Failed: Not a PDF');
                         setPdfError(true);
                     } else {
                         setPdfError(false);
+                        setPdfHash(timestamp); // Update pdfHash on successful check
                     }
                 })
                 .catch((e) => {
@@ -89,7 +93,7 @@ export function TermsModal() {
                      */}
                     {!pdfError ? (
                         <iframe
-                            src="/rules.pdf#toolbar=0&navpanes=0"
+                            src={`/rules.pdf?t=${pdfHash}#toolbar=0&navpanes=0`}
                             className="w-full h-full min-h-[400px] rounded-lg bg-white"
                             title="Házirend"
                         />
