@@ -20,16 +20,23 @@ export function TermsModal() {
     useEffect(() => {
         if (shouldShow) {
             // Check if PDF exists to avoid iframe recursion (SPA fallback)
-            fetch('/rules.pdf', { method: 'HEAD' })
+            // Added timestamp to prevent caching of 404s
+            fetch(`/rules.pdf?t=${Date.now()}`, { method: 'HEAD' })
                 .then(res => {
                     const type = res.headers.get('content-type');
+                    console.log('PDF Check:', { ok: res.ok, status: res.status, type });
+
                     if (!res.ok || (type && type.includes('text/html'))) {
+                        console.error('PDF Check Failed: File missing or is HTML fallback');
                         setPdfError(true);
                     } else {
                         setPdfError(false);
                     }
                 })
-                .catch(() => setPdfError(true));
+                .catch((e) => {
+                    console.error('PDF Check Error:', e);
+                    setPdfError(true);
+                });
         }
     }, [shouldShow]);
 
