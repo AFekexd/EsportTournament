@@ -71,7 +71,7 @@ export function TermsModal() {
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 animate-in fade-in duration-300">
-            <div className="bg-[#161722] rounded-2xl border border-white/10 shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-300">
+            <div className="bg-[#161722] rounded-2xl border border-white/10 shadow-2xl w-full max-w-5xl h-[85vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-300">
 
                 {/* Header */}
                 <div className="p-6 border-b border-white/10 bg-[#1a1b26]">
@@ -92,11 +92,22 @@ export function TermsModal() {
                          Assumes rules.pdf is in public folder.
                      */}
                     {!pdfError ? (
-                        <iframe
-                            src={`/rules.pdf?t=${pdfHash}#toolbar=0&navpanes=0`}
+                        <object
+                            data={`/rules.pdf?t=${pdfHash}#toolbar=0&navpanes=0`}
+                            type="application/pdf"
                             className="w-full h-full min-h-[400px] rounded-lg bg-white"
-                            title="Házirend"
-                        />
+                        >
+                            <div className="flex flex-col items-center justify-center text-center p-8 h-full">
+                                <p className="text-gray-400 mb-4">A PDF megjelenítő nem támogatott a böngésződben.</p>
+                                <a
+                                    href="/rules.pdf"
+                                    target="_blank"
+                                    className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                                >
+                                    Megnyitás új lapon
+                                </a>
+                            </div>
+                        </object>
                     ) : (
                         <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center text-center p-8 bg-[#161722]">
                             <ScrollText size={48} className="text-gray-600 mb-4" />
