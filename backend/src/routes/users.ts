@@ -548,12 +548,13 @@ usersRouter.post(
             data: { tosAcceptedAt: null }
         });
 
-        'SYSTEM_TOS_RESET',
+        await logSystemActivity(
+            'SYSTEM_TOS_RESET',
             `Admin ${currentUser.username} reset ToS acceptance for all users`,
             { adminId: currentUser.id, metadata: { count: result.count } }
         );
 
-res.json({ success: true, message: `Sikeresen alaphelyzetbe állítva ${result.count} felhasználónál.` });
+        res.json({ success: true, message: `Sikeresen alaphelyzetbe állítva ${result.count} felhasználónál.` });
     })
 );
 
