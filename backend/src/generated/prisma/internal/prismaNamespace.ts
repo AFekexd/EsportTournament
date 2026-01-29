@@ -411,7 +411,8 @@ export const ModelName = {
   MatchCheckIn: 'MatchCheckIn',
   MatchPrediction: 'MatchPrediction',
   Scrim: 'Scrim',
-  NewsPost: 'NewsPost'
+  NewsPost: 'NewsPost',
+  BugReport: 'BugReport'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -427,7 +428,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "team" | "teamMember" | "game" | "tournament" | "tournamentEntry" | "match" | "gameStats" | "rank" | "userRank" | "notification" | "event" | "discordSettings" | "computer" | "booking" | "session" | "log" | "waitlist" | "bookingSchedule" | "clientVersion" | "changeRequest" | "changelog" | "emailLog" | "discordLog" | "matchCheckIn" | "matchPrediction" | "scrim" | "newsPost"
+    modelProps: "user" | "team" | "teamMember" | "game" | "tournament" | "tournamentEntry" | "match" | "gameStats" | "rank" | "userRank" | "notification" | "event" | "discordSettings" | "computer" | "booking" | "session" | "log" | "waitlist" | "bookingSchedule" | "clientVersion" | "changeRequest" | "changelog" | "emailLog" | "discordLog" | "matchCheckIn" | "matchPrediction" | "scrim" | "newsPost" | "bugReport"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2503,6 +2504,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    BugReport: {
+      payload: Prisma.$BugReportPayload<ExtArgs>
+      fields: Prisma.BugReportFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BugReportFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BugReportFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportPayload>
+        }
+        findFirst: {
+          args: Prisma.BugReportFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BugReportFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportPayload>
+        }
+        findMany: {
+          args: Prisma.BugReportFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportPayload>[]
+        }
+        create: {
+          args: Prisma.BugReportCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportPayload>
+        }
+        createMany: {
+          args: Prisma.BugReportCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BugReportCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportPayload>[]
+        }
+        delete: {
+          args: Prisma.BugReportDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportPayload>
+        }
+        update: {
+          args: Prisma.BugReportUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportPayload>
+        }
+        deleteMany: {
+          args: Prisma.BugReportDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BugReportUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BugReportUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportPayload>[]
+        }
+        upsert: {
+          args: Prisma.BugReportUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportPayload>
+        }
+        aggregate: {
+          args: Prisma.BugReportAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBugReport>
+        }
+        groupBy: {
+          args: Prisma.BugReportGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BugReportGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BugReportCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BugReportCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3001,6 +3076,24 @@ export const NewsPostScalarFieldEnum = {
 export type NewsPostScalarFieldEnum = (typeof NewsPostScalarFieldEnum)[keyof typeof NewsPostScalarFieldEnum]
 
 
+export const BugReportScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  category: 'category',
+  priority: 'priority',
+  status: 'status',
+  imageUrl: 'imageUrl',
+  reporterId: 'reporterId',
+  adminNote: 'adminNote',
+  resolvedAt: 'resolvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BugReportScalarFieldEnum = (typeof BugReportScalarFieldEnum)[keyof typeof BugReportScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -3371,6 +3464,48 @@ export type ListEnumScrimStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$
 
 
 /**
+ * Reference to a field of type 'BugReportCategory'
+ */
+export type EnumBugReportCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BugReportCategory'>
+    
+
+
+/**
+ * Reference to a field of type 'BugReportCategory[]'
+ */
+export type ListEnumBugReportCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BugReportCategory[]'>
+    
+
+
+/**
+ * Reference to a field of type 'BugReportPriority'
+ */
+export type EnumBugReportPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BugReportPriority'>
+    
+
+
+/**
+ * Reference to a field of type 'BugReportPriority[]'
+ */
+export type ListEnumBugReportPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BugReportPriority[]'>
+    
+
+
+/**
+ * Reference to a field of type 'BugReportStatus'
+ */
+export type EnumBugReportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BugReportStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'BugReportStatus[]'
+ */
+export type ListEnumBugReportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BugReportStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -3506,6 +3641,7 @@ export type GlobalOmitConfig = {
   matchPrediction?: Prisma.MatchPredictionOmit
   scrim?: Prisma.ScrimOmit
   newsPost?: Prisma.NewsPostOmit
+  bugReport?: Prisma.BugReportOmit
 }
 
 /* Types for Logging */

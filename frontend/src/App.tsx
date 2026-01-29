@@ -31,6 +31,7 @@ import {
   NewsPage,
   NewsDetailPage,
   DiscordCallbackPage,
+  BugReportPage,
 } from "./pages";
 import RequestsPage from "./pages/admin/RequestsPage";
 import { AdminLogs } from "./components/admin/AdminLogs";
@@ -125,6 +126,7 @@ function AppContent() {
             <Route path="scrims" element={<ScrimsPage />} />
             <Route path="news" element={<NewsPage />} />
             <Route path="news/:slug" element={<NewsDetailPage />} />
+            <Route path="bug-report" element={<BugReportPage />} />
           </Route>
           <Route
             path="/embed/tournaments/:id"

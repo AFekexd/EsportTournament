@@ -78,7 +78,8 @@ export const ModelName = {
   MatchCheckIn: 'MatchCheckIn',
   MatchPrediction: 'MatchPrediction',
   Scrim: 'Scrim',
-  NewsPost: 'NewsPost'
+  NewsPost: 'NewsPost',
+  BugReport: 'BugReport'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -554,6 +555,24 @@ export const NewsPostScalarFieldEnum = {
 } as const
 
 export type NewsPostScalarFieldEnum = (typeof NewsPostScalarFieldEnum)[keyof typeof NewsPostScalarFieldEnum]
+
+
+export const BugReportScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  category: 'category',
+  priority: 'priority',
+  status: 'status',
+  imageUrl: 'imageUrl',
+  reporterId: 'reporterId',
+  adminNote: 'adminNote',
+  resolvedAt: 'resolvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BugReportScalarFieldEnum = (typeof BugReportScalarFieldEnum)[keyof typeof BugReportScalarFieldEnum]
 
 
 export const SortOrder = {

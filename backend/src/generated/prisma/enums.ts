@@ -92,6 +92,36 @@ export const SeedingMethod = {
 export type SeedingMethod = (typeof SeedingMethod)[keyof typeof SeedingMethod]
 
 
+export const BugReportStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  RESOLVED: 'RESOLVED',
+  CLOSED: 'CLOSED'
+} as const
+
+export type BugReportStatus = (typeof BugReportStatus)[keyof typeof BugReportStatus]
+
+
+export const BugReportCategory = {
+  WEBSITE: 'WEBSITE',
+  TOURNAMENT: 'TOURNAMENT',
+  BOOKING: 'BOOKING',
+  TEAM: 'TEAM',
+  OTHER: 'OTHER'
+} as const
+
+export type BugReportCategory = (typeof BugReportCategory)[keyof typeof BugReportCategory]
+
+
+export const BugReportPriority = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH'
+} as const
+
+export type BugReportPriority = (typeof BugReportPriority)[keyof typeof BugReportPriority]
+
+
 export const ComputerStatus = {
   AVAILABLE: 'AVAILABLE',
   MAINTENANCE: 'MAINTENANCE',

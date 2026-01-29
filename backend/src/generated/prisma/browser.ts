@@ -157,3 +157,8 @@ export type Scrim = Prisma.ScrimModel
  * 
  */
 export type NewsPost = Prisma.NewsPostModel
+/**
+ * Model BugReport
+ * 
+ */
+export type BugReport = Prisma.BugReportModel

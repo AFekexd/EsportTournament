@@ -120,6 +120,8 @@ import { changelogRouter } from './routes/changelog.js';
 
 app.use('/api/change-requests', changeRequestsRouter);
 app.use('/api/changelog', changelogRouter);
+import { bugReportsRouter } from './routes/bugReports.js';
+app.use('/api/bug-reports', bugReportsRouter);
 app.use('/share', shareRouter);
 
 // Kiosk & Admin Kiosk Routes

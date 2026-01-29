@@ -14,6 +14,7 @@ import {
   Monitor,
   Search,
   MessageSquare,
+  Bug,
 } from "lucide-react";
 import { ConfirmationModal } from "../components/common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
@@ -41,6 +42,7 @@ const UserManagement = lazy(() => import("../components/admin/UserManagement").t
 const TeamManagement = lazy(() => import("../components/admin/TeamManagement").then(module => ({ default: module.TeamManagement })));
 const KioskManager = lazy(() => import("../components/admin/KioskManager").then(module => ({ default: module.KioskManager })));
 const AnnouncementManager = lazy(() => import("../components/admin/AnnouncementManager").then(module => ({ default: module.AnnouncementManager })));
+const BugReportsAdmin = lazy(() => import("../components/admin/BugReportsAdmin").then(module => ({ default: module.BugReportsAdmin })));
 import "./Admin.css";
 import { authService } from "../lib/auth-service";
 import type { Game, Tournament } from "../types";
@@ -77,6 +79,7 @@ export function AdminPage() {
     | "bookings"
     | "kiosk"
     | "announcements"
+    | "bugreports"
   >("overview");
   const [stats, setStats] = useState({
     activeTournaments: 0,
@@ -261,6 +264,7 @@ export function AdminPage() {
     { id: "tournaments", label: "Versenyek", icon: Trophy },
     { id: "games", label: "Játékok", icon: Gamepad2 },
     { id: "announcements", label: "Bejelentések", icon: MessageSquare },
+    { id: "bugreports", label: "Hibajelentések", icon: Bug },
     ...(canManageComputers
       ? [
         { id: "bookings", label: "Gépfoglalás", icon: Calendar },
@@ -688,6 +692,12 @@ export function AdminPage() {
           {activeTab === "announcements" && (
             <div className="animate-fade-in">
               <AnnouncementManager />
+            </div>
+          )}
+
+          {activeTab === "bugreports" && (
+            <div className="animate-fade-in">
+              <BugReportsAdmin />
             </div>
           )}
 
