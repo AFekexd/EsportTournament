@@ -42,6 +42,7 @@ export interface User {
     };
     omId?: string | null;
     tosAcceptedAt?: string | null;
+    steamSyncStatus?: 'syncing' | 'complete' | 'error' | null;
 }
 
 export interface Team {

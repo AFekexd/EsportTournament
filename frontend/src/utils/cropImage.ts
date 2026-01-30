@@ -39,7 +39,12 @@ export default async function getCroppedImg(
     const ctx = canvas.getContext("2d");
 
     if (!ctx) {
-        return "";
+        throw new Error("Could not get canvas context");
+    }
+
+    // Validate crop dimensions
+    if (pixelCrop.width <= 0 || pixelCrop.height <= 0) {
+        throw new Error("Invalid crop dimensions");
     }
 
     const rotRad = getRadianAngle(rotation);
@@ -64,24 +69,30 @@ export default async function getCroppedImg(
     // draw rotated image
     ctx.drawImage(image, 0, 0);
 
+    // Ensure crop coordinates are within bounds
+    const safeX = Math.max(0, Math.round(pixelCrop.x));
+    const safeY = Math.max(0, Math.round(pixelCrop.y));
+    const safeWidth = Math.min(Math.round(pixelCrop.width), bBoxWidth - safeX);
+    const safeHeight = Math.min(Math.round(pixelCrop.height), bBoxHeight - safeY);
+
+    // Validate safe dimensions
+    if (safeWidth <= 0 || safeHeight <= 0) {
+        throw new Error("Crop area is outside of image bounds");
+    }
+
     // croppedAreaPixels values are bounding box relative
     // extract the cropped image using these values
-    const data = ctx.getImageData(
-        pixelCrop.x,
-        pixelCrop.y,
-        pixelCrop.width,
-        pixelCrop.height
-    );
+    const data = ctx.getImageData(safeX, safeY, safeWidth, safeHeight);
 
     // set canvas width to final desired crop size - this will clear existing context
-    canvas.width = pixelCrop.width;
-    canvas.height = pixelCrop.height;
+    canvas.width = safeWidth;
+    canvas.height = safeHeight;
 
     // paste generated rotate image at the top left corner
     ctx.putImageData(data, 0, 0);
 
-    // As Base64 string
-    return canvas.toDataURL("image/jpeg");
+    // As Base64 string with higher quality
+    return canvas.toDataURL("image/jpeg", 0.92);
 
     // As Blob
     // return new Promise((resolve, reject) => {

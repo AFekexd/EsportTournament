@@ -100,7 +100,45 @@ export function ProfilePage() {
     }
   }, [user?.steamId]);
 
+
   const isOwnProfile = !id || (user && user.id === id);
+
+  // Polling for Steam sync status
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
+
+    if (isOwnProfile && user?.steamSyncStatus === 'syncing') {
+      interval = setInterval(async () => {
+        try {
+          // Refresh user data to check sync status
+          const response = await apiFetch(`${API_URL}/auth/sync`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" }
+          });
+          const data = await response.json();
+
+          if (data.success && data.data) {
+            dispatch(updateUser(data.data));
+
+            if (data.data.steamSyncStatus === 'complete') {
+              toast.success(`Steam szinkronizáció kész! ${data.data.perfectGamesCount || 0} tökéletes játék.`);
+              clearInterval(interval);
+            } else if (data.data.steamSyncStatus === 'error') {
+              toast.error("Hiba történt a Steam szinkronizáció közben.");
+              clearInterval(interval);
+            }
+          }
+        } catch (e) {
+          console.error("Polling error", e);
+        }
+      }, 5000); // Check every 5 seconds
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isOwnProfile, user?.steamSyncStatus, dispatch]);
+
 
   // Initial Data Fetching
   useEffect(() => {
@@ -205,17 +243,20 @@ export function ProfilePage() {
       const data = await response.json();
 
       if (data.success) {
-        toast.success(`Sikeres szinkronizálás! ${data.count} tökéletes játék.`);
+        toast.info("Szinkronizálás elindult a háttérben...");
+
+        // Update basic data immediately and set status to syncing
+        // This will trigger the polling effect
         dispatch(
           updateUser({
             ...user!,
             steamId: localSteamId,
-            perfectGamesCount: data.count,
             steamAvatar: data.steamAvatar,
             steamUrl: data.steamUrl,
             steamLevel: data.steamLevel,
             steamPersonaname: data.steamPersonaname,
             steamCreatedAt: data.steamCreatedAt,
+            steamSyncStatus: 'syncing'
           })
         );
       } else {

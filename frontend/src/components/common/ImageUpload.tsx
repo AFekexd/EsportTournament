@@ -129,11 +129,17 @@ export function ImageUpload({
         croppedAreaPixels,
         rotation
       );
-      onChange(croppedImage);
-      setImageToCrop(null); // Close modal
+      if (croppedImage) {
+        onChange(croppedImage);
+        setImageToCrop(null); // Close modal
+        setCrop({ x: 0, y: 0 }); // Reset crop position
+      } else {
+        setError("Nem sikerült a kép vágása");
+      }
     } catch (e) {
-      console.error(e);
-      setError("Hiba a kép vágása közben");
+      console.error("Crop error:", e);
+      setError(e instanceof Error ? e.message : "Hiba a kép vágása közben");
+      setImageToCrop(null); // Close modal on error
     }
   };
 
@@ -175,6 +181,8 @@ export function ImageUpload({
                 onCropComplete={onCropComplete}
                 onZoomChange={setZoom}
                 onRotationChange={setRotation}
+                objectFit="contain"
+                showGrid={true}
               />
             </div>
 
