@@ -134,6 +134,7 @@ model User {
   steamTotalGames    Int?
   steamTotalPlaytime Int?      // Total playtime in minutes
   steamRecentGames   Json?     // Array of recently played games [{appid, name, iconUrl, playtime2weeks}]
+  steamTopGames      Json?     // Array of most played games [{appid, name, iconUrl, playtimeHours}]
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
   lastLogoutAt       DateTime? // For token invalidation

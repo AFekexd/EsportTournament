@@ -155,6 +155,7 @@ export type UserCountAggregateOutputType = {
   steamTotalGames: number
   steamTotalPlaytime: number
   steamRecentGames: number
+  steamTopGames: number
   createdAt: number
   updatedAt: number
   lastLogoutAt: number
@@ -294,6 +295,7 @@ export type UserCountAggregateInputType = {
   steamTotalGames?: true
   steamTotalPlaytime?: true
   steamRecentGames?: true
+  steamTopGames?: true
   createdAt?: true
   updatedAt?: true
   lastLogoutAt?: true
@@ -422,6 +424,7 @@ export type UserGroupByOutputType = {
   steamTotalGames: number | null
   steamTotalPlaytime: number | null
   steamRecentGames: runtime.JsonValue | null
+  steamTopGames: runtime.JsonValue | null
   createdAt: Date
   updatedAt: Date
   lastLogoutAt: Date | null
@@ -486,6 +489,7 @@ export type UserWhereInput = {
   steamTotalGames?: Prisma.IntNullableFilter<"User"> | number | null
   steamTotalPlaytime?: Prisma.IntNullableFilter<"User"> | number | null
   steamRecentGames?: Prisma.JsonNullableFilter<"User">
+  steamTopGames?: Prisma.JsonNullableFilter<"User">
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   lastLogoutAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -552,6 +556,7 @@ export type UserOrderByWithRelationInput = {
   steamTotalGames?: Prisma.SortOrderInput | Prisma.SortOrder
   steamTotalPlaytime?: Prisma.SortOrderInput | Prisma.SortOrder
   steamRecentGames?: Prisma.SortOrderInput | Prisma.SortOrder
+  steamTopGames?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastLogoutAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -621,6 +626,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   steamTotalGames?: Prisma.IntNullableFilter<"User"> | number | null
   steamTotalPlaytime?: Prisma.IntNullableFilter<"User"> | number | null
   steamRecentGames?: Prisma.JsonNullableFilter<"User">
+  steamTopGames?: Prisma.JsonNullableFilter<"User">
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   lastLogoutAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -687,6 +693,7 @@ export type UserOrderByWithAggregationInput = {
   steamTotalGames?: Prisma.SortOrderInput | Prisma.SortOrder
   steamTotalPlaytime?: Prisma.SortOrderInput | Prisma.SortOrder
   steamRecentGames?: Prisma.SortOrderInput | Prisma.SortOrder
+  steamTopGames?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastLogoutAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -736,6 +743,7 @@ export type UserScalarWhereWithAggregatesInput = {
   steamTotalGames?: Prisma.IntNullableWithAggregatesFilter<"User"> | number | null
   steamTotalPlaytime?: Prisma.IntNullableWithAggregatesFilter<"User"> | number | null
   steamRecentGames?: Prisma.JsonNullableWithAggregatesFilter<"User">
+  steamTopGames?: Prisma.JsonNullableWithAggregatesFilter<"User">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   lastLogoutAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -777,6 +785,7 @@ export type UserCreateInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -842,6 +851,7 @@ export type UserUncheckedCreateInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -907,6 +917,7 @@ export type UserUpdateInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -972,6 +983,7 @@ export type UserUncheckedUpdateInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1037,6 +1049,7 @@ export type UserCreateManyInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -1078,6 +1091,7 @@ export type UserUpdateManyMutationInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1118,6 +1132,7 @@ export type UserUncheckedUpdateManyInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1159,6 +1174,7 @@ export type UserCountOrderByAggregateInput = {
   steamTotalGames?: Prisma.SortOrder
   steamTotalPlaytime?: Prisma.SortOrder
   steamRecentGames?: Prisma.SortOrder
+  steamTopGames?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastLogoutAt?: Prisma.SortOrder
@@ -1772,6 +1788,7 @@ export type UserCreateWithoutOwnedTeamsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -1836,6 +1853,7 @@ export type UserUncheckedCreateWithoutOwnedTeamsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -1916,6 +1934,7 @@ export type UserUpdateWithoutOwnedTeamsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1980,6 +1999,7 @@ export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2044,6 +2064,7 @@ export type UserCreateWithoutTeamMembershipsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2108,6 +2129,7 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2188,6 +2210,7 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2252,6 +2275,7 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2316,6 +2340,7 @@ export type UserCreateWithoutFavoriteGameInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2380,6 +2405,7 @@ export type UserUncheckedCreateWithoutFavoriteGameInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2473,6 +2499,7 @@ export type UserScalarWhereInput = {
   steamTotalGames?: Prisma.IntNullableFilter<"User"> | number | null
   steamTotalPlaytime?: Prisma.IntNullableFilter<"User"> | number | null
   steamRecentGames?: Prisma.JsonNullableFilter<"User">
+  steamTopGames?: Prisma.JsonNullableFilter<"User">
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   lastLogoutAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -2514,6 +2541,7 @@ export type UserCreateWithoutTournamentEntriesInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2578,6 +2606,7 @@ export type UserUncheckedCreateWithoutTournamentEntriesInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2647,6 +2676,7 @@ export type UserCreateWithoutParticipatingEntriesInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2711,6 +2741,7 @@ export type UserUncheckedCreateWithoutParticipatingEntriesInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2791,6 +2822,7 @@ export type UserUpdateWithoutTournamentEntriesInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2855,6 +2887,7 @@ export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2935,6 +2968,7 @@ export type UserCreateWithoutHomeMatchesInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2999,6 +3033,7 @@ export type UserUncheckedCreateWithoutHomeMatchesInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -3068,6 +3103,7 @@ export type UserCreateWithoutAwayMatchesInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -3132,6 +3168,7 @@ export type UserUncheckedCreateWithoutAwayMatchesInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -3201,6 +3238,7 @@ export type UserCreateWithoutWonMatchesInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -3265,6 +3303,7 @@ export type UserUncheckedCreateWithoutWonMatchesInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -3345,6 +3384,7 @@ export type UserUpdateWithoutHomeMatchesInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3409,6 +3449,7 @@ export type UserUncheckedUpdateWithoutHomeMatchesInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3484,6 +3525,7 @@ export type UserUpdateWithoutAwayMatchesInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3548,6 +3590,7 @@ export type UserUncheckedUpdateWithoutAwayMatchesInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3623,6 +3666,7 @@ export type UserUpdateWithoutWonMatchesInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3687,6 +3731,7 @@ export type UserUncheckedUpdateWithoutWonMatchesInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3751,6 +3796,7 @@ export type UserCreateWithoutGameStatsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -3815,6 +3861,7 @@ export type UserUncheckedCreateWithoutGameStatsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -3895,6 +3942,7 @@ export type UserUpdateWithoutGameStatsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3959,6 +4007,7 @@ export type UserUncheckedUpdateWithoutGameStatsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4023,6 +4072,7 @@ export type UserCreateWithoutRanksInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -4087,6 +4137,7 @@ export type UserUncheckedCreateWithoutRanksInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -4167,6 +4218,7 @@ export type UserUpdateWithoutRanksInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4231,6 +4283,7 @@ export type UserUncheckedUpdateWithoutRanksInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4295,6 +4348,7 @@ export type UserCreateWithoutNotificationsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -4359,6 +4413,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -4439,6 +4494,7 @@ export type UserUpdateWithoutNotificationsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4503,6 +4559,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4567,6 +4624,7 @@ export type UserCreateWithoutDiscordSettingsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -4631,6 +4689,7 @@ export type UserUncheckedCreateWithoutDiscordSettingsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -4711,6 +4770,7 @@ export type UserUpdateWithoutDiscordSettingsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4775,6 +4835,7 @@ export type UserUncheckedUpdateWithoutDiscordSettingsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4839,6 +4900,7 @@ export type UserCreateWithoutBookingsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -4903,6 +4965,7 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -4983,6 +5046,7 @@ export type UserUpdateWithoutBookingsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5047,6 +5111,7 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5111,6 +5176,7 @@ export type UserCreateWithoutSessionsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -5175,6 +5241,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -5255,6 +5322,7 @@ export type UserUpdateWithoutSessionsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5319,6 +5387,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5383,6 +5452,7 @@ export type UserCreateWithoutLogsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -5447,6 +5517,7 @@ export type UserUncheckedCreateWithoutLogsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -5516,6 +5587,7 @@ export type UserCreateWithoutAdminLogsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -5580,6 +5652,7 @@ export type UserUncheckedCreateWithoutAdminLogsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -5660,6 +5733,7 @@ export type UserUpdateWithoutLogsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5724,6 +5798,7 @@ export type UserUncheckedUpdateWithoutLogsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5799,6 +5874,7 @@ export type UserUpdateWithoutAdminLogsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5863,6 +5939,7 @@ export type UserUncheckedUpdateWithoutAdminLogsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5927,6 +6004,7 @@ export type UserCreateWithoutWaitlistEntriesInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -5991,6 +6069,7 @@ export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -6071,6 +6150,7 @@ export type UserUpdateWithoutWaitlistEntriesInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6135,6 +6215,7 @@ export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6199,6 +6280,7 @@ export type UserCreateWithoutChangeRequestsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -6263,6 +6345,7 @@ export type UserUncheckedCreateWithoutChangeRequestsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -6343,6 +6426,7 @@ export type UserUpdateWithoutChangeRequestsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6407,6 +6491,7 @@ export type UserUncheckedUpdateWithoutChangeRequestsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6471,6 +6556,7 @@ export type UserCreateWithoutAuthoredChangelogsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -6535,6 +6621,7 @@ export type UserUncheckedCreateWithoutAuthoredChangelogsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -6615,6 +6702,7 @@ export type UserUpdateWithoutAuthoredChangelogsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6679,6 +6767,7 @@ export type UserUncheckedUpdateWithoutAuthoredChangelogsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6743,6 +6832,7 @@ export type UserCreateWithoutDiscordLogsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -6807,6 +6897,7 @@ export type UserUncheckedCreateWithoutDiscordLogsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -6887,6 +6978,7 @@ export type UserUpdateWithoutDiscordLogsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6951,6 +7043,7 @@ export type UserUncheckedUpdateWithoutDiscordLogsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7015,6 +7108,7 @@ export type UserCreateWithoutMatchCheckInsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -7079,6 +7173,7 @@ export type UserUncheckedCreateWithoutMatchCheckInsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -7159,6 +7254,7 @@ export type UserUpdateWithoutMatchCheckInsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7223,6 +7319,7 @@ export type UserUncheckedUpdateWithoutMatchCheckInsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7287,6 +7384,7 @@ export type UserCreateWithoutMatchPredictionsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -7351,6 +7449,7 @@ export type UserUncheckedCreateWithoutMatchPredictionsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -7431,6 +7530,7 @@ export type UserUpdateWithoutMatchPredictionsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7495,6 +7595,7 @@ export type UserUncheckedUpdateWithoutMatchPredictionsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7559,6 +7660,7 @@ export type UserCreateWithoutPostsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -7623,6 +7725,7 @@ export type UserUncheckedCreateWithoutPostsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -7703,6 +7806,7 @@ export type UserUpdateWithoutPostsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7767,6 +7871,7 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7831,6 +7936,7 @@ export type UserCreateWithoutBugReportsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -7895,6 +8001,7 @@ export type UserUncheckedCreateWithoutBugReportsInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -7975,6 +8082,7 @@ export type UserUpdateWithoutBugReportsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8039,6 +8147,7 @@ export type UserUncheckedUpdateWithoutBugReportsInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8103,6 +8212,7 @@ export type UserCreateWithoutBugReportNotificationInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -8167,6 +8277,7 @@ export type UserUncheckedCreateWithoutBugReportNotificationInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -8247,6 +8358,7 @@ export type UserUpdateWithoutBugReportNotificationInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8311,6 +8423,7 @@ export type UserUncheckedUpdateWithoutBugReportNotificationInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8375,6 +8488,7 @@ export type UserCreateManyFavoriteGameInput = {
   steamTotalGames?: number | null
   steamTotalPlaytime?: number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -8415,6 +8529,7 @@ export type UserUpdateWithoutFavoriteGameInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8479,6 +8594,7 @@ export type UserUncheckedUpdateWithoutFavoriteGameInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8543,6 +8659,7 @@ export type UserUncheckedUpdateManyWithoutFavoriteGameInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8583,6 +8700,7 @@ export type UserUpdateWithoutParticipatingEntriesInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8647,6 +8765,7 @@ export type UserUncheckedUpdateWithoutParticipatingEntriesInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8711,6 +8830,7 @@ export type UserUncheckedUpdateManyWithoutParticipatingEntriesInput = {
   steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8972,6 +9092,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   steamTotalGames?: boolean
   steamTotalPlaytime?: boolean
   steamRecentGames?: boolean
+  steamTopGames?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   lastLogoutAt?: boolean
@@ -9039,6 +9160,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   steamTotalGames?: boolean
   steamTotalPlaytime?: boolean
   steamRecentGames?: boolean
+  steamTopGames?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   lastLogoutAt?: boolean
@@ -9081,6 +9203,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   steamTotalGames?: boolean
   steamTotalPlaytime?: boolean
   steamRecentGames?: boolean
+  steamTopGames?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   lastLogoutAt?: boolean
@@ -9123,6 +9246,7 @@ export type UserSelectScalar = {
   steamTotalGames?: boolean
   steamTotalPlaytime?: boolean
   steamRecentGames?: boolean
+  steamTopGames?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   lastLogoutAt?: boolean
@@ -9131,7 +9255,7 @@ export type UserSelectScalar = {
   tosAcceptedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "keycloakId" | "email" | "username" | "displayName" | "avatarUrl" | "omId" | "discordId" | "role" | "elo" | "timeBalanceSeconds" | "emailNotifications" | "emailPrefTournaments" | "emailPrefMatches" | "emailPrefBookings" | "emailPrefSystem" | "emailPrefWeeklyDigest" | "discordDmTournaments" | "discordDmMatches" | "discordDmReminders" | "discordDmResults" | "discordDmSystem" | "steamId" | "steamAvatar" | "steamUrl" | "steamLevel" | "steamPersonaname" | "steamCreatedAt" | "perfectGamesCount" | "steamTotalGames" | "steamTotalPlaytime" | "steamRecentGames" | "createdAt" | "updatedAt" | "lastLogoutAt" | "achievements" | "favoriteGameId" | "tosAcceptedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "keycloakId" | "email" | "username" | "displayName" | "avatarUrl" | "omId" | "discordId" | "role" | "elo" | "timeBalanceSeconds" | "emailNotifications" | "emailPrefTournaments" | "emailPrefMatches" | "emailPrefBookings" | "emailPrefSystem" | "emailPrefWeeklyDigest" | "discordDmTournaments" | "discordDmMatches" | "discordDmReminders" | "discordDmResults" | "discordDmSystem" | "steamId" | "steamAvatar" | "steamUrl" | "steamLevel" | "steamPersonaname" | "steamCreatedAt" | "perfectGamesCount" | "steamTotalGames" | "steamTotalPlaytime" | "steamRecentGames" | "steamTopGames" | "createdAt" | "updatedAt" | "lastLogoutAt" | "achievements" | "favoriteGameId" | "tosAcceptedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
   ownedTeams?: boolean | Prisma.User$ownedTeamsArgs<ExtArgs>
@@ -9229,6 +9353,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     steamTotalGames: number | null
     steamTotalPlaytime: number | null
     steamRecentGames: runtime.JsonValue | null
+    steamTopGames: runtime.JsonValue | null
     createdAt: Date
     updatedAt: Date
     lastLogoutAt: Date | null
@@ -9715,6 +9840,7 @@ export interface UserFieldRefs {
   readonly steamTotalGames: Prisma.FieldRef<"User", 'Int'>
   readonly steamTotalPlaytime: Prisma.FieldRef<"User", 'Int'>
   readonly steamRecentGames: Prisma.FieldRef<"User", 'Json'>
+  readonly steamTopGames: Prisma.FieldRef<"User", 'Json'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly lastLogoutAt: Prisma.FieldRef<"User", 'DateTime'>

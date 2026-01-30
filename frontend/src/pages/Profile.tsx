@@ -1176,6 +1176,55 @@ export function ProfilePage() {
                         </div>
                       );
                     })()}
+
+                    {/* Most Played Games */}
+                    {(() => {
+                      const topGames = isOwnProfile
+                        ? (user as any)?.steamTopGames
+                        : (profileUser as any)?.steamTopGames;
+                      if (!topGames || topGames.length === 0) return null;
+                      return (
+                        <div className="mt-6">
+                          <div className="text-[#66c0f4] text-xs font-bold uppercase tracking-widest mb-3">
+                            Legtöbbet Játszott
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {topGames.slice(0, 5).map((game: any, idx: number) => (
+                              <a
+                                key={game.appid}
+                                href={`https://store.steampowered.com/app/${game.appid}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group/game flex items-center gap-2 bg-[#1b2838] hover:bg-[#2a475e] px-3 py-2 rounded-lg border border-white/5 transition-all relative"
+                                title={`${game.name} - ${game.playtimeHours} óra összesen`}
+                              >
+                                {idx === 0 && (
+                                  <div className="absolute -top-1 -left-1 w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center text-[10px] font-bold text-black shadow-lg">
+                                    👑
+                                  </div>
+                                )}
+                                <img
+                                  src={game.iconUrl || `https://cdn.cloudflare.steamstatic.com/steam/apps/${game.appid}/header.jpg`}
+                                  alt={game.name}
+                                  className="w-8 h-8 rounded object-cover"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = `https://cdn.cloudflare.steamstatic.com/steam/apps/${game.appid}/capsule_184x69.jpg`;
+                                  }}
+                                />
+                                <div className="max-w-[120px]">
+                                  <div className="text-white text-xs font-medium truncate group-hover/game:text-[#66c0f4] transition-colors">
+                                    {game.name}
+                                  </div>
+                                  <div className="text-gray-500 text-[10px]">
+                                    {game.playtimeHours}h összesen
+                                  </div>
+                                </div>
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })()}
                   </div>
                 ) : (
                   <div className="text-center py-8">

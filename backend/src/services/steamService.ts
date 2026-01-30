@@ -38,6 +38,7 @@ export class SteamService {
         let steamTotalGames = null;
         let steamTotalPlaytime = null;
         let steamRecentGames: { appid: number; name: string; iconUrl: string; playtime2weeks: number }[] = [];
+        let steamTopGames: { appid: number; name: string; iconUrl: string; playtimeHours: number }[] = [];
 
         // 0. Get Player Summary (Avatar, URL, CreatedAt)
         try {
@@ -151,10 +152,23 @@ export class SteamService {
             // Limiting to top 30 games to avoid timeouts/rate limits for this demo
             // In production, this should be a background job queue
             const topGames = games
+                .filter(g => g.playtime_forever > 0)
+                .sort((a, b) => b.playtime_forever - a.playtime_forever);
+
+            // Store top 5 most played games for display
+            steamTopGames = topGames.slice(0, 5).map(g => ({
+                appid: g.appid,
+                name: g.name,
+                iconUrl: `https://media.steampowered.com/steamcommunity/public/images/apps/${g.appid}/${g.img_icon_url}.jpg`,
+                playtimeHours: Math.floor(g.playtime_forever / 60)
+            }));
+
+            // Take top 30 for achievement scanning
+            const topGamesForAchievements = topGames
                 .sort((a, b) => b.playtime_forever - a.playtime_forever)
                 .slice(0, 30);
 
-            for (const game of topGames) {
+            for (const game of topGamesForAchievements) {
                 // Skip if playtime < 60 minutes (unlikely to be platinum, optimization)
                 if (game.playtime_forever < 60) continue;
 
@@ -211,7 +225,8 @@ export class SteamService {
                 steamPersonaname,
                 steamTotalGames,
                 steamTotalPlaytime,
-                steamRecentGames: steamRecentGames.length > 0 ? steamRecentGames : undefined
+                steamRecentGames: steamRecentGames.length > 0 ? steamRecentGames : undefined,
+                steamTopGames: steamTopGames.length > 0 ? steamTopGames : undefined
             }
         });
 
@@ -224,7 +239,8 @@ export class SteamService {
             steamPersonaname,
             steamTotalGames,
             steamTotalPlaytime,
-            steamRecentGames
+            steamRecentGames,
+            steamTopGames
         };
     }
 }
