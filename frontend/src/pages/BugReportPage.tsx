@@ -78,7 +78,7 @@ export function BugReportPage() {
 
     const fetchMyReports = async () => {
         try {
-            const res = await apiFetch(`${API_URL}/bug-reports`);
+            const res = await apiFetch(`${API_URL}/bug-reports?mine=true`);
             const data = await res.json();
             if (data.success) {
                 setMyReports(data.data);

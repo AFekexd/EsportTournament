@@ -155,12 +155,13 @@ bugReportsRouter.get(
         }
 
         const isAdmin = [UserRole.ADMIN, UserRole.ORGANIZER].includes(user.role as UserRole);
-        const { status, category } = req.query;
+        const { status, category, mine } = req.query;
 
         const where: any = {};
 
-        // Non-admins can only see their own reports
-        if (!isAdmin) {
+        // If 'mine=true' is passed, always filter by current user (for "My Reports" section)
+        // Otherwise, non-admins can only see their own reports
+        if (mine === 'true' || !isAdmin) {
             where.reporterId = user.id;
         }
 
