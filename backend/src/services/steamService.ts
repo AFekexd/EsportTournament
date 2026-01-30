@@ -10,6 +10,14 @@ interface SteamGame {
     img_icon_url: string;
 }
 
+interface SteamRecentGame {
+    appid: number;
+    name: string;
+    playtime_2weeks: number;
+    playtime_forever: number;
+    img_icon_url: string;
+}
+
 interface SteamAchievement {
     apiname: string;
     achieved: number;
@@ -27,6 +35,9 @@ export class SteamService {
         let steamCreatedAt = null;
         let steamLevel = null;
         let steamPersonaname = null;
+        let steamTotalGames = null;
+        let steamTotalPlaytime = null;
+        let steamRecentGames: { appid: number; name: string; iconUrl: string; playtime2weeks: number }[] = [];
 
         // 0. Get Player Summary (Avatar, URL, CreatedAt)
         try {
@@ -81,6 +92,33 @@ export class SteamService {
             console.error("Failed to fetch steam level", e);
         }
 
+        // 0.6 Get Recently Played Games (last 2 weeks)
+        try {
+            const recentUrl = `${STEAM_API_BASE}/IPlayerService/GetRecentlyPlayedGames/v1/?key=${STEAM_API_KEY}&steamid=${steamId}&count=5`;
+            const recentRes = await fetch(recentUrl);
+            const recentText = await recentRes.text();
+
+            if (!recentRes.ok) {
+                console.error(`Steam API Recent Games Error (${recentRes.status}): ${recentText.substring(0, 200)}`);
+            } else {
+                try {
+                    const recentData = JSON.parse(recentText);
+                    if (recentData.response?.games) {
+                        steamRecentGames = recentData.response.games.slice(0, 5).map((g: SteamRecentGame) => ({
+                            appid: g.appid,
+                            name: g.name,
+                            iconUrl: `https://media.steampowered.com/steamcommunity/public/images/apps/${g.appid}/${g.img_icon_url}.jpg`,
+                            playtime2weeks: g.playtime_2weeks || 0
+                        }));
+                    }
+                } catch (e) {
+                    console.error("Failed to parse recent games JSON", e);
+                }
+            }
+        } catch (e) {
+            console.error("Failed to fetch recent games", e);
+        }
+
         // 1. Get Owned Games
         const ownedGamesUrl = `${STEAM_API_BASE}/IPlayerService/GetOwnedGames/v0001/?key=${STEAM_API_KEY}&steamid=${steamId}&format=json&include_appinfo=true`;
 
@@ -104,6 +142,10 @@ export class SteamService {
 
         if (data.response && data.response.games) {
             const games: SteamGame[] = data.response.games;
+
+            // Track total games and playtime
+            steamTotalGames = data.response.game_count || games.length;
+            steamTotalPlaytime = games.reduce((sum, g) => sum + (g.playtime_forever || 0), 0);
 
             // Sort by playtime (descending) to prioritize played games
             // Limiting to top 30 games to avoid timeouts/rate limits for this demo
@@ -166,7 +208,10 @@ export class SteamService {
                 steamUrl,
                 steamCreatedAt,
                 steamLevel,
-                steamPersonaname
+                steamPersonaname,
+                steamTotalGames,
+                steamTotalPlaytime,
+                steamRecentGames: steamRecentGames.length > 0 ? steamRecentGames : undefined
             }
         });
 
@@ -176,9 +221,13 @@ export class SteamService {
             steamUrl,
             steamCreatedAt,
             steamLevel,
-            steamPersonaname
+            steamPersonaname,
+            steamTotalGames,
+            steamTotalPlaytime,
+            steamRecentGames
         };
     }
 }
 
 export const steamService = new SteamService();
+

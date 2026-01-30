@@ -189,8 +189,8 @@ export default function RequestsPage() {
             <button
               onClick={() => setActiveTab("pending")}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${activeTab === "pending"
-                  ? "bg-primary text-white shadow-lg"
-                  : "text-gray-400 hover:text-white"
+                ? "bg-primary text-white shadow-lg"
+                : "text-gray-400 hover:text-white"
                 }`}
             >
               Váratlanok
@@ -198,8 +198,8 @@ export default function RequestsPage() {
             <button
               onClick={() => setActiveTab("history")}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${activeTab === "history"
-                  ? "bg-primary text-white shadow-lg"
-                  : "text-gray-400 hover:text-white"
+                ? "bg-primary text-white shadow-lg"
+                : "text-gray-400 hover:text-white"
                 }`}
             >
               Előzmények
@@ -260,8 +260,8 @@ export default function RequestsPage() {
                         {activeTab === "history" && (
                           <span
                             className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border ml-2 ${request.status === "APPROVED"
-                                ? "bg-green-500/10 text-green-500 border-green-500/20"
-                                : "bg-red-500/10 text-red-500 border-red-500/20"
+                              ? "bg-green-500/10 text-green-500 border-green-500/20"
+                              : "bg-red-500/10 text-red-500 border-red-500/20"
                               }`}
                           >
                             {request.status === "APPROVED"
@@ -328,11 +328,11 @@ export default function RequestsPage() {
                     </div>
                   )}
 
-                <div className="bg-black/20 rounded-xl p-4 border border-white/5">
-                  <h4 className="text-sm font-medium text-gray-400 mb-3 uppercase tracking-wider">
+                <div className="bg-black/20 rounded-xl p-5 border border-white/5">
+                  <h4 className="text-sm font-medium text-gray-400 mb-4 uppercase tracking-wider">
                     Változtatások
                   </h4>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {Object.entries(request.data).map(([key, value]) => {
                       const oldValue = request.currentData?.[key];
                       const isUrl = key.toLowerCase().endsWith("url");
@@ -340,47 +340,54 @@ export default function RequestsPage() {
                       return (
                         <div
                           key={key}
-                          className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-2 md:gap-8 items-start py-2 border-b border-white/5 last:border-0"
+                          className="bg-[#0f1015] rounded-xl p-4 border border-white/5"
                         >
-                          <div className="text-gray-400 font-medium">
+                          <div className="text-sm font-semibold text-primary mb-3">
                             {dict[key as keyof typeof dict] || key}
                           </div>
-                          <div className="text-white break-all">
+                          <div className="text-white">
                             {isUrl && typeof value === "string" ? (
-                              <div className="flex flex-col gap-2">
-                                <div className="flex items-center gap-4">
+                              <div className="flex flex-col gap-4">
+                                <div className="flex flex-wrap items-center gap-6">
                                   {/* Old Image */}
                                   {oldValue && (
-                                    <div className="relative group">
-                                      <img
-                                        src={oldValue}
-                                        alt="Old"
-                                        className="h-16 w-auto rounded-md object-contain bg-black/50 grayscale opacity-70"
-                                      />
-                                      <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-md">
-                                        <span className="text-xs text-white">
-                                          Régi
-                                        </span>
+                                    <div className="flex flex-col items-center gap-2">
+                                      <span className="text-xs font-bold text-red-400 uppercase tracking-wider bg-red-500/10 px-2 py-1 rounded">
+                                        Régi
+                                      </span>
+                                      <div className="relative">
+                                        <img
+                                          src={oldValue}
+                                          alt="Old"
+                                          className="h-24 w-24 rounded-xl object-cover bg-black/50 border-2 border-red-500/30 opacity-70"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-red-500/20 to-transparent rounded-xl" />
                                       </div>
                                     </div>
                                   )}
 
                                   {oldValue && (
-                                    <div className="text-gray-500">→</div>
+                                    <div className="text-2xl text-gray-500">→</div>
                                   )}
 
                                   {/* New Image */}
                                   {value && (
-                                    <div className="relative">
-                                      <img
-                                        src={value}
-                                        alt="New"
-                                        className="h-16 w-auto rounded-md object-contain bg-black/50 border border-green-500/30"
-                                      />
+                                    <div className="flex flex-col items-center gap-2">
+                                      <span className="text-xs font-bold text-green-400 uppercase tracking-wider bg-green-500/10 px-2 py-1 rounded">
+                                        Új
+                                      </span>
+                                      <div className="relative">
+                                        <img
+                                          src={value}
+                                          alt="New"
+                                          className="h-24 w-24 rounded-xl object-cover bg-black/50 border-2 border-green-500/50 shadow-lg shadow-green-500/10"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-green-500/10 to-transparent rounded-xl" />
+                                      </div>
                                     </div>
                                   )}
                                 </div>
-                                <span className="text-xs text-gray-500 font-mono">
+                                <span className="text-xs text-gray-400 font-medium">
                                   {value
                                     ? oldValue
                                       ? "Kép lecserélése"
@@ -389,25 +396,33 @@ export default function RequestsPage() {
                                 </span>
                               </div>
                             ) : (
-                              <div className="flex flex-wrap items-center gap-2">
+                              <div className="flex flex-wrap items-center gap-3">
                                 {oldValue !== undefined &&
                                   oldValue !== value && (
                                     <>
-                                      <span className="line-through text-gray-500 decoration-red-500/50 decoration-2">
-                                        {String(oldValue)}
-                                      </span>
-                                      <span className="text-gray-500">→</span>
+                                      <div className="flex flex-col gap-1">
+                                        <span className="text-[10px] font-bold text-red-400 uppercase tracking-wider">Régi</span>
+                                        <span className="line-through text-gray-400 decoration-red-500/50 decoration-2 bg-red-500/10 px-3 py-1.5 rounded-lg">
+                                          {String(oldValue)}
+                                        </span>
+                                      </div>
+                                      <span className="text-xl text-gray-500">→</span>
                                     </>
                                   )}
-                                <span
-                                  className={
-                                    oldValue !== undefined && oldValue !== value
-                                      ? "text-green-400 font-medium bg-green-400/10 px-2 py-0.5 rounded"
-                                      : ""
-                                  }
-                                >
-                                  {String(value)}
-                                </span>
+                                <div className="flex flex-col gap-1">
+                                  {oldValue !== undefined && oldValue !== value && (
+                                    <span className="text-[10px] font-bold text-green-400 uppercase tracking-wider">Új</span>
+                                  )}
+                                  <span
+                                    className={
+                                      oldValue !== undefined && oldValue !== value
+                                        ? "text-green-400 font-semibold bg-green-400/10 px-3 py-1.5 rounded-lg border border-green-500/30"
+                                        : ""
+                                    }
+                                  >
+                                    {String(value)}
+                                  </span>
+                                </div>
                               </div>
                             )}
                           </div>

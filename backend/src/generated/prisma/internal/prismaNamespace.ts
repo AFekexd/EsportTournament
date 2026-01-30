@@ -412,7 +412,8 @@ export const ModelName = {
   MatchPrediction: 'MatchPrediction',
   Scrim: 'Scrim',
   NewsPost: 'NewsPost',
-  BugReport: 'BugReport'
+  BugReport: 'BugReport',
+  BugReportNotificationSetting: 'BugReportNotificationSetting'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -428,7 +429,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "team" | "teamMember" | "game" | "tournament" | "tournamentEntry" | "match" | "gameStats" | "rank" | "userRank" | "notification" | "event" | "discordSettings" | "computer" | "booking" | "session" | "log" | "waitlist" | "bookingSchedule" | "clientVersion" | "changeRequest" | "changelog" | "emailLog" | "discordLog" | "matchCheckIn" | "matchPrediction" | "scrim" | "newsPost" | "bugReport"
+    modelProps: "user" | "team" | "teamMember" | "game" | "tournament" | "tournamentEntry" | "match" | "gameStats" | "rank" | "userRank" | "notification" | "event" | "discordSettings" | "computer" | "booking" | "session" | "log" | "waitlist" | "bookingSchedule" | "clientVersion" | "changeRequest" | "changelog" | "emailLog" | "discordLog" | "matchCheckIn" | "matchPrediction" | "scrim" | "newsPost" | "bugReport" | "bugReportNotificationSetting"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2578,6 +2579,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    BugReportNotificationSetting: {
+      payload: Prisma.$BugReportNotificationSettingPayload<ExtArgs>
+      fields: Prisma.BugReportNotificationSettingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BugReportNotificationSettingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportNotificationSettingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BugReportNotificationSettingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportNotificationSettingPayload>
+        }
+        findFirst: {
+          args: Prisma.BugReportNotificationSettingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportNotificationSettingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BugReportNotificationSettingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportNotificationSettingPayload>
+        }
+        findMany: {
+          args: Prisma.BugReportNotificationSettingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportNotificationSettingPayload>[]
+        }
+        create: {
+          args: Prisma.BugReportNotificationSettingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportNotificationSettingPayload>
+        }
+        createMany: {
+          args: Prisma.BugReportNotificationSettingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BugReportNotificationSettingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportNotificationSettingPayload>[]
+        }
+        delete: {
+          args: Prisma.BugReportNotificationSettingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportNotificationSettingPayload>
+        }
+        update: {
+          args: Prisma.BugReportNotificationSettingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportNotificationSettingPayload>
+        }
+        deleteMany: {
+          args: Prisma.BugReportNotificationSettingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BugReportNotificationSettingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BugReportNotificationSettingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportNotificationSettingPayload>[]
+        }
+        upsert: {
+          args: Prisma.BugReportNotificationSettingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BugReportNotificationSettingPayload>
+        }
+        aggregate: {
+          args: Prisma.BugReportNotificationSettingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBugReportNotificationSetting>
+        }
+        groupBy: {
+          args: Prisma.BugReportNotificationSettingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BugReportNotificationSettingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BugReportNotificationSettingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BugReportNotificationSettingCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2647,6 +2722,9 @@ export const UserScalarFieldEnum = {
   steamPersonaname: 'steamPersonaname',
   steamCreatedAt: 'steamCreatedAt',
   perfectGamesCount: 'perfectGamesCount',
+  steamTotalGames: 'steamTotalGames',
+  steamTotalPlaytime: 'steamTotalPlaytime',
+  steamRecentGames: 'steamRecentGames',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   lastLogoutAt: 'lastLogoutAt',
@@ -3092,6 +3170,18 @@ export const BugReportScalarFieldEnum = {
 } as const
 
 export type BugReportScalarFieldEnum = (typeof BugReportScalarFieldEnum)[keyof typeof BugReportScalarFieldEnum]
+
+
+export const BugReportNotificationSettingScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  receiveEmail: 'receiveEmail',
+  receiveDiscord: 'receiveDiscord',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BugReportNotificationSettingScalarFieldEnum = (typeof BugReportNotificationSettingScalarFieldEnum)[keyof typeof BugReportNotificationSettingScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -3642,6 +3732,7 @@ export type GlobalOmitConfig = {
   scrim?: Prisma.ScrimOmit
   newsPost?: Prisma.NewsPostOmit
   bugReport?: Prisma.BugReportOmit
+  bugReportNotificationSetting?: Prisma.BugReportNotificationSettingOmit
 }
 
 /* Types for Logging */

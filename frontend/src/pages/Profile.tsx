@@ -17,7 +17,8 @@ import {
   ChevronRight,
   Plus,
   Trash2,
-  Star
+  Star,
+  Clock
 } from "lucide-react";
 import MatchHistory from "../components/profile/MatchHistory";
 import MatchHistoryModal from "../components/profile/MatchHistoryModal";
@@ -62,7 +63,24 @@ export function ProfilePage() {
   const [isMatchHistoryOpen, setIsMatchHistoryOpen] = useState(false);
   const [isAddGameModalOpen, setIsAddGameModalOpen] = useState(false);
   // Track games that are temporarily visible (user added them but hasn't selected a rank yet)
-  const [visibleGameIds, setVisibleGameIds] = useState<string[]>([]);
+  // Persist in localStorage to survive page refresh
+  const [visibleGameIds, setVisibleGameIds] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('profile_visible_games');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Persist visibleGameIds to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('profile_visible_games', JSON.stringify(visibleGameIds));
+    } catch {
+      // Ignore localStorage errors
+    }
+  }, [visibleGameIds]);
   const [isDiscordModalOpen, setIsDiscordModalOpen] = useState(false);
 
   // ESC kezelés az Avatar Lightbox-hoz
@@ -299,12 +317,19 @@ export function ProfilePage() {
   };
 
   const getTopGameImage = () => {
-    // 1. Check favorite game
-    if (isOwnProfile && user?.favoriteGame) {
-      return user.favoriteGame.imageUrl;
+    // 1. Check favorite game - use favoriteGameId to find game from games array
+    // This is more reliable than relying on favoriteGame object which may not be populated
+    if (isOwnProfile && user?.favoriteGameId) {
+      const favoriteGame = games.find(g => g.id === user.favoriteGameId);
+      if (favoriteGame?.imageUrl) {
+        return favoriteGame.imageUrl;
+      }
     }
-    if (!isOwnProfile && (currentProfile as any)?.favoriteGame) {
-      return (currentProfile as any).favoriteGame.imageUrl;
+    if (!isOwnProfile && (currentProfile as any)?.favoriteGameId) {
+      const favoriteGame = games.find(g => g.id === (currentProfile as any).favoriteGameId);
+      if (favoriteGame?.imageUrl) {
+        return favoriteGame.imageUrl;
+      }
     }
 
     // 2. Fallback to ranks
@@ -1021,16 +1046,16 @@ export function ProfilePage() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 mt-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
                       {/* Perfect Games Stat */}
                       <div className="bg-gradient-to-br from-[#1b2838] to-[#171a21] p-4 rounded-xl border border-white/5 relative overflow-hidden group/stat">
                         <div className="absolute top-0 right-0 p-2 opacity-10 group-hover/stat:opacity-20 transition-opacity">
-                          <Trophy size={48} />
+                          <Trophy size={40} />
                         </div>
-                        <div className="text-[#66c0f4] text-xs font-bold uppercase tracking-widest mb-1">
-                          Tökéletes Játékok
+                        <div className="text-[#66c0f4] text-[10px] font-bold uppercase tracking-widest mb-1">
+                          Tökéletes
                         </div>
-                        <div className="text-3xl font-black text-white">
+                        <div className="text-2xl font-black text-white">
                           {isOwnProfile
                             ? user?.perfectGamesCount || 0
                             : (profileUser as any)?.perfectGamesCount || 0}
@@ -1040,32 +1065,117 @@ export function ProfilePage() {
                         </div>
                       </div>
 
+                      {/* Total Games Stat */}
+                      <div className="bg-gradient-to-br from-[#1b2838] to-[#171a21] p-4 rounded-xl border border-white/5 relative overflow-hidden group/stat">
+                        <div className="absolute top-0 right-0 p-2 opacity-10 group-hover/stat:opacity-20 transition-opacity">
+                          <Gamepad2 size={40} />
+                        </div>
+                        <div className="text-[#66c0f4] text-[10px] font-bold uppercase tracking-widest mb-1">
+                          Összes Játék
+                        </div>
+                        <div className="text-2xl font-black text-white">
+                          {isOwnProfile
+                            ? (user as any)?.steamTotalGames || "-"
+                            : (profileUser as any)?.steamTotalGames || "-"}
+                        </div>
+                        <div className="text-[10px] text-gray-500 mt-1">
+                          A könyvtárban
+                        </div>
+                      </div>
+
+                      {/* Total Playtime Stat */}
+                      <div className="bg-gradient-to-br from-[#1b2838] to-[#171a21] p-4 rounded-xl border border-white/5 relative overflow-hidden group/stat">
+                        <div className="absolute top-0 right-0 p-2 opacity-10 group-hover/stat:opacity-20 transition-opacity">
+                          <Clock size={40} />
+                        </div>
+                        <div className="text-[#66c0f4] text-[10px] font-bold uppercase tracking-widest mb-1">
+                          Játékidő
+                        </div>
+                        <div className="text-2xl font-black text-white">
+                          {(() => {
+                            const minutes = isOwnProfile
+                              ? (user as any)?.steamTotalPlaytime
+                              : (profileUser as any)?.steamTotalPlaytime;
+                            if (!minutes) return "-";
+                            const hours = Math.floor(minutes / 60);
+                            if (hours >= 1000) return `${(hours / 1000).toFixed(1)}k`;
+                            return hours;
+                          })()}
+                        </div>
+                        <div className="text-[10px] text-gray-500 mt-1">
+                          Óra összesen
+                        </div>
+                      </div>
+
                       {/* Account Age Stat */}
                       <div className="bg-gradient-to-br from-[#1b2838] to-[#171a21] p-4 rounded-xl border border-white/5 relative overflow-hidden group/stat">
                         <div className="absolute top-0 right-0 p-2 opacity-10 group-hover/stat:opacity-20 transition-opacity">
-                          <Calendar size={48} />
+                          <Calendar size={40} />
                         </div>
-                        <div className="text-[#66c0f4] text-xs font-bold uppercase tracking-widest mb-1">
-                          Fiók Létrehozva
+                        <div className="text-[#66c0f4] text-[10px] font-bold uppercase tracking-widest mb-1">
+                          Fiók Kora
                         </div>
-                        <div className="text-md font-bold text-white mt-2">
-                          {isOwnProfile
-                            ? user?.steamCreatedAt
-                              ? new Date(user.steamCreatedAt).getFullYear()
-                              : "-"
-                            : (profileUser as any)?.steamCreatedAt
-                              ? new Date(
-                                (profileUser as any).steamCreatedAt
-                              ).getFullYear()
-                              : "-"}
+                        <div className="text-2xl font-black text-white">
+                          {(() => {
+                            const created = isOwnProfile
+                              ? user?.steamCreatedAt
+                              : (profileUser as any)?.steamCreatedAt;
+                            if (!created) return "-";
+                            const years = Math.floor((Date.now() - new Date(created).getTime()) / (1000 * 60 * 60 * 24 * 365));
+                            return `${years}`;
+                          })()}
                         </div>
                         <div className="text-[10px] text-gray-500 mt-1">
                           {isOwnProfile && user?.steamCreatedAt
-                            ? new Date(user.steamCreatedAt).toLocaleDateString()
-                            : ""}
+                            ? `${new Date(user.steamCreatedAt).getFullYear()} óta`
+                            : "Év"}
                         </div>
                       </div>
                     </div>
+
+                    {/* Recently Played Games */}
+                    {(() => {
+                      const recentGames = isOwnProfile
+                        ? (user as any)?.steamRecentGames
+                        : (profileUser as any)?.steamRecentGames;
+                      if (!recentGames || recentGames.length === 0) return null;
+                      return (
+                        <div className="mt-6">
+                          <div className="text-[#66c0f4] text-xs font-bold uppercase tracking-widest mb-3">
+                            Legutóbb Játszott
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {recentGames.slice(0, 5).map((game: any) => (
+                              <a
+                                key={game.appid}
+                                href={`https://store.steampowered.com/app/${game.appid}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group/game flex items-center gap-2 bg-[#1b2838] hover:bg-[#2a475e] px-3 py-2 rounded-lg border border-white/5 transition-all"
+                                title={`${game.name} - ${Math.floor(game.playtime2weeks / 60)}h az elmúlt 2 hétben`}
+                              >
+                                <img
+                                  src={game.iconUrl || `https://cdn.cloudflare.steamstatic.com/steam/apps/${game.appid}/header.jpg`}
+                                  alt={game.name}
+                                  className="w-8 h-8 rounded object-cover"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = `https://cdn.cloudflare.steamstatic.com/steam/apps/${game.appid}/capsule_184x69.jpg`;
+                                  }}
+                                />
+                                <div className="max-w-[120px]">
+                                  <div className="text-white text-xs font-medium truncate group-hover/game:text-[#66c0f4] transition-colors">
+                                    {game.name}
+                                  </div>
+                                  <div className="text-gray-500 text-[10px]">
+                                    {Math.floor(game.playtime2weeks / 60)}h /2hét
+                                  </div>
+                                </div>
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })()}
                   </div>
                 ) : (
                   <div className="text-center py-8">

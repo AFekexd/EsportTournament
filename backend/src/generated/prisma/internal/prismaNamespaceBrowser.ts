@@ -79,7 +79,8 @@ export const ModelName = {
   MatchPrediction: 'MatchPrediction',
   Scrim: 'Scrim',
   NewsPost: 'NewsPost',
-  BugReport: 'BugReport'
+  BugReport: 'BugReport',
+  BugReportNotificationSetting: 'BugReportNotificationSetting'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -128,6 +129,9 @@ export const UserScalarFieldEnum = {
   steamPersonaname: 'steamPersonaname',
   steamCreatedAt: 'steamCreatedAt',
   perfectGamesCount: 'perfectGamesCount',
+  steamTotalGames: 'steamTotalGames',
+  steamTotalPlaytime: 'steamTotalPlaytime',
+  steamRecentGames: 'steamRecentGames',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   lastLogoutAt: 'lastLogoutAt',
@@ -573,6 +577,18 @@ export const BugReportScalarFieldEnum = {
 } as const
 
 export type BugReportScalarFieldEnum = (typeof BugReportScalarFieldEnum)[keyof typeof BugReportScalarFieldEnum]
+
+
+export const BugReportNotificationSettingScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  receiveEmail: 'receiveEmail',
+  receiveDiscord: 'receiveDiscord',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BugReportNotificationSettingScalarFieldEnum = (typeof BugReportNotificationSettingScalarFieldEnum)[keyof typeof BugReportNotificationSettingScalarFieldEnum]
 
 
 export const SortOrder = {

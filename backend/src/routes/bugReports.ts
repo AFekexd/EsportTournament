@@ -3,8 +3,90 @@ import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest } from '../middleware/auth.js';
 import { ApiError, asyncHandler } from '../middleware/errorHandler.js';
 import { UserRole } from '../utils/enums.js';
+import { emailService } from '../services/emailService.js';
+import { discordService } from '../services/discordService.js';
 
 export const bugReportsRouter: Router = Router();
+
+// Helper function to send notifications to configured admins
+async function notifyAdminsAboutBugReport(bugReport: any, reporter: any) {
+    try {
+        const settings = await prisma.bugReportNotificationSetting.findMany({
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        email: true,
+                        discordId: true,
+                        displayName: true,
+                        username: true
+                    }
+                }
+            }
+        });
+
+        const categoryLabels: Record<string, string> = {
+            'WEBSITE': 'Weboldal',
+            'TOURNAMENT': 'Verseny',
+            'BOOKING': 'Foglalás',
+            'TEAM': 'Csapat',
+            'OTHER': 'Egyéb'
+        };
+
+        const priorityLabels: Record<string, string> = {
+            'LOW': 'Alacsony',
+            'MEDIUM': 'Közepes',
+            'HIGH': 'Magas'
+        };
+
+        for (const setting of settings) {
+            // Send email notification
+            if (setting.receiveEmail && setting.user.email) {
+                emailService.sendEmail({
+                    to: setting.user.email,
+                    subject: `🐛 Új hibajelentés: ${bugReport.title}`,
+                    type: 'SYSTEM',
+                    html: `
+                        <div style="font-family: sans-serif; color: #333;">
+                            <h2 style="color: #e74c3c;">🐛 Új hibajelentés érkezett</h2>
+                            <p><strong>Bejelentő:</strong> ${reporter.displayName || reporter.username}</p>
+                            <p><strong>Cím:</strong> ${bugReport.title}</p>
+                            <p><strong>Kategória:</strong> ${categoryLabels[bugReport.category] || bugReport.category}</p>
+                            <p><strong>Prioritás:</strong> ${priorityLabels[bugReport.priority] || bugReport.priority}</p>
+                            <p><strong>Leírás:</strong></p>
+                            <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                                ${bugReport.description}
+                            </div>
+                            <p style="margin-top: 20px;">
+                                <a href="${process.env.FRONTEND_URL || 'https://esport.pollak.info'}/admin?tab=bug-reports" 
+                                   style="background: #8b5cf6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px;">
+                                    Megtekintés az Admin felületen
+                                </a>
+                            </p>
+                        </div>
+                    `
+                }).catch(err => console.error('Bug report email notification failed:', err));
+            }
+
+            // Send Discord DM notification
+            if (setting.receiveDiscord && setting.user.discordId) {
+                discordService.sendDM(setting.user.discordId, {
+                    title: `🐛 Új hibajelentés: ${bugReport.title}`,
+                    description: bugReport.description.substring(0, 500) + (bugReport.description.length > 500 ? '...' : ''),
+                    color: bugReport.priority === 'HIGH' ? 0xe74c3c : bugReport.priority === 'MEDIUM' ? 0xf39c12 : 0x2ecc71,
+                    fields: [
+                        { name: 'Bejelentő', value: reporter.displayName || reporter.username, inline: true },
+                        { name: 'Kategória', value: categoryLabels[bugReport.category] || bugReport.category, inline: true },
+                        { name: 'Prioritás', value: priorityLabels[bugReport.priority] || bugReport.priority, inline: true }
+                    ],
+                    timestamp: new Date().toISOString()
+                }).catch(err => console.error('Bug report Discord notification failed:', err));
+            }
+        }
+    } catch (error) {
+        console.error('Failed to send bug report notifications:', error);
+    }
+}
 
 // Create a new bug report
 bugReportsRouter.post(
@@ -53,6 +135,9 @@ bugReportsRouter.post(
                 }
             }
         });
+
+        // Send notifications to configured admins (fire and forget)
+        notifyAdminsAboutBugReport(bugReport, user);
 
         res.status(201).json({ success: true, data: bugReport });
     })

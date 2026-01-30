@@ -19,6 +19,10 @@ import {
     Trash2,
     ExternalLink,
     FileText,
+    Bell,
+    Mail,
+    Plus,
+    X,
 } from "lucide-react";
 import { API_URL } from "../../config";
 import { apiFetch } from "../../lib/api-client";
@@ -41,6 +45,24 @@ interface BugReport {
         displayName?: string;
         avatarUrl?: string;
     };
+}
+
+interface AdminUser {
+    id: string;
+    username: string;
+    displayName?: string;
+    avatarUrl?: string;
+    email: string;
+    discordId?: string;
+    role: string;
+}
+
+interface NotificationSetting {
+    id: string;
+    userId: string;
+    receiveEmail: boolean;
+    receiveDiscord: boolean;
+    user: AdminUser;
 }
 
 const categories = [
@@ -76,10 +98,88 @@ export function BugReportsAdmin() {
     const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
     const [showChangelogModal, setShowChangelogModal] = useState(false);
     const [changelogDescription, setChangelogDescription] = useState("");
+    // Notification settings state
+    const [notificationSettings, setNotificationSettings] = useState<NotificationSetting[]>([]);
+    const [availableAdmins, setAvailableAdmins] = useState<AdminUser[]>([]);
+    const [showNotificationSettings, setShowNotificationSettings] = useState(false);
+    const [selectedAdminToAdd, setSelectedAdminToAdd] = useState<string>("");
 
     useEffect(() => {
         fetchReports();
+        fetchNotificationSettings();
     }, [filterStatus, filterCategory]);
+
+    const fetchNotificationSettings = async () => {
+        try {
+            const res = await apiFetch(`${API_URL}/bug-report-settings`);
+            const data = await res.json();
+            if (data.success) {
+                setNotificationSettings(data.data.settings);
+                setAvailableAdmins(data.data.availableAdmins);
+            }
+        } catch (error) {
+            console.error("Failed to fetch notification settings:", error);
+        }
+    };
+
+    const handleAddAdmin = async () => {
+        if (!selectedAdminToAdd) return;
+        try {
+            const res = await apiFetch(`${API_URL}/bug-report-settings`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId: selectedAdminToAdd }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                setNotificationSettings((prev) => [...prev, data.data]);
+                setAvailableAdmins((prev) => prev.filter((a) => a.id !== selectedAdminToAdd));
+                setSelectedAdminToAdd("");
+                toast.success("Admin hozzáadva az értesítési listához");
+            }
+        } catch (error) {
+            toast.error("Hiba az admin hozzáadásakor");
+        }
+    };
+
+    const handleRemoveAdmin = async (userId: string) => {
+        try {
+            const res = await apiFetch(`${API_URL}/bug-report-settings/${userId}`, {
+                method: "DELETE",
+            });
+            const data = await res.json();
+            if (data.success) {
+                const removed = notificationSettings.find((s) => s.userId === userId);
+                setNotificationSettings((prev) => prev.filter((s) => s.userId !== userId));
+                if (removed) {
+                    setAvailableAdmins((prev) => [...prev, removed.user]);
+                }
+                toast.success("Admin eltávolítva az értesítési listáról");
+            }
+        } catch (error) {
+            toast.error("Hiba az admin eltávolításakor");
+        }
+    };
+
+    const handleToggleNotification = async (userId: string, field: "receiveEmail" | "receiveDiscord") => {
+        const setting = notificationSettings.find((s) => s.userId === userId);
+        if (!setting) return;
+        try {
+            const res = await apiFetch(`${API_URL}/bug-report-settings/${userId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ [field]: !setting[field] }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                setNotificationSettings((prev) =>
+                    prev.map((s) => (s.userId === userId ? data.data : s))
+                );
+            }
+        } catch (error) {
+            toast.error("Hiba a beállítás módosításakor");
+        }
+    };
 
     const fetchReports = async () => {
         try {
@@ -209,14 +309,27 @@ export function BugReportsAdmin() {
         <div className="space-y-6">
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                        <Bug className="text-red-400" size={24} />
-                        Hibajelentések
-                    </h2>
-                    <p className="text-sm text-muted-foreground mt-1">
-                        {reports.length} bejelentés összesen
-                    </p>
+                <div className="flex items-center gap-4">
+                    <div>
+                        <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                            <Bug className="text-red-400" size={24} />
+                            Hibajelentések
+                        </h2>
+                        <p className="text-sm text-muted-foreground mt-1">
+                            {reports.length} bejelentés összesen
+                        </p>
+                    </div>
+                    <button
+                        onClick={() => setShowNotificationSettings(!showNotificationSettings)}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${showNotificationSettings
+                                ? "bg-primary/20 border-primary/50 text-primary"
+                                : "border-white/10 text-gray-400 hover:text-white hover:border-white/20"
+                            }`}
+                        title="Értesítési beállítások"
+                    >
+                        <Bell size={16} />
+                        <span className="hidden sm:inline text-sm">Értesítések</span>
+                    </button>
                 </div>
 
                 {/* Filters */}
@@ -258,6 +371,106 @@ export function BugReportsAdmin() {
                         ))}
                     </select>
                 </div>
+
+                {/* Notification Settings Panel */}
+                {showNotificationSettings && (
+                    <div className="bg-[#161722] rounded-xl border border-white/5 p-6">
+                        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                            <Bell className="text-primary" size={20} />
+                            Értesítési beállítások
+                        </h3>
+                        <p className="text-sm text-gray-400 mb-4">
+                            Új hibajelentéskor az alábbi admin-ok kapnak értesítést:
+                        </p>
+
+                        {/* Add Admin */}
+                        <div className="flex gap-2 mb-4">
+                            <select
+                                value={selectedAdminToAdd}
+                                onChange={(e) => setSelectedAdminToAdd(e.target.value)}
+                                className="flex-1 px-3 py-2 bg-[#0f1015] border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-primary/50"
+                            >
+                                <option value="">Válassz admin-t...</option>
+                                {availableAdmins.map((admin) => (
+                                    <option key={admin.id} value={admin.id}>
+                                        {admin.displayName || admin.username} ({admin.role})
+                                    </option>
+                                ))}
+                            </select>
+                            <button
+                                onClick={handleAddAdmin}
+                                disabled={!selectedAdminToAdd}
+                                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-50 flex items-center gap-2"
+                            >
+                                <Plus size={16} />
+                                Hozzáadás
+                            </button>
+                        </div>
+
+                        {/* Admin List */}
+                        {notificationSettings.length === 0 ? (
+                            <div className="text-center py-8 text-gray-500">
+                                Még nincs beállított értesítés. Adj hozzá admin-okat!
+                            </div>
+                        ) : (
+                            <div className="space-y-2">
+                                {notificationSettings.map((setting) => (
+                                    <div
+                                        key={setting.id}
+                                        className="flex items-center justify-between p-3 bg-black/20 rounded-lg"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
+                                                {setting.user.avatarUrl ? (
+                                                    <img src={setting.user.avatarUrl} alt="" className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <span className="text-sm font-bold text-primary">
+                                                        {(setting.user.displayName || setting.user.username).charAt(0).toUpperCase()}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-white">
+                                                    {setting.user.displayName || setting.user.username}
+                                                </p>
+                                                <p className="text-xs text-gray-500">{setting.user.email}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => handleToggleNotification(setting.userId, "receiveEmail")}
+                                                className={`p-2 rounded-lg transition-colors ${setting.receiveEmail
+                                                    ? "bg-green-500/20 text-green-400"
+                                                    : "bg-white/5 text-gray-500"
+                                                    }`}
+                                                title="Email értesítés"
+                                            >
+                                                <Mail size={16} />
+                                            </button>
+                                            <button
+                                                onClick={() => handleToggleNotification(setting.userId, "receiveDiscord")}
+                                                className={`p-2 rounded-lg transition-colors ${setting.receiveDiscord
+                                                    ? "bg-indigo-500/20 text-indigo-400"
+                                                    : "bg-white/5 text-gray-500"
+                                                    }`}
+                                                title="Discord értesítés"
+                                            >
+                                                <MessageSquare size={16} />
+                                            </button>
+                                            <button
+                                                onClick={() => handleRemoveAdmin(setting.userId)}
+                                                className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors"
+                                                title="Eltávolítás"
+                                            >
+                                                <X size={16} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
 
             {/* Main Content */}

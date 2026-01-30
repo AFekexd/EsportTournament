@@ -31,6 +31,8 @@ export type UserAvgAggregateOutputType = {
   timeBalanceSeconds: number | null
   steamLevel: number | null
   perfectGamesCount: number | null
+  steamTotalGames: number | null
+  steamTotalPlaytime: number | null
 }
 
 export type UserSumAggregateOutputType = {
@@ -38,6 +40,8 @@ export type UserSumAggregateOutputType = {
   timeBalanceSeconds: number | null
   steamLevel: number | null
   perfectGamesCount: number | null
+  steamTotalGames: number | null
+  steamTotalPlaytime: number | null
 }
 
 export type UserMinAggregateOutputType = {
@@ -70,6 +74,8 @@ export type UserMinAggregateOutputType = {
   steamPersonaname: string | null
   steamCreatedAt: Date | null
   perfectGamesCount: number | null
+  steamTotalGames: number | null
+  steamTotalPlaytime: number | null
   createdAt: Date | null
   updatedAt: Date | null
   lastLogoutAt: Date | null
@@ -107,6 +113,8 @@ export type UserMaxAggregateOutputType = {
   steamPersonaname: string | null
   steamCreatedAt: Date | null
   perfectGamesCount: number | null
+  steamTotalGames: number | null
+  steamTotalPlaytime: number | null
   createdAt: Date | null
   updatedAt: Date | null
   lastLogoutAt: Date | null
@@ -144,6 +152,9 @@ export type UserCountAggregateOutputType = {
   steamPersonaname: number
   steamCreatedAt: number
   perfectGamesCount: number
+  steamTotalGames: number
+  steamTotalPlaytime: number
+  steamRecentGames: number
   createdAt: number
   updatedAt: number
   lastLogoutAt: number
@@ -159,6 +170,8 @@ export type UserAvgAggregateInputType = {
   timeBalanceSeconds?: true
   steamLevel?: true
   perfectGamesCount?: true
+  steamTotalGames?: true
+  steamTotalPlaytime?: true
 }
 
 export type UserSumAggregateInputType = {
@@ -166,6 +179,8 @@ export type UserSumAggregateInputType = {
   timeBalanceSeconds?: true
   steamLevel?: true
   perfectGamesCount?: true
+  steamTotalGames?: true
+  steamTotalPlaytime?: true
 }
 
 export type UserMinAggregateInputType = {
@@ -198,6 +213,8 @@ export type UserMinAggregateInputType = {
   steamPersonaname?: true
   steamCreatedAt?: true
   perfectGamesCount?: true
+  steamTotalGames?: true
+  steamTotalPlaytime?: true
   createdAt?: true
   updatedAt?: true
   lastLogoutAt?: true
@@ -235,6 +252,8 @@ export type UserMaxAggregateInputType = {
   steamPersonaname?: true
   steamCreatedAt?: true
   perfectGamesCount?: true
+  steamTotalGames?: true
+  steamTotalPlaytime?: true
   createdAt?: true
   updatedAt?: true
   lastLogoutAt?: true
@@ -272,6 +291,9 @@ export type UserCountAggregateInputType = {
   steamPersonaname?: true
   steamCreatedAt?: true
   perfectGamesCount?: true
+  steamTotalGames?: true
+  steamTotalPlaytime?: true
+  steamRecentGames?: true
   createdAt?: true
   updatedAt?: true
   lastLogoutAt?: true
@@ -397,6 +419,9 @@ export type UserGroupByOutputType = {
   steamPersonaname: string | null
   steamCreatedAt: Date | null
   perfectGamesCount: number
+  steamTotalGames: number | null
+  steamTotalPlaytime: number | null
+  steamRecentGames: runtime.JsonValue | null
   createdAt: Date
   updatedAt: Date
   lastLogoutAt: Date | null
@@ -458,6 +483,9 @@ export type UserWhereInput = {
   steamPersonaname?: Prisma.StringNullableFilter<"User"> | string | null
   steamCreatedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   perfectGamesCount?: Prisma.IntFilter<"User"> | number
+  steamTotalGames?: Prisma.IntNullableFilter<"User"> | number | null
+  steamTotalPlaytime?: Prisma.IntNullableFilter<"User"> | number | null
+  steamRecentGames?: Prisma.JsonNullableFilter<"User">
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   lastLogoutAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -488,6 +516,7 @@ export type UserWhereInput = {
   matchPredictions?: Prisma.MatchPredictionListRelationFilter
   favoriteGame?: Prisma.XOR<Prisma.GameNullableScalarRelationFilter, Prisma.GameWhereInput> | null
   bugReports?: Prisma.BugReportListRelationFilter
+  bugReportNotification?: Prisma.XOR<Prisma.BugReportNotificationSettingNullableScalarRelationFilter, Prisma.BugReportNotificationSettingWhereInput> | null
 }
 
 export type UserOrderByWithRelationInput = {
@@ -520,6 +549,9 @@ export type UserOrderByWithRelationInput = {
   steamPersonaname?: Prisma.SortOrderInput | Prisma.SortOrder
   steamCreatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   perfectGamesCount?: Prisma.SortOrder
+  steamTotalGames?: Prisma.SortOrderInput | Prisma.SortOrder
+  steamTotalPlaytime?: Prisma.SortOrderInput | Prisma.SortOrder
+  steamRecentGames?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastLogoutAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -550,6 +582,7 @@ export type UserOrderByWithRelationInput = {
   matchPredictions?: Prisma.MatchPredictionOrderByRelationAggregateInput
   favoriteGame?: Prisma.GameOrderByWithRelationInput
   bugReports?: Prisma.BugReportOrderByRelationAggregateInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingOrderByWithRelationInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -585,6 +618,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   steamPersonaname?: Prisma.StringNullableFilter<"User"> | string | null
   steamCreatedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   perfectGamesCount?: Prisma.IntFilter<"User"> | number
+  steamTotalGames?: Prisma.IntNullableFilter<"User"> | number | null
+  steamTotalPlaytime?: Prisma.IntNullableFilter<"User"> | number | null
+  steamRecentGames?: Prisma.JsonNullableFilter<"User">
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   lastLogoutAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -615,6 +651,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   matchPredictions?: Prisma.MatchPredictionListRelationFilter
   favoriteGame?: Prisma.XOR<Prisma.GameNullableScalarRelationFilter, Prisma.GameWhereInput> | null
   bugReports?: Prisma.BugReportListRelationFilter
+  bugReportNotification?: Prisma.XOR<Prisma.BugReportNotificationSettingNullableScalarRelationFilter, Prisma.BugReportNotificationSettingWhereInput> | null
 }, "id" | "keycloakId" | "email" | "username">
 
 export type UserOrderByWithAggregationInput = {
@@ -647,6 +684,9 @@ export type UserOrderByWithAggregationInput = {
   steamPersonaname?: Prisma.SortOrderInput | Prisma.SortOrder
   steamCreatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   perfectGamesCount?: Prisma.SortOrder
+  steamTotalGames?: Prisma.SortOrderInput | Prisma.SortOrder
+  steamTotalPlaytime?: Prisma.SortOrderInput | Prisma.SortOrder
+  steamRecentGames?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastLogoutAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -693,6 +733,9 @@ export type UserScalarWhereWithAggregatesInput = {
   steamPersonaname?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   steamCreatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   perfectGamesCount?: Prisma.IntWithAggregatesFilter<"User"> | number
+  steamTotalGames?: Prisma.IntNullableWithAggregatesFilter<"User"> | number | null
+  steamTotalPlaytime?: Prisma.IntNullableWithAggregatesFilter<"User"> | number | null
+  steamRecentGames?: Prisma.JsonNullableWithAggregatesFilter<"User">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   lastLogoutAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -731,6 +774,9 @@ export type UserCreateInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -760,6 +806,7 @@ export type UserCreateInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -792,6 +839,9 @@ export type UserUncheckedCreateInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -821,6 +871,7 @@ export type UserUncheckedCreateInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -853,6 +904,9 @@ export type UserUpdateInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -882,6 +936,7 @@ export type UserUpdateInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -914,6 +969,9 @@ export type UserUncheckedUpdateInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -943,6 +1001,7 @@ export type UserUncheckedUpdateInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -975,6 +1034,9 @@ export type UserCreateManyInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -1013,6 +1075,9 @@ export type UserUpdateManyMutationInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1050,6 +1115,9 @@ export type UserUncheckedUpdateManyInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1088,6 +1156,9 @@ export type UserCountOrderByAggregateInput = {
   steamPersonaname?: Prisma.SortOrder
   steamCreatedAt?: Prisma.SortOrder
   perfectGamesCount?: Prisma.SortOrder
+  steamTotalGames?: Prisma.SortOrder
+  steamTotalPlaytime?: Prisma.SortOrder
+  steamRecentGames?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastLogoutAt?: Prisma.SortOrder
@@ -1101,6 +1172,8 @@ export type UserAvgOrderByAggregateInput = {
   timeBalanceSeconds?: Prisma.SortOrder
   steamLevel?: Prisma.SortOrder
   perfectGamesCount?: Prisma.SortOrder
+  steamTotalGames?: Prisma.SortOrder
+  steamTotalPlaytime?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -1133,6 +1206,8 @@ export type UserMaxOrderByAggregateInput = {
   steamPersonaname?: Prisma.SortOrder
   steamCreatedAt?: Prisma.SortOrder
   perfectGamesCount?: Prisma.SortOrder
+  steamTotalGames?: Prisma.SortOrder
+  steamTotalPlaytime?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastLogoutAt?: Prisma.SortOrder
@@ -1170,6 +1245,8 @@ export type UserMinOrderByAggregateInput = {
   steamPersonaname?: Prisma.SortOrder
   steamCreatedAt?: Prisma.SortOrder
   perfectGamesCount?: Prisma.SortOrder
+  steamTotalGames?: Prisma.SortOrder
+  steamTotalPlaytime?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastLogoutAt?: Prisma.SortOrder
@@ -1182,6 +1259,8 @@ export type UserSumOrderByAggregateInput = {
   timeBalanceSeconds?: Prisma.SortOrder
   steamLevel?: Prisma.SortOrder
   perfectGamesCount?: Prisma.SortOrder
+  steamTotalGames?: Prisma.SortOrder
+  steamTotalPlaytime?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -1646,6 +1725,20 @@ export type UserUpdateOneRequiredWithoutBugReportsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBugReportsInput, Prisma.UserUpdateWithoutBugReportsInput>, Prisma.UserUncheckedUpdateWithoutBugReportsInput>
 }
 
+export type UserCreateNestedOneWithoutBugReportNotificationInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBugReportNotificationInput, Prisma.UserUncheckedCreateWithoutBugReportNotificationInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBugReportNotificationInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutBugReportNotificationNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBugReportNotificationInput, Prisma.UserUncheckedCreateWithoutBugReportNotificationInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBugReportNotificationInput
+  upsert?: Prisma.UserUpsertWithoutBugReportNotificationInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBugReportNotificationInput, Prisma.UserUpdateWithoutBugReportNotificationInput>, Prisma.UserUncheckedUpdateWithoutBugReportNotificationInput>
+}
+
 export type UserCreateWithoutOwnedTeamsInput = {
   id?: string
   keycloakId: string
@@ -1676,6 +1769,9 @@ export type UserCreateWithoutOwnedTeamsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -1704,6 +1800,7 @@ export type UserCreateWithoutOwnedTeamsInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOwnedTeamsInput = {
@@ -1736,6 +1833,9 @@ export type UserUncheckedCreateWithoutOwnedTeamsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -1764,6 +1864,7 @@ export type UserUncheckedCreateWithoutOwnedTeamsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOwnedTeamsInput = {
@@ -1812,6 +1913,9 @@ export type UserUpdateWithoutOwnedTeamsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1840,6 +1944,7 @@ export type UserUpdateWithoutOwnedTeamsInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
@@ -1872,6 +1977,9 @@ export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1900,6 +2008,7 @@ export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTeamMembershipsInput = {
@@ -1932,6 +2041,9 @@ export type UserCreateWithoutTeamMembershipsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -1960,6 +2072,7 @@ export type UserCreateWithoutTeamMembershipsInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTeamMembershipsInput = {
@@ -1992,6 +2105,9 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2020,6 +2136,7 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTeamMembershipsInput = {
@@ -2068,6 +2185,9 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2096,6 +2216,7 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
@@ -2128,6 +2249,9 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2156,6 +2280,7 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutFavoriteGameInput = {
@@ -2188,6 +2313,9 @@ export type UserCreateWithoutFavoriteGameInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2216,6 +2344,7 @@ export type UserCreateWithoutFavoriteGameInput = {
   matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFavoriteGameInput = {
@@ -2248,6 +2377,9 @@ export type UserUncheckedCreateWithoutFavoriteGameInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2276,6 +2408,7 @@ export type UserUncheckedCreateWithoutFavoriteGameInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFavoriteGameInput = {
@@ -2337,6 +2470,9 @@ export type UserScalarWhereInput = {
   steamPersonaname?: Prisma.StringNullableFilter<"User"> | string | null
   steamCreatedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   perfectGamesCount?: Prisma.IntFilter<"User"> | number
+  steamTotalGames?: Prisma.IntNullableFilter<"User"> | number | null
+  steamTotalPlaytime?: Prisma.IntNullableFilter<"User"> | number | null
+  steamRecentGames?: Prisma.JsonNullableFilter<"User">
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   lastLogoutAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -2375,6 +2511,9 @@ export type UserCreateWithoutTournamentEntriesInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2403,6 +2542,7 @@ export type UserCreateWithoutTournamentEntriesInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTournamentEntriesInput = {
@@ -2435,6 +2575,9 @@ export type UserUncheckedCreateWithoutTournamentEntriesInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2463,6 +2606,7 @@ export type UserUncheckedCreateWithoutTournamentEntriesInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTournamentEntriesInput = {
@@ -2500,6 +2644,9 @@ export type UserCreateWithoutParticipatingEntriesInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2528,6 +2675,7 @@ export type UserCreateWithoutParticipatingEntriesInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutParticipatingEntriesInput = {
@@ -2560,6 +2708,9 @@ export type UserUncheckedCreateWithoutParticipatingEntriesInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2588,6 +2739,7 @@ export type UserUncheckedCreateWithoutParticipatingEntriesInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutParticipatingEntriesInput = {
@@ -2636,6 +2788,9 @@ export type UserUpdateWithoutTournamentEntriesInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2664,6 +2819,7 @@ export type UserUpdateWithoutTournamentEntriesInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
@@ -2696,6 +2852,9 @@ export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2724,6 +2883,7 @@ export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUpsertWithWhereUniqueWithoutParticipatingEntriesInput = {
@@ -2772,6 +2932,9 @@ export type UserCreateWithoutHomeMatchesInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2800,6 +2963,7 @@ export type UserCreateWithoutHomeMatchesInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutHomeMatchesInput = {
@@ -2832,6 +2996,9 @@ export type UserUncheckedCreateWithoutHomeMatchesInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2860,6 +3027,7 @@ export type UserUncheckedCreateWithoutHomeMatchesInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutHomeMatchesInput = {
@@ -2897,6 +3065,9 @@ export type UserCreateWithoutAwayMatchesInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2925,6 +3096,7 @@ export type UserCreateWithoutAwayMatchesInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAwayMatchesInput = {
@@ -2957,6 +3129,9 @@ export type UserUncheckedCreateWithoutAwayMatchesInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -2985,6 +3160,7 @@ export type UserUncheckedCreateWithoutAwayMatchesInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAwayMatchesInput = {
@@ -3022,6 +3198,9 @@ export type UserCreateWithoutWonMatchesInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -3050,6 +3229,7 @@ export type UserCreateWithoutWonMatchesInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutWonMatchesInput = {
@@ -3082,6 +3262,9 @@ export type UserUncheckedCreateWithoutWonMatchesInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -3110,6 +3293,7 @@ export type UserUncheckedCreateWithoutWonMatchesInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutWonMatchesInput = {
@@ -3158,6 +3342,9 @@ export type UserUpdateWithoutHomeMatchesInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3186,6 +3373,7 @@ export type UserUpdateWithoutHomeMatchesInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutHomeMatchesInput = {
@@ -3218,6 +3406,9 @@ export type UserUncheckedUpdateWithoutHomeMatchesInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3246,6 +3437,7 @@ export type UserUncheckedUpdateWithoutHomeMatchesInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutAwayMatchesInput = {
@@ -3289,6 +3481,9 @@ export type UserUpdateWithoutAwayMatchesInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3317,6 +3512,7 @@ export type UserUpdateWithoutAwayMatchesInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAwayMatchesInput = {
@@ -3349,6 +3545,9 @@ export type UserUncheckedUpdateWithoutAwayMatchesInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3377,6 +3576,7 @@ export type UserUncheckedUpdateWithoutAwayMatchesInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutWonMatchesInput = {
@@ -3420,6 +3620,9 @@ export type UserUpdateWithoutWonMatchesInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3448,6 +3651,7 @@ export type UserUpdateWithoutWonMatchesInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWonMatchesInput = {
@@ -3480,6 +3684,9 @@ export type UserUncheckedUpdateWithoutWonMatchesInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3508,6 +3715,7 @@ export type UserUncheckedUpdateWithoutWonMatchesInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutGameStatsInput = {
@@ -3540,6 +3748,9 @@ export type UserCreateWithoutGameStatsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -3568,6 +3779,7 @@ export type UserCreateWithoutGameStatsInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGameStatsInput = {
@@ -3600,6 +3812,9 @@ export type UserUncheckedCreateWithoutGameStatsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -3628,6 +3843,7 @@ export type UserUncheckedCreateWithoutGameStatsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGameStatsInput = {
@@ -3676,6 +3892,9 @@ export type UserUpdateWithoutGameStatsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3704,6 +3923,7 @@ export type UserUpdateWithoutGameStatsInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGameStatsInput = {
@@ -3736,6 +3956,9 @@ export type UserUncheckedUpdateWithoutGameStatsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3764,6 +3987,7 @@ export type UserUncheckedUpdateWithoutGameStatsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRanksInput = {
@@ -3796,6 +4020,9 @@ export type UserCreateWithoutRanksInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -3824,6 +4051,7 @@ export type UserCreateWithoutRanksInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRanksInput = {
@@ -3856,6 +4084,9 @@ export type UserUncheckedCreateWithoutRanksInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -3884,6 +4115,7 @@ export type UserUncheckedCreateWithoutRanksInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRanksInput = {
@@ -3932,6 +4164,9 @@ export type UserUpdateWithoutRanksInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3960,6 +4195,7 @@ export type UserUpdateWithoutRanksInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRanksInput = {
@@ -3992,6 +4228,9 @@ export type UserUncheckedUpdateWithoutRanksInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4020,6 +4259,7 @@ export type UserUncheckedUpdateWithoutRanksInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -4052,6 +4292,9 @@ export type UserCreateWithoutNotificationsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -4080,6 +4323,7 @@ export type UserCreateWithoutNotificationsInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -4112,6 +4356,9 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -4140,6 +4387,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -4188,6 +4436,9 @@ export type UserUpdateWithoutNotificationsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4216,6 +4467,7 @@ export type UserUpdateWithoutNotificationsInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -4248,6 +4500,9 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4276,6 +4531,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDiscordSettingsInput = {
@@ -4308,6 +4564,9 @@ export type UserCreateWithoutDiscordSettingsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -4336,6 +4595,7 @@ export type UserCreateWithoutDiscordSettingsInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDiscordSettingsInput = {
@@ -4368,6 +4628,9 @@ export type UserUncheckedCreateWithoutDiscordSettingsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -4396,6 +4659,7 @@ export type UserUncheckedCreateWithoutDiscordSettingsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDiscordSettingsInput = {
@@ -4444,6 +4708,9 @@ export type UserUpdateWithoutDiscordSettingsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4472,6 +4739,7 @@ export type UserUpdateWithoutDiscordSettingsInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDiscordSettingsInput = {
@@ -4504,6 +4772,9 @@ export type UserUncheckedUpdateWithoutDiscordSettingsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4532,6 +4803,7 @@ export type UserUncheckedUpdateWithoutDiscordSettingsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutBookingsInput = {
@@ -4564,6 +4836,9 @@ export type UserCreateWithoutBookingsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -4592,6 +4867,7 @@ export type UserCreateWithoutBookingsInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutBookingsInput = {
@@ -4624,6 +4900,9 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -4652,6 +4931,7 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutBookingsInput = {
@@ -4700,6 +4980,9 @@ export type UserUpdateWithoutBookingsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4728,6 +5011,7 @@ export type UserUpdateWithoutBookingsInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBookingsInput = {
@@ -4760,6 +5044,9 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4788,6 +5075,7 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -4820,6 +5108,9 @@ export type UserCreateWithoutSessionsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -4848,6 +5139,7 @@ export type UserCreateWithoutSessionsInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -4880,6 +5172,9 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -4908,6 +5203,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -4956,6 +5252,9 @@ export type UserUpdateWithoutSessionsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4984,6 +5283,7 @@ export type UserUpdateWithoutSessionsInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -5016,6 +5316,9 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5044,6 +5347,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLogsInput = {
@@ -5076,6 +5380,9 @@ export type UserCreateWithoutLogsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -5104,6 +5411,7 @@ export type UserCreateWithoutLogsInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLogsInput = {
@@ -5136,6 +5444,9 @@ export type UserUncheckedCreateWithoutLogsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -5164,6 +5475,7 @@ export type UserUncheckedCreateWithoutLogsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLogsInput = {
@@ -5201,6 +5513,9 @@ export type UserCreateWithoutAdminLogsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -5229,6 +5544,7 @@ export type UserCreateWithoutAdminLogsInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAdminLogsInput = {
@@ -5261,6 +5577,9 @@ export type UserUncheckedCreateWithoutAdminLogsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -5289,6 +5608,7 @@ export type UserUncheckedCreateWithoutAdminLogsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAdminLogsInput = {
@@ -5337,6 +5657,9 @@ export type UserUpdateWithoutLogsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5365,6 +5688,7 @@ export type UserUpdateWithoutLogsInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLogsInput = {
@@ -5397,6 +5721,9 @@ export type UserUncheckedUpdateWithoutLogsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5425,6 +5752,7 @@ export type UserUncheckedUpdateWithoutLogsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutAdminLogsInput = {
@@ -5468,6 +5796,9 @@ export type UserUpdateWithoutAdminLogsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5496,6 +5827,7 @@ export type UserUpdateWithoutAdminLogsInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAdminLogsInput = {
@@ -5528,6 +5860,9 @@ export type UserUncheckedUpdateWithoutAdminLogsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5556,6 +5891,7 @@ export type UserUncheckedUpdateWithoutAdminLogsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutWaitlistEntriesInput = {
@@ -5588,6 +5924,9 @@ export type UserCreateWithoutWaitlistEntriesInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -5616,6 +5955,7 @@ export type UserCreateWithoutWaitlistEntriesInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
@@ -5648,6 +5988,9 @@ export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -5676,6 +6019,7 @@ export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutWaitlistEntriesInput = {
@@ -5724,6 +6068,9 @@ export type UserUpdateWithoutWaitlistEntriesInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5752,6 +6099,7 @@ export type UserUpdateWithoutWaitlistEntriesInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
@@ -5784,6 +6132,9 @@ export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5812,6 +6163,7 @@ export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutChangeRequestsInput = {
@@ -5844,6 +6196,9 @@ export type UserCreateWithoutChangeRequestsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -5872,6 +6227,7 @@ export type UserCreateWithoutChangeRequestsInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutChangeRequestsInput = {
@@ -5904,6 +6260,9 @@ export type UserUncheckedCreateWithoutChangeRequestsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -5932,6 +6291,7 @@ export type UserUncheckedCreateWithoutChangeRequestsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutChangeRequestsInput = {
@@ -5980,6 +6340,9 @@ export type UserUpdateWithoutChangeRequestsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6008,6 +6371,7 @@ export type UserUpdateWithoutChangeRequestsInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutChangeRequestsInput = {
@@ -6040,6 +6404,9 @@ export type UserUncheckedUpdateWithoutChangeRequestsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6068,6 +6435,7 @@ export type UserUncheckedUpdateWithoutChangeRequestsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAuthoredChangelogsInput = {
@@ -6100,6 +6468,9 @@ export type UserCreateWithoutAuthoredChangelogsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -6128,6 +6499,7 @@ export type UserCreateWithoutAuthoredChangelogsInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAuthoredChangelogsInput = {
@@ -6160,6 +6532,9 @@ export type UserUncheckedCreateWithoutAuthoredChangelogsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -6188,6 +6563,7 @@ export type UserUncheckedCreateWithoutAuthoredChangelogsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAuthoredChangelogsInput = {
@@ -6236,6 +6612,9 @@ export type UserUpdateWithoutAuthoredChangelogsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6264,6 +6643,7 @@ export type UserUpdateWithoutAuthoredChangelogsInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuthoredChangelogsInput = {
@@ -6296,6 +6676,9 @@ export type UserUncheckedUpdateWithoutAuthoredChangelogsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6324,6 +6707,7 @@ export type UserUncheckedUpdateWithoutAuthoredChangelogsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDiscordLogsInput = {
@@ -6356,6 +6740,9 @@ export type UserCreateWithoutDiscordLogsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -6384,6 +6771,7 @@ export type UserCreateWithoutDiscordLogsInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDiscordLogsInput = {
@@ -6416,6 +6804,9 @@ export type UserUncheckedCreateWithoutDiscordLogsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -6444,6 +6835,7 @@ export type UserUncheckedCreateWithoutDiscordLogsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDiscordLogsInput = {
@@ -6492,6 +6884,9 @@ export type UserUpdateWithoutDiscordLogsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6520,6 +6915,7 @@ export type UserUpdateWithoutDiscordLogsInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDiscordLogsInput = {
@@ -6552,6 +6948,9 @@ export type UserUncheckedUpdateWithoutDiscordLogsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6580,6 +6979,7 @@ export type UserUncheckedUpdateWithoutDiscordLogsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMatchCheckInsInput = {
@@ -6612,6 +7012,9 @@ export type UserCreateWithoutMatchCheckInsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -6640,6 +7043,7 @@ export type UserCreateWithoutMatchCheckInsInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMatchCheckInsInput = {
@@ -6672,6 +7076,9 @@ export type UserUncheckedCreateWithoutMatchCheckInsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -6700,6 +7107,7 @@ export type UserUncheckedCreateWithoutMatchCheckInsInput = {
   discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMatchCheckInsInput = {
@@ -6748,6 +7156,9 @@ export type UserUpdateWithoutMatchCheckInsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6776,6 +7187,7 @@ export type UserUpdateWithoutMatchCheckInsInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMatchCheckInsInput = {
@@ -6808,6 +7220,9 @@ export type UserUncheckedUpdateWithoutMatchCheckInsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6836,6 +7251,7 @@ export type UserUncheckedUpdateWithoutMatchCheckInsInput = {
   discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMatchPredictionsInput = {
@@ -6868,6 +7284,9 @@ export type UserCreateWithoutMatchPredictionsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -6896,6 +7315,7 @@ export type UserCreateWithoutMatchPredictionsInput = {
   matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMatchPredictionsInput = {
@@ -6928,6 +7348,9 @@ export type UserUncheckedCreateWithoutMatchPredictionsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -6956,6 +7379,7 @@ export type UserUncheckedCreateWithoutMatchPredictionsInput = {
   discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMatchPredictionsInput = {
@@ -7004,6 +7428,9 @@ export type UserUpdateWithoutMatchPredictionsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7032,6 +7459,7 @@ export type UserUpdateWithoutMatchPredictionsInput = {
   matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMatchPredictionsInput = {
@@ -7064,6 +7492,9 @@ export type UserUncheckedUpdateWithoutMatchPredictionsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7092,6 +7523,7 @@ export type UserUncheckedUpdateWithoutMatchPredictionsInput = {
   discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPostsInput = {
@@ -7124,6 +7556,9 @@ export type UserCreateWithoutPostsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -7152,6 +7587,7 @@ export type UserCreateWithoutPostsInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPostsInput = {
@@ -7184,6 +7620,9 @@ export type UserUncheckedCreateWithoutPostsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -7212,6 +7651,7 @@ export type UserUncheckedCreateWithoutPostsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPostsInput = {
@@ -7260,6 +7700,9 @@ export type UserUpdateWithoutPostsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7288,6 +7731,7 @@ export type UserUpdateWithoutPostsInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPostsInput = {
@@ -7320,6 +7764,9 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7348,6 +7795,7 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutBugReportsInput = {
@@ -7380,6 +7828,9 @@ export type UserCreateWithoutBugReportsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -7408,6 +7859,7 @@ export type UserCreateWithoutBugReportsInput = {
   matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutBugReportsInput = {
@@ -7440,6 +7892,9 @@ export type UserUncheckedCreateWithoutBugReportsInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -7468,6 +7923,7 @@ export type UserUncheckedCreateWithoutBugReportsInput = {
   discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutBugReportsInput = {
@@ -7516,6 +7972,9 @@ export type UserUpdateWithoutBugReportsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7544,6 +8003,7 @@ export type UserUpdateWithoutBugReportsInput = {
   matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBugReportsInput = {
@@ -7576,6 +8036,9 @@ export type UserUncheckedUpdateWithoutBugReportsInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7604,6 +8067,279 @@ export type UserUncheckedUpdateWithoutBugReportsInput = {
   discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+}
+
+export type UserCreateWithoutBugReportNotificationInput = {
+  id?: string
+  keycloakId: string
+  email: string
+  username: string
+  displayName?: string | null
+  avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
+  role?: $Enums.Role
+  elo?: number
+  timeBalanceSeconds?: number
+  emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
+  steamId?: string | null
+  steamAvatar?: string | null
+  steamUrl?: string | null
+  steamLevel?: number | null
+  steamPersonaname?: string | null
+  steamCreatedAt?: Date | string | null
+  perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  tosAcceptedAt?: Date | string | null
+  teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
+  ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
+  tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
+  discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
+  waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
+  homeMatches?: Prisma.MatchCreateNestedManyWithoutHomeUserInput
+  awayMatches?: Prisma.MatchCreateNestedManyWithoutAwayUserInput
+  wonMatches?: Prisma.MatchCreateNestedManyWithoutWinnerUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  logs?: Prisma.LogCreateNestedManyWithoutUserInput
+  adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
+  ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
+  authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.NewsPostCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
+  favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
+  bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+}
+
+export type UserUncheckedCreateWithoutBugReportNotificationInput = {
+  id?: string
+  keycloakId: string
+  email: string
+  username: string
+  displayName?: string | null
+  avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
+  role?: $Enums.Role
+  elo?: number
+  timeBalanceSeconds?: number
+  emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
+  steamId?: string | null
+  steamAvatar?: string | null
+  steamUrl?: string | null
+  steamLevel?: number | null
+  steamPersonaname?: string | null
+  steamCreatedAt?: Date | string | null
+  perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  favoriteGameId?: string | null
+  tosAcceptedAt?: Date | string | null
+  teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
+  ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
+  tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
+  discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
+  homeMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutHomeUserInput
+  awayMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutAwayUserInput
+  wonMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutWinnerUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
+  adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
+  ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
+  authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.NewsPostUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
+  bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+}
+
+export type UserCreateOrConnectWithoutBugReportNotificationInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBugReportNotificationInput, Prisma.UserUncheckedCreateWithoutBugReportNotificationInput>
+}
+
+export type UserUpsertWithoutBugReportNotificationInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBugReportNotificationInput, Prisma.UserUncheckedUpdateWithoutBugReportNotificationInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBugReportNotificationInput, Prisma.UserUncheckedCreateWithoutBugReportNotificationInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutBugReportNotificationInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBugReportNotificationInput, Prisma.UserUncheckedUpdateWithoutBugReportNotificationInput>
+}
+
+export type UserUpdateWithoutBugReportNotificationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  keycloakId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  elo?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  tosAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
+  ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
+  tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
+  discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
+  homeMatches?: Prisma.MatchUpdateManyWithoutHomeUserNestedInput
+  awayMatches?: Prisma.MatchUpdateManyWithoutAwayUserNestedInput
+  wonMatches?: Prisma.MatchUpdateManyWithoutWinnerUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  logs?: Prisma.LogUpdateManyWithoutUserNestedInput
+  adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
+  ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
+  authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.NewsPostUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
+  favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
+  bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBugReportNotificationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  keycloakId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  elo?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  favoriteGameId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tosAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+  ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
+  tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
+  discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
+  homeMatches?: Prisma.MatchUncheckedUpdateManyWithoutHomeUserNestedInput
+  awayMatches?: Prisma.MatchUncheckedUpdateManyWithoutAwayUserNestedInput
+  wonMatches?: Prisma.MatchUncheckedUpdateManyWithoutWinnerUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
+  adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
+  ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.NewsPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
+  bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateManyFavoriteGameInput = {
@@ -7636,6 +8372,9 @@ export type UserCreateManyFavoriteGameInput = {
   steamPersonaname?: string | null
   steamCreatedAt?: Date | string | null
   perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLogoutAt?: Date | string | null
@@ -7673,6 +8412,9 @@ export type UserUpdateWithoutFavoriteGameInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7701,6 +8443,7 @@ export type UserUpdateWithoutFavoriteGameInput = {
   matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFavoriteGameInput = {
@@ -7733,6 +8476,9 @@ export type UserUncheckedUpdateWithoutFavoriteGameInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7761,6 +8507,7 @@ export type UserUncheckedUpdateWithoutFavoriteGameInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutFavoriteGameInput = {
@@ -7793,6 +8540,9 @@ export type UserUncheckedUpdateManyWithoutFavoriteGameInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7830,6 +8580,9 @@ export type UserUpdateWithoutParticipatingEntriesInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7858,6 +8611,7 @@ export type UserUpdateWithoutParticipatingEntriesInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutParticipatingEntriesInput = {
@@ -7890,6 +8644,9 @@ export type UserUncheckedUpdateWithoutParticipatingEntriesInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7918,6 +8675,7 @@ export type UserUncheckedUpdateWithoutParticipatingEntriesInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutParticipatingEntriesInput = {
@@ -7950,6 +8708,9 @@ export type UserUncheckedUpdateManyWithoutParticipatingEntriesInput = {
   steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8208,6 +8969,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   steamPersonaname?: boolean
   steamCreatedAt?: boolean
   perfectGamesCount?: boolean
+  steamTotalGames?: boolean
+  steamTotalPlaytime?: boolean
+  steamRecentGames?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   lastLogoutAt?: boolean
@@ -8238,6 +9002,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   matchPredictions?: boolean | Prisma.User$matchPredictionsArgs<ExtArgs>
   favoriteGame?: boolean | Prisma.User$favoriteGameArgs<ExtArgs>
   bugReports?: boolean | Prisma.User$bugReportsArgs<ExtArgs>
+  bugReportNotification?: boolean | Prisma.User$bugReportNotificationArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -8271,6 +9036,9 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   steamPersonaname?: boolean
   steamCreatedAt?: boolean
   perfectGamesCount?: boolean
+  steamTotalGames?: boolean
+  steamTotalPlaytime?: boolean
+  steamRecentGames?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   lastLogoutAt?: boolean
@@ -8310,6 +9078,9 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   steamPersonaname?: boolean
   steamCreatedAt?: boolean
   perfectGamesCount?: boolean
+  steamTotalGames?: boolean
+  steamTotalPlaytime?: boolean
+  steamRecentGames?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   lastLogoutAt?: boolean
@@ -8349,6 +9120,9 @@ export type UserSelectScalar = {
   steamPersonaname?: boolean
   steamCreatedAt?: boolean
   perfectGamesCount?: boolean
+  steamTotalGames?: boolean
+  steamTotalPlaytime?: boolean
+  steamRecentGames?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   lastLogoutAt?: boolean
@@ -8357,7 +9131,7 @@ export type UserSelectScalar = {
   tosAcceptedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "keycloakId" | "email" | "username" | "displayName" | "avatarUrl" | "omId" | "discordId" | "role" | "elo" | "timeBalanceSeconds" | "emailNotifications" | "emailPrefTournaments" | "emailPrefMatches" | "emailPrefBookings" | "emailPrefSystem" | "emailPrefWeeklyDigest" | "discordDmTournaments" | "discordDmMatches" | "discordDmReminders" | "discordDmResults" | "discordDmSystem" | "steamId" | "steamAvatar" | "steamUrl" | "steamLevel" | "steamPersonaname" | "steamCreatedAt" | "perfectGamesCount" | "createdAt" | "updatedAt" | "lastLogoutAt" | "achievements" | "favoriteGameId" | "tosAcceptedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "keycloakId" | "email" | "username" | "displayName" | "avatarUrl" | "omId" | "discordId" | "role" | "elo" | "timeBalanceSeconds" | "emailNotifications" | "emailPrefTournaments" | "emailPrefMatches" | "emailPrefBookings" | "emailPrefSystem" | "emailPrefWeeklyDigest" | "discordDmTournaments" | "discordDmMatches" | "discordDmReminders" | "discordDmResults" | "discordDmSystem" | "steamId" | "steamAvatar" | "steamUrl" | "steamLevel" | "steamPersonaname" | "steamCreatedAt" | "perfectGamesCount" | "steamTotalGames" | "steamTotalPlaytime" | "steamRecentGames" | "createdAt" | "updatedAt" | "lastLogoutAt" | "achievements" | "favoriteGameId" | "tosAcceptedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
   ownedTeams?: boolean | Prisma.User$ownedTeamsArgs<ExtArgs>
@@ -8383,6 +9157,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   matchPredictions?: boolean | Prisma.User$matchPredictionsArgs<ExtArgs>
   favoriteGame?: boolean | Prisma.User$favoriteGameArgs<ExtArgs>
   bugReports?: boolean | Prisma.User$bugReportsArgs<ExtArgs>
+  bugReportNotification?: boolean | Prisma.User$bugReportNotificationArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -8419,6 +9194,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     matchPredictions: Prisma.$MatchPredictionPayload<ExtArgs>[]
     favoriteGame: Prisma.$GamePayload<ExtArgs> | null
     bugReports: Prisma.$BugReportPayload<ExtArgs>[]
+    bugReportNotification: Prisma.$BugReportNotificationSettingPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -8450,6 +9226,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     steamPersonaname: string | null
     steamCreatedAt: Date | null
     perfectGamesCount: number
+    steamTotalGames: number | null
+    steamTotalPlaytime: number | null
+    steamRecentGames: runtime.JsonValue | null
     createdAt: Date
     updatedAt: Date
     lastLogoutAt: Date | null
@@ -8874,6 +9653,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   matchPredictions<T extends Prisma.User$matchPredictionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$matchPredictionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MatchPredictionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   favoriteGame<T extends Prisma.User$favoriteGameArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$favoriteGameArgs<ExtArgs>>): Prisma.Prisma__GameClient<runtime.Types.Result.GetResult<Prisma.$GamePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   bugReports<T extends Prisma.User$bugReportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$bugReportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BugReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  bugReportNotification<T extends Prisma.User$bugReportNotificationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$bugReportNotificationArgs<ExtArgs>>): Prisma.Prisma__BugReportNotificationSettingClient<runtime.Types.Result.GetResult<Prisma.$BugReportNotificationSettingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8932,6 +9712,9 @@ export interface UserFieldRefs {
   readonly steamPersonaname: Prisma.FieldRef<"User", 'String'>
   readonly steamCreatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly perfectGamesCount: Prisma.FieldRef<"User", 'Int'>
+  readonly steamTotalGames: Prisma.FieldRef<"User", 'Int'>
+  readonly steamTotalPlaytime: Prisma.FieldRef<"User", 'Int'>
+  readonly steamRecentGames: Prisma.FieldRef<"User", 'Json'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly lastLogoutAt: Prisma.FieldRef<"User", 'DateTime'>
@@ -9897,6 +10680,25 @@ export type User$bugReportsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.BugReportScalarFieldEnum | Prisma.BugReportScalarFieldEnum[]
+}
+
+/**
+ * User.bugReportNotification
+ */
+export type User$bugReportNotificationArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BugReportNotificationSetting
+   */
+  select?: Prisma.BugReportNotificationSettingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BugReportNotificationSetting
+   */
+  omit?: Prisma.BugReportNotificationSettingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BugReportNotificationSettingInclude<ExtArgs> | null
+  where?: Prisma.BugReportNotificationSettingWhereInput
 }
 
 /**

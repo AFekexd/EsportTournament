@@ -184,3 +184,8 @@ export type NewsPost = Prisma.NewsPostModel
  * 
  */
 export type BugReport = Prisma.BugReportModel
+/**
+ * Model BugReportNotificationSetting
+ * 
+ */
+export type BugReportNotificationSetting = Prisma.BugReportNotificationSettingModel
