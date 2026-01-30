@@ -2726,6 +2726,7 @@ export const UserScalarFieldEnum = {
   steamTotalPlaytime: 'steamTotalPlaytime',
   steamRecentGames: 'steamRecentGames',
   steamTopGames: 'steamTopGames',
+  steamSyncStatus: 'steamSyncStatus',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   lastLogoutAt: 'lastLogoutAt',

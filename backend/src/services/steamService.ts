@@ -25,6 +25,10 @@ interface SteamAchievement {
 }
 
 export class SteamService {
+    /**
+     * Quick sync - fetches basic profile data immediately
+     * Achievement scanning runs in background
+     */
     async syncUserPerfectGames(userId: string, steamId: string) {
         if (!STEAM_API_KEY) {
             throw new Error("STEAM_API_KEY not configured");
@@ -39,6 +43,13 @@ export class SteamService {
         let steamTotalPlaytime = null;
         let steamRecentGames: { appid: number; name: string; iconUrl: string; playtime2weeks: number }[] = [];
         let steamTopGames: { appid: number; name: string; iconUrl: string; playtimeHours: number }[] = [];
+        let ownedGames: SteamGame[] = [];
+
+        // Mark as syncing
+        await prisma.user.update({
+            where: { id: userId },
+            data: { steamSyncStatus: 'syncing' }
+        });
 
         // 0. Get Player Summary (Avatar, URL, CreatedAt)
         try {
@@ -63,7 +74,6 @@ export class SteamService {
                     }
                 } catch (e) {
                     console.error("Failed to parse steam summary JSON", e);
-                    console.error("Received Text:", summaryText.substring(0, 200));
                 }
             }
         } catch (e) {
@@ -86,7 +96,6 @@ export class SteamService {
                     }
                 } catch (e) {
                     console.error("Failed to parse steam level JSON", e);
-                    console.error("Received Text:", levelText.substring(0, 200));
                 }
             }
         } catch (e) {
@@ -129,29 +138,23 @@ export class SteamService {
         let data: any = {};
         if (!response.ok) {
             console.error(`Steam API OwnedGames Error (${response.status}): ${responseText.substring(0, 200)}`);
-            // Proceed with empty data or handle as needed, for now we just log
         } else {
             try {
                 data = JSON.parse(responseText);
             } catch (e) {
                 console.error("Failed to parse owned games JSON", e);
-                console.error("Received Text:", responseText.substring(0, 200));
             }
         }
 
-        let perfectCount = 0;
-
         if (data.response && data.response.games) {
-            const games: SteamGame[] = data.response.games;
+            ownedGames = data.response.games;
 
             // Track total games and playtime
-            steamTotalGames = data.response.game_count || games.length;
-            steamTotalPlaytime = games.reduce((sum, g) => sum + (g.playtime_forever || 0), 0);
+            steamTotalGames = data.response.game_count || ownedGames.length;
+            steamTotalPlaytime = ownedGames.reduce((sum: number, g: SteamGame) => sum + (g.playtime_forever || 0), 0);
 
             // Sort by playtime (descending) to prioritize played games
-            // Limiting to top 30 games to avoid timeouts/rate limits for this demo
-            // In production, this should be a background job queue
-            const topGames = games
+            const topGames = ownedGames
                 .filter(g => g.playtime_forever > 0)
                 .sort((a, b) => b.playtime_forever - a.playtime_forever);
 
@@ -162,62 +165,12 @@ export class SteamService {
                 iconUrl: `https://media.steampowered.com/steamcommunity/public/images/apps/${g.appid}/${g.img_icon_url}.jpg`,
                 playtimeHours: Math.floor(g.playtime_forever / 60)
             }));
-
-            // Take top 30 for achievement scanning
-            const topGamesForAchievements = topGames
-                .sort((a, b) => b.playtime_forever - a.playtime_forever)
-                .slice(0, 30);
-
-            for (const game of topGamesForAchievements) {
-                // Skip if playtime < 60 minutes (unlikely to be platinum, optimization)
-                if (game.playtime_forever < 60) continue;
-
-                try {
-                    const statsUrl = `${STEAM_API_BASE}/ISteamUserStats/GetPlayerAchievements/v0001/?appid=${game.appid}&key=${STEAM_API_KEY}&steamid=${steamId}`;
-                    const statsRes = await fetch(statsUrl);
-
-                    if (statsRes.status === 400) {
-                        // Game might not have achievements or stats
-                        continue;
-                    }
-
-                    const statsText = await statsRes.text();
-                    let statsData: any = {};
-
-                    if (!statsRes.ok) {
-                        console.error(`Steam API Stats Error (${statsRes.status}) for app ${game.appid}: ${statsText.substring(0, 200)}`);
-                        continue;
-                    }
-
-                    try {
-                        statsData = JSON.parse(statsText);
-                    } catch (e) {
-                        console.error(`Failed to parse stats JSON for app ${game.appid}`, e);
-                        continue;
-                    }
-
-                    if (statsData.playerstats && statsData.playerstats.achievements) {
-                        const achievements: SteamAchievement[] = statsData.playerstats.achievements;
-                        const total = achievements.length;
-
-                        if (total > 0) {
-                            const unlocked = achievements.filter(a => a.achieved === 1).length;
-                            if (unlocked === total) {
-                                perfectCount++;
-                            }
-                        }
-                    }
-                } catch (err) {
-                    console.error(`Error fetching stats for game ${game.appid}:`, err);
-                }
-            }
         }
 
-        // Update User
+        // QUICK UPDATE: Save basic data immediately
         await prisma.user.update({
             where: { id: userId },
             data: {
-                perfectGamesCount: perfectCount,
                 steamAvatar,
                 steamUrl,
                 steamCreatedAt,
@@ -226,12 +179,21 @@ export class SteamService {
                 steamTotalGames,
                 steamTotalPlaytime,
                 steamRecentGames: steamRecentGames.length > 0 ? steamRecentGames : undefined,
-                steamTopGames: steamTopGames.length > 0 ? steamTopGames : undefined
+                steamTopGames: steamTopGames.length > 0 ? steamTopGames : undefined,
+                steamSyncStatus: 'syncing' // Still syncing achievements
             }
         });
 
+        // BACKGROUND: Scan achievements (fire and forget)
+        this.scanAchievementsBackground(userId, steamId, ownedGames).catch(err => {
+            console.error('Background achievement scan error:', err);
+            prisma.user.update({
+                where: { id: userId },
+                data: { steamSyncStatus: 'error' }
+            }).catch(() => { });
+        });
+
         return {
-            count: perfectCount,
             steamAvatar,
             steamUrl,
             steamCreatedAt,
@@ -240,10 +202,76 @@ export class SteamService {
             steamTotalGames,
             steamTotalPlaytime,
             steamRecentGames,
-            steamTopGames
+            steamTopGames,
+            syncStatus: 'syncing', // Achievement scan in progress
+            message: 'Profil frissítve! Achievement-ek számlálása folyamatban...'
         };
+    }
+
+    /**
+     * Background achievement scanning - runs after quick sync returns
+     */
+    private async scanAchievementsBackground(userId: string, steamId: string, games: SteamGame[]) {
+        let perfectCount = 0;
+
+        if (games.length > 0) {
+            // Take top 100 for achievement scanning
+            const topGamesForAchievements = games
+                .filter(g => g.playtime_forever > 0)
+                .sort((a, b) => b.playtime_forever - a.playtime_forever)
+                .slice(0, 100);
+
+            for (const game of topGamesForAchievements) {
+                // Skip if playtime < 5 minutes
+                if (game.playtime_forever < 5) continue;
+
+                try {
+                    const statsUrl = `${STEAM_API_BASE}/ISteamUserStats/GetPlayerAchievements/v0001/?appid=${game.appid}&key=${STEAM_API_KEY}&steamid=${steamId}`;
+                    const statsRes = await fetch(statsUrl);
+
+                    if (statsRes.status === 400) {
+                        continue;
+                    }
+
+                    const statsText = await statsRes.text();
+
+                    if (!statsRes.ok) {
+                        continue;
+                    }
+
+                    try {
+                        const statsData = JSON.parse(statsText);
+                        if (statsData.playerstats && statsData.playerstats.achievements) {
+                            const achievements: SteamAchievement[] = statsData.playerstats.achievements;
+                            const total = achievements.length;
+
+                            if (total > 0) {
+                                const unlocked = achievements.filter(a => a.achieved === 1).length;
+                                if (unlocked === total) {
+                                    perfectCount++;
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        // Parse error, skip
+                    }
+                } catch (err) {
+                    console.error(`Error fetching stats for game ${game.appid}:`, err);
+                }
+            }
+        }
+
+        // Update with final count
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                perfectGamesCount: perfectCount,
+                steamSyncStatus: 'complete'
+            }
+        });
+
+        console.log(`Steam sync complete for user ${userId}: ${perfectCount} perfect games found`);
     }
 }
 
 export const steamService = new SteamService();
-

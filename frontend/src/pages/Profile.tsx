@@ -1055,13 +1055,30 @@ export function ProfilePage() {
                         <div className="text-[#66c0f4] text-[10px] font-bold uppercase tracking-widest mb-1">
                           Tökéletes
                         </div>
-                        <div className="text-2xl font-black text-white">
+                        <div className="text-2xl font-black text-white flex items-center gap-2">
                           {isOwnProfile
                             ? user?.perfectGamesCount || 0
                             : (profileUser as any)?.perfectGamesCount || 0}
+                          {(() => {
+                            const syncStatus = isOwnProfile
+                              ? (user as any)?.steamSyncStatus
+                              : (profileUser as any)?.steamSyncStatus;
+                            if (syncStatus === 'syncing') {
+                              return <Loader2 size={16} className="animate-spin text-[#66c0f4]" />;
+                            }
+                            return null;
+                          })()}
                         </div>
                         <div className="text-[10px] text-gray-500 mt-1">
-                          100% Achievement
+                          {(() => {
+                            const syncStatus = isOwnProfile
+                              ? (user as any)?.steamSyncStatus
+                              : (profileUser as any)?.steamSyncStatus;
+                            if (syncStatus === 'syncing') {
+                              return <span className="text-[#66c0f4]">Számolás...</span>;
+                            }
+                            return '100% Achievement';
+                          })()}
                         </div>
                       </div>
 
