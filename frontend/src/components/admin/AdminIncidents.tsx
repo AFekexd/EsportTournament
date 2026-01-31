@@ -45,6 +45,7 @@ export const AdminIncidents = () => {
 
   const [admins, setAdmins] = useState<UserSummary[]>([]);
   const [handler, setHandler] = useState<UserSummary | null>(null);
+  const [showSelector, setShowSelector] = useState(false);
 
   // Using simple approach: if I am the handler, show "Switch to Broadcast", else "Switch to Me"
 
@@ -78,29 +79,14 @@ export const AdminIncidents = () => {
 
   const fetchAdmins = async () => {
     try {
-      // Fetch both ADMIN and ORGANIZER
-      const [adminsRes, organizersRes] = await Promise.all([
-        apiFetch(`${API_URL}/users?role=ADMIN`),
-        apiFetch(`${API_URL}/users?role=ORGANIZER`),
-      ]);
-
-      let allAdmins: UserSummary[] = [];
-
-      if (adminsRes.ok) {
-        const data = await adminsRes.json();
-        if (data.success) allAdmins = [...allAdmins, ...data.data];
+      // Only fetch ADMINs as requested
+      const res = await apiFetch(`${API_URL}/users?role=ADMIN`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success) {
+          setAdmins(data.data);
+        }
       }
-
-      if (organizersRes.ok) {
-        const data = await organizersRes.json();
-        if (data.success) allAdmins = [...allAdmins, ...data.data];
-      }
-
-      // Remove duplicates just in case
-      const uniqueAdmins = Array.from(
-        new Map(allAdmins.map((item) => [item.id, item])).values(),
-      );
-      setAdmins(uniqueAdmins);
     } catch (error) {
       console.error("Failed to fetch admins", error);
     }
@@ -153,6 +139,7 @@ export const AdminIncidents = () => {
       if (res.ok) {
         toast.success("Beállítás mentve");
         fetchSettings();
+        setShowSelector(false); // Close dropdown
       } else {
         toast.error("Nem sikerült menteni");
       }
@@ -219,44 +206,59 @@ export const AdminIncidents = () => {
                   Visszaállítás mindenkire
                 </button>
               )}
-              <div className="relative group">
-                <button className="px-3 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 rounded-lg text-sm text-blue-400 transition-colors">
+              <div className="relative">
+                <button
+                  onClick={() => setShowSelector(!showSelector)}
+                  className="px-3 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 rounded-lg text-sm text-blue-400 transition-colors"
+                >
                   Váltás...
                 </button>
 
-                <div className="absolute right-0 top-full mt-2 w-64 bg-[#1f212e] border border-white/10 rounded-xl shadow-xl p-3 hidden group-hover:block z-50">
-                  <p className="text-xs text-gray-500 mb-2">Válassz kezelőt:</p>
-                  <div className="max-h-48 overflow-y-auto space-y-1">
-                    {admins.map((admin) => (
-                      <button
-                        key={admin.id}
-                        onClick={() => handleSetHandler(admin.id)}
-                        className="w-full flex items-center gap-2 p-2 hover:bg-white/5 rounded-lg text-left transition-colors"
-                      >
-                        <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center overflow-hidden flex-shrink-0">
-                          {admin.avatarUrl ? (
-                            <img
-                              src={admin.avatarUrl}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <User size={12} className="text-gray-400" />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-xs text-white font-medium truncate">
-                            {admin.displayName || admin.username}
+                {/* Backdrop for click-outside */}
+                {showSelector && (
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setShowSelector(false)}
+                  />
+                )}
+
+                {showSelector && (
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-[#1f212e] border border-white/10 rounded-xl shadow-xl p-3 z-50 animate-in fade-in zoom-in-95 duration-200">
+                    <p className="text-xs text-gray-500 mb-2">
+                      Válassz kezelőt (Adminok):
+                    </p>
+                    <div className="max-h-48 overflow-y-auto space-y-1">
+                      {admins.map((admin) => (
+                        <button
+                          key={admin.id}
+                          onClick={() => handleSetHandler(admin.id)}
+                          className="w-full flex items-center gap-2 p-2 hover:bg-white/5 rounded-lg text-left transition-colors"
+                        >
+                          <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center overflow-hidden flex-shrink-0">
+                            {admin.avatarUrl ? (
+                              <img
+                                src={admin.avatarUrl}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <User size={12} className="text-gray-400" />
+                            )}
                           </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-xs text-white font-medium truncate">
+                              {admin.displayName || admin.username}
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                      {admins.length === 0 && (
+                        <div className="text-xs text-gray-500 text-center py-2">
+                          Nincs elérhető admin
                         </div>
-                      </button>
-                    ))}
-                    {admins.length === 0 && (
-                      <div className="text-xs text-gray-500 text-center py-2">
-                        Nincs elérhető admin
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
