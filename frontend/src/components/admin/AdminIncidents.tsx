@@ -156,7 +156,7 @@ export const AdminIncidents = () => {
         </div>
 
         {/* Settings */}
-        <div className="lg:col-span-2 bg-[#161722] border border-blue-500/20 rounded-2xl p-6 relative overflow-hidden">
+        <div className="lg:col-span-2 bg-[#161722] border border-blue-500/20 rounded-2xl p-6 relative">
           <div className="relative z-10 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div>
               <h3 className="flex items-center gap-2 text-sm font-medium text-blue-400 mb-1">
