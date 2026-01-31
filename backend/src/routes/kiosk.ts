@@ -276,6 +276,20 @@ kioskRouter.post('/session/end', async (req, res) => {
     }
 });
 
+// Get all computers (simple list for dropdowns)
+kioskRouter.get('/computers', async (req, res) => {
+    try {
+        const computers = await prisma.computer.findMany({
+            select: { id: true, name: true, hostname: true }, 
+            orderBy: { name: 'asc' }
+        });
+        res.json(computers);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Get Status (Heartbeat)
 // Accepts optional query param ?version=x.y.z to update DB
 kioskRouter.get('/status/:machineId', async (req, res) => {

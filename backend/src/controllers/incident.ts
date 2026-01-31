@@ -42,12 +42,15 @@ export const IncidentController = {
       
       if (primaryHandlerId) {
         // Notify specific handler
-        await notificationService.notifySystem(
-            primaryHandlerId, 
-            `Új incidens: ${title}`, 
-            `Jelentő: ${user.username || user.displayName}. Kötődő gép: ${computerId ? 'Van' : 'Nincs'}`, 
-            `/admin/incidents`
-        );
+        await notificationService.createNotification({
+            userId: primaryHandlerId,
+            type: 'SYSTEM',
+            title: `Új incidens: ${title}`,
+            message: `Jelentő: ${user.username || user.displayName}. Kötődő gép: ${computerId ? 'Van' : 'Nincs'}`,
+            link: `/admin/incidents`,
+            sendEmail: true,
+            sendDiscord: true
+        });
       } else {
         // Notify ALL admins
         const admins = await prisma.user.findMany({
@@ -56,12 +59,15 @@ export const IncidentController = {
         });
         
         await Promise.all(admins.map(admin => 
-           notificationService.notifySystem(
-            admin.id, 
-            `Új incidens: ${title}`, 
-            `Jelentő: ${user.username || user.displayName}`, 
-            `/admin/incidents`
-           )
+           notificationService.createNotification({
+            userId: admin.id,
+            type: 'SYSTEM',
+            title: `Új incidens: ${title}`,
+            message: `Jelentő: ${user.username || user.displayName}`,
+            link: `/admin/incidents`,
+            sendEmail: true,
+            sendDiscord: true
+           })
         ));
       }
       
@@ -146,12 +152,14 @@ export const IncidentController = {
         
         // Notify reporter about update
         if (status === 'RESOLVED' || status === 'CLOSED' || status === 'IN_PROGRESS') {
-             await notificationService.notifySystem(
-                incident.reporterId,
-                `Incidens frissítés: ${incident.title}`,
-                `Státusz: ${status}. ${resolutionNote ? `Megjegyzés: ${resolutionNote}` : ''}`,
-                `/bug-report` // Or incidents page if we have one. Plan says /incidents
-            );
+             await notificationService.createNotification({
+                userId: incident.reporterId,
+                type: 'SYSTEM',
+                title: `Incidens frissítés: ${incident.title}`,
+                message: `Státusz: ${status}. ${resolutionNote ? `Megjegyzés: ${resolutionNote}` : ''}`,
+                link: `/bug-report`,
+                sendEmail: true
+             });
         }
         
         res.json(incident);
