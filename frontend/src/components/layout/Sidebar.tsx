@@ -18,6 +18,7 @@ import {
   Newspaper,
   Swords,
   Bug,
+  AlertTriangle,
 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { useAppSelector, useAppDispatch } from "../../hooks/useRedux";
@@ -46,6 +47,7 @@ const navItems: NavItem[] = [
   { to: "/leaderboards", icon: <TrendingUp size={20} />, label: "Ranglisták" },
   { to: "/scrims", icon: <Swords size={20} />, label: "Gyakorló (Scrims)" },
   { to: "/settings", icon: <Settings size={20} />, label: "Beállítások" },
+  { to: "/incidents", icon: <AlertTriangle size={20} />, label: "Incidensek" },
   { to: "/bug-report", icon: <Bug size={20} />, label: "Hibajelentés" },
 ];
 
@@ -172,16 +174,18 @@ export function Sidebar() {
       {/* Mobile Overlay */}
 
       <div
-        className={`fixed inset-0 z-40 bg-background/80 backdrop-blur-sm transition-all duration-300 md:hidden ${isOpen ? "opacity-100" : "pointer-events-none opacity-0"
-          }`}
+        className={`fixed inset-0 z-40 bg-background/80 backdrop-blur-sm transition-all duration-300 md:hidden ${
+          isOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
         onClick={() => dispatch(toggleSidebar())}
       />
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex h-screen flex-col border-r border-white/5 bg-background/95 backdrop-blur-xl transition-all duration-300 ease-in-out ${isOpen
+        className={`fixed inset-y-0 left-0 z-50 flex h-screen flex-col border-r border-white/5 bg-background/95 backdrop-blur-xl transition-all duration-300 ease-in-out ${
+          isOpen
             ? "w-full md:w-64 translate-x-0"
             : "-translate-x-full md:w-20 md:translate-x-0"
-          }`}
+        }`}
       >
         <div className="flex h-16 items-center border-b border-white/5 px-4">
           {isOpen && (
@@ -199,8 +203,9 @@ export function Sidebar() {
             </Link>
           )}
           <button
-            className={`ml-auto flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-white/10 hover:text-white ${!isOpen && "mx-auto"
-              }`}
+            className={`ml-auto flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-white/10 hover:text-white ${
+              !isOpen && "mx-auto"
+            }`}
             onClick={() => dispatch(toggleSidebar())}
             aria-label={isOpen ? "Collapse sidebar" : "Expand sidebar"}
           >
@@ -221,17 +226,19 @@ export function Sidebar() {
                       dispatch(toggleSidebar());
                     }
                   }}
-                  className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive(item.to)
+                  className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+                    isActive(item.to)
                       ? "bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
                       : "text-muted-foreground hover:bg-white/5 hover:text-white"
-                    } ${!isOpen && "justify-center px-0"}`}
+                  } ${!isOpen && "justify-center px-0"}`}
                   title={!isOpen ? item.label : undefined}
                 >
                   <span
-                    className={`transition-transform duration-200 group-hover:scale-110 ${isActive(item.to)
+                    className={`transition-transform duration-200 group-hover:scale-110 ${
+                      isActive(item.to)
                         ? "text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]"
                         : ""
-                      }`}
+                    }`}
                   >
                     {item.icon}
                   </span>
@@ -254,18 +261,20 @@ export function Sidebar() {
                           dispatch(toggleSidebar());
                         }
                       }}
-                      className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive(item.to)
+                      className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+                        isActive(item.to)
                           ? "bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
                           : "text-muted-foreground hover:bg-white/5 hover:text-white"
-                        } ${!isOpen && "justify-center px-0"}`}
+                      } ${!isOpen && "justify-center px-0"}`}
                       title={!isOpen ? item.label : undefined}
                     >
                       <div className="relative">
                         <span
-                          className={`transition-transform duration-200 group-hover:scale-110 ${isActive(item.to)
+                          className={`transition-transform duration-200 group-hover:scale-110 ${
+                            isActive(item.to)
                               ? "text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]"
                               : ""
-                            }`}
+                          }`}
                         >
                           {item.icon}
                         </span>
@@ -328,44 +337,50 @@ export function Sidebar() {
 
           {/* Version Footer */}
           <div
-            className={`border-t border-white/5 transition-all duration-300 ${isOpen
+            className={`border-t border-white/5 transition-all duration-300 ${
+              isOpen
                 ? "mx-3 px-6 pb-6 pt-4"
                 : "mx-0 px-2 py-4 flex justify-center"
-              }`}
+            }`}
           >
             <button
               onClick={() => setShowChangelog(true)}
-              className={`flex items-center group transition-all ${isOpen
+              className={`flex items-center group transition-all ${
+                isOpen
                   ? "w-full justify-between"
                   : "flex-col gap-1 justify-center"
-                }`}
+              }`}
               title={`Verzió: v${appVersion}`}
             >
               <div
-                className={`flex flex-col ${isOpen ? "items-start" : "items-center"
-                  }`}
+                className={`flex flex-col ${
+                  isOpen ? "items-start" : "items-center"
+                }`}
               >
                 <span
-                  className={`text-xs font-medium text-gray-500 group-hover:text-white transition-colors ${!isOpen && "hidden"
-                    }`}
+                  className={`text-xs font-medium text-gray-500 group-hover:text-white transition-colors ${
+                    !isOpen && "hidden"
+                  }`}
                 >
                   Verzió:{" "}
                 </span>
                 <span
-                  className={`font-mono transition-colors ${isOpen
+                  className={`font-mono transition-colors ${
+                    isOpen
                       ? "text-gray-400"
                       : "text-[10px] text-gray-500 group-hover:text-white"
-                    }`}
+                  }`}
                 >
                   v{appVersion}
                 </span>
               </div>
               {hasUpdate && (
                 <span
-                  className={`bg-primary/20 text-primary font-bold rounded-full animate-pulse shadow-[0_0_10px_rgba(139,92,246,0.3)] ${isOpen
+                  className={`bg-primary/20 text-primary font-bold rounded-full animate-pulse shadow-[0_0_10px_rgba(139,92,246,0.3)] ${
+                    isOpen
                       ? "text-[10px] px-2 py-0.5"
                       : "text-[8px] px-1.5 py-0.5 mt-1"
-                    }`}
+                  }`}
                 >
                   {isOpen ? "ÚJ" : "NEW"}
                 </span>
