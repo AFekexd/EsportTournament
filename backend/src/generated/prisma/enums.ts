@@ -217,3 +217,23 @@ export const ScrimStatus = {
 } as const
 
 export type ScrimStatus = (typeof ScrimStatus)[keyof typeof ScrimStatus]
+
+
+export const IncidentStatus = {
+  OPEN: 'OPEN',
+  IN_PROGRESS: 'IN_PROGRESS',
+  RESOLVED: 'RESOLVED',
+  CLOSED: 'CLOSED'
+} as const
+
+export type IncidentStatus = (typeof IncidentStatus)[keyof typeof IncidentStatus]
+
+
+export const IncidentPriority = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH',
+  CRITICAL: 'CRITICAL'
+} as const
+
+export type IncidentPriority = (typeof IncidentPriority)[keyof typeof IncidentPriority]

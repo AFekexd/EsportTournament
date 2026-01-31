@@ -23,4 +23,5 @@ export { ScrimsPage } from './ScrimsPage';
 export { NewsPage } from './NewsPage';
 export { NewsDetailPage } from './NewsDetailPage';
 export { DiscordCallbackPage } from './DiscordCallbackPage';
-export { BugReportPage } from './BugReportPage';
+export { default as BugReportPage } from "./BugReportPage";
+export { default as IncidentPage } from "./IncidentPage";

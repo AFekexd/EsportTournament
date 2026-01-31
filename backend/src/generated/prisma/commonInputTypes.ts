@@ -674,6 +674,40 @@ export type EnumBugReportStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumBugReportStatusFilter<$PrismaModel>
 }
 
+export type EnumIncidentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.IncidentStatus | Prisma.EnumIncidentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.IncidentStatus[] | Prisma.ListEnumIncidentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.IncidentStatus[] | Prisma.ListEnumIncidentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumIncidentStatusFilter<$PrismaModel> | $Enums.IncidentStatus
+}
+
+export type EnumIncidentPriorityFilter<$PrismaModel = never> = {
+  equals?: $Enums.IncidentPriority | Prisma.EnumIncidentPriorityFieldRefInput<$PrismaModel>
+  in?: $Enums.IncidentPriority[] | Prisma.ListEnumIncidentPriorityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.IncidentPriority[] | Prisma.ListEnumIncidentPriorityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumIncidentPriorityFilter<$PrismaModel> | $Enums.IncidentPriority
+}
+
+export type EnumIncidentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.IncidentStatus | Prisma.EnumIncidentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.IncidentStatus[] | Prisma.ListEnumIncidentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.IncidentStatus[] | Prisma.ListEnumIncidentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumIncidentStatusWithAggregatesFilter<$PrismaModel> | $Enums.IncidentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumIncidentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumIncidentStatusFilter<$PrismaModel>
+}
+
+export type EnumIncidentPriorityWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.IncidentPriority | Prisma.EnumIncidentPriorityFieldRefInput<$PrismaModel>
+  in?: $Enums.IncidentPriority[] | Prisma.ListEnumIncidentPriorityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.IncidentPriority[] | Prisma.ListEnumIncidentPriorityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumIncidentPriorityWithAggregatesFilter<$PrismaModel> | $Enums.IncidentPriority
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumIncidentPriorityFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumIncidentPriorityFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1291,6 +1325,40 @@ export type NestedEnumBugReportStatusWithAggregatesFilter<$PrismaModel = never> 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumBugReportStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumBugReportStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumIncidentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.IncidentStatus | Prisma.EnumIncidentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.IncidentStatus[] | Prisma.ListEnumIncidentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.IncidentStatus[] | Prisma.ListEnumIncidentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumIncidentStatusFilter<$PrismaModel> | $Enums.IncidentStatus
+}
+
+export type NestedEnumIncidentPriorityFilter<$PrismaModel = never> = {
+  equals?: $Enums.IncidentPriority | Prisma.EnumIncidentPriorityFieldRefInput<$PrismaModel>
+  in?: $Enums.IncidentPriority[] | Prisma.ListEnumIncidentPriorityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.IncidentPriority[] | Prisma.ListEnumIncidentPriorityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumIncidentPriorityFilter<$PrismaModel> | $Enums.IncidentPriority
+}
+
+export type NestedEnumIncidentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.IncidentStatus | Prisma.EnumIncidentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.IncidentStatus[] | Prisma.ListEnumIncidentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.IncidentStatus[] | Prisma.ListEnumIncidentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumIncidentStatusWithAggregatesFilter<$PrismaModel> | $Enums.IncidentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumIncidentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumIncidentStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumIncidentPriorityWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.IncidentPriority | Prisma.EnumIncidentPriorityFieldRefInput<$PrismaModel>
+  in?: $Enums.IncidentPriority[] | Prisma.ListEnumIncidentPriorityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.IncidentPriority[] | Prisma.ListEnumIncidentPriorityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumIncidentPriorityWithAggregatesFilter<$PrismaModel> | $Enums.IncidentPriority
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumIncidentPriorityFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumIncidentPriorityFilter<$PrismaModel>
 }
 
 

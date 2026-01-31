@@ -80,7 +80,9 @@ export const ModelName = {
   Scrim: 'Scrim',
   NewsPost: 'NewsPost',
   BugReport: 'BugReport',
-  BugReportNotificationSetting: 'BugReportNotificationSetting'
+  BugReportNotificationSetting: 'BugReportNotificationSetting',
+  Incident: 'Incident',
+  SystemSetting: 'SystemSetting'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -591,6 +593,34 @@ export const BugReportNotificationSettingScalarFieldEnum = {
 } as const
 
 export type BugReportNotificationSettingScalarFieldEnum = (typeof BugReportNotificationSettingScalarFieldEnum)[keyof typeof BugReportNotificationSettingScalarFieldEnum]
+
+
+export const IncidentScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  reporterId: 'reporterId',
+  computerId: 'computerId',
+  status: 'status',
+  priority: 'priority',
+  resolutionNote: 'resolutionNote',
+  resolvedBy: 'resolvedBy',
+  resolvedAt: 'resolvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type IncidentScalarFieldEnum = (typeof IncidentScalarFieldEnum)[keyof typeof IncidentScalarFieldEnum]
+
+
+export const SystemSettingScalarFieldEnum = {
+  key: 'key',
+  value: 'value',
+  description: 'description',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SystemSettingScalarFieldEnum = (typeof SystemSettingScalarFieldEnum)[keyof typeof SystemSettingScalarFieldEnum]
 
 
 export const SortOrder = {

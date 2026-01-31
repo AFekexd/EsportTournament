@@ -135,6 +135,12 @@ app.use('/api/client/update', clientUpdateRouter);
 import unsubscribeRouter from './routes/unsubscribe.js';
 app.use('/api/unsubscribe', unsubscribeRouter);
 
+// Incident Routes
+import { incidentsRouter } from './routes/incidents.js';
+import { adminSettingsRouter } from './routes/adminSettings.js';
+app.use('/api/incidents', incidentsRouter);
+app.use('/api/admin/settings', adminSettingsRouter);
+
 // Error handler
 app.use(errorHandler);
 

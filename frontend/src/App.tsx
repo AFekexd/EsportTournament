@@ -32,6 +32,7 @@ import {
   NewsDetailPage,
   DiscordCallbackPage,
   BugReportPage,
+  IncidentPage,
 } from "./pages";
 import RequestsPage from "./pages/admin/RequestsPage";
 import { AdminLogs } from "./components/admin/AdminLogs";
@@ -43,7 +44,7 @@ import { TermsModal } from "./components/common/TermsModal";
 // Wrapper to force remount when profile ID changes
 const ProfileWrapper = () => {
   const { id } = useParams();
-  return <ProfilePage key={id || 'me'} />;
+  return <ProfilePage key={id || "me"} />;
 };
 
 // Wrapper to force remount when tournament ID changes
@@ -111,7 +112,10 @@ function AppContent() {
             <Route path="leaderboards" element={<LeaderboardsPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
             <Route path="discord-settings" element={<DiscordAdminPage />} />
-            <Route path="auth/discord/callback" element={<DiscordCallbackPage />} />
+            <Route
+              path="auth/discord/callback"
+              element={<DiscordCallbackPage />}
+            />
             <Route path="calendar" element={<CalendarPage />} />
             <Route path="profile" element={<ProfileWrapper />} />
             <Route path="profile/:id" element={<ProfileWrapper />} />
@@ -127,15 +131,13 @@ function AppContent() {
             <Route path="news" element={<NewsPage />} />
             <Route path="news/:slug" element={<NewsDetailPage />} />
             <Route path="bug-report" element={<BugReportPage />} />
+            <Route path="incidents" element={<IncidentPage />} />
           </Route>
           <Route
             path="/embed/tournaments/:id"
             element={<TournamentEmbedPage />}
           />
-          <Route
-            path="/embed/teams/:id"
-            element={<TeamEmbedPage />}
-          />
+          <Route path="/embed/teams/:id" element={<TeamEmbedPage />} />
           <Route path="/tv" element={<TVDisplayPage />} />
           <Route path="/tv2" element={<TVRecruitmentPage />} />
         </Routes>

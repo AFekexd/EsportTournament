@@ -529,6 +529,7 @@ export type UserWhereInput = {
   favoriteGame?: Prisma.XOR<Prisma.GameNullableScalarRelationFilter, Prisma.GameWhereInput> | null
   bugReports?: Prisma.BugReportListRelationFilter
   bugReportNotification?: Prisma.XOR<Prisma.BugReportNotificationSettingNullableScalarRelationFilter, Prisma.BugReportNotificationSettingWhereInput> | null
+  incidents?: Prisma.IncidentListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -597,6 +598,7 @@ export type UserOrderByWithRelationInput = {
   favoriteGame?: Prisma.GameOrderByWithRelationInput
   bugReports?: Prisma.BugReportOrderByRelationAggregateInput
   bugReportNotification?: Prisma.BugReportNotificationSettingOrderByWithRelationInput
+  incidents?: Prisma.IncidentOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -668,6 +670,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   favoriteGame?: Prisma.XOR<Prisma.GameNullableScalarRelationFilter, Prisma.GameWhereInput> | null
   bugReports?: Prisma.BugReportListRelationFilter
   bugReportNotification?: Prisma.XOR<Prisma.BugReportNotificationSettingNullableScalarRelationFilter, Prisma.BugReportNotificationSettingWhereInput> | null
+  incidents?: Prisma.IncidentListRelationFilter
 }, "id" | "keycloakId" | "email" | "username">
 
 export type UserOrderByWithAggregationInput = {
@@ -829,6 +832,7 @@ export type UserCreateInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -896,6 +900,7 @@ export type UserUncheckedCreateInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserUpdateInput = {
@@ -963,6 +968,7 @@ export type UserUpdateInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -1030,6 +1036,7 @@ export type UserUncheckedUpdateInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -1777,6 +1784,20 @@ export type UserUpdateOneRequiredWithoutBugReportNotificationNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBugReportNotificationInput, Prisma.UserUpdateWithoutBugReportNotificationInput>, Prisma.UserUncheckedUpdateWithoutBugReportNotificationInput>
 }
 
+export type UserCreateNestedOneWithoutIncidentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutIncidentsInput, Prisma.UserUncheckedCreateWithoutIncidentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutIncidentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutIncidentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutIncidentsInput, Prisma.UserUncheckedCreateWithoutIncidentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutIncidentsInput
+  upsert?: Prisma.UserUpsertWithoutIncidentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutIncidentsInput, Prisma.UserUpdateWithoutIncidentsInput>, Prisma.UserUncheckedUpdateWithoutIncidentsInput>
+}
+
 export type UserCreateWithoutOwnedTeamsInput = {
   id?: string
   keycloakId: string
@@ -1841,6 +1862,7 @@ export type UserCreateWithoutOwnedTeamsInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutOwnedTeamsInput = {
@@ -1907,6 +1929,7 @@ export type UserUncheckedCreateWithoutOwnedTeamsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutOwnedTeamsInput = {
@@ -1989,6 +2012,7 @@ export type UserUpdateWithoutOwnedTeamsInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
@@ -2055,6 +2079,7 @@ export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateWithoutTeamMembershipsInput = {
@@ -2121,6 +2146,7 @@ export type UserCreateWithoutTeamMembershipsInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutTeamMembershipsInput = {
@@ -2187,6 +2213,7 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutTeamMembershipsInput = {
@@ -2269,6 +2296,7 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
@@ -2335,6 +2363,7 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateWithoutFavoriteGameInput = {
@@ -2401,6 +2430,7 @@ export type UserCreateWithoutFavoriteGameInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutFavoriteGameInput = {
@@ -2467,6 +2497,7 @@ export type UserUncheckedCreateWithoutFavoriteGameInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutFavoriteGameInput = {
@@ -2605,6 +2636,7 @@ export type UserCreateWithoutTournamentEntriesInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutTournamentEntriesInput = {
@@ -2671,6 +2703,7 @@ export type UserUncheckedCreateWithoutTournamentEntriesInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutTournamentEntriesInput = {
@@ -2742,6 +2775,7 @@ export type UserCreateWithoutParticipatingEntriesInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutParticipatingEntriesInput = {
@@ -2808,6 +2842,7 @@ export type UserUncheckedCreateWithoutParticipatingEntriesInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutParticipatingEntriesInput = {
@@ -2890,6 +2925,7 @@ export type UserUpdateWithoutTournamentEntriesInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
@@ -2956,6 +2992,7 @@ export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUpsertWithWhereUniqueWithoutParticipatingEntriesInput = {
@@ -3038,6 +3075,7 @@ export type UserCreateWithoutHomeMatchesInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutHomeMatchesInput = {
@@ -3104,6 +3142,7 @@ export type UserUncheckedCreateWithoutHomeMatchesInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutHomeMatchesInput = {
@@ -3175,6 +3214,7 @@ export type UserCreateWithoutAwayMatchesInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutAwayMatchesInput = {
@@ -3241,6 +3281,7 @@ export type UserUncheckedCreateWithoutAwayMatchesInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutAwayMatchesInput = {
@@ -3312,6 +3353,7 @@ export type UserCreateWithoutWonMatchesInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutWonMatchesInput = {
@@ -3378,6 +3420,7 @@ export type UserUncheckedCreateWithoutWonMatchesInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutWonMatchesInput = {
@@ -3460,6 +3503,7 @@ export type UserUpdateWithoutHomeMatchesInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutHomeMatchesInput = {
@@ -3526,6 +3570,7 @@ export type UserUncheckedUpdateWithoutHomeMatchesInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUpsertWithoutAwayMatchesInput = {
@@ -3603,6 +3648,7 @@ export type UserUpdateWithoutAwayMatchesInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAwayMatchesInput = {
@@ -3669,6 +3715,7 @@ export type UserUncheckedUpdateWithoutAwayMatchesInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUpsertWithoutWonMatchesInput = {
@@ -3746,6 +3793,7 @@ export type UserUpdateWithoutWonMatchesInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWonMatchesInput = {
@@ -3812,6 +3860,7 @@ export type UserUncheckedUpdateWithoutWonMatchesInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateWithoutGameStatsInput = {
@@ -3878,6 +3927,7 @@ export type UserCreateWithoutGameStatsInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutGameStatsInput = {
@@ -3944,6 +3994,7 @@ export type UserUncheckedCreateWithoutGameStatsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutGameStatsInput = {
@@ -4026,6 +4077,7 @@ export type UserUpdateWithoutGameStatsInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGameStatsInput = {
@@ -4092,6 +4144,7 @@ export type UserUncheckedUpdateWithoutGameStatsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateWithoutRanksInput = {
@@ -4158,6 +4211,7 @@ export type UserCreateWithoutRanksInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutRanksInput = {
@@ -4224,6 +4278,7 @@ export type UserUncheckedCreateWithoutRanksInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutRanksInput = {
@@ -4306,6 +4361,7 @@ export type UserUpdateWithoutRanksInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRanksInput = {
@@ -4372,6 +4428,7 @@ export type UserUncheckedUpdateWithoutRanksInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -4438,6 +4495,7 @@ export type UserCreateWithoutNotificationsInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -4504,6 +4562,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -4586,6 +4645,7 @@ export type UserUpdateWithoutNotificationsInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -4652,6 +4712,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateWithoutDiscordSettingsInput = {
@@ -4718,6 +4779,7 @@ export type UserCreateWithoutDiscordSettingsInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutDiscordSettingsInput = {
@@ -4784,6 +4846,7 @@ export type UserUncheckedCreateWithoutDiscordSettingsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutDiscordSettingsInput = {
@@ -4866,6 +4929,7 @@ export type UserUpdateWithoutDiscordSettingsInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDiscordSettingsInput = {
@@ -4932,6 +4996,7 @@ export type UserUncheckedUpdateWithoutDiscordSettingsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateWithoutBookingsInput = {
@@ -4998,6 +5063,7 @@ export type UserCreateWithoutBookingsInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutBookingsInput = {
@@ -5064,6 +5130,7 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutBookingsInput = {
@@ -5146,6 +5213,7 @@ export type UserUpdateWithoutBookingsInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBookingsInput = {
@@ -5212,6 +5280,7 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -5278,6 +5347,7 @@ export type UserCreateWithoutSessionsInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -5344,6 +5414,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -5426,6 +5497,7 @@ export type UserUpdateWithoutSessionsInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -5492,6 +5564,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateWithoutLogsInput = {
@@ -5558,6 +5631,7 @@ export type UserCreateWithoutLogsInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutLogsInput = {
@@ -5624,6 +5698,7 @@ export type UserUncheckedCreateWithoutLogsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutLogsInput = {
@@ -5695,6 +5770,7 @@ export type UserCreateWithoutAdminLogsInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutAdminLogsInput = {
@@ -5761,6 +5837,7 @@ export type UserUncheckedCreateWithoutAdminLogsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutAdminLogsInput = {
@@ -5843,6 +5920,7 @@ export type UserUpdateWithoutLogsInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLogsInput = {
@@ -5909,6 +5987,7 @@ export type UserUncheckedUpdateWithoutLogsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUpsertWithoutAdminLogsInput = {
@@ -5986,6 +6065,7 @@ export type UserUpdateWithoutAdminLogsInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAdminLogsInput = {
@@ -6052,6 +6132,7 @@ export type UserUncheckedUpdateWithoutAdminLogsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateWithoutWaitlistEntriesInput = {
@@ -6118,6 +6199,7 @@ export type UserCreateWithoutWaitlistEntriesInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
@@ -6184,6 +6266,7 @@ export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutWaitlistEntriesInput = {
@@ -6266,6 +6349,7 @@ export type UserUpdateWithoutWaitlistEntriesInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
@@ -6332,6 +6416,7 @@ export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateWithoutChangeRequestsInput = {
@@ -6398,6 +6483,7 @@ export type UserCreateWithoutChangeRequestsInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutChangeRequestsInput = {
@@ -6464,6 +6550,7 @@ export type UserUncheckedCreateWithoutChangeRequestsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutChangeRequestsInput = {
@@ -6546,6 +6633,7 @@ export type UserUpdateWithoutChangeRequestsInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutChangeRequestsInput = {
@@ -6612,6 +6700,7 @@ export type UserUncheckedUpdateWithoutChangeRequestsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateWithoutAuthoredChangelogsInput = {
@@ -6678,6 +6767,7 @@ export type UserCreateWithoutAuthoredChangelogsInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutAuthoredChangelogsInput = {
@@ -6744,6 +6834,7 @@ export type UserUncheckedCreateWithoutAuthoredChangelogsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutAuthoredChangelogsInput = {
@@ -6826,6 +6917,7 @@ export type UserUpdateWithoutAuthoredChangelogsInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuthoredChangelogsInput = {
@@ -6892,6 +6984,7 @@ export type UserUncheckedUpdateWithoutAuthoredChangelogsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateWithoutDiscordLogsInput = {
@@ -6958,6 +7051,7 @@ export type UserCreateWithoutDiscordLogsInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutDiscordLogsInput = {
@@ -7024,6 +7118,7 @@ export type UserUncheckedCreateWithoutDiscordLogsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutDiscordLogsInput = {
@@ -7106,6 +7201,7 @@ export type UserUpdateWithoutDiscordLogsInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDiscordLogsInput = {
@@ -7172,6 +7268,7 @@ export type UserUncheckedUpdateWithoutDiscordLogsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateWithoutMatchCheckInsInput = {
@@ -7238,6 +7335,7 @@ export type UserCreateWithoutMatchCheckInsInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutMatchCheckInsInput = {
@@ -7304,6 +7402,7 @@ export type UserUncheckedCreateWithoutMatchCheckInsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutMatchCheckInsInput = {
@@ -7386,6 +7485,7 @@ export type UserUpdateWithoutMatchCheckInsInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMatchCheckInsInput = {
@@ -7452,6 +7552,7 @@ export type UserUncheckedUpdateWithoutMatchCheckInsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateWithoutMatchPredictionsInput = {
@@ -7518,6 +7619,7 @@ export type UserCreateWithoutMatchPredictionsInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutMatchPredictionsInput = {
@@ -7584,6 +7686,7 @@ export type UserUncheckedCreateWithoutMatchPredictionsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutMatchPredictionsInput = {
@@ -7666,6 +7769,7 @@ export type UserUpdateWithoutMatchPredictionsInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMatchPredictionsInput = {
@@ -7732,6 +7836,7 @@ export type UserUncheckedUpdateWithoutMatchPredictionsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateWithoutPostsInput = {
@@ -7798,6 +7903,7 @@ export type UserCreateWithoutPostsInput = {
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutPostsInput = {
@@ -7864,6 +7970,7 @@ export type UserUncheckedCreateWithoutPostsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutPostsInput = {
@@ -7946,6 +8053,7 @@ export type UserUpdateWithoutPostsInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPostsInput = {
@@ -8012,6 +8120,7 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateWithoutBugReportsInput = {
@@ -8078,6 +8187,7 @@ export type UserCreateWithoutBugReportsInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutBugReportsInput = {
@@ -8144,6 +8254,7 @@ export type UserUncheckedCreateWithoutBugReportsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutBugReportsInput = {
@@ -8226,6 +8337,7 @@ export type UserUpdateWithoutBugReportsInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBugReportsInput = {
@@ -8292,6 +8404,7 @@ export type UserUncheckedUpdateWithoutBugReportsInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserCreateWithoutBugReportNotificationInput = {
@@ -8358,6 +8471,7 @@ export type UserCreateWithoutBugReportNotificationInput = {
   matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
   favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
   bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutReporterInput
 }
 
 export type UserUncheckedCreateWithoutBugReportNotificationInput = {
@@ -8424,6 +8538,7 @@ export type UserUncheckedCreateWithoutBugReportNotificationInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
   matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
   bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutReporterInput
 }
 
 export type UserCreateOrConnectWithoutBugReportNotificationInput = {
@@ -8506,6 +8621,7 @@ export type UserUpdateWithoutBugReportNotificationInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBugReportNotificationInput = {
@@ -8572,6 +8688,291 @@ export type UserUncheckedUpdateWithoutBugReportNotificationInput = {
   matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
+}
+
+export type UserCreateWithoutIncidentsInput = {
+  id?: string
+  keycloakId: string
+  email: string
+  username: string
+  displayName?: string | null
+  avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
+  role?: $Enums.Role
+  elo?: number
+  timeBalanceSeconds?: number
+  emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
+  steamId?: string | null
+  steamAvatar?: string | null
+  steamUrl?: string | null
+  steamLevel?: number | null
+  steamPersonaname?: string | null
+  steamCreatedAt?: Date | string | null
+  perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamSyncStatus?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  tosAcceptedAt?: Date | string | null
+  teamMemberships?: Prisma.TeamMemberCreateNestedManyWithoutUserInput
+  ownedTeams?: Prisma.TeamCreateNestedManyWithoutOwnerInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  gameStats?: Prisma.GameStatsCreateNestedManyWithoutUserInput
+  tournamentEntries?: Prisma.TournamentEntryCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryCreateNestedManyWithoutParticipantsInput
+  discordSettings?: Prisma.DiscordSettingsCreateNestedOneWithoutUserInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
+  waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutUserInput
+  homeMatches?: Prisma.MatchCreateNestedManyWithoutHomeUserInput
+  awayMatches?: Prisma.MatchCreateNestedManyWithoutAwayUserInput
+  wonMatches?: Prisma.MatchCreateNestedManyWithoutWinnerUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  logs?: Prisma.LogCreateNestedManyWithoutUserInput
+  adminLogs?: Prisma.LogCreateNestedManyWithoutAdminInput
+  ranks?: Prisma.UserRankCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestCreateNestedManyWithoutRequesterInput
+  authoredChangelogs?: Prisma.ChangelogCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.NewsPostCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionCreateNestedManyWithoutPredictorInput
+  favoriteGame?: Prisma.GameCreateNestedOneWithoutFavoritedByInput
+  bugReports?: Prisma.BugReportCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutIncidentsInput = {
+  id?: string
+  keycloakId: string
+  email: string
+  username: string
+  displayName?: string | null
+  avatarUrl?: string | null
+  omId?: string | null
+  discordId?: string | null
+  role?: $Enums.Role
+  elo?: number
+  timeBalanceSeconds?: number
+  emailNotifications?: boolean
+  emailPrefTournaments?: boolean
+  emailPrefMatches?: boolean
+  emailPrefBookings?: boolean
+  emailPrefSystem?: boolean
+  emailPrefWeeklyDigest?: boolean
+  discordDmTournaments?: boolean
+  discordDmMatches?: boolean
+  discordDmReminders?: boolean
+  discordDmResults?: boolean
+  discordDmSystem?: boolean
+  steamId?: string | null
+  steamAvatar?: string | null
+  steamUrl?: string | null
+  steamLevel?: number | null
+  steamPersonaname?: string | null
+  steamCreatedAt?: Date | string | null
+  perfectGamesCount?: number
+  steamTotalGames?: number | null
+  steamTotalPlaytime?: number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamSyncStatus?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLogoutAt?: Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  favoriteGameId?: string | null
+  tosAcceptedAt?: Date | string | null
+  teamMemberships?: Prisma.TeamMemberUncheckedCreateNestedManyWithoutUserInput
+  ownedTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutOwnerInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  gameStats?: Prisma.GameStatsUncheckedCreateNestedManyWithoutUserInput
+  tournamentEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutUserInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedCreateNestedManyWithoutParticipantsInput
+  discordSettings?: Prisma.DiscordSettingsUncheckedCreateNestedOneWithoutUserInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutUserInput
+  homeMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutHomeUserInput
+  awayMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutAwayUserInput
+  wonMatches?: Prisma.MatchUncheckedCreateNestedManyWithoutWinnerUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  logs?: Prisma.LogUncheckedCreateNestedManyWithoutUserInput
+  adminLogs?: Prisma.LogUncheckedCreateNestedManyWithoutAdminInput
+  ranks?: Prisma.UserRankUncheckedCreateNestedManyWithoutUserInput
+  changeRequests?: Prisma.ChangeRequestUncheckedCreateNestedManyWithoutRequesterInput
+  authoredChangelogs?: Prisma.ChangelogUncheckedCreateNestedManyWithoutAuthorInput
+  posts?: Prisma.NewsPostUncheckedCreateNestedManyWithoutAuthorInput
+  discordLogs?: Prisma.DiscordLogUncheckedCreateNestedManyWithoutUserInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedCreateNestedManyWithoutUserInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedCreateNestedManyWithoutPredictorInput
+  bugReports?: Prisma.BugReportUncheckedCreateNestedManyWithoutReporterInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedCreateNestedOneWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutIncidentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutIncidentsInput, Prisma.UserUncheckedCreateWithoutIncidentsInput>
+}
+
+export type UserUpsertWithoutIncidentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutIncidentsInput, Prisma.UserUncheckedUpdateWithoutIncidentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutIncidentsInput, Prisma.UserUncheckedCreateWithoutIncidentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutIncidentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutIncidentsInput, Prisma.UserUncheckedUpdateWithoutIncidentsInput>
+}
+
+export type UserUpdateWithoutIncidentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  keycloakId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  elo?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamSyncStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  tosAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  teamMemberships?: Prisma.TeamMemberUpdateManyWithoutUserNestedInput
+  ownedTeams?: Prisma.TeamUpdateManyWithoutOwnerNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  gameStats?: Prisma.GameStatsUpdateManyWithoutUserNestedInput
+  tournamentEntries?: Prisma.TournamentEntryUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUpdateManyWithoutParticipantsNestedInput
+  discordSettings?: Prisma.DiscordSettingsUpdateOneWithoutUserNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  waitlistEntries?: Prisma.WaitlistUpdateManyWithoutUserNestedInput
+  homeMatches?: Prisma.MatchUpdateManyWithoutHomeUserNestedInput
+  awayMatches?: Prisma.MatchUpdateManyWithoutAwayUserNestedInput
+  wonMatches?: Prisma.MatchUpdateManyWithoutWinnerUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  logs?: Prisma.LogUpdateManyWithoutUserNestedInput
+  adminLogs?: Prisma.LogUpdateManyWithoutAdminNestedInput
+  ranks?: Prisma.UserRankUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUpdateManyWithoutRequesterNestedInput
+  authoredChangelogs?: Prisma.ChangelogUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.NewsPostUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
+  favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
+  bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutIncidentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  keycloakId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  omId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  elo?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefBookings?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailPrefWeeklyDigest?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmReminders?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmResults?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discordDmSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamPersonaname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  steamCreatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  perfectGamesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  steamTotalGames?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamTotalPlaytime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  steamRecentGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamTopGames?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  steamSyncStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLogoutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achievements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  favoriteGameId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tosAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  teamMemberships?: Prisma.TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+  ownedTeams?: Prisma.TeamUncheckedUpdateManyWithoutOwnerNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  gameStats?: Prisma.GameStatsUncheckedUpdateManyWithoutUserNestedInput
+  tournamentEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutUserNestedInput
+  participatingEntries?: Prisma.TournamentEntryUncheckedUpdateManyWithoutParticipantsNestedInput
+  discordSettings?: Prisma.DiscordSettingsUncheckedUpdateOneWithoutUserNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutUserNestedInput
+  homeMatches?: Prisma.MatchUncheckedUpdateManyWithoutHomeUserNestedInput
+  awayMatches?: Prisma.MatchUncheckedUpdateManyWithoutAwayUserNestedInput
+  wonMatches?: Prisma.MatchUncheckedUpdateManyWithoutWinnerUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  logs?: Prisma.LogUncheckedUpdateManyWithoutUserNestedInput
+  adminLogs?: Prisma.LogUncheckedUpdateManyWithoutAdminNestedInput
+  ranks?: Prisma.UserRankUncheckedUpdateManyWithoutUserNestedInput
+  changeRequests?: Prisma.ChangeRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  authoredChangelogs?: Prisma.ChangelogUncheckedUpdateManyWithoutAuthorNestedInput
+  posts?: Prisma.NewsPostUncheckedUpdateManyWithoutAuthorNestedInput
+  discordLogs?: Prisma.DiscordLogUncheckedUpdateManyWithoutUserNestedInput
+  matchCheckIns?: Prisma.MatchCheckInUncheckedUpdateManyWithoutUserNestedInput
+  matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
+  bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
+  bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateManyFavoriteGameInput = {
@@ -8680,6 +9081,7 @@ export type UserUpdateWithoutFavoriteGameInput = {
   matchPredictions?: Prisma.MatchPredictionUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFavoriteGameInput = {
@@ -8746,6 +9148,7 @@ export type UserUncheckedUpdateWithoutFavoriteGameInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutFavoriteGameInput = {
@@ -8854,6 +9257,7 @@ export type UserUpdateWithoutParticipatingEntriesInput = {
   favoriteGame?: Prisma.GameUpdateOneWithoutFavoritedByNestedInput
   bugReports?: Prisma.BugReportUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutParticipatingEntriesInput = {
@@ -8920,6 +9324,7 @@ export type UserUncheckedUpdateWithoutParticipatingEntriesInput = {
   matchPredictions?: Prisma.MatchPredictionUncheckedUpdateManyWithoutPredictorNestedInput
   bugReports?: Prisma.BugReportUncheckedUpdateManyWithoutReporterNestedInput
   bugReportNotification?: Prisma.BugReportNotificationSettingUncheckedUpdateOneWithoutUserNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutReporterNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutParticipatingEntriesInput = {
@@ -8993,6 +9398,7 @@ export type UserCountOutputType = {
   matchCheckIns: number
   matchPredictions: number
   bugReports: number
+  incidents: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -9018,6 +9424,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   matchCheckIns?: boolean | UserCountOutputTypeCountMatchCheckInsArgs
   matchPredictions?: boolean | UserCountOutputTypeCountMatchPredictionsArgs
   bugReports?: boolean | UserCountOutputTypeCountBugReportsArgs
+  incidents?: boolean | UserCountOutputTypeCountIncidentsArgs
 }
 
 /**
@@ -9184,6 +9591,13 @@ export type UserCountOutputTypeCountBugReportsArgs<ExtArgs extends runtime.Types
   where?: Prisma.BugReportWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountIncidentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.IncidentWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -9251,6 +9665,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   favoriteGame?: boolean | Prisma.User$favoriteGameArgs<ExtArgs>
   bugReports?: boolean | Prisma.User$bugReportsArgs<ExtArgs>
   bugReportNotification?: boolean | Prisma.User$bugReportNotificationArgs<ExtArgs>
+  incidents?: boolean | Prisma.User$incidentsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -9412,6 +9827,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   favoriteGame?: boolean | Prisma.User$favoriteGameArgs<ExtArgs>
   bugReports?: boolean | Prisma.User$bugReportsArgs<ExtArgs>
   bugReportNotification?: boolean | Prisma.User$bugReportNotificationArgs<ExtArgs>
+  incidents?: boolean | Prisma.User$incidentsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -9449,6 +9865,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     favoriteGame: Prisma.$GamePayload<ExtArgs> | null
     bugReports: Prisma.$BugReportPayload<ExtArgs>[]
     bugReportNotification: Prisma.$BugReportNotificationSettingPayload<ExtArgs> | null
+    incidents: Prisma.$IncidentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -9910,6 +10327,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   favoriteGame<T extends Prisma.User$favoriteGameArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$favoriteGameArgs<ExtArgs>>): Prisma.Prisma__GameClient<runtime.Types.Result.GetResult<Prisma.$GamePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   bugReports<T extends Prisma.User$bugReportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$bugReportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BugReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   bugReportNotification<T extends Prisma.User$bugReportNotificationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$bugReportNotificationArgs<ExtArgs>>): Prisma.Prisma__BugReportNotificationSettingClient<runtime.Types.Result.GetResult<Prisma.$BugReportNotificationSettingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  incidents<T extends Prisma.User$incidentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$incidentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IncidentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10957,6 +11375,30 @@ export type User$bugReportNotificationArgs<ExtArgs extends runtime.Types.Extensi
    */
   include?: Prisma.BugReportNotificationSettingInclude<ExtArgs> | null
   where?: Prisma.BugReportNotificationSettingWhereInput
+}
+
+/**
+ * User.incidents
+ */
+export type User$incidentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Incident
+   */
+  select?: Prisma.IncidentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Incident
+   */
+  omit?: Prisma.IncidentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.IncidentInclude<ExtArgs> | null
+  where?: Prisma.IncidentWhereInput
+  orderBy?: Prisma.IncidentOrderByWithRelationInput | Prisma.IncidentOrderByWithRelationInput[]
+  cursor?: Prisma.IncidentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.IncidentScalarFieldEnum | Prisma.IncidentScalarFieldEnum[]
 }
 
 /**

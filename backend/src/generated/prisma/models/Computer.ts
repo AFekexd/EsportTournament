@@ -288,6 +288,7 @@ export type ComputerWhereInput = {
   waitlistEntries?: Prisma.WaitlistListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   logs?: Prisma.LogListRelationFilter
+  incidents?: Prisma.IncidentListRelationFilter
 }
 
 export type ComputerOrderByWithRelationInput = {
@@ -309,6 +310,7 @@ export type ComputerOrderByWithRelationInput = {
   waitlistEntries?: Prisma.WaitlistOrderByRelationAggregateInput
   sessions?: Prisma.SessionOrderByRelationAggregateInput
   logs?: Prisma.LogOrderByRelationAggregateInput
+  incidents?: Prisma.IncidentOrderByRelationAggregateInput
 }
 
 export type ComputerWhereUniqueInput = Prisma.AtLeast<{
@@ -334,6 +336,7 @@ export type ComputerWhereUniqueInput = Prisma.AtLeast<{
   waitlistEntries?: Prisma.WaitlistListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   logs?: Prisma.LogListRelationFilter
+  incidents?: Prisma.IncidentListRelationFilter
 }, "id" | "hostname" | "row_position">
 
 export type ComputerOrderByWithAggregationInput = {
@@ -397,6 +400,7 @@ export type ComputerCreateInput = {
   waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutComputerInput
   sessions?: Prisma.SessionCreateNestedManyWithoutComputerInput
   logs?: Prisma.LogCreateNestedManyWithoutComputerInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutComputerInput
 }
 
 export type ComputerUncheckedCreateInput = {
@@ -418,6 +422,7 @@ export type ComputerUncheckedCreateInput = {
   waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutComputerInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutComputerInput
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutComputerInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutComputerInput
 }
 
 export type ComputerUpdateInput = {
@@ -439,6 +444,7 @@ export type ComputerUpdateInput = {
   waitlistEntries?: Prisma.WaitlistUpdateManyWithoutComputerNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutComputerNestedInput
   logs?: Prisma.LogUpdateManyWithoutComputerNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutComputerNestedInput
 }
 
 export type ComputerUncheckedUpdateInput = {
@@ -460,6 +466,7 @@ export type ComputerUncheckedUpdateInput = {
   waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutComputerNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutComputerNestedInput
   logs?: Prisma.LogUncheckedUpdateManyWithoutComputerNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutComputerNestedInput
 }
 
 export type ComputerCreateManyInput = {
@@ -664,6 +671,22 @@ export type ComputerUpdateOneRequiredWithoutWaitlistEntriesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ComputerUpdateToOneWithWhereWithoutWaitlistEntriesInput, Prisma.ComputerUpdateWithoutWaitlistEntriesInput>, Prisma.ComputerUncheckedUpdateWithoutWaitlistEntriesInput>
 }
 
+export type ComputerCreateNestedOneWithoutIncidentsInput = {
+  create?: Prisma.XOR<Prisma.ComputerCreateWithoutIncidentsInput, Prisma.ComputerUncheckedCreateWithoutIncidentsInput>
+  connectOrCreate?: Prisma.ComputerCreateOrConnectWithoutIncidentsInput
+  connect?: Prisma.ComputerWhereUniqueInput
+}
+
+export type ComputerUpdateOneWithoutIncidentsNestedInput = {
+  create?: Prisma.XOR<Prisma.ComputerCreateWithoutIncidentsInput, Prisma.ComputerUncheckedCreateWithoutIncidentsInput>
+  connectOrCreate?: Prisma.ComputerCreateOrConnectWithoutIncidentsInput
+  upsert?: Prisma.ComputerUpsertWithoutIncidentsInput
+  disconnect?: Prisma.ComputerWhereInput | boolean
+  delete?: Prisma.ComputerWhereInput | boolean
+  connect?: Prisma.ComputerWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ComputerUpdateToOneWithWhereWithoutIncidentsInput, Prisma.ComputerUpdateWithoutIncidentsInput>, Prisma.ComputerUncheckedUpdateWithoutIncidentsInput>
+}
+
 export type ComputerCreateWithoutBookingsInput = {
   id?: string
   name: string
@@ -682,6 +705,7 @@ export type ComputerCreateWithoutBookingsInput = {
   waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutComputerInput
   sessions?: Prisma.SessionCreateNestedManyWithoutComputerInput
   logs?: Prisma.LogCreateNestedManyWithoutComputerInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutComputerInput
 }
 
 export type ComputerUncheckedCreateWithoutBookingsInput = {
@@ -702,6 +726,7 @@ export type ComputerUncheckedCreateWithoutBookingsInput = {
   waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutComputerInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutComputerInput
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutComputerInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutComputerInput
 }
 
 export type ComputerCreateOrConnectWithoutBookingsInput = {
@@ -738,6 +763,7 @@ export type ComputerUpdateWithoutBookingsInput = {
   waitlistEntries?: Prisma.WaitlistUpdateManyWithoutComputerNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutComputerNestedInput
   logs?: Prisma.LogUpdateManyWithoutComputerNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutComputerNestedInput
 }
 
 export type ComputerUncheckedUpdateWithoutBookingsInput = {
@@ -758,6 +784,7 @@ export type ComputerUncheckedUpdateWithoutBookingsInput = {
   waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutComputerNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutComputerNestedInput
   logs?: Prisma.LogUncheckedUpdateManyWithoutComputerNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutComputerNestedInput
 }
 
 export type ComputerCreateWithoutSessionsInput = {
@@ -778,6 +805,7 @@ export type ComputerCreateWithoutSessionsInput = {
   bookings?: Prisma.BookingCreateNestedManyWithoutComputerInput
   waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutComputerInput
   logs?: Prisma.LogCreateNestedManyWithoutComputerInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutComputerInput
 }
 
 export type ComputerUncheckedCreateWithoutSessionsInput = {
@@ -798,6 +826,7 @@ export type ComputerUncheckedCreateWithoutSessionsInput = {
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutComputerInput
   waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutComputerInput
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutComputerInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutComputerInput
 }
 
 export type ComputerCreateOrConnectWithoutSessionsInput = {
@@ -834,6 +863,7 @@ export type ComputerUpdateWithoutSessionsInput = {
   bookings?: Prisma.BookingUpdateManyWithoutComputerNestedInput
   waitlistEntries?: Prisma.WaitlistUpdateManyWithoutComputerNestedInput
   logs?: Prisma.LogUpdateManyWithoutComputerNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutComputerNestedInput
 }
 
 export type ComputerUncheckedUpdateWithoutSessionsInput = {
@@ -854,6 +884,7 @@ export type ComputerUncheckedUpdateWithoutSessionsInput = {
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutComputerNestedInput
   waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutComputerNestedInput
   logs?: Prisma.LogUncheckedUpdateManyWithoutComputerNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutComputerNestedInput
 }
 
 export type ComputerCreateWithoutLogsInput = {
@@ -874,6 +905,7 @@ export type ComputerCreateWithoutLogsInput = {
   bookings?: Prisma.BookingCreateNestedManyWithoutComputerInput
   waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutComputerInput
   sessions?: Prisma.SessionCreateNestedManyWithoutComputerInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutComputerInput
 }
 
 export type ComputerUncheckedCreateWithoutLogsInput = {
@@ -894,6 +926,7 @@ export type ComputerUncheckedCreateWithoutLogsInput = {
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutComputerInput
   waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutComputerInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutComputerInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutComputerInput
 }
 
 export type ComputerCreateOrConnectWithoutLogsInput = {
@@ -930,6 +963,7 @@ export type ComputerUpdateWithoutLogsInput = {
   bookings?: Prisma.BookingUpdateManyWithoutComputerNestedInput
   waitlistEntries?: Prisma.WaitlistUpdateManyWithoutComputerNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutComputerNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutComputerNestedInput
 }
 
 export type ComputerUncheckedUpdateWithoutLogsInput = {
@@ -950,6 +984,7 @@ export type ComputerUncheckedUpdateWithoutLogsInput = {
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutComputerNestedInput
   waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutComputerNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutComputerNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutComputerNestedInput
 }
 
 export type ComputerCreateWithoutWaitlistEntriesInput = {
@@ -970,6 +1005,7 @@ export type ComputerCreateWithoutWaitlistEntriesInput = {
   bookings?: Prisma.BookingCreateNestedManyWithoutComputerInput
   sessions?: Prisma.SessionCreateNestedManyWithoutComputerInput
   logs?: Prisma.LogCreateNestedManyWithoutComputerInput
+  incidents?: Prisma.IncidentCreateNestedManyWithoutComputerInput
 }
 
 export type ComputerUncheckedCreateWithoutWaitlistEntriesInput = {
@@ -990,6 +1026,7 @@ export type ComputerUncheckedCreateWithoutWaitlistEntriesInput = {
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutComputerInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutComputerInput
   logs?: Prisma.LogUncheckedCreateNestedManyWithoutComputerInput
+  incidents?: Prisma.IncidentUncheckedCreateNestedManyWithoutComputerInput
 }
 
 export type ComputerCreateOrConnectWithoutWaitlistEntriesInput = {
@@ -1026,6 +1063,7 @@ export type ComputerUpdateWithoutWaitlistEntriesInput = {
   bookings?: Prisma.BookingUpdateManyWithoutComputerNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutComputerNestedInput
   logs?: Prisma.LogUpdateManyWithoutComputerNestedInput
+  incidents?: Prisma.IncidentUpdateManyWithoutComputerNestedInput
 }
 
 export type ComputerUncheckedUpdateWithoutWaitlistEntriesInput = {
@@ -1046,6 +1084,107 @@ export type ComputerUncheckedUpdateWithoutWaitlistEntriesInput = {
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutComputerNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutComputerNestedInput
   logs?: Prisma.LogUncheckedUpdateManyWithoutComputerNestedInput
+  incidents?: Prisma.IncidentUncheckedUpdateManyWithoutComputerNestedInput
+}
+
+export type ComputerCreateWithoutIncidentsInput = {
+  id?: string
+  name: string
+  hostname?: string | null
+  row: number
+  position: number
+  isActive?: boolean
+  isLocked?: boolean
+  isCompetitionMode?: boolean
+  status?: $Enums.ComputerStatus
+  specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  installedGames?: Prisma.ComputerCreateinstalledGamesInput | string[]
+  clientVersion?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bookings?: Prisma.BookingCreateNestedManyWithoutComputerInput
+  waitlistEntries?: Prisma.WaitlistCreateNestedManyWithoutComputerInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutComputerInput
+  logs?: Prisma.LogCreateNestedManyWithoutComputerInput
+}
+
+export type ComputerUncheckedCreateWithoutIncidentsInput = {
+  id?: string
+  name: string
+  hostname?: string | null
+  row: number
+  position: number
+  isActive?: boolean
+  isLocked?: boolean
+  isCompetitionMode?: boolean
+  status?: $Enums.ComputerStatus
+  specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  installedGames?: Prisma.ComputerCreateinstalledGamesInput | string[]
+  clientVersion?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutComputerInput
+  waitlistEntries?: Prisma.WaitlistUncheckedCreateNestedManyWithoutComputerInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutComputerInput
+  logs?: Prisma.LogUncheckedCreateNestedManyWithoutComputerInput
+}
+
+export type ComputerCreateOrConnectWithoutIncidentsInput = {
+  where: Prisma.ComputerWhereUniqueInput
+  create: Prisma.XOR<Prisma.ComputerCreateWithoutIncidentsInput, Prisma.ComputerUncheckedCreateWithoutIncidentsInput>
+}
+
+export type ComputerUpsertWithoutIncidentsInput = {
+  update: Prisma.XOR<Prisma.ComputerUpdateWithoutIncidentsInput, Prisma.ComputerUncheckedUpdateWithoutIncidentsInput>
+  create: Prisma.XOR<Prisma.ComputerCreateWithoutIncidentsInput, Prisma.ComputerUncheckedCreateWithoutIncidentsInput>
+  where?: Prisma.ComputerWhereInput
+}
+
+export type ComputerUpdateToOneWithWhereWithoutIncidentsInput = {
+  where?: Prisma.ComputerWhereInput
+  data: Prisma.XOR<Prisma.ComputerUpdateWithoutIncidentsInput, Prisma.ComputerUncheckedUpdateWithoutIncidentsInput>
+}
+
+export type ComputerUpdateWithoutIncidentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  hostname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  row?: Prisma.IntFieldUpdateOperationsInput | number
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isCompetitionMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumComputerStatusFieldUpdateOperationsInput | $Enums.ComputerStatus
+  specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  installedGames?: Prisma.ComputerUpdateinstalledGamesInput | string[]
+  clientVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bookings?: Prisma.BookingUpdateManyWithoutComputerNestedInput
+  waitlistEntries?: Prisma.WaitlistUpdateManyWithoutComputerNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutComputerNestedInput
+  logs?: Prisma.LogUpdateManyWithoutComputerNestedInput
+}
+
+export type ComputerUncheckedUpdateWithoutIncidentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  hostname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  row?: Prisma.IntFieldUpdateOperationsInput | number
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isCompetitionMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumComputerStatusFieldUpdateOperationsInput | $Enums.ComputerStatus
+  specs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  installedGames?: Prisma.ComputerUpdateinstalledGamesInput | string[]
+  clientVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutComputerNestedInput
+  waitlistEntries?: Prisma.WaitlistUncheckedUpdateManyWithoutComputerNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutComputerNestedInput
+  logs?: Prisma.LogUncheckedUpdateManyWithoutComputerNestedInput
 }
 
 
@@ -1058,6 +1197,7 @@ export type ComputerCountOutputType = {
   waitlistEntries: number
   sessions: number
   logs: number
+  incidents: number
 }
 
 export type ComputerCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1065,6 +1205,7 @@ export type ComputerCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   waitlistEntries?: boolean | ComputerCountOutputTypeCountWaitlistEntriesArgs
   sessions?: boolean | ComputerCountOutputTypeCountSessionsArgs
   logs?: boolean | ComputerCountOutputTypeCountLogsArgs
+  incidents?: boolean | ComputerCountOutputTypeCountIncidentsArgs
 }
 
 /**
@@ -1105,6 +1246,13 @@ export type ComputerCountOutputTypeCountLogsArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.LogWhereInput
 }
 
+/**
+ * ComputerCountOutputType without action
+ */
+export type ComputerCountOutputTypeCountIncidentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.IncidentWhereInput
+}
+
 
 export type ComputerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1125,6 +1273,7 @@ export type ComputerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   waitlistEntries?: boolean | Prisma.Computer$waitlistEntriesArgs<ExtArgs>
   sessions?: boolean | Prisma.Computer$sessionsArgs<ExtArgs>
   logs?: boolean | Prisma.Computer$logsArgs<ExtArgs>
+  incidents?: boolean | Prisma.Computer$incidentsArgs<ExtArgs>
   _count?: boolean | Prisma.ComputerCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["computer"]>
 
@@ -1185,6 +1334,7 @@ export type ComputerInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   waitlistEntries?: boolean | Prisma.Computer$waitlistEntriesArgs<ExtArgs>
   sessions?: boolean | Prisma.Computer$sessionsArgs<ExtArgs>
   logs?: boolean | Prisma.Computer$logsArgs<ExtArgs>
+  incidents?: boolean | Prisma.Computer$incidentsArgs<ExtArgs>
   _count?: boolean | Prisma.ComputerCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ComputerIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1197,6 +1347,7 @@ export type $ComputerPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     waitlistEntries: Prisma.$WaitlistPayload<ExtArgs>[]
     sessions: Prisma.$SessionPayload<ExtArgs>[]
     logs: Prisma.$LogPayload<ExtArgs>[]
+    incidents: Prisma.$IncidentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1611,6 +1762,7 @@ export interface Prisma__ComputerClient<T, Null = never, ExtArgs extends runtime
   waitlistEntries<T extends Prisma.Computer$waitlistEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Computer$waitlistEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WaitlistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sessions<T extends Prisma.Computer$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Computer$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   logs<T extends Prisma.Computer$logsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Computer$logsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  incidents<T extends Prisma.Computer$incidentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Computer$incidentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IncidentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2135,6 +2287,30 @@ export type Computer$logsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.LogScalarFieldEnum | Prisma.LogScalarFieldEnum[]
+}
+
+/**
+ * Computer.incidents
+ */
+export type Computer$incidentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Incident
+   */
+  select?: Prisma.IncidentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Incident
+   */
+  omit?: Prisma.IncidentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.IncidentInclude<ExtArgs> | null
+  where?: Prisma.IncidentWhereInput
+  orderBy?: Prisma.IncidentOrderByWithRelationInput | Prisma.IncidentOrderByWithRelationInput[]
+  cursor?: Prisma.IncidentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.IncidentScalarFieldEnum | Prisma.IncidentScalarFieldEnum[]
 }
 
 /**

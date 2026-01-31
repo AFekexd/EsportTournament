@@ -15,6 +15,7 @@ import {
   Search,
   MessageSquare,
   Bug,
+  AlertTriangle,
 } from "lucide-react";
 import { ConfirmationModal } from "../components/common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
@@ -31,18 +32,71 @@ import { Link } from "react-router-dom";
 import "./Admin.css";
 
 // Lazy load components
-const GameCreateModal = lazy(() => import("../components/admin/GameCreateModal").then(module => ({ default: module.GameCreateModal })));
-const GameEditModal = lazy(() => import("../components/admin/GameEditModal").then(module => ({ default: module.GameEditModal })));
-const GameRankModal = lazy(() => import("../components/admin/GameRankModal").then(module => ({ default: module.GameRankModal })));
-const TournamentCreateModal = lazy(() => import("../components/admin/TournamentCreateModal").then(module => ({ default: module.TournamentCreateModal })));
-const TournamentEditModal = lazy(() => import("../components/admin/TournamentEditModal").then(module => ({ default: module.TournamentEditModal })));
-const TournamentStatusModal = lazy(() => import("../components/admin/TournamentStatusModal").then(module => ({ default: module.TournamentStatusModal })));
-const BookingManagement = lazy(() => import("../components/booking/BookingManagement").then(module => ({ default: module.BookingManagement })));
-const UserManagement = lazy(() => import("../components/admin/UserManagement").then(module => ({ default: module.UserManagement })));
-const TeamManagement = lazy(() => import("../components/admin/TeamManagement").then(module => ({ default: module.TeamManagement })));
-const KioskManager = lazy(() => import("../components/admin/KioskManager").then(module => ({ default: module.KioskManager })));
-const AnnouncementManager = lazy(() => import("../components/admin/AnnouncementManager").then(module => ({ default: module.AnnouncementManager })));
-const BugReportsAdmin = lazy(() => import("../components/admin/BugReportsAdmin").then(module => ({ default: module.BugReportsAdmin })));
+const GameCreateModal = lazy(() =>
+  import("../components/admin/GameCreateModal").then((module) => ({
+    default: module.GameCreateModal,
+  })),
+);
+const GameEditModal = lazy(() =>
+  import("../components/admin/GameEditModal").then((module) => ({
+    default: module.GameEditModal,
+  })),
+);
+const GameRankModal = lazy(() =>
+  import("../components/admin/GameRankModal").then((module) => ({
+    default: module.GameRankModal,
+  })),
+);
+const TournamentCreateModal = lazy(() =>
+  import("../components/admin/TournamentCreateModal").then((module) => ({
+    default: module.TournamentCreateModal,
+  })),
+);
+const TournamentEditModal = lazy(() =>
+  import("../components/admin/TournamentEditModal").then((module) => ({
+    default: module.TournamentEditModal,
+  })),
+);
+const TournamentStatusModal = lazy(() =>
+  import("../components/admin/TournamentStatusModal").then((module) => ({
+    default: module.TournamentStatusModal,
+  })),
+);
+const BookingManagement = lazy(() =>
+  import("../components/booking/BookingManagement").then((module) => ({
+    default: module.BookingManagement,
+  })),
+);
+const UserManagement = lazy(() =>
+  import("../components/admin/UserManagement").then((module) => ({
+    default: module.UserManagement,
+  })),
+);
+const TeamManagement = lazy(() =>
+  import("../components/admin/TeamManagement").then((module) => ({
+    default: module.TeamManagement,
+  })),
+);
+const KioskManager = lazy(() =>
+  import("../components/admin/KioskManager").then((module) => ({
+    default: module.KioskManager,
+  })),
+);
+const AnnouncementManager = lazy(() =>
+  import("../components/admin/AnnouncementManager").then((module) => ({
+    default: module.AnnouncementManager,
+  })),
+);
+const BugReportsAdmin = lazy(() =>
+  import("../components/admin/BugReportsAdmin").then((module) => ({
+    default: module.BugReportsAdmin,
+  })),
+);
+const AdminIncidents = lazy(() =>
+  import("../components/admin/AdminIncidents").then((module) => ({
+    default: module.AdminIncidents,
+  })),
+);
 import "./Admin.css";
 import { authService } from "../lib/auth-service";
 import type { Game, Tournament } from "../types";
@@ -80,6 +134,7 @@ export function AdminPage() {
     | "kiosk"
     | "announcements"
     | "bugreports"
+    | "incidents"
   >("overview");
   const [stats, setStats] = useState({
     activeTournaments: 0,
@@ -110,7 +165,7 @@ export function AdminPage() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => { },
+    onConfirm: () => {},
     variant: "primary",
   });
 
@@ -133,7 +188,8 @@ export function AdminPage() {
         try {
           const token = authService.keycloak?.token;
           const response = await fetch(
-            `${import.meta.env.VITE_API_URL || "http://localhost:3000/api"
+            `${
+              import.meta.env.VITE_API_URL || "http://localhost:3000/api"
             }/stats`,
             {
               headers: { Authorization: `Bearer ${token}` },
@@ -265,11 +321,12 @@ export function AdminPage() {
     { id: "games", label: "Játékok", icon: Gamepad2 },
     { id: "announcements", label: "Bejelentések", icon: MessageSquare },
     { id: "bugreports", label: "Hibajelentések", icon: Bug },
+    { id: "incidents", label: "Incidensek", icon: AlertTriangle },
     ...(canManageComputers
       ? [
-        { id: "bookings", label: "Gépfoglalás", icon: Calendar },
-        { id: "kiosk", label: "Gépterem", icon: Monitor },
-      ]
+          { id: "bookings", label: "Gépfoglalás", icon: Calendar },
+          { id: "kiosk", label: "Gépterem", icon: Monitor },
+        ]
       : []),
   ];
 
@@ -360,10 +417,11 @@ export function AdminPage() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap
-                                ${isActive
-                  ? "bg-primary text-white shadow-[0_0_20px_rgba(139,92,246,0.3)]"
-                  : "bg-[#0f1016] border border-white/5 text-muted-foreground hover:text-white hover:bg-white/5"
-                }`}
+                                ${
+                                  isActive
+                                    ? "bg-primary text-white shadow-[0_0_20px_rgba(139,92,246,0.3)]"
+                                    : "bg-[#0f1016] border border-white/5 text-muted-foreground hover:text-white hover:bg-white/5"
+                                }`}
             >
               <Icon size={18} />
               {tab.label}
@@ -374,11 +432,13 @@ export function AdminPage() {
 
       {/* Main Content Area */}
       <div className="bg-[#0f1016] border border-white/5 rounded-2xl p-6 min-h-[500px]">
-        <Suspense fallback={
-          <div className="flex items-center justify-center h-[400px]">
-            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-          </div>
-        }>
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center h-[400px]">
+              <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+            </div>
+          }
+        >
           {activeTab === "overview" && (
             <div className="animate-fade-in space-y-6">
               <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
@@ -614,7 +674,8 @@ export function AdminPage() {
                           {game.name}
                         </h3>
                         <p className="text-sm text-gray-400 mb-4 line-clamp-2 min-h-[2.5em]">
-                          {game.description || "Nincs leírás megadva a játékhoz."}
+                          {game.description ||
+                            "Nincs leírás megadva a játékhoz."}
                         </p>
 
                         <div className="flex items-center gap-4 text-xs text-gray-500 mb-6 mt-auto">
@@ -701,6 +762,12 @@ export function AdminPage() {
             </div>
           )}
 
+          {activeTab === "incidents" && (
+            <div className="animate-fade-in">
+              <AdminIncidents />
+            </div>
+          )}
+
           {activeTab === "tournaments" && (
             <div className="animate-fade-in">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
@@ -746,7 +813,9 @@ export function AdminPage() {
                         <th className="p-4 font-semibold">Játék</th>
                         <th className="p-4 font-semibold">Formátum</th>
                         <th className="p-4 font-semibold">Státusz</th>
-                        <th className="p-4 font-semibold text-center">Létszám</th>
+                        <th className="p-4 font-semibold text-center">
+                          Létszám
+                        </th>
                         <th className="p-4 font-semibold">Kezdés</th>
                         <th className="p-4 font-semibold text-right">
                           Műveletek
@@ -795,7 +864,8 @@ export function AdminPage() {
                                 "Dupla ágrajz"}
                               {tournament.format === "ROUND_ROBIN" &&
                                 "Körmérkőzés"}
-                              {tournament.format === "SWISS" && "Svájci rendszer"}
+                              {tournament.format === "SWISS" &&
+                                "Svájci rendszer"}
                             </td>
                             <td className="p-4">
                               {getStatusBadge(tournament.status)}
@@ -805,15 +875,14 @@ export function AdminPage() {
                               {tournament.maxTeams}
                             </td>
                             <td className="p-4 text-sm text-gray-400 font-mono">
-                              {new Date(tournament.startDate).toLocaleDateString(
-                                "hu-HU",
-                                {
-                                  month: "short",
-                                  day: "numeric",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                },
-                              )}
+                              {new Date(
+                                tournament.startDate,
+                              ).toLocaleDateString("hu-HU", {
+                                month: "short",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
                             </td>
                             <td className="p-4 text-right flex gap-2 justify-end">
                               <button
@@ -856,10 +925,11 @@ export function AdminPage() {
                       <button
                         key={page}
                         onClick={() => setTournamentPage(page)}
-                        className={`px-3 py-1 rounded-lg text-sm transition-colors ${tournamentPagination.page === page
-                          ? "bg-primary text-white"
-                          : "bg-white/5 text-gray-400 hover:bg-white/10"
-                          }`}
+                        className={`px-3 py-1 rounded-lg text-sm transition-colors ${
+                          tournamentPagination.page === page
+                            ? "bg-primary text-white"
+                            : "bg-white/5 text-gray-400 hover:bg-white/10"
+                        }`}
                       >
                         {page}
                       </button>
@@ -893,7 +963,9 @@ export function AdminPage() {
         )}
 
         {showTournamentModal && (
-          <TournamentCreateModal onClose={() => setShowTournamentModal(false)} />
+          <TournamentCreateModal
+            onClose={() => setShowTournamentModal(false)}
+          />
         )}
 
         {editingTournament && (

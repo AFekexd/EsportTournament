@@ -167,3 +167,13 @@ export type BugReport = Prisma.BugReportModel
  * 
  */
 export type BugReportNotificationSetting = Prisma.BugReportNotificationSettingModel
+/**
+ * Model Incident
+ * 
+ */
+export type Incident = Prisma.IncidentModel
+/**
+ * Model SystemSetting
+ * 
+ */
+export type SystemSetting = Prisma.SystemSettingModel
