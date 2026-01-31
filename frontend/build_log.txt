@@ -1,0 +1,74 @@
+
+> frontend@0.0.0 build
+> tsc -b && vite build
+
+[36mrolldown-vite v7.2.5 [32mbuilding client environment for production...[36m[39m
+[2K
+transforming...Ôťô 3612 modules transformed.
+rendering chunks...
+[plugin builtin:reporter] 
+(!) D:/Codes/EsportTournament/frontend/src/components/admin/TournamentCreateModal.tsx is dynamically imported by D:/Codes/EsportTournament/frontend/src/pages/Admin.tsx but also statically imported by D:/Codes/EsportTournament/frontend/src/components/admin/index.ts, dynamic import will not move module into another chunk.
+
+[plugin builtin:reporter] 
+(!) D:/Codes/EsportTournament/frontend/src/components/admin/TournamentStatusModal.tsx is dynamically imported by D:/Codes/EsportTournament/frontend/src/pages/Admin.tsx but also statically imported by D:/Codes/EsportTournament/frontend/src/components/admin/index.ts, dynamic import will not move module into another chunk.
+
+[plugin builtin:reporter] 
+(!) D:/Codes/EsportTournament/frontend/src/components/admin/TournamentEditModal.tsx is dynamically imported by D:/Codes/EsportTournament/frontend/src/pages/Admin.tsx but also statically imported by D:/Codes/EsportTournament/frontend/src/components/admin/index.ts, dynamic import will not move module into another chunk.
+
+[plugin builtin:reporter] 
+(!) D:/Codes/EsportTournament/frontend/src/components/admin/GameRankModal.tsx is dynamically imported by D:/Codes/EsportTournament/frontend/src/pages/Admin.tsx but also statically imported by D:/Codes/EsportTournament/frontend/src/components/admin/index.ts, dynamic import will not move module into another chunk.
+
+[plugin builtin:reporter] 
+(!) D:/Codes/EsportTournament/frontend/src/components/admin/GameCreateModal.tsx is dynamically imported by D:/Codes/EsportTournament/frontend/src/pages/Admin.tsx but also statically imported by D:/Codes/EsportTournament/frontend/src/components/admin/index.ts, dynamic import will not move module into another chunk.
+
+computing gzip size...
+dist/index.html                                  2.22 kB Ôöé gzip:   0.70 kB
+dist/assets/vendor-BxFpbbF7.css                 24.34 kB Ôöé gzip:   3.70 kB
+dist/assets/index-DGYeWzr9.css                 230.22 kB Ôöé gzip:  31.67 kB
+dist/assets/GameRankModal-DgBfaSoj.js            0.09 kB Ôöé gzip:   0.10 kB
+dist/assets/GameCreateModal-BG-CFAV_.js          0.09 kB Ôöé gzip:   0.10 kB
+dist/assets/TournamentEditModal-hdSdRGju.js      0.10 kB Ôöé gzip:   0.11 kB
+dist/assets/TournamentCreateModal-nf-mSF8b.js    0.10 kB Ôöé gzip:   0.11 kB
+dist/assets/TournamentStatusModal-Dscv01bx.js    0.10 kB Ôöé gzip:   0.11 kB
+dist/assets/ui-jvzndUJp.js                       0.20 kB Ôöé gzip:   0.16 kB
+dist/assets/rolldown-runtime-DGruFWvd.js         0.63 kB Ôöé gzip:   0.38 kB
+dist/assets/GameEditModal-CsZ__xLu.js            4.96 kB Ôöé gzip:   1.84 kB
+dist/assets/AnnouncementManager-Dc2_yniB.js     10.29 kB Ôöé gzip:   2.89 kB
+dist/assets/AdminIncidents-D6QFalYc.js          10.37 kB Ôöé gzip:   2.97 kB
+dist/assets/TeamManagement-NKNUkP9V.js          12.10 kB Ôöé gzip:   3.51 kB
+dist/assets/BookingManagement-BCozGpMq.js       13.39 kB Ôöé gzip:   3.75 kB
+dist/assets/BugReportsAdmin-DgCZ8q4z.js         17.31 kB Ôöé gzip:   4.57 kB
+dist/assets/UserManagement-C2nja-Nw.js          24.19 kB Ôöé gzip:   6.23 kB
+dist/assets/KioskManager-DDZxxpXV.js            24.63 kB Ôöé gzip:   6.46 kB
+dist/assets/utils-Bauk53by.js                   24.98 kB Ôöé gzip:   7.12 kB
+dist/assets/vendor-DrKcSuY5.js                 639.68 kB Ôöé gzip: 197.85 kB
+dist/assets/index-B2znCl49.js                  711.90 kB Ôöé gzip: 161.33 kB
+[plugin builtin:reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+ÔťŚ Build failed in 523ms
+error during build:
+Build failed with 1 error:
+
+Error: [vite]: Rolldown failed to resolve import "react-pdf" from "D:/Codes/EsportTournament/frontend/src/components/common/TermsModal.tsx".
+This is most likely unintended because it can break your application at runtime.
+If you do want to externalize this module explicitly add it to
+`build.rollupOptions.external`
+    at viteLog (file:///D:/Codes/EsportTournament/frontend/node_modules/vite/dist/node/chunks/node.js:33561:57)
+    at file:///D:/Codes/EsportTournament/frontend/node_modules/vite/dist/node/chunks/node.js:33597:73
+    at onwarn (file:///D:/Codes/EsportTournament/frontend/node_modules/@vitejs/plugin-react/dist/index.js:76:7)
+    at file:///D:/Codes/EsportTournament/frontend/node_modules/vite/dist/node/chunks/node.js:33597:28
+    at onRollupLog (file:///D:/Codes/EsportTournament/frontend/node_modules/vite/dist/node/chunks/node.js:33592:63)
+    at onLog (file:///D:/Codes/EsportTournament/frontend/node_modules/vite/dist/node/chunks/node.js:33360:4)
+    at file:///D:/Codes/EsportTournament/frontend/node_modules/rolldown/dist/shared/src-CYkh2Ybc.mjs:294:26
+    at logger (file:///D:/Codes/EsportTournament/frontend/node_modules/rolldown/dist/shared/src-CYkh2Ybc.mjs:285:3)
+    at onLog (file:///D:/Codes/EsportTournament/frontend/node_modules/rolldown/dist/shared/src-CYkh2Ybc.mjs:3964:32)
+    at aggregateBindingErrorsIntoJsError (file:///D:/Codes/EsportTournament/frontend/node_modules/rolldown/dist/shared/src-CYkh2Ybc.mjs:2659:18)
+    at unwrapBindingResult (file:///D:/Codes/EsportTournament/frontend/node_modules/rolldown/dist/shared/src-CYkh2Ybc.mjs:2634:128)
+    at #build (file:///D:/Codes/EsportTournament/frontend/node_modules/rolldown/dist/shared/src-CYkh2Ybc.mjs:4433:34)
+    at async buildEnvironment (file:///D:/Codes/EsportTournament/frontend/node_modules/vite/dist/node/chunks/node.js:33468:64)
+    at async Object.build (file:///D:/Codes/EsportTournament/frontend/node_modules/vite/dist/node/chunks/node.js:33871:19)
+    at async Object.buildApp (file:///D:/Codes/EsportTournament/frontend/node_modules/vite/dist/node/chunks/node.js:33868:153)
+    at async CAC.<anonymous> (file:///D:/Codes/EsportTournament/frontend/node_modules/vite/dist/node/cli.js:629:3)

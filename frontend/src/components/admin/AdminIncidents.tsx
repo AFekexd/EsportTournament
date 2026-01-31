@@ -2,17 +2,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { apiFetch } from "../../lib/api-client";
 import { API_URL } from "../../config";
-import {
-  Loader2,
-  Settings,
-  User,
-  Monitor,
-  CheckCircle,
-  XCircle,
-  AlertTriangle,
-  Filter,
-  Save,
-} from "lucide-react";
+import { Loader2, Settings, User, Monitor, XCircle, Save } from "lucide-react";
 
 // Types
 interface Incident {
@@ -55,7 +45,7 @@ export const AdminIncidents = () => {
 
   // Settings
   const [handler, setHandler] = useState<UserSummary | null>(null);
-  const [admins, setAdmins] = useState<UserSummary[]>([]);
+
   // Using simple approach: if I am the handler, show "Switch to Broadcast", else "Switch to Me"
 
   const fetchIncidents = async () => {
