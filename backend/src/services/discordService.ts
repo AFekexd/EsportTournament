@@ -294,6 +294,25 @@ class DiscordService {
             if (welcomeChannel) {
                 await welcomeChannel.send(`Üdvözöllek ${member.toString()}! Kérlek igazold magad az OM azonosítóddal a következő paranccsal: \`/om <OM_AZONOSÍTÓ>\`, vagy használd a hitelesítő csatornán lévő gombot!`);
             }
+
+            // Auto-assign Guest Roles
+            if (!member.user.bot) { // Don't assign to bots automatically unless intended
+                const allRoles = await member.guild.roles.fetch();
+                
+                for (const roleName of GUEST_ROLES) {
+                    const role = allRoles.find(r => r.name.toLowerCase() === roleName.toLowerCase());
+                    if (role) {
+                        try {
+                            await member.roles.add(role);
+                            console.log(`✅ Assigned role ${roleName} to new member ${member.user.tag}`);
+                        } catch (err) {
+                            console.error(`Failed to assign role ${roleName} to ${member.user.tag}:`, err);
+                        }
+                    } else {
+                        console.warn(`Role ${roleName} not found for auto-assignment.`);
+                    }
+                }
+            }
         });
     }
 

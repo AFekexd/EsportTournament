@@ -38,6 +38,9 @@ class EmailService {
         // Only enable if all email config is present
         if (SMTP_HOST && SMTP_PORT && SMTP_USER && SMTP_PASS) {
             this.transporter = nodemailer.createTransport({
+                pool: true, // Enable connection pooling
+                maxConnections: 5, // Limit concurrent connections
+                maxMessages: 100, // Limit messages per connection
                 host: SMTP_HOST,
                 port: parseInt(SMTP_PORT),
                 secure: parseInt(SMTP_PORT) === 465,
@@ -47,7 +50,7 @@ class EmailService {
                 },
             });
             this.enabled = true;
-            console.log('✅ Email service initialized');
+            console.log('✅ Email service initialized with pooling');
         } else {
             console.log('⚠️  Email service disabled (missing configuration)');
         }
@@ -141,6 +144,49 @@ class EmailService {
         return false;
     }
 
+    /**
+     * Send a batch of emails using connection pooling for better performance
+     */
+    async sendBatchEmails(
+        items: Array<{ email: string; context: any }>,
+        emailBuilder: (email: string, context: any) => Promise<EmailOptions | null>
+    ): Promise<{ sent: number; failed: number }> {
+        if (!this.enabled || !this.transporter) {
+            console.log(`⚠️ Email service disabled. Skipping batch of ${items.length} emails.`);
+            return { sent: 0, failed: items.length };
+        }
+
+        console.log(`Processing batch of ${items.length} emails...`);
+        let sent = 0;
+        let failed = 0;
+
+        // Process in chunks to prevent memory issues with very large batches
+        const BATCH_SIZE = 50;
+        for (let i = 0; i < items.length; i += BATCH_SIZE) {
+            const chunk = items.slice(i, i + BATCH_SIZE);
+            
+            await Promise.all(chunk.map(async (item) => {
+                try {
+                    const options = await emailBuilder(item.email, item.context);
+                    if (!options) return; // Skip if builder returns null (e.g. user prefs)
+
+                    // sendEmail handles logging and retries
+                    const success = await this.sendEmail(options);
+                    if (success) sent++;
+                    else failed++;
+                } catch (err) {
+                    console.error(`Failed to process email for ${item.email}:`, err);
+                    failed++;
+                }
+            }));
+            
+            // Small delay between chunks to let event loop breathe
+            if (i + BATCH_SIZE < items.length) await this.delay(100);
+        }
+
+        return { sent, failed };
+    }
+
     private async logEmail(
         options: EmailOptions,
         status: EmailStatus,
@@ -169,7 +215,7 @@ class EmailService {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    private generateUnsubscribeLink(userId: string): string {
+    public generateUnsubscribeLink(userId: string): string {
         try {
             if (!userId) return '';
             
@@ -754,6 +800,7 @@ class EmailService {
     // ===================================
 
     /**
+     * @deprecated Use sendBatchEmails instead. This method does not use connection pooling efficiently.
      * Send emails to multiple recipients with rate limiting
      */
     async sendBulkEmails(
