@@ -43,7 +43,7 @@ export const AdminIncidents = () => {
   const [manageStatus, setManageStatus] = useState("");
   const [updating, setUpdating] = useState(false);
 
-  // Settings
+  const [admins, setAdmins] = useState<UserSummary[]>([]);
   const [handler, setHandler] = useState<UserSummary | null>(null);
 
   // Using simple approach: if I am the handler, show "Switch to Broadcast", else "Switch to Me"
@@ -76,9 +76,40 @@ export const AdminIncidents = () => {
     }
   };
 
+  const fetchAdmins = async () => {
+    try {
+      // Fetch both ADMIN and ORGANIZER
+      const [adminsRes, organizersRes] = await Promise.all([
+        apiFetch(`${API_URL}/users?role=ADMIN`),
+        apiFetch(`${API_URL}/users?role=ORGANIZER`),
+      ]);
+
+      let allAdmins: UserSummary[] = [];
+
+      if (adminsRes.ok) {
+        const data = await adminsRes.json();
+        if (data.success) allAdmins = [...allAdmins, ...data.data];
+      }
+
+      if (organizersRes.ok) {
+        const data = await organizersRes.json();
+        if (data.success) allAdmins = [...allAdmins, ...data.data];
+      }
+
+      // Remove duplicates just in case
+      const uniqueAdmins = Array.from(
+        new Map(allAdmins.map((item) => [item.id, item])).values(),
+      );
+      setAdmins(uniqueAdmins);
+    } catch (error) {
+      console.error("Failed to fetch admins", error);
+    }
+  };
+
   useEffect(() => {
     fetchIncidents();
     fetchSettings();
+    fetchAdmins();
   }, []);
 
   const handleUpdate = async () => {
@@ -130,10 +161,6 @@ export const AdminIncidents = () => {
       toast.error("Nem sikerült menteni a beállítást");
     }
   };
-
-  // Helper to get current user ID would be needed to "Set Me".
-  // Assuming admin knows their own ID or we just provide a "Reset" and "Input ID" or simplified toggle if we knew who the requester is.
-  // For now, I'll provide a text input for ID as fallback + Reset button.
 
   return (
     <div className="space-y-8 pb-20">
@@ -196,33 +223,39 @@ export const AdminIncidents = () => {
                 <button className="px-3 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 rounded-lg text-sm text-blue-400 transition-colors">
                   Váltás...
                 </button>
-                {/* Tooltip/Popover fallback because we lack Select component */}
+
                 <div className="absolute right-0 top-full mt-2 w-64 bg-[#1f212e] border border-white/10 rounded-xl shadow-xl p-3 hidden group-hover:block z-50">
-                  <p className="text-xs text-gray-500 mb-2">
-                    Add meg az új kezelő ID-ját:
-                  </p>
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      const form = e.target as HTMLFormElement;
-                      const input = form.elements.namedItem(
-                        "userId",
-                      ) as HTMLInputElement;
-                      if (input.value) handleSetHandler(input.value);
-                    }}
-                  >
-                    <input
-                      name="userId"
-                      placeholder="User ID"
-                      className="w-full bg-black/20 border border-white/10 rounded px-2 py-1 text-xs text-white mb-2"
-                    />
-                    <button
-                      type="submit"
-                      className="w-full bg-blue-500 hover:bg-blue-600 text-white text-xs py-1 rounded"
-                    >
-                      Mentés
-                    </button>
-                  </form>
+                  <p className="text-xs text-gray-500 mb-2">Válassz kezelőt:</p>
+                  <div className="max-h-48 overflow-y-auto space-y-1">
+                    {admins.map((admin) => (
+                      <button
+                        key={admin.id}
+                        onClick={() => handleSetHandler(admin.id)}
+                        className="w-full flex items-center gap-2 p-2 hover:bg-white/5 rounded-lg text-left transition-colors"
+                      >
+                        <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center overflow-hidden flex-shrink-0">
+                          {admin.avatarUrl ? (
+                            <img
+                              src={admin.avatarUrl}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <User size={12} className="text-gray-400" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs text-white font-medium truncate">
+                            {admin.displayName || admin.username}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                    {admins.length === 0 && (
+                      <div className="text-xs text-gray-500 text-center py-2">
+                        Nincs elérhető admin
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
