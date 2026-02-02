@@ -11,7 +11,7 @@ import type { Team } from "../../types";
 export function TeamManagement() {
   const dispatch = useAppDispatch();
   const { teams, pagination, isLoading } = useAppSelector(
-    (state) => state.teams
+    (state) => state.teams,
   );
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -122,7 +122,6 @@ export function TeamManagement() {
               <th className="p-3">Csapat</th>
               <th className="p-3">Kód</th>
               <th className="p-3 text-center">Tagok</th>
-              <th className="p-3 text-center">ELO</th>
               <th className="p-3">Létrehozva</th>
               <th className="p-3 text-right">Műveletek</th>
             </tr>
@@ -130,7 +129,7 @@ export function TeamManagement() {
           <tbody>
             {teams.length === 0 ? (
               <tr>
-                <td colSpan={6} className="text-center p-8 text-muted">
+                <td colSpan={5} className="text-center p-8 text-muted">
                   {searchTerm
                     ? "Nincs találat a keresési feltételeknek megfelelően"
                     : "Még nincs csapat létrehozva"}
@@ -175,9 +174,6 @@ export function TeamManagement() {
                   </td>
                   <td className="p-3 text-center text-sm">
                     {team.members?.length || 0}
-                  </td>
-                  <td className="p-3 text-center font-mono text-sm text-primary">
-                    {team.elo}
                   </td>
                   <td className="p-3 text-sm text-muted">
                     {new Date(team.createdAt).toLocaleDateString("hu-HU")}
@@ -230,7 +226,7 @@ export function TeamManagement() {
               >
                 {page}
               </button>
-            )
+            ),
           )}
         </div>
       )}
@@ -244,7 +240,7 @@ export function TeamManagement() {
               fetchTeams({
                 page: pagination?.page || 1,
                 search: debouncedSearch,
-              })
+              }),
             );
           }}
         />

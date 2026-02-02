@@ -51,24 +51,28 @@ function TeamCard({ team }: { team: Team }) {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-3 gap-2 mb-6 p-3 rounded-lg bg-white/5 border border-white/5">
+        <div className="grid grid-cols-2 gap-2 mb-6 p-3 rounded-lg bg-white/5 border border-white/5">
           <div className="flex flex-col items-center gap-1 text-center">
             <Users size={14} className="text-blue-400" />
             <div className="flex flex-col">
-              <span className="text-lg font-bold text-white leading-none">{team.members?.length || 0}</span>
-              <span className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">tag</span>
+              <span className="text-lg font-bold text-white leading-none">
+                {team.members?.length || 0}
+              </span>
+              <span className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">
+                tag
+              </span>
             </div>
           </div>
           <div className="flex flex-col items-center gap-1 text-center border-l border-white/5">
             <Trophy size={14} className="text-yellow-500" />
             <div className="flex flex-col">
-              <span className="text-lg font-bold text-white leading-none">{team._count?.tournamentEntries || 0}</span>
-              <span className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">verseny</span>
+              <span className="text-lg font-bold text-white leading-none">
+                {team._count?.tournamentEntries || 0}
+              </span>
+              <span className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">
+                verseny
+              </span>
             </div>
-          </div>
-          <div className="flex flex-col items-center gap-1 text-center border-l border-white/5">
-            <div className="text-primary font-black text-lg leading-none">{team.elo}</div>
-            <span className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">ELO</span>
           </div>
         </div>
 
@@ -84,7 +88,9 @@ function TeamCard({ team }: { team: Team }) {
                 <LazyImage
                   src={member.user?.avatarUrl || ""}
                   alt={member.user?.username || "?"}
-                  fallbackText={(member.user?.username || "?").charAt(0).toUpperCase()}
+                  fallbackText={(member.user?.username || "?")
+                    .charAt(0)
+                    .toUpperCase()}
                   className="w-full h-full rounded-full"
                 />
               </div>
@@ -189,10 +195,11 @@ export function TeamsPage() {
         {isAuthenticated && (
           <div className="flex flex-wrap justify-center gap-4">
             <button
-              className={`flex items-center gap-2 px-6 py-3 border rounded-xl font-semibold transition-all ${filterMyTeams
-                ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
-                : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border-white/10"
-                }`}
+              className={`flex items-center gap-2 px-6 py-3 border rounded-xl font-semibold transition-all ${
+                filterMyTeams
+                  ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
+                  : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border-white/10"
+              }`}
               onClick={() => setFilterMyTeams(!filterMyTeams)}
             >
               <Users size={18} />
@@ -282,10 +289,11 @@ export function TeamsPage() {
           {[...Array(pagination.pages)].map((_, i) => (
             <button
               key={i}
-              className={`px-4 py-2 rounded-lg font-medium transition-all ${pagination.page === i + 1
-                ? "bg-primary text-white shadow-lg shadow-primary/20"
-                : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border border-white/10"
-                }`}
+              className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                pagination.page === i + 1
+                  ? "bg-primary text-white shadow-lg shadow-primary/20"
+                  : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border border-white/10"
+              }`}
               onClick={() =>
                 dispatch(
                   fetchTeams({
