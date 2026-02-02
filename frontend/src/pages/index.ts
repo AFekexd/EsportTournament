@@ -25,3 +25,7 @@ export { NewsDetailPage } from './NewsDetailPage';
 export { DiscordCallbackPage } from './DiscordCallbackPage';
 export { BugReportPage } from "./BugReportPage";
 export { default as IncidentPage } from "./IncidentPage";
+export { TournamentRulesPage } from "./TournamentRulesPage";
+export { GlobalRulesPage } from "./GlobalRulesPage";
+
+

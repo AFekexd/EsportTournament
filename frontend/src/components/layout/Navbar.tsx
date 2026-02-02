@@ -50,6 +50,17 @@ const getRoleColor = (role: string) => {
   }
 };
 
+const formatNotificationMessage = (message: string) => {
+  if (message.includes("Státusz:")) {
+    return message
+      .replace("CLOSED", "Lezárva")
+      .replace("OPEN", "Nyitva")
+      .replace("IN_PROGRESS", "Folyamatban")
+      .replace("RESOLVED", "Megoldva");
+  }
+  return message;
+};
+
 export function Navbar() {
   const dispatch = useAppDispatch();
   const { user, isAuthenticated, isLoading, login, logout } = useAuth();
@@ -245,12 +256,20 @@ export function Navbar() {
                                   />
                                   <div className="flex-1 min-w-0">
                                     <p
-                                      className={`text-sm ${!notification.read
-                                        ? "text-white font-medium"
+                                      className={`text-sm font-semibold mb-0.5 ${!notification.read
+                                        ? "text-white"
                                         : "text-gray-400"
+                                        }`}
+                                    >
+                                      {notification.title}
+                                    </p>
+                                    <p
+                                      className={`text-sm ${!notification.read
+                                        ? "text-gray-300"
+                                        : "text-gray-500"
                                         } pr-6 break-words`}
                                     >
-                                      {notification.message}
+                                      {formatNotificationMessage(notification.message)}
                                     </p>
                                     <p className="text-xs text-gray-500 mt-1">
                                       {new Date(
@@ -352,7 +371,7 @@ export function Navbar() {
             </button>
           )}
         </div>
-      </div>
+      </div >
 
       <ConfirmationModal
         isOpen={confirmModal.isOpen}
@@ -367,6 +386,6 @@ export function Navbar() {
         isOpen={isDiscordModalOpen}
         onClose={() => setIsDiscordModalOpen(false)}
       />
-    </header>
+    </header >
   );
 }

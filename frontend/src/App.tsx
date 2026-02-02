@@ -33,7 +33,11 @@ import {
   DiscordCallbackPage,
   BugReportPage,
   IncidentPage,
+  TournamentRulesPage,
+  GlobalRulesPage,
 } from "./pages";
+
+
 import RequestsPage from "./pages/admin/RequestsPage";
 import { AdminLogs } from "./components/admin/AdminLogs";
 import ReleasesPage from "./pages/admin/ReleasesPage";
@@ -104,6 +108,8 @@ function AppContent() {
             <Route index element={<HomePage />} />
             <Route path="tournaments" element={<TournamentsPage />} />
             <Route path="tournaments/:id" element={<TournamentWrapper />} />
+            <Route path="tournaments/:id/rules" element={<TournamentRulesPage />} />
+
             <Route path="teams" element={<TeamsPage />} />
             <Route path="teams/create" element={<TeamCreatePage />} />
             <Route path="teams/:id" element={<TeamDetailPage />} />
@@ -132,6 +138,7 @@ function AppContent() {
             <Route path="news/:slug" element={<NewsDetailPage />} />
             <Route path="bug-report" element={<BugReportPage />} />
             <Route path="incidents" element={<IncidentPage />} />
+            <Route path="rules" element={<GlobalRulesPage />} />
           </Route>
           <Route
             path="/embed/tournaments/:id"
