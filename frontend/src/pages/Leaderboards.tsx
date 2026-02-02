@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Trophy, Medal, TrendingUp, Users, Target, Crown } from "lucide-react";
+import { Trophy, Medal, Users, Target, Crown } from "lucide-react";
 import { API_URL } from "../config";
 
 interface LeaderboardPlayer {
@@ -84,7 +84,7 @@ export function LeaderboardsPage() {
           Ranglisták
         </h1>
         <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-          A legjobb játékosok és csapatok ELO alapján rangsorolva
+          A legjobb játékosok és csapatok győzelmek alapján rangsorolva
         </p>
       </div>
 
@@ -92,22 +92,20 @@ export function LeaderboardsPage() {
       <div className="mb-8 border-b border-white/10">
         <div className="flex gap-8 justify-center">
           <button
-            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative ${
-              activeTab === "players"
-                ? "border-primary text-primary"
-                : "border-transparent text-gray-400 hover:text-gray-300"
-            }`}
+            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative ${activeTab === "players"
+              ? "border-primary text-primary"
+              : "border-transparent text-gray-400 hover:text-gray-300"
+              }`}
             onClick={() => setActiveTab("players")}
           >
             <Users size={18} />
             Játékosok
           </button>
           <button
-            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative ${
-              activeTab === "teams"
-                ? "border-primary text-primary"
-                : "border-transparent text-gray-400 hover:text-gray-300"
-            }`}
+            className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative ${activeTab === "teams"
+              ? "border-primary text-primary"
+              : "border-transparent text-gray-400 hover:text-gray-300"
+              }`}
             onClick={() => setActiveTab("teams")}
           >
             <Trophy size={18} />
@@ -160,9 +158,6 @@ export function LeaderboardsPage() {
                       {player.displayName || player.username}
                     </h3>
                   </Link>
-                  <div className="text-3xl font-bold text-primary mb-4">
-                    {player.elo} ELO
-                  </div>
                   <div className="text-sm text-gray-400">
                     {player.matchesWon}/{player.matchesPlayed} győzelem (
                     {(player.winRate || 0).toFixed(1)}%)
@@ -194,12 +189,6 @@ export function LeaderboardsPage() {
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">
                     <div className="flex items-center gap-2">
-                      <TrendingUp size={16} />
-                      ELO
-                    </div>
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">
-                    <div className="flex items-center gap-2">
                       <Target size={16} />
                       Meccsek
                     </div>
@@ -215,108 +204,102 @@ export function LeaderboardsPage() {
               <tbody>
                 {activeTab === "players"
                   ? players.map((player) => (
-                      <tr
-                        key={player.id}
-                        className="border-b border-white/5 hover:bg-white/5 transition-colors"
-                      >
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            <span className="text-lg font-bold text-white">
-                              {player.rank}
-                            </span>
-                            {getRankBadge(player.rank)}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <Link
-                              to={`/profile/${player.id}`}
-                              className="flex items-center gap-2"
-                            >
-                              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-white text-sm font-bold shrink-0">
-                                {player.avatarUrl ? (
-                                  <img
-                                    src={player.avatarUrl}
-                                    alt={player.displayName || player.username}
-                                    className="w-full h-full rounded-full object-cover shrink-0"
-                                  />
-                                ) : (
-                                  <span className="">
-                                    {(player.displayName || player.username)
-                                      .charAt(0)
-                                      .toUpperCase()}
-                                  </span>
-                                )}
-                              </div>
-                              <span className="font-medium text-primary hover:!text-white transition-colors">
-                                {player.displayName || player.username}
-                              </span>
-                            </Link>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-primary font-bold">
-                          {player.elo}
-                        </td>
-                        <td className="px-6 py-4 text-gray-300">
-                          {player.matchesPlayed}
-                        </td>
-                        <td className="px-6 py-4 text-gray-300">
-                          {player.matchesWon}
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className="px-3 py-1 bg-green-500/10 text-green-400 rounded-full text-sm font-medium">
-                            {(player.winRate || 0).toFixed(1)}%
+                    <tr
+                      key={player.id}
+                      className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg font-bold text-white">
+                            {player.rank}
                           </span>
-                        </td>
-                      </tr>
-                    ))
-                  : teams.map((team) => (
-                      <tr
-                        key={team.id}
-                        className="border-b border-white/5 hover:bg-white/5 transition-colors"
-                      >
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            <span className="text-lg font-bold text-white">
-                              {team.rank}
-                            </span>
-                            {getRankBadge(team.rank)}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-white text-sm font-bold shrink-0">
-                              {team.logoUrl ? (
+                          {getRankBadge(player.rank)}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <Link
+                            to={`/profile/${player.id}`}
+                            className="flex items-center gap-2"
+                          >
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-white text-sm font-bold shrink-0">
+                              {player.avatarUrl ? (
                                 <img
-                                  src={team.logoUrl}
-                                  alt={team.name}
+                                  src={player.avatarUrl}
+                                  alt={player.displayName || player.username}
                                   className="w-full h-full rounded-full object-cover shrink-0"
                                 />
                               ) : (
-                                <span>{team.name.charAt(0).toUpperCase()}</span>
+                                <span className="">
+                                  {(player.displayName || player.username)
+                                    .charAt(0)
+                                    .toUpperCase()}
+                                </span>
                               )}
                             </div>
-                            <span className="font-medium text-white">
-                              {team.name}
+                            <span className="font-medium text-primary hover:!text-white transition-colors">
+                              {player.displayName || player.username}
                             </span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-primary font-bold">
-                          {team.elo}
-                        </td>
-                        <td className="px-6 py-4 text-gray-300">
-                          {team.matchesPlayed}
-                        </td>
-                        <td className="px-6 py-4 text-gray-300">
-                          {team.matchesWon}
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className="px-3 py-1 bg-green-500/10 text-green-400 rounded-full text-sm font-medium">
-                            {(team.winRate || 0).toFixed(1)}%
+                          </Link>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-gray-300">
+                        {player.matchesPlayed}
+                      </td>
+                      <td className="px-6 py-4 text-gray-300">
+                        {player.matchesWon}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="px-3 py-1 bg-green-500/10 text-green-400 rounded-full text-sm font-medium">
+                          {(player.winRate || 0).toFixed(1)}%
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                  : teams.map((team) => (
+                    <tr
+                      key={team.id}
+                      className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg font-bold text-white">
+                            {team.rank}
                           </span>
-                        </td>
-                      </tr>
-                    ))}
+                          {getRankBadge(team.rank)}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-white text-sm font-bold shrink-0">
+                            {team.logoUrl ? (
+                              <img
+                                src={team.logoUrl}
+                                alt={team.name}
+                                className="w-full h-full rounded-full object-cover shrink-0"
+                              />
+                            ) : (
+                              <span>{team.name.charAt(0).toUpperCase()}</span>
+                            )}
+                          </div>
+                          <span className="font-medium text-white">
+                            {team.name}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-gray-300">
+                        {team.matchesPlayed}
+                      </td>
+                      <td className="px-6 py-4 text-gray-300">
+                        {team.matchesWon}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="px-3 py-1 bg-green-500/10 text-green-400 rounded-full text-sm font-medium">
+                          {(team.winRate || 0).toFixed(1)}%
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>

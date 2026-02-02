@@ -622,19 +622,6 @@ export function ProfilePage() {
                     </div>
                   </div>
 
-                  <div className="bg-[#0f1015] rounded-xl p-3 sm:p-4 border border-white/5 text-center hover:border-blue-500/50 transition-all group relative overflow-hidden">
-                    <div className="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors"></div>
-                    <div className="relative z-10">
-                      <div className="text-gray-500 text-[10px] uppercase tracking-widest font-bold mb-1 group-hover:text-blue-400 transition-colors">
-                        ELO
-                      </div>
-                      <div className="text-xl sm:text-2xl font-black text-white">
-                        {isOwnProfile
-                          ? user?.elo || 1000
-                          : (currentProfile as any)?.elo || 1000}
-                      </div>
-                    </div>
-                  </div>
 
                   {isOwnProfile && (
                     <div className="bg-[#0f1015] rounded-xl p-3 sm:p-4 border border-white/5 text-center hover:border-green-500/50 transition-all group relative overflow-hidden">

@@ -267,13 +267,6 @@ export function TeamDetailPage() {
 
                   <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 md:gap-4 text-gray-400">
                     <span className="flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded-full text-xs sm:text-sm">
-                      <Trophy size={14} className="text-yellow-500 shrink-0" />
-                      <span className="font-bold text-white">
-                        {currentTeam.elo}
-                      </span>{" "}
-                      ELO
-                    </span>
-                    <span className="flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded-full text-xs sm:text-sm">
                       <Users size={14} className="text-blue-400 shrink-0" />
                       <span>{currentTeam.members?.length || 0} tag</span>
                     </span>

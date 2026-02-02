@@ -14,6 +14,7 @@ interface ImageUploadProps {
   maxSizeMB?: number;
   className?: string;
   aspect?: "video" | "square";
+  skipCrop?: boolean;
 }
 
 export function ImageUpload({
@@ -24,6 +25,7 @@ export function ImageUpload({
   maxSizeMB = 15,
   className = "",
   aspect = "video",
+  skipCrop = false,
 }: ImageUploadProps) {
   const [mode, setMode] = useState<"upload" | "url">("upload");
   const [isDragging, setIsDragging] = useState(false);
@@ -60,6 +62,12 @@ export function ImageUpload({
     const reader = new FileReader();
     reader.onload = (e) => {
       const result = e.target?.result as string;
+
+      if (skipCrop) {
+        onChange(result);
+        return;
+      }
+
       // Instead of calling onChange, set it as imageToCrop
       setImageToCrop(result);
       setZoom(1);

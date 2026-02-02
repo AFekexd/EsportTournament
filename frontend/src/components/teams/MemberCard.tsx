@@ -99,11 +99,6 @@ export function MemberCard({
         </Link>
 
         <div className="flex items-center gap-3">
-          {member.user?.elo !== undefined && (
-            <div className="text-xs font-bold text-gray-300 bg-white/5 px-2 py-0.5 rounded border border-white/5 group-hover:border-primary/20 transition-colors">
-              {member.user.elo} ELO
-            </div>
-          )}
 
           <span
             className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded border ${member.role === "CAPTAIN"

@@ -57,7 +57,6 @@ leaderboardsRouter.get(
                             _count: 'desc',
                         },
                     },
-                    { elo: 'desc' },
                 ],
                 take: parseInt(limit as string),
                 skip,
@@ -140,7 +139,13 @@ leaderboardsRouter.get(
                         take: 5,
                     },
                 },
-                orderBy: { elo: 'desc' },
+                orderBy: [
+                    {
+                        wonMatches: {
+                            _count: 'desc',
+                        },
+                    },
+                ],
                 take: parseInt(limit as string),
                 skip,
             }),
@@ -219,7 +224,6 @@ leaderboardsRouter.get(
                         _count: 'desc',
                     },
                 },
-                { elo: 'desc' },
             ],
             take: 3,
         });

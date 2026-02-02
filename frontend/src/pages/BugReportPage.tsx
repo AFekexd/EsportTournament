@@ -287,6 +287,7 @@ export function BugReportPage() {
                                 maxSizeMB={5}
                                 className="w-full"
                                 aspect="video"
+                                skipCrop={true}
                             />
                         </div>
 
