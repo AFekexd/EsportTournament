@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import {
   Monitor,
   Calendar,
@@ -9,12 +9,6 @@ import {
   LayoutGrid,
   CalendarDays,
   List,
-  Info,
-  ArrowLeft,
-  ArrowRight,
-  Filter,
-  ChevronDown,
-  Trophy,
   Map,
 } from "lucide-react";
 import { ConfirmationModal } from "../components/common/ConfirmationModal";
@@ -30,13 +24,13 @@ import {
   setSelectedDate,
   setViewMode,
   type Computer,
-  type Booking,
 } from "../store/slices/bookingsSlice";
 import {
   MyBookings,
   WeeklyCalendar,
-  ComputerInfo,
-  WaitlistButton,
+  DayCalendarStrip,
+  TimeSlotList,
+  ComputerCardGrid,
 } from "../components/booking";
 import { RoomLayoutModal } from "../components/booking/RoomLayoutModal";
 
@@ -71,16 +65,7 @@ export function BookingPage() {
   const [showMapModal, setShowMapModal] = useState(false);
   const [bookingError, setBookingError] = useState<string | null>(null);
 
-  // Computer Info Toggle State
-  const [expandedComputerId, setExpandedComputerId] = useState<string | null>(
-    null,
-  );
-
-  // Filter State
-  const [filteredComputerId, setFilteredComputerId] = useState<string | null>(
-    null,
-  );
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  // Note: These states are now managed within the new components
 
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
@@ -115,65 +100,6 @@ export function BookingPage() {
     }
   }, [dispatch, activeTab, viewMode, selectedDate, selectedWeekStart]);
 
-  // Daily View Logic
-  const selectedDateObj = new Date(selectedDate);
-  const dayOfWeek = selectedDateObj.getDay();
-  const todaySchedule = useMemo(
-    () => schedules.find((s) => s.dayOfWeek === dayOfWeek && s.isActive),
-    [schedules, dayOfWeek],
-  );
-
-  const availableSlots = useMemo(() => {
-    if (!todaySchedule) return [];
-    const slots: number[] = [];
-    for (
-      let hour = todaySchedule.startHour;
-      hour < todaySchedule.endHour;
-      hour++
-    ) {
-      slots.push(hour);
-    }
-    return slots;
-  }, [todaySchedule]);
-
-  const isComputerBooked = (
-    computerId: string,
-    hour: number,
-  ): Booking | undefined => {
-    const startOfSlot = new Date(selectedDate);
-    startOfSlot.setHours(hour, 0, 0, 0);
-    const endOfSlot = new Date(selectedDate);
-    endOfSlot.setHours(hour + 1, 0, 0, 0);
-
-    return bookings.find((b) => {
-      if (b.computerId !== computerId) return false;
-      const bookingStart = new Date(b.startTime);
-      const bookingEnd = new Date(b.endTime);
-      return bookingStart < endOfSlot && bookingEnd > startOfSlot;
-    });
-  };
-
-  const handleComputerClick = (computer: Computer, hour: number) => {
-    const booking = isComputerBooked(computer.id, hour);
-
-    if (booking) {
-      if (booking.userId === user?.id) {
-        setConfirmModal({
-          isOpen: true,
-          title: "Foglalás törlése",
-          message: "Biztos törölni szeretnéd ezt a foglalást?",
-          variant: "danger",
-          confirmLabel: "Törlés",
-          onConfirm: () => {
-            dispatch(deleteBooking(booking.id));
-          },
-        });
-      }
-      return;
-    }
-
-    openCreateModal(computer, hour, 0);
-  };
 
   const openCreateModal = (
     computer: Computer,
@@ -254,36 +180,6 @@ export function BookingPage() {
     });
   };
 
-  const computersByRow = useMemo(() => {
-    // Filter computers if needed
-    const visibleComputers = filteredComputerId
-      ? computers.filter((c) => c.id === filteredComputerId)
-      : computers;
-
-    const rows: Computer[][] = [[], []];
-    visibleComputers.forEach((c) => {
-      // If filtered, just put in first row for simplicity, or keep original row logic
-      if (filteredComputerId) {
-        rows[0].push(c);
-      } else {
-        if (c.row === 0) rows[0].push(c);
-        else rows[1].push(c);
-      }
-    });
-    rows[0].sort((a, b) => a.position - b.position);
-    rows[1].sort((a, b) => a.position - b.position);
-    return rows;
-  }, [computers, filteredComputerId]);
-
-  const dayNames = [
-    "Vasárnap",
-    "Hétfő",
-    "Kedd",
-    "Szerda",
-    "Csütörtök",
-    "Péntek",
-    "Szombat",
-  ];
 
   const isBalanceInsufficient =
     user?.role !== "ADMIN" &&
@@ -400,58 +296,9 @@ export function BookingPage() {
             </div>
 
             {viewMode === "daily" && (
-              <div className="w-full md:w-auto flex items-center justify-between md:justify-start gap-2 md:gap-3 bg-[#1a1b26] p-1.5 md:px-4 md:py-2 rounded-xl border border-white/5">
-                <button
-                  onClick={() => {
-                    const date = new Date(selectedDate);
-                    date.setDate(date.getDate() - 1);
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    if (date >= today) {
-                      dispatch(
-                        setSelectedDate(date.toISOString().split("T")[0]),
-                      );
-                    }
-                  }}
-                  className="p-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                  disabled={
-                    new Date(selectedDate) <=
-                    new Date(new Date().setHours(0, 0, 0, 0))
-                  }
-                  title="Előző nap"
-                >
-                  <ArrowLeft size={18} />
-                </button>
-
-                <div className="flex items-center gap-2">
-                  <Calendar
-                    size={18}
-                    className="text-primary flex-shrink-0 hidden md:block"
-                  />
-                  <input
-                    type="date"
-                    value={selectedDate}
-                    onChange={(e) => dispatch(setSelectedDate(e.target.value))}
-                    min={new Date().toISOString().split("T")[0]}
-                    className="bg-transparent border-none text-white font-medium cursor-pointer focus:outline-none w-[110px] md:w-auto text-center md:text-left"
-                  />
-                </div>
-
-                <span className="text-gray-400 text-sm hidden md:inline min-w-[140px] text-center border-l border-white/10 pl-3">
-                  {formatDate(selectedDate)}
-                </span>
-
-                <button
-                  onClick={() => {
-                    const date = new Date(selectedDate);
-                    date.setDate(date.getDate() + 1);
-                    dispatch(setSelectedDate(date.toISOString().split("T")[0]));
-                  }}
-                  className="p-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white transition-colors"
-                  title="Következő nap"
-                >
-                  <ArrowRight size={18} />
-                </button>
+              <div className="text-xs text-gray-500 flex items-center gap-2">
+                <Calendar size={14} className="text-primary" />
+                <span>{formatDate(selectedDate)}</span>
               </div>
             )}
           </div>
@@ -465,294 +312,56 @@ export function BookingPage() {
               />
             </div>
           ) : (
-            /* Daily View Content */
-            <>
-              {!todaySchedule && (
-                <div className="flex flex-col items-center justify-center py-20 bg-[#1a1b26]/50 rounded-2xl border border-white/5">
-                  <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6">
-                    <AlertCircle size={40} className="text-gray-500" />
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-2">
-                    Nincs elérhető időpont
-                  </h3>
-                  <p className="text-gray-400 text-center px-4">
-                    {dayNames[dayOfWeek]} napon nincs nyitva a gaming szoba.
-                  </p>
+            /* Daily View Content - Step by Step Flow */
+            <div className="space-y-6">
+              {/* Step 1: Day Calendar Strip */}
+              <DayCalendarStrip
+                selectedDate={selectedDate}
+                onSelectDate={(date) => {
+                  dispatch(setSelectedDate(date));
+                  setSelectedStartHour(null);
+                }}
+                bookings={bookings}
+                schedules={schedules}
+                computersCount={computers.length}
+              />
+
+              {/* Step 2: Time Slot Selection */}
+              <TimeSlotList
+                selectedDate={selectedDate}
+                selectedHour={selectedStartHour}
+                onSelectHour={(hour) => setSelectedStartHour(hour)}
+                bookings={bookings}
+                schedules={schedules}
+                computers={computers}
+              />
+
+              {/* Step 3: Computer Selection */}
+              {selectedStartHour !== null && (
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
+                  <ComputerCardGrid
+                    selectedDate={selectedDate}
+                    selectedHour={selectedStartHour}
+                    computers={computers}
+                    bookings={bookings}
+                    userId={user?.id}
+                    onBook={(computer, hour) => openCreateModal(computer, hour, 0)}
+                    onCancelBooking={(booking) => {
+                      setConfirmModal({
+                        isOpen: true,
+                        title: "Foglalás törlése",
+                        message: "Biztos törölni szeretnéd ezt a foglalást?",
+                        variant: "danger",
+                        confirmLabel: "Törlés",
+                        onConfirm: () => {
+                          dispatch(deleteBooking(booking.id));
+                        },
+                      });
+                    }}
+                  />
                 </div>
               )}
-
-              {todaySchedule && (
-                <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden shadow-lg">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center px-4 md:px-6 py-4 bg-[#0f1015] border-b border-white/5 gap-4">
-                    <h2 className="flex items-center gap-3 text-lg md:text-xl font-semibold text-white">
-                      <Clock size={20} className="text-primary" />
-                      Idősávok ({todaySchedule.startHour}:00 -{" "}
-                      {todaySchedule.endHour}:00)
-                    </h2>
-
-                    {/* Filter Dropdown */}
-                    <div className="relative z-50">
-                      <button
-                        onClick={() => setIsFilterOpen(!isFilterOpen)}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-[#1a1b26] border border-white/10 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:border-white/20 transition-all min-w-[180px] justify-between"
-                      >
-                        <div className="flex items-center gap-2">
-                          <Filter size={14} className="text-primary" />
-                          <span>
-                            {filteredComputerId
-                              ? computers.find(
-                                (c) => c.id === filteredComputerId,
-                              )?.name || "Kiválasztott gép"
-                              : `Összes gép (${computers.length})`}
-                          </span>
-                        </div>
-                        <ChevronDown
-                          size={14}
-                          className={`transition-transform duration-200 ${isFilterOpen ? "rotate-180" : ""
-                            }`}
-                        />
-                      </button>
-
-                      {isFilterOpen && (
-                        <>
-                          <div
-                            className="fixed inset-0 z-40"
-                            onClick={() => setIsFilterOpen(false)}
-                          />
-                          <div className="absolute top-full right-0 mt-2 w-full min-w-[200px] bg-[#1a1b26] border border-white/10 rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
-                            <div className="max-h-[300px] overflow-y-auto p-1 custom-scrollbar">
-                              <button
-                                onClick={() => {
-                                  setFilteredComputerId(null);
-                                  setIsFilterOpen(false);
-                                }}
-                                className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${!filteredComputerId
-                                  ? "bg-primary/20 text-white"
-                                  : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
-                                  }`}
-                              >
-                                <LayoutGrid size={14} />
-                                <span>Összes gép ({computers.length})</span>
-                                {!filteredComputerId && (
-                                  <Check
-                                    size={14}
-                                    className="ml-auto text-primary"
-                                  />
-                                )}
-                              </button>
-
-                              <div className="h-px bg-white/5 my-1" />
-
-                              {computers
-                                .slice()
-                                .sort((a, b) =>
-                                  a.name.localeCompare(b.name, undefined, {
-                                    numeric: true,
-                                  }),
-                                )
-                                .map((computer) => (
-                                  <button
-                                    key={computer.id}
-                                    onClick={() => {
-                                      setFilteredComputerId(computer.id);
-                                      setIsFilterOpen(false);
-                                    }}
-                                    className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${filteredComputerId === computer.id
-                                      ? "bg-primary/20 text-white"
-                                      : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
-                                      }`}
-                                  >
-                                    <Monitor size={14} />
-                                    <span>{computer.name}</span>
-                                    {filteredComputerId === computer.id && (
-                                      <Check
-                                        size={14}
-                                        className="ml-auto text-primary"
-                                      />
-                                    )}
-                                  </button>
-                                ))}
-                            </div>
-                          </div>
-                        </>
-                      )}
-                    </div>
-
-                    <div className="flex flex-wrap gap-4">
-                      <span className="flex items-center gap-2 text-xs md:text-sm">
-                        <span className="w-3 h-3 rounded-full bg-green-500/20 border-2 border-green-500"></span>
-                        <span className="text-gray-400">Szabad</span>
-                      </span>
-                      <span className="flex items-center gap-2 text-xs md:text-sm">
-                        <span className="w-3 h-3 rounded-full bg-red-500/20 border-2 border-red-500"></span>
-                        <span className="text-gray-400">Foglalt</span>
-                      </span>
-                      <span className="flex items-center gap-2 text-xs md:text-sm">
-                        <span className="w-3 h-3 rounded-full bg-primary/20 border-2 border-primary"></span>
-                        <span className="text-gray-400">Saját</span>
-                      </span>
-                      <span className="flex items-center gap-2 text-xs md:text-sm">
-                        <span className="w-3 h-3 rounded-full bg-yellow-500/20 border-2 border-yellow-500"></span>
-                        <span className="text-gray-400">Verseny</span>
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="overflow-x-auto">
-                    <div className="min-w-[800px]">
-                      {availableSlots.map((hour) => (
-                        <div
-                          key={hour}
-                          className="flex border-b border-white/5 last:border-b-0"
-                        >
-                          <div className="sticky left-0 z-10 w-16 md:w-24 flex-shrink-0 bg-[#0f1015] border-r border-white/5 flex flex-col justify-center items-center py-4 shadow-[4px_0_24px_-4px_rgba(0,0,0,0.5)]">
-                            <span className="text-sm md:text-lg font-bold text-white">
-                              {hour}:00
-                            </span>
-                            <span className="text-[10px] md:text-xs text-gray-500">
-                              {hour}:00 - {hour + 1}:00
-                            </span>
-                          </div>
-
-                          <div className="flex-1 w-full flex flex-col gap-4 md:gap-8 p-2 md:p-4">
-                            {computersByRow.map((row, rowIndex) => (
-                              <div
-                                key={rowIndex}
-                                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4"
-                              >
-                                {row.map((computer) => {
-                                  const booking = isComputerBooked(
-                                    computer.id,
-                                    hour,
-                                  );
-                                  const isOwn =
-                                    !!user && booking?.userId === user?.id;
-                                  const isBooked = !!booking;
-                                  const isMaintained =
-                                    computer.status === "MAINTENANCE";
-                                  const isOutOfOrder =
-                                    computer.status === "OUT_OF_ORDER";
-                                  const isTournament =
-                                    computer.isCompetitionMode;
-
-                                  // Check if slot is in the past
-                                  const now = new Date();
-                                  const slotTime = new Date(selectedDate);
-                                  slotTime.setHours(hour, 0, 0, 0);
-                                  const isPast = slotTime < now && !isBooked;
-
-                                  const isDisabled =
-                                    isBooked ||
-                                    isMaintained ||
-                                    isOutOfOrder ||
-                                    isTournament ||
-                                    isLoading ||
-                                    isPast;
-
-                                  const isExpanded =
-                                    expandedComputerId ===
-                                    `${computer.id}-${hour}`;
-
-                                  return (
-                                    <div
-                                      key={computer.id}
-                                      className={`relative bg-[#0f1015] rounded-lg p-2 md:p-3 border border-white/5 transition-all duration-300 ${isExpanded
-                                        ? "z-10 shadow-xl ring-1 ring-white/10"
-                                        : ""
-                                        }`}
-                                    >
-                                      <div className="flex justify-between items-center mb-1 md:mb-2 pb-1 md:pb-2 border-b border-white/5">
-                                        <span className="text-xs md:text-sm font-semibold text-gray-300 truncate pr-2">
-                                          {computer.name}
-                                        </span>
-                                        <button
-                                          className={`p-1 rounded transition-colors ${isExpanded
-                                            ? "text-primary bg-primary/10"
-                                            : "text-gray-500 hover:text-primary hover:bg-primary/10"
-                                            }`}
-                                          onClick={() =>
-                                            setExpandedComputerId(
-                                              isExpanded
-                                                ? null
-                                                : `${computer.id}-${hour}`,
-                                            )
-                                          }
-                                        >
-                                          <Info
-                                            size={14}
-                                            className="w-3 h-3 md:w-4 md:h-4"
-                                          />
-                                        </button>
-                                      </div>
-
-                                      <button
-                                        className={`w-full h-12 rounded-lg flex items-center justify-center transition-all ${isOwn
-                                          ? "bg-gradient-to-br from-primary/30 to-indigo-500/30 text-white border-2 border-primary/60 shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)] hover:shadow-[0_0_20px_-3px_rgba(139,92,246,0.5)] hover:border-primary cursor-pointer backdrop-blur-sm transform hover:-translate-y-0.5"
-                                          : isBooked
-                                            ? "bg-red-500/10 text-red-400 border-2 border-red-500/20 cursor-default"
-                                            : isTournament
-                                              ? "bg-yellow-500/10 text-yellow-400 border-2 border-yellow-500/20 cursor-not-allowed opacity-80"
-                                              : isMaintained || isOutOfOrder
-                                                ? "bg-gray-800/50 text-gray-600 border-2 border-gray-700/20 cursor-not-allowed opacity-50"
-                                                : isPast
-                                                  ? "bg-gray-800/20 text-gray-600 border-2 border-gray-800/20 cursor-not-allowed opacity-50"
-                                                  : "bg-green-500/10 text-green-400 border-2 border-green-500/20 hover:bg-green-500/20 cursor-pointer group"
-                                          }`}
-                                        onClick={() =>
-                                          handleComputerClick(computer, hour)
-                                        }
-                                        disabled={isDisabled && !isOwn}
-                                      >
-                                        {isOwn && <Check size={18} />}
-                                        {isBooked && !isOwn && (
-                                          <Monitor size={18} />
-                                        )}
-                                        {isTournament &&
-                                          !isOwn &&
-                                          !isBooked && <Trophy size={18} />}
-                                        {!isBooked &&
-                                          !isTournament &&
-                                          !isMaintained &&
-                                          !isOutOfOrder &&
-                                          !isPast && (
-                                            <Plus
-                                              size={18}
-                                              className="opacity-0 group-hover:opacity-100 transition-opacity"
-                                            />
-                                          )}
-                                      </button>
-
-                                      {isBooked &&
-                                        !isOwn &&
-                                        isAuthenticated && (
-                                          <div className="mt-2 pt-2 border-t border-white/5 flex justify-center">
-                                            <WaitlistButton
-                                              computerId={computer.id}
-                                              date={selectedDate}
-                                              startHour={hour}
-                                              endHour={hour + 1}
-                                            />
-                                          </div>
-                                        )}
-
-                                      {isExpanded && (
-                                        <div className="mt-4 animate-in fade-in slide-in-from-top-2">
-                                          <ComputerInfo computer={computer} />
-                                        </div>
-                                      )}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </>
+            </div>
           )}
         </>
       )}
