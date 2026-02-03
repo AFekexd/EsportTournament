@@ -51,7 +51,7 @@ export function HomePage() {
   const { isAuthenticated, login } = useAuth();
   const dispatch = useAppDispatch();
   const { data: stats, loading: statsLoading } = useAppSelector(
-    (state) => state.stats
+    (state) => state.stats,
   );
 
   // Fetch stats on component mount and refresh every 30 seconds
@@ -66,10 +66,22 @@ export function HomePage() {
   }, [dispatch]);
 
   const statsData = [
-    { value: stats?.activeTournaments ?? 0, label: "Versenyek", url: "/tournaments" },
-    { value: stats?.registeredUsers ?? 0, label: "Regisztrált Játékosok", url: "/leaderboards" },
-    { value: stats?.createdTeams ?? 0, label: "Létrehozott Csapatok", url: "/teams" },
-    { value: stats?.playedMatches ?? 0, label: "Meccsek", },
+    {
+      value: stats?.activeTournaments ?? 0,
+      label: "Versenyek",
+      url: "/tournaments",
+    },
+    {
+      value: stats?.registeredUsers ?? 0,
+      label: "Regisztrált Játékosok",
+      url: "/leaderboards",
+    },
+    {
+      value: stats?.createdTeams ?? 0,
+      label: "Létrehozott Csapatok",
+      url: "/teams",
+    },
+    { value: stats?.playedMatches ?? 0, label: "Meccsek" },
   ];
 
   return (
@@ -192,29 +204,29 @@ export function HomePage() {
         <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
           {statsLoading
             ? // Loading skeleton
-            Array.from({ length: 4 }).map((_, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center justify-center border-l border-white/5 py-4 first:border-0"
-              >
-                <Skeleton className="h-16 w-32 mb-2 bg-white/5" />
-                <Skeleton className="h-4 w-40 bg-white/5" />
-              </div>
-            ))
+              Array.from({ length: 4 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col items-center justify-center border-l border-white/5 py-4 first:border-0"
+                >
+                  <Skeleton className="h-16 w-32 mb-2 bg-white/5" />
+                  <Skeleton className="h-4 w-40 bg-white/5" />
+                </div>
+              ))
             : statsData.map((stat, index) => (
-              <Link
-                key={index}
-                to={stat.url || '#'}
-                className="flex flex-col items-center justify-center border-l border-white/5 py-4 first:border-0 group hover:bg-white/5 rounded-lg transition-colors"
-              >
-                <span className="text-glow mb-2 text-5xl font-black tracking-tight text-white md:text-6xl group-hover:scale-110 transition-transform duration-300 group-hover:text-primary">
-                  {stat.value}
-                </span>
-                <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground group-hover:text-white transition-colors">
-                  {stat.label}
-                </span>
-              </Link>
-            ))}
+                <Link
+                  key={index}
+                  to={stat.url || "#"}
+                  className="flex flex-col items-center justify-center border-l border-white/5 py-4 first:border-0 group hover:bg-white/5 rounded-lg transition-colors"
+                >
+                  <span className="text-glow mb-2 text-5xl font-black tracking-tight text-white md:text-6xl group-hover:scale-110 transition-transform duration-300 group-hover:text-primary">
+                    {stat.value}
+                  </span>
+                  <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground group-hover:text-white transition-colors">
+                    {stat.label}
+                  </span>
+                </Link>
+              ))}
         </div>
       </section>
 
@@ -240,12 +252,11 @@ export function HomePage() {
                 <h2 className="text-2xl font-bold text-white md:text-3xl">
                   Pollák Discord
                 </h2>
-
               </div>
               <p className="max-w-xl text-muted-foreground">
                 Találj csapattársakat, szervezz meccseket, és légy része az
-                iskolai esport vérkeringésének. Közvetlen kapcsolat a szervezőkkel
-                és a többi játékossal.
+                iskolai esport vérkeringésének. Közvetlen kapcsolat a
+                szervezőkkel és a többi játékossal.
               </p>
             </div>
 
@@ -255,7 +266,7 @@ export function HomePage() {
               className="h-12 min-w-[200px] shrink-0 rounded-full bg-[#5865F2] text-white hover:bg-[#4752C4] shadow-[0_0_20px_rgba(88,101,242,0.4)] hover:shadow-[0_0_30px_rgba(88,101,242,0.6)] transition-all border-none"
             >
               <a
-                href="https://discord.gg/HWB2bAMUNP"
+                href="https://discord.gg/BsAz7YqjWx"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="gap-2 !text-white hover:!text-[#5865F2]"
@@ -272,9 +283,7 @@ export function HomePage() {
                 Csatlakozás
               </a>
             </Button>
-
           </div>
-
         </section>
         <div className="w-full max-w-[350px]">
           <iframe
