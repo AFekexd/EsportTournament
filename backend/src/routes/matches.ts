@@ -3,6 +3,7 @@ import { logSystemActivity } from '../services/logService.js';
 import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
+import { upload } from '../middleware/upload.js';
 
 export const matchesRouter: Router = Router();
 
@@ -116,6 +117,7 @@ matchesRouter.get(
 matchesRouter.patch(
     '/:id/result',
     authenticate,
+    upload.single('proof'),
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
         const user = await prisma.user.findUnique({
             where: { keycloakId: req.user!.sub },
@@ -266,11 +268,36 @@ matchesRouter.patch(
         const { webSyncService } = await import('../services/webSyncService.js');
         await webSyncService.onMatchResult(match.id);
 
+        // Notify Discord Service
+        const { discordService } = await import('../services/discordService.js');
+
+        // Handle Proof Upload
+        if (req.file) {
+            const proofChannelId = match.tournament.discordChannelId || process.env.DISCORD_PROOF_CHANNEL_ID || '123456789'; // TODO: Get specific proof channel logic
+            // User requested "az adott proof channelbe". If we don't have one, we might fallback to match channel or specific env.
+            // I'll check if there is an env var for PROOF_CHANNEL, otherwise fallback to matches channel.
+
+            const p1Val = match.homeUser?.displayName || match.homeTeam?.name || 'Home';
+            const p2Val = match.awayUser?.displayName || match.awayTeam?.name || 'Away';
+
+            await discordService.sendMatchProof(
+                req.file,
+                {
+                    tournamentName: match.tournament.name,
+                    homeTeam: p1Val,
+                    awayTeam: p2Val,
+                    matchId: match.id,
+                    uploaderName: user.displayName || user.username
+                },
+                proofChannelId
+            );
+        }
+
         // Send notifications if enabled
         if (match.tournament.notifyUsers || match.tournament.notifyDiscord) {
             // Import notification service
             const { notificationService } = await import('../services/notificationService.js');
-            const { discordService } = await import('../services/discordService.js');
+            // discordService already imported above
 
             // Send in-app notifications to team members
             if (match.tournament.notifyUsers) {

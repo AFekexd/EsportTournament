@@ -287,18 +287,35 @@ export const deleteBracket = createAsyncThunk(
 
 export const updateMatch = createAsyncThunk(
     'tournaments/updateMatch',
-    async ({ matchId, data }: { matchId: string; data: { homeScore?: number; awayScore?: number; winnerId?: string; winnerUserId?: string } }) => {
+    async ({ matchId, data }: { matchId: string; data: { homeScore?: number; awayScore?: number; winnerId?: string; winnerUserId?: string; proof?: File } }) => {
         const token = getToken();
 
         if (!token) throw new Error('Nincs bejelentkezve!');
 
+        let body: any;
+        const headers: Record<string, string> = {
+            Authorization: `Bearer ${token}`,
+        };
+
+        if (data.proof) {
+            const formData = new FormData();
+            if (data.homeScore !== undefined) formData.append('homeScore', String(data.homeScore));
+            if (data.awayScore !== undefined) formData.append('awayScore', String(data.awayScore));
+            if (data.winnerId) formData.append('winnerId', data.winnerId);
+            if (data.winnerUserId) formData.append('winnerUserId', data.winnerUserId);
+            formData.append('proof', data.proof);
+
+            body = formData;
+            // Let the browser set Content-Type with boundary
+        } else {
+            headers['Content-Type'] = 'application/json';
+            body = JSON.stringify(data);
+        }
+
         const response = await fetch(`${API_URL}/matches/${matchId}/result`, {
             method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(data),
+            headers,
+            body,
         });
 
         const result: ApiResponse<any> = await response.json();

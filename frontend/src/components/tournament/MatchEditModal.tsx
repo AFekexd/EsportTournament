@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Save, RotateCcw, Trash2, AlertTriangle, Trophy, Swords } from "lucide-react";
+import { X, Save, RotateCcw, Trash2, AlertTriangle, Trophy, Swords, Image as ImageIcon } from "lucide-react";
 import type { Match } from "../../types";
 
 interface MatchEditModalProps {
@@ -10,6 +10,7 @@ interface MatchEditModalProps {
     awayScore?: number;
     winnerId?: string;
     winnerUserId?: string;
+    proof?: File;
   }) => void;
   onReset?: () => void;
   onDelete?: () => void;
@@ -60,6 +61,7 @@ export function MatchEditModal({
   const [winnerId, setWinnerId] = useState<string>(
     match.winnerId || match.winnerUserId || ""
   );
+  const [proofFile, setProofFile] = useState<File | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
@@ -76,6 +78,7 @@ export function MatchEditModal({
       awayScore?: number;
       winnerId?: string;
       winnerUserId?: string;
+      proof?: File;
     } = {};
 
     if (homeScore !== "") {
@@ -91,6 +94,10 @@ export function MatchEditModal({
       } else {
         data.winnerId = winnerId;
       }
+    }
+
+    if (proofFile) {
+      data.proof = proofFile;
     }
 
     onSave(data);
@@ -307,6 +314,30 @@ export function MatchEditModal({
               </select>
               <p className="text-xs text-gray-500">
                 Ha üresen hagyod, a győztest a pontszám alapján határozza meg a rendszer
+              </p>
+            </div>
+          </div>
+
+          {/* Proof Upload */}
+          <div className="px-6 pb-6">
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                <ImageIcon size={14} className="text-blue-400" />
+                Eredmény igazolás (Kép)
+              </label>
+              <div className="relative group">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) setProofFile(file);
+                  }}
+                  className="w-full bg-black/30 border-2 border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-primary/20 file:text-primary hover:file:bg-primary/30 transition-all cursor-pointer"
+                />
+              </div>
+              <p className="text-xs text-gray-500">
+                Töltsd fel az eredményről készült képet (nem kerül mentésre az adatbázisba, csak Discordra)
               </p>
             </div>
           </div>

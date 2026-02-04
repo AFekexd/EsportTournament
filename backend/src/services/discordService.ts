@@ -298,7 +298,7 @@ class DiscordService {
             // Auto-assign Guest Roles
             if (!member.user.bot) { // Don't assign to bots automatically unless intended
                 const allRoles = await member.guild.roles.fetch();
-                
+
                 for (const roleName of GUEST_ROLES) {
                     const role = allRoles.find(r => r.name.toLowerCase() === roleName.toLowerCase());
                     if (role) {
@@ -345,6 +345,51 @@ class DiscordService {
     }
 
     // Removed message-based setupVerificationHandler
+
+
+    public async sendMatchProof(
+        file: Express.Multer.File,
+        matchInfo: {
+            tournamentName: string;
+            homeTeam: string;
+            awayTeam: string;
+            matchId: string;
+            uploaderName: string;
+        },
+        channelId: string
+    ) {
+        if (!this.isReady) return;
+
+        try {
+            const channel = await this.client.channels.fetch(channelId);
+            if (!channel || !channel.isTextBased()) {
+                console.warn(`Proof channel ${channelId} not found or not text-based.`);
+                return;
+            }
+
+            const embed = new EmbedBuilder()
+                .setTitle('📸 Mérkőzés Eredmény Igazolás')
+                .setDescription(`**${matchInfo.tournamentName}**\n${matchInfo.homeTeam} vs ${matchInfo.awayTeam}`)
+                .addFields(
+                    { name: 'Feltöltötte', value: matchInfo.uploaderName, inline: true },
+                    { name: 'Meccs ID', value: matchInfo.matchId, inline: true }
+                )
+                .setColor(0x00ff00)
+                .setTimestamp();
+
+            await (channel as TextChannel).send({
+                embeds: [embed],
+                files: [{
+                    attachment: file.buffer,
+                    name: `proof_${matchInfo.matchId}_${Date.now()}.${file.originalname.split('.').pop()}`
+                }]
+            });
+
+            console.log(`✅ Proof uploaded to Discord channel ${channelId}`);
+        } catch (error) {
+            console.error('Failed to send match proof:', error);
+        }
+    }
 
     private async handleDeployVerify(interaction: ChatInputCommandInteraction) {
         if (!interaction.memberPermissions?.has(PermissionsBitField.Flags.Administrator)) {
