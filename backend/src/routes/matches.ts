@@ -127,7 +127,11 @@ matchesRouter.patch(
             throw new ApiError('Csak szervezők módosíthatják az eredményeket', 403, 'FORBIDDEN');
         }
 
-        const { homeScore, awayScore, winnerId, winnerUserId } = req.body;
+        let { homeScore, awayScore, winnerId, winnerUserId } = req.body;
+
+        // Parse scores if they arrive as strings (e.g. from FormData)
+        if (typeof homeScore === 'string') homeScore = parseInt(homeScore, 10);
+        if (typeof awayScore === 'string') awayScore = parseInt(awayScore, 10);
 
         const match = await prisma.match.findUnique({
             where: { id: req.params.id },
@@ -280,12 +284,33 @@ matchesRouter.patch(
             const p1Val = match.homeUser?.displayName || match.homeTeam?.name || 'Home';
             const p2Val = match.awayUser?.displayName || match.awayTeam?.name || 'Away';
 
+            // Try to get Discord IDs
+            let homeDiscordId: string | null = null;
+            let awayDiscordId: string | null = null;
+
+            if (isSoloTournament) {
+                homeDiscordId = match.homeUser?.discordId || null;
+                awayDiscordId = match.awayUser?.discordId || null;
+            } else {
+                // For teams, we could potentially fetch the captain's discord ID, 
+                // but for now we'll check if the team has a linked owner/captain with discordId
+                // Assuming team structure has members, we'd need to fetch them.
+                // The current query in `matches.ts` fetches homeTeam/awayTeam but not deep members.
+                // However, we can use the homeUser/awayUser relations if they are set (often they are for teams too?)
+                // Actually in 1v1 homeUser is set. In Team match homeTeamId is set.
+                // Let's stick to what we have. If homeUser is present (solo), use it.
+                if (match.homeUser?.discordId) homeDiscordId = match.homeUser.discordId;
+                if (match.awayUser?.discordId) awayDiscordId = match.awayUser.discordId;
+            }
+
             await discordService.sendMatchProof(
                 req.file,
                 {
                     tournamentName: match.tournament.name,
                     homeTeam: p1Val,
+                    homeDiscordId,
                     awayTeam: p2Val,
+                    awayDiscordId,
                     matchId: match.id,
                     uploaderName: user.displayName || user.username
                 },

@@ -352,7 +352,9 @@ class DiscordService {
         matchInfo: {
             tournamentName: string;
             homeTeam: string;
+            homeDiscordId?: string | null;
             awayTeam: string;
+            awayDiscordId?: string | null;
             matchId: string;
             uploaderName: string;
         },
@@ -367,11 +369,21 @@ class DiscordService {
                 return;
             }
 
+            const homeDisplay = matchInfo.homeDiscordId
+                ? `${matchInfo.homeTeam} (<@${matchInfo.homeDiscordId}>)`
+                : matchInfo.homeTeam;
+
+            const awayDisplay = matchInfo.awayDiscordId
+                ? `${matchInfo.awayTeam} (<@${matchInfo.awayDiscordId}>)`
+                : matchInfo.awayTeam;
+
             const embed = new EmbedBuilder()
                 .setTitle('📸 Mérkőzés Eredmény Igazolás')
-                .setDescription(`**${matchInfo.tournamentName}**\n${matchInfo.homeTeam} vs ${matchInfo.awayTeam}`)
+                .setDescription(`**${matchInfo.tournamentName}**\n${homeDisplay} vs ${awayDisplay}`)
                 .addFields(
-                    { name: 'Feltöltötte', value: matchInfo.uploaderName, inline: true },
+                    { name: 'Hazai', value: homeDisplay, inline: true },
+                    { name: 'Vendég', value: awayDisplay, inline: true },
+                    { name: 'Feltöltötte', value: matchInfo.uploaderName, inline: false },
                     { name: 'Meccs ID', value: matchInfo.matchId, inline: true }
                 )
                 .setColor(0x00ff00)
