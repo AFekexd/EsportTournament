@@ -289,6 +289,34 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
                 </button>
               </div>
             </div>
+
+            {/* Discord Unlink */}
+            <button
+              onClick={handleUnlinkDiscord}
+              disabled={!user.discordId || isLoading}
+              className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${
+                !user.discordId
+                  ? "opacity-50 cursor-not-allowed border-white/5"
+                  : "hover:bg-indigo-500/10 border-white/10 hover:border-indigo-500/30"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Unplug
+                  className={
+                    user.discordId ? "text-indigo-400" : "text-gray-500"
+                  }
+                  size={20}
+                />
+                <div className="text-left">
+                  <div className="text-white font-medium">
+                    Discord leválasztása
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {user.discordId ? `${user.discordId}` : "Nincs csatolva"}
+                  </div>
+                </div>
+              </div>
+            </button>
           </div>
         </div>
 
