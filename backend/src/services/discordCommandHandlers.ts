@@ -291,6 +291,19 @@ export async function handleLinkModal(interaction: ModalSubmitInteraction): Prom
         return;
     }
 
+    // Check if Discord user is already linked to another Web user
+    const existingLink = await prisma.user.findFirst({
+        where: {
+            discordId: interaction.user.id,
+            id: { not: user.id }
+        }
+    });
+
+    if (existingLink) {
+        await interaction.editReply(`❌ A Discord fiókod már össze van kötve egy másik felhasználóval (**${existingLink.displayName || existingLink.username}**)!`);
+        return;
+    }
+
     // Link the accounts
     await prisma.user.update({
         where: { id: user.id },
@@ -448,7 +461,7 @@ export async function handlePreferencesCommand(interaction: ChatInputCommandInte
 
     if (!user) {
         await interaction.reply({
-            content: '❌ Először kösd össze a fiókodat az `/link` paranccsal!',
+            content: '❌ Először kösd össze a fiókadat az `/link` paranccsal!',
             ephemeral: true
         });
         return;

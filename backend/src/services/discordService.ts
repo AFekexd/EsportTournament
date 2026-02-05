@@ -489,6 +489,19 @@ class DiscordService {
                 return;
             }
 
+            // Check if Discord user is already linked to another Web user
+            const existingLink = await prisma.user.findFirst({
+                where: {
+                    discordId: interaction.user.id,
+                    id: { not: user.id }
+                }
+            });
+
+            if (existingLink) {
+                await interaction.editReply(`❌ A Discord fiókod már össze van kötve egy másik felhasználóval (**${existingLink.displayName || existingLink.username}**)!`);
+                return;
+            }
+
             // Update User with Discord ID
             await prisma.user.update({
                 where: { id: user.id },

@@ -19,6 +19,7 @@ interface User {
   elo: number;
   timeBalanceSeconds: number;
   omId: string | null;
+  discordId: string | null;
   createdAt: string;
 }
 
@@ -495,6 +496,12 @@ export function UserManagement() {
               </th>
               <th
                 className="p-3 cursor-pointer hover:text-white transition-colors"
+                onClick={() => handleSort('discordId')}
+              >
+                Discord {getSortIcon('discordId')}
+              </th>
+              <th
+                className="p-3 cursor-pointer hover:text-white transition-colors"
                 onClick={() => handleSort('role')}
               >
                 Szerep {getSortIcon('role')}
@@ -523,7 +530,7 @@ export function UserManagement() {
           <tbody>
             {filteredUsers.length === 0 ? (
               <tr>
-                <td colSpan={7} className="text-center p-8 text-muted">
+                <td colSpan={8} className="text-center p-8 text-muted">
                   {searchTerm || selectedRole !== "ALL"
                     ? "Nincs találat a szűrési feltételeknek megfelelően"
                     : "Még nincs felhasználó"}
@@ -568,6 +575,9 @@ export function UserManagement() {
                   <td className="p-3 text-muted">{user.email}</td>
                   <td className="p-3 font-mono text-sm text-gray-400">
                     {user.omId || "-"}
+                  </td>
+                  <td className="p-3 font-mono text-sm text-gray-400">
+                    {user.discordId ? <span className="text-[#5865F2]">{user.discordId}</span> : "-"}
                   </td>
                   <td className="p-3">{getRoleBadge(user.role)}</td>
                   <td

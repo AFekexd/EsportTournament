@@ -40,7 +40,7 @@ usersRouter.get(
         }
 
         // Validate sort params
-        const allowedSortFields = ['username', 'email', 'omId', 'role', 'timeBalanceSeconds', 'elo', 'createdAt'];
+        const allowedSortFields = ['username', 'email', 'omId', 'role', 'timeBalanceSeconds', 'elo', 'createdAt', 'discordId'];
         const pSortBy = allowedSortFields.includes(String(sortBy)) ? String(sortBy) : 'createdAt';
         const pSortOrder = String(sortOrder) === 'asc' ? 'asc' : 'desc';
 
@@ -63,7 +63,8 @@ usersRouter.get(
                     omId: true,
                     createdAt: true,
                     timeBalanceSeconds: true,
-                    tosAcceptedAt: true
+                    tosAcceptedAt: true,
+                    discordId: true
                 }
             }),
             prisma.user.count({ where })
