@@ -156,6 +156,45 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
     }
   };
 
+  const handleUnlinkDiscord = async () => {
+    setConfirmModal({
+      isOpen: true,
+      title: "Discord leválasztása",
+      message:
+        "Biztosan le szeretnéd választani a felhasználó Discord fiókját?",
+      variant: "danger",
+      confirmLabel: "Leválasztás",
+      onConfirm: async () => {
+        setIsLoading(true);
+        try {
+          const token = authService.keycloak?.token;
+          if (!token) return;
+
+          const response = await fetch(`${API_URL}/users/${user.id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ discordId: null }),
+          });
+
+          if (response.ok) {
+            onSuccess();
+            onClose();
+          } else {
+            toast.error("Sikertelen leválasztás");
+          }
+        } catch (error) {
+          console.error(error);
+          toast.error("Hiba történt");
+        } finally {
+          setIsLoading(false);
+        }
+      },
+    });
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
       <div
