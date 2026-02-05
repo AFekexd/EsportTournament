@@ -606,13 +606,13 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   keycloakId?: string
   email?: string
   username?: string
+  discordId?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   displayName?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   omId?: Prisma.StringNullableFilter<"User"> | string | null
-  discordId?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   elo?: Prisma.IntFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntFilter<"User"> | number
@@ -671,7 +671,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   bugReports?: Prisma.BugReportListRelationFilter
   bugReportNotification?: Prisma.XOR<Prisma.BugReportNotificationSettingNullableScalarRelationFilter, Prisma.BugReportNotificationSettingWhereInput> | null
   incidents?: Prisma.IncidentListRelationFilter
-}, "id" | "keycloakId" | "email" | "username">
+}, "id" | "keycloakId" | "email" | "username" | "discordId">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder

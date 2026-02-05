@@ -354,7 +354,8 @@ usersRouter.patch(
             emailPrefWeeklyDigest,
             steamId,
             favoriteGameId,
-            elo
+            elo,
+            discordId
         } = req.body as {
             displayName?: string;
             avatarUrl?: string;
@@ -367,6 +368,7 @@ usersRouter.patch(
             steamId?: string;
             favoriteGameId?: string | null;
             elo?: number;
+            discordId?: string | null;
         };
 
         // --- SPLIT UPDATE LOGIC ---
@@ -415,6 +417,14 @@ usersRouter.patch(
                     throw new ApiError('Csak adminisztrátor módosíthatja az ELO pontszámot', 403, 'FORBIDDEN');
                 }
                 immediateData.elo = elo;
+            }
+
+            // Discord ID Update (Admin only)
+            if (discordId !== undefined) {
+                if (currentUser.role !== UserRole.ADMIN) {
+                    throw new ApiError('Csak adminisztrátor módosíthatja a Discord ID-t', 403, 'FORBIDDEN');
+                }
+                immediateData.discordId = discordId;
             }
         }
 

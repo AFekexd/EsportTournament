@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { X, Edit2, Key, ImageOff } from "lucide-react";
+import { X, Edit2, Key, ImageOff, Unplug } from "lucide-react";
 import { ConfirmationModal } from "../common/ConfirmationModal";
 
 import { API_URL } from "../../config";
@@ -14,6 +14,7 @@ interface UserEditModalProps {
     email: string;
     avatarUrl: string | null;
     elo: number; // Added ELO
+    discordId: string | null;
   };
   onClose: () => void;
   onSuccess: () => void;
@@ -40,7 +41,7 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => { },
+    onConfirm: () => {},
     variant: "primary",
   });
 
@@ -62,7 +63,7 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
         },
         body: JSON.stringify({
           displayName,
-          elo: typeof elo === 'string' ? parseInt(elo) : elo
+          elo: typeof elo === "string" ? parseInt(elo) : elo,
         }),
       });
 
@@ -137,7 +138,7 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ password }),
-        }
+        },
       );
 
       if (response.ok) {
@@ -201,14 +202,18 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
                 maxLength={50}
               />
               <div className="text-right mt-1">
-                <span className="text-xs text-gray-500">{displayName.length}/50</span>
+                <span className="text-xs text-gray-500">
+                  {displayName.length}/50
+                </span>
               </div>
             </div>
           </div>
 
           {/* ELO Edit */}
           <div className="bg-white/5 p-4 rounded-lg border border-white/5">
-            <h3 className="text-sm font-medium text-gray-400 mb-2">Verseny pontszám (ELO)</h3>
+            <h3 className="text-sm font-medium text-gray-400 mb-2">
+              Verseny pontszám (ELO)
+            </h3>
             <div className="flex items-center gap-3">
               <input
                 type="number"
@@ -226,7 +231,8 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
               </button>
             </div>
             <p className="text-xs text-gray-500 mt-2">
-              Ezzel módosíthatod a felhasználó rangsorolási pontszámát. Csak indokolt esetben használd!
+              Ezzel módosíthatod a felhasználó rangsorolási pontszámát. Csak
+              indokolt esetben használd!
             </p>
           </div>
 
@@ -236,10 +242,11 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
             <button
               onClick={handleResetAvatar}
               disabled={!user.avatarUrl || isLoading}
-              className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${!user.avatarUrl
-                ? "opacity-50 cursor-not-allowed border-white/5"
-                : "hover:bg-red-500/10 border-white/10 hover:border-red-500/30"
-                }`}
+              className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${
+                !user.avatarUrl
+                  ? "opacity-50 cursor-not-allowed border-white/5"
+                  : "hover:bg-red-500/10 border-white/10 hover:border-red-500/30"
+              }`}
             >
               <div className="flex items-center gap-3">
                 <ImageOff
