@@ -24,6 +24,7 @@ interface MatchEditModalProps {
   onReset?: () => void;
   onDelete?: () => void;
   isLoading?: boolean;
+  uploadProgress?: number;
   isAdmin?: boolean;
 }
 
@@ -59,6 +60,7 @@ export function MatchEditModal({
   onReset,
   onDelete,
   isLoading,
+  uploadProgress,
   isAdmin = false,
 }: MatchEditModalProps) {
   const [homeScore, setHomeScore] = useState<string>(
@@ -408,32 +410,50 @@ export function MatchEditModal({
           )}
 
           {/* Footer */}
-          <div className="px-6 py-4 bg-black/20 border-t border-white/5 flex justify-end gap-3">
-            <button
-              type="button"
-              className="px-5 py-2.5 text-gray-400 hover:text-white hover:bg-white/5 text-sm font-semibold rounded-xl transition-all duration-200"
-              onClick={onClose}
-            >
-              Mégse
-            </button>
-            <button
-              type="submit"
-              className="group relative px-6 py-2.5 bg-gradient-to-r from-primary to-purple-600 text-white text-sm font-bold rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] transition-all duration-200 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Mentés...
-                </>
-              ) : (
-                <>
-                  <Save size={16} />
-                  Mentés
-                  <div className="absolute inset-0 rounded-xl bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </>
+          <div className="px-6 py-4 bg-black/20 border-t border-white/5 flex flex-col gap-3">
+            {isLoading &&
+              uploadProgress !== undefined &&
+              uploadProgress > 0 && (
+                <div className="w-full space-y-1">
+                  <div className="flex justify-between text-xs text-gray-400">
+                    <span>Feltöltés...</span>
+                    <span>{uploadProgress}%</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-primary transition-all duration-300 ease-out"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+                </div>
               )}
-            </button>
+            <div className="flex justify-end gap-3">
+              <button
+                type="button"
+                className="px-5 py-2.5 text-gray-400 hover:text-white hover:bg-white/5 text-sm font-semibold rounded-xl transition-all duration-200"
+                onClick={onClose}
+              >
+                Mégse
+              </button>
+              <button
+                type="submit"
+                className="group relative px-6 py-2.5 bg-gradient-to-r from-primary to-purple-600 text-white text-sm font-bold rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] transition-all duration-200 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Mentés...
+                  </>
+                ) : (
+                  <>
+                    <Save size={16} />
+                    Mentés
+                    <div className="absolute inset-0 rounded-xl bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </form>
       </div>

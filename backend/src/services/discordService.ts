@@ -363,23 +363,40 @@ class DiscordService {
         if (!this.isReady) return;
 
         try {
+            // Try to resolve the best target channel (e.g. results channel)
             let targetChannel = await this.client.channels.fetch(channelId) as TextChannel;
 
-            // Try to find a specific "results" channel if the current one is not it
-            // Convention: original-name + "-eredmények"
             if (targetChannel && targetChannel.guild) {
-                const baseName = targetChannel.name.replace('-eredmények', '');
-                const resultsChannelName = `${baseName}-eredmények`;
-                
-                // If we are NOT already in the results channel, try to find it
+                // 1. If we are already in a results channel, stay here
                 if (!targetChannel.name.endsWith('eredmények')) {
-                     const resultsChannel = targetChannel.guild.channels.cache.find(
-                        c => c.name === resultsChannelName && c.isTextBased()
-                    ) as TextChannel;
+                    let foundResultsChannel: TextChannel | undefined;
 
-                    if (resultsChannel) {
-                        console.log(`Redirecting proof from #${targetChannel.name} to #${resultsChannel.name}`);
-                        targetChannel = resultsChannel;
+                    // 2. Look for ANY channel ending in 'eredmények' within the SAME CATEGORY
+                    if (targetChannel.parentId) {
+                        foundResultsChannel = targetChannel.guild.channels.cache.find(c => 
+                            c.parentId === targetChannel.parentId && 
+                            c.isTextBased() && 
+                            c.name.endsWith('eredmények')
+                        ) as TextChannel;
+                    }
+
+                    // 3. Fallback: Try name replacement (remove -chat, -teszt, -lobby suffixes)
+                    if (!foundResultsChannel) {
+                        const baseName = targetChannel.name
+                            .replace(/-?chat$/, '')
+                            .replace(/-?teszt$/, '')
+                            .replace(/-?lobby$/, '')
+                            .replace(/-?info$/, '');
+                        
+                        const resultsChannelName = `${baseName}-eredmények`;
+                        foundResultsChannel = targetChannel.guild.channels.cache.find(c => 
+                            c.name === resultsChannelName && c.isTextBased()
+                        ) as TextChannel;
+                    }
+
+                    if (foundResultsChannel) {
+                        console.log(`Redirecting proof from #${targetChannel.name} to #${foundResultsChannel.name}`);
+                        targetChannel = foundResultsChannel;
                     }
                 }
             }
@@ -1211,14 +1228,34 @@ class DiscordService {
                 const channel = await this.client.channels.fetch(channelId);
                 if (channel && 'guild' in channel && channel.guild) {
                      const guildChannel = channel as TextChannel;
+
                      if (!guildChannel.name.endsWith('eredmények')) {
-                        const baseName = guildChannel.name.replace('-eredmények', '');
-                        const resultsChannelName = `${baseName}-eredmények`;
-                        const resultsChannel = guildChannel.guild.channels.cache.find(
-                            c => c.name === resultsChannelName && c.isTextBased()
-                        );
-                        if (resultsChannel) {
-                             targetChannelId = resultsChannel.id;
+                        let foundResultsChannel: any;
+
+                        // 1. Look in same category
+                        if (guildChannel.parentId) {
+                            foundResultsChannel = guildChannel.guild.channels.cache.find(c => 
+                                c.parentId === guildChannel.parentId && 
+                                c.isTextBased() && 
+                                c.name.endsWith('eredmények')
+                            );
+                        }
+
+                        // 2. Fallback: Name pattern
+                        if (!foundResultsChannel) {
+                            const baseName = guildChannel.name
+                                .replace(/-?chat$/, '')
+                                .replace(/-?teszt$/, '')
+                                .replace(/-?lobby$/, '')
+                                .replace(/-?info$/, '');
+                            const resultsChannelName = `${baseName}-eredmények`;
+                            foundResultsChannel = guildChannel.guild.channels.cache.find(
+                                c => c.name === resultsChannelName && c.isTextBased()
+                            );
+                        }
+
+                        if (foundResultsChannel) {
+                             targetChannelId = foundResultsChannel.id;
                         }
                      }
                 }

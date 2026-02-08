@@ -287,44 +287,68 @@ export const deleteBracket = createAsyncThunk(
 
 export const updateMatch = createAsyncThunk(
     'tournaments/updateMatch',
-    async ({ matchId, data }: { matchId: string; data: { homeScore?: number; awayScore?: number; winnerId?: string; winnerUserId?: string; proof?: File } }) => {
+    async ({ matchId, data, onUploadProgress }: {
+        matchId: string;
+        data: { homeScore?: number; awayScore?: number; winnerId?: string; winnerUserId?: string; proof?: File };
+        onUploadProgress?: (progress: number) => void;
+    }) => {
         const token = getToken();
 
         if (!token) throw new Error('Nincs bejelentkezve!');
 
-        let body: any;
-        const headers: Record<string, string> = {
-            Authorization: `Bearer ${token}`,
-        };
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('PATCH', `${API_URL}/matches/${matchId}/result`);
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
-        if (data.proof) {
-            const formData = new FormData();
-            if (data.homeScore !== undefined) formData.append('homeScore', String(data.homeScore));
-            if (data.awayScore !== undefined) formData.append('awayScore', String(data.awayScore));
-            if (data.winnerId) formData.append('winnerId', data.winnerId);
-            if (data.winnerUserId) formData.append('winnerUserId', data.winnerUserId);
-            formData.append('proof', data.proof);
+            if (onUploadProgress) {
+                xhr.upload.onprogress = (event) => {
+                    if (event.lengthComputable) {
+                        const progress = Math.round((event.loaded * 100) / event.total);
+                        onUploadProgress(progress);
+                    }
+                };
+            }
 
-            body = formData;
-            // Let the browser set Content-Type with boundary
-        } else {
-            headers['Content-Type'] = 'application/json';
-            body = JSON.stringify(data);
-        }
+            xhr.onload = () => {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    try {
+                        const result = JSON.parse(xhr.responseText);
+                        if (!result.success) {
+                            reject(new Error(result.error?.message || 'Failed to update match'));
+                        } else {
+                            resolve(result.data);
+                        }
+                    } catch (e) {
+                         reject(new Error('Failed to parse response'));
+                    }
+                } else {
+                     try {
+                        const result = JSON.parse(xhr.responseText);
+                        reject(new Error(result.error?.message || 'Failed to update match'));
+                    } catch (e) {
+                        reject(new Error(xhr.statusText || 'Failed to update match'));
+                    }
+                }
+            };
 
-        const response = await fetch(`${API_URL}/matches/${matchId}/result`, {
-            method: 'PATCH',
-            headers,
-            body,
+            xhr.onerror = () => {
+                reject(new Error('Network error'));
+            };
+
+            if (data.proof) {
+                const formData = new FormData();
+                if (data.homeScore !== undefined) formData.append('homeScore', String(data.homeScore));
+                if (data.awayScore !== undefined) formData.append('awayScore', String(data.awayScore));
+                if (data.winnerId) formData.append('winnerId', data.winnerId);
+                if (data.winnerUserId) formData.append('winnerUserId', data.winnerUserId);
+                formData.append('proof', data.proof);
+                xhr.send(formData);
+            } else {
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify(data));
+            }
         });
-
-        const result: ApiResponse<any> = await response.json();
-
-        if (!result.success) {
-            throw new Error(result.error?.message || 'Failed to update match');
-        }
-
-        return result.data;
     }
 );
 
