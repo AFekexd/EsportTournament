@@ -39,7 +39,7 @@ class EmailService {
         if (SMTP_HOST && SMTP_PORT && SMTP_USER && SMTP_PASS) {
             this.transporter = nodemailer.createTransport({
                 pool: true, // Enable connection pooling
-                maxConnections: 5, // Limit concurrent connections
+                maxConnections: 3, // Limit concurrent connections (Outlook limit)
                 maxMessages: 100, // Limit messages per connection
                 host: SMTP_HOST,
                 port: parseInt(SMTP_PORT),
@@ -160,10 +160,12 @@ class EmailService {
         let sent = 0;
         let failed = 0;
 
-        // Process in chunks to prevent memory issues with very large batches
-        const BATCH_SIZE = 50;
-        for (let i = 0; i < items.length; i += BATCH_SIZE) {
-            const chunk = items.slice(i, i + BATCH_SIZE);
+        // Process in chunks to prevent memory issues and respecting rate limits
+        // Outlook limit is often 3 concurrent connections
+        const CONCURRENCY_LIMIT = 3; 
+        
+        for (let i = 0; i < items.length; i += CONCURRENCY_LIMIT) {
+            const chunk = items.slice(i, i + CONCURRENCY_LIMIT);
             
             await Promise.all(chunk.map(async (item) => {
                 try {
@@ -180,8 +182,8 @@ class EmailService {
                 }
             }));
             
-            // Small delay between chunks to let event loop breathe
-            if (i + BATCH_SIZE < items.length) await this.delay(100);
+            // Add significant delay between chunks to respect rate limits
+            if (i + CONCURRENCY_LIMIT < items.length) await this.delay(1000);
         }
 
         return { sent, failed };
