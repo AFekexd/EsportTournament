@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import type { Tournament, TournamentEntry, ApiResponse } from '../../types';
+import type { Tournament, TournamentEntry, Match, ApiResponse } from '../../types';
 import { API_URL } from '../../config';
 import { authService } from '../../lib/auth-service';
 
@@ -285,13 +285,13 @@ export const deleteBracket = createAsyncThunk(
     }
 );
 
-export const updateMatch = createAsyncThunk(
+export const updateMatch = createAsyncThunk<Match, {
+    matchId: string;
+    data: { homeScore?: number; awayScore?: number; winnerId?: string; winnerUserId?: string; proof?: File };
+    onUploadProgress?: (progress: number) => void;
+}>(
     'tournaments/updateMatch',
-    async ({ matchId, data, onUploadProgress }: {
-        matchId: string;
-        data: { homeScore?: number; awayScore?: number; winnerId?: string; winnerUserId?: string; proof?: File };
-        onUploadProgress?: (progress: number) => void;
-    }) => {
+    async ({ matchId, data, onUploadProgress }) => {
         const token = getToken();
 
         if (!token) throw new Error('Nincs bejelentkezve!');
