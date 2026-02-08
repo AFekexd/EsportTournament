@@ -363,9 +363,29 @@ class DiscordService {
         if (!this.isReady) return;
 
         try {
-            const channel = await this.client.channels.fetch(channelId);
-            if (!channel || !channel.isTextBased()) {
-                console.warn(`Proof channel ${channelId} not found or not text-based.`);
+            let targetChannel = await this.client.channels.fetch(channelId) as TextChannel;
+
+            // Try to find a specific "results" channel if the current one is not it
+            // Convention: original-name + "-eredmények"
+            if (targetChannel && targetChannel.guild) {
+                const baseName = targetChannel.name.replace('-eredmények', '');
+                const resultsChannelName = `${baseName}-eredmények`;
+                
+                // If we are NOT already in the results channel, try to find it
+                if (!targetChannel.name.endsWith('eredmények')) {
+                     const resultsChannel = targetChannel.guild.channels.cache.find(
+                        c => c.name === resultsChannelName && c.isTextBased()
+                    ) as TextChannel;
+
+                    if (resultsChannel) {
+                        console.log(`Redirecting proof from #${targetChannel.name} to #${resultsChannel.name}`);
+                        targetChannel = resultsChannel;
+                    }
+                }
+            }
+
+            if (!targetChannel || !targetChannel.isTextBased()) {
+                console.warn(`Proof channel ${channelId} (or redirect) not found or not text-based.`);
                 return;
             }
 
@@ -379,25 +399,35 @@ class DiscordService {
 
             const embed = new EmbedBuilder()
                 .setTitle('📸 Mérkőzés Eredmény Igazolás')
-                .setDescription(`**${matchInfo.tournamentName}**\n${homeDisplay} vs ${awayDisplay}`)
+                .setDescription(`**${matchInfo.tournamentName}**\nEgy új eredmény igazolás érkezett.`)
+                .setColor(0x3b82f6) // Blue
                 .addFields(
-                    { name: 'Hazai', value: homeDisplay, inline: true },
-                    { name: 'Vendég', value: awayDisplay, inline: true },
-                    { name: 'Feltöltötte', value: matchInfo.uploaderName, inline: false },
-                    { name: 'Meccs ID', value: matchInfo.matchId, inline: true }
+                    { name: 'Hazai', value: matchInfo.homeTeam, inline: true },
+                    { name: 'Vendég', value: matchInfo.awayTeam, inline: true },
+                    { name: 'VS', value: '⚡', inline: true },
+                    
+                    { name: 'Feltöltötte', value: matchInfo.uploaderName, inline: true },
+                    { name: 'Meccs ID', value: `\`${matchInfo.matchId}\``, inline: true },
                 )
-                .setColor(0x00ff00)
-                .setTimestamp();
+                .setImage(`attachment://proof_${matchInfo.matchId}.png`)
+                .setTimestamp()
+                .setFooter({ text: 'EsportHub Versenyrendszer' });
 
-            await (channel as TextChannel).send({
+            // Add mentions if available
+            let mentions = '';
+            if (matchInfo.homeDiscordId) mentions += `<@${matchInfo.homeDiscordId}> `;
+            if (matchInfo.awayDiscordId) mentions += `<@${matchInfo.awayDiscordId}>`;
+
+            await targetChannel.send({
+                content: mentions ? `Érintettek: ${mentions}` : undefined,
                 embeds: [embed],
                 files: [{
                     attachment: file.buffer,
-                    name: `proof_${matchInfo.matchId}_${Date.now()}.${file.originalname.split('.').pop()}`
+                    name: `proof_${matchInfo.matchId}.png`
                 }]
             });
 
-            console.log(`✅ Proof uploaded to Discord channel ${channelId}`);
+            console.log(`✅ Proof uploaded to Discord channel #${targetChannel.name}`);
         } catch (error) {
             console.error('Failed to send match proof:', error);
         }
@@ -1173,8 +1203,30 @@ class DiscordService {
     }
 
     async sendMatchResult(match: { tournament: string; homeTeam: string; awayTeam: string; homeScore: number; awayScore: number; winner: string }, channelId: string) {
+        let targetChannelId = channelId;
+
+        // Try to find a specific "results" channel
+        if (this.isReady) {
+            try {
+                const channel = await this.client.channels.fetch(channelId);
+                if (channel && 'guild' in channel && channel.guild) {
+                     const guildChannel = channel as TextChannel;
+                     if (!guildChannel.name.endsWith('eredmények')) {
+                        const baseName = guildChannel.name.replace('-eredmények', '');
+                        const resultsChannelName = `${baseName}-eredmények`;
+                        const resultsChannel = guildChannel.guild.channels.cache.find(
+                            c => c.name === resultsChannelName && c.isTextBased()
+                        );
+                        if (resultsChannel) {
+                             targetChannelId = resultsChannel.id;
+                        }
+                     }
+                }
+            } catch (ignore) {}
+        }
+
         const isHomeWinner = match.winner === match.homeTeam;
-        return this.sendMessage(channelId, {
+        return this.sendMessage(targetChannelId, {
             title: '⚔️ Meccs Eredmény',
             description: `**${match.tournament}**`,
             color: 0x22c55e, // Green

@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { X, Save, RotateCcw, Trash2, AlertTriangle, Trophy, Swords, Image as ImageIcon } from "lucide-react";
+import {
+  X,
+  Save,
+  RotateCcw,
+  Trash2,
+  AlertTriangle,
+  Trophy,
+  Swords,
+  Image as ImageIcon,
+} from "lucide-react";
 import type { Match } from "../../types";
 
 interface MatchEditModalProps {
@@ -53,13 +62,13 @@ export function MatchEditModal({
   isAdmin = false,
 }: MatchEditModalProps) {
   const [homeScore, setHomeScore] = useState<string>(
-    match.homeScore?.toString() || ""
+    match.homeScore?.toString() || "",
   );
   const [awayScore, setAwayScore] = useState<string>(
-    match.awayScore?.toString() || ""
+    match.awayScore?.toString() || "",
   );
   const [winnerId, setWinnerId] = useState<string>(
-    match.winnerId || match.winnerUserId || ""
+    match.winnerId || match.winnerUserId || "",
   );
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -113,9 +122,9 @@ export function MatchEditModal({
   const getBracketLabel = () => {
     if (!match.bracketType) return null;
     const labels: Record<string, string> = {
-      'UPPER': 'Felső ág',
-      'LOWER': 'Alsó ág',
-      'GRAND_FINAL': 'Nagydöntő',
+      UPPER: "Felső ág",
+      LOWER: "Alsó ág",
+      GRAND_FINAL: "Nagydöntő",
     };
     return labels[match.bracketType] || match.bracketType;
   };
@@ -130,7 +139,7 @@ export function MatchEditModal({
 
       {/* Modal */}
       <div
-        className="relative w-full max-w-lg bg-gradient-to-b from-[#1a1b26] to-[#13141c] rounded-2xl border border-white/10 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] overflow-hidden animate-in fade-in zoom-in-95 duration-300"
+        className="relative w-full max-w-lg bg-gradient-to-b from-[#1a1b26] to-[#13141c] rounded-2xl border border-white/10 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] overflow-hidden max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header with gradient */}
@@ -172,8 +181,12 @@ export function MatchEditModal({
                 <AlertTriangle className="text-red-400" size={18} />
               </div>
               <div className="flex-grow">
-                <p className="text-red-300 font-semibold text-sm">Biztosan törölni szeretnéd?</p>
-                <p className="text-gray-500 text-xs mt-0.5">Ez a művelet nem visszavonható.</p>
+                <p className="text-red-300 font-semibold text-sm">
+                  Biztosan törölni szeretnéd?
+                </p>
+                <p className="text-gray-500 text-xs mt-0.5">
+                  Ez a művelet nem visszavonható.
+                </p>
                 <div className="flex gap-2 mt-3">
                   <button
                     type="button"
@@ -208,8 +221,12 @@ export function MatchEditModal({
                 <AlertTriangle className="text-yellow-400" size={18} />
               </div>
               <div className="flex-grow">
-                <p className="text-yellow-300 font-semibold text-sm">Visszaállítod a meccset?</p>
-                <p className="text-gray-500 text-xs mt-0.5">Az eredmény törlődik és a meccs újra függőben lesz.</p>
+                <p className="text-yellow-300 font-semibold text-sm">
+                  Visszaállítod a meccset?
+                </p>
+                <p className="text-gray-500 text-xs mt-0.5">
+                  Az eredmény törlődik és a meccs újra függőben lesz.
+                </p>
                 <div className="flex gap-2 mt-3">
                   <button
                     type="button"
@@ -243,7 +260,9 @@ export function MatchEditModal({
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(124,58,237,0.1),transparent_70%)]" />
               <div className="relative flex items-center justify-between">
                 <div className="flex-1 text-center">
-                  <p className="text-white font-bold text-lg truncate px-2">{homeName}</p>
+                  <p className="text-white font-bold text-lg truncate px-2">
+                    {homeName}
+                  </p>
                 </div>
                 <div className="flex-shrink-0 mx-4">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-lg shadow-primary/20">
@@ -251,8 +270,9 @@ export function MatchEditModal({
                   </div>
                 </div>
                 <div className="flex-1 text-center">
-                  <p className="text-white font-bold text-lg truncate px-2">{awayName}</p>
-
+                  <p className="text-white font-bold text-lg truncate px-2">
+                    {awayName}
+                  </p>
                 </div>
               </div>
             </div>
@@ -303,9 +323,9 @@ export function MatchEditModal({
                 onChange={(e) => setWinnerId(e.target.value)}
                 style={{
                   backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'right 12px center',
-                  backgroundSize: '20px',
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "right 12px center",
+                  backgroundSize: "20px",
                 }}
               >
                 <option value="">Automatikus (pontszám alapján)</option>
@@ -313,7 +333,8 @@ export function MatchEditModal({
                 {awayId && <option value={awayId}>{awayName}</option>}
               </select>
               <p className="text-xs text-gray-500">
-                Ha üresen hagyod, a győztest a pontszám alapján határozza meg a rendszer
+                Ha üresen hagyod, a győztest a pontszám alapján határozza meg a
+                rendszer
               </p>
             </div>
           </div>
@@ -337,7 +358,8 @@ export function MatchEditModal({
                 />
               </div>
               <p className="text-xs text-gray-500">
-                Töltsd fel az eredményről készült képet (nem kerül mentésre az adatbázisba, csak Discordra)
+                Töltsd fel az eredményről készült képet (nem kerül mentésre az
+                adatbázisba, csak Discordra)
               </p>
             </div>
           </div>
@@ -351,7 +373,7 @@ export function MatchEditModal({
                   Adminisztrátori műveletek
                   <span className="flex-grow h-px bg-gray-700/50" />
                 </p>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {hasResult && onReset && (
                     <button
                       type="button"
@@ -359,7 +381,10 @@ export function MatchEditModal({
                       onClick={() => setShowResetConfirm(true)}
                       disabled={isLoading}
                     >
-                      <RotateCcw size={14} className="group-hover:rotate-[-360deg] transition-transform duration-500" />
+                      <RotateCcw
+                        size={14}
+                        className="group-hover:rotate-[-360deg] transition-transform duration-500"
+                      />
                       Eredmény törlése
                     </button>
                   )}
@@ -370,7 +395,10 @@ export function MatchEditModal({
                       onClick={() => setShowDeleteConfirm(true)}
                       disabled={isLoading}
                     >
-                      <Trash2 size={14} className="group-hover:scale-110 transition-transform" />
+                      <Trash2
+                        size={14}
+                        className="group-hover:scale-110 transition-transform"
+                      />
                       Meccs törlése
                     </button>
                   )}
