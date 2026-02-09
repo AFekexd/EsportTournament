@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Gamepad2, Users, Trophy, ArrowRight } from "lucide-react";
+import { Gamepad2, Trophy, ArrowRight } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import { fetchGames } from "../store/slices/gamesSlice";
 import { BlurImage } from "../components/common/BlurImage";
@@ -51,12 +51,7 @@ function GameCard({ game }: { game: Game }) {
               {game._count?.tournaments || 0} verseny
             </span>
           </div>
-          <div className="flex items-center gap-2 text-gray-400 group-hover:text-gray-300 transition-colors">
-            <Users size={16} className="text-blue-400" />
-            <span className="text-xs font-medium">
-              {game._count?.userRanks || 0} játékos
-            </span>
-          </div>
+
         </div>
 
         {/* Action Link */}

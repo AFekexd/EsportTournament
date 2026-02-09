@@ -89,7 +89,9 @@
 .rules-content {
     color: hsl(var(--muted-foreground));
     line-height: 1.8;
-    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
 }
 
 /* Tournaments List */

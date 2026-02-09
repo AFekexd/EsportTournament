@@ -158,7 +158,7 @@ export function GameDetailPage() {
           <h2 className="section-title">Szabályok</h2>
           <div className="rules-content">
             <div
-              className="rules-content"
+              className="prose prose-invert max-w-none break-words"
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(currentGame.rules),
               }}
