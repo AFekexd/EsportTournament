@@ -119,7 +119,7 @@ export function TournamentDetailPage() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => {},
+    onConfirm: () => { },
     variant: "primary",
   });
 
@@ -570,10 +570,9 @@ export function TournamentDetailPage() {
               {/* Badges Row */}
               <div className="flex flex-wrap items-center gap-3">
                 <span
-                  className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md shadow-lg ${
-                    statusLabels[currentTournament.status]?.class ||
+                  className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md shadow-lg ${statusLabels[currentTournament.status]?.class ||
                     "bg-gray-500/20 text-gray-400 border-gray-500/50"
-                  }`}
+                    }`}
                 >
                   <StatusIcon size={14} />
                   {statusLabels[currentTournament.status]?.label ||
@@ -688,13 +687,13 @@ export function TournamentDetailPage() {
             {/* YouTube */}
             {(currentTournament.streamUrl.includes("youtube.com") ||
               currentTournament.streamUrl.includes("youtu.be")) && (
-              <iframe
-                src={`https://www.youtube.com/embed/${currentTournament.streamUrl.includes("v=") ? currentTournament.streamUrl.split("v=")[1].split("&")[0] : currentTournament.streamUrl.split("/").pop()}`}
-                className="absolute top-0 left-0 w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            )}
+                <iframe
+                  src={`https://www.youtube.com/embed/${currentTournament.streamUrl.includes("v=") ? currentTournament.streamUrl.split("v=")[1].split("&")[0] : currentTournament.streamUrl.split("/").pop()}`}
+                  className="absolute top-0 left-0 w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              )}
 
             {/* TikTok */}
             {currentTournament.streamUrl.includes("tiktok.com") && (
@@ -812,60 +811,57 @@ export function TournamentDetailPage() {
           {/* Rules Card */}
           {(currentTournament.game?.rules ||
             currentTournament.game?.rulesPdfUrl) && (
-            <div
-              className={`bg-[#1a1b26] p-6 rounded-xl border border-white/5 shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group cursor-pointer`}
-              onClick={() => setShowViewRulesModal(true)}
-            >
-              <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
-                <ScrollText size={24} />
+              <div
+                className={`bg-[#1a1b26] p-6 rounded-xl border border-white/5 shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group cursor-pointer`}
+                onClick={() => setShowViewRulesModal(true)}
+              >
+                <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
+                  <ScrollText size={24} />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">
+                    Szabályzat
+                  </p>
+                  <p className="text-lg font-bold text-white flex items-center gap-2">
+                    Megtekintés
+                    <ArrowRight
+                      size={16}
+                      className="group-hover:translate-x-1 transition-transform"
+                    />
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">
-                  Szabályzat
-                </p>
-                <p className="text-lg font-bold text-white flex items-center gap-2">
-                  Megtekintés
-                  <ArrowRight
-                    size={16}
-                    className="group-hover:translate-x-1 transition-transform"
-                  />
-                </p>
-              </div>
-            </div>
-          )}
+            )}
         </div>
 
         {/* Tabs */}
         <div className="flex justify-center mb-8">
           <div className="bg-[#1a1b26] p-1 rounded-full border border-white/5 inline-flex">
             <button
-              className={`px-8 py-2 rounded-full text-sm font-bold transition-all ${
-                activeTab === "info"
-                  ? "bg-primary text-black shadow-lg"
-                  : "text-gray-400 hover:text-white"
-              }`}
+              className={`px-8 py-2 rounded-full text-sm font-bold transition-all ${activeTab === "info"
+                ? "bg-primary text-black shadow-lg"
+                : "text-gray-400 hover:text-white"
+                }`}
               onClick={() => setActiveTab("info")}
             >
               Információk
             </button>
             {currentTournament.hasQualifier && (
               <button
-                className={`px-8 py-2 rounded-full text-sm font-bold transition-all ${
-                  activeTab === "qualifier"
-                    ? "bg-primary text-black shadow-lg"
-                    : "text-gray-400 hover:text-white"
-                }`}
+                className={`px-8 py-2 rounded-full text-sm font-bold transition-all ${activeTab === "qualifier"
+                  ? "bg-primary text-black shadow-lg"
+                  : "text-gray-400 hover:text-white"
+                  }`}
                 onClick={() => setActiveTab("qualifier")}
               >
                 Selejtező
               </button>
             )}
             <button
-              className={`px-8 py-2 rounded-full text-sm font-bold transition-all ${
-                activeTab === "bracket"
-                  ? "bg-primary text-black shadow-lg"
-                  : "text-gray-400 hover:text-white"
-              }`}
+              className={`px-8 py-2 rounded-full text-sm font-bold transition-all ${activeTab === "bracket"
+                ? "bg-primary text-black shadow-lg"
+                : "text-gray-400 hover:text-white"
+                }`}
               onClick={() => setActiveTab("bracket")}
             >
               Bracket
@@ -892,19 +888,18 @@ export function TournamentDetailPage() {
 
               <div className="overflow-x-auto">
                 {currentTournament.entries &&
-                currentTournament.entries.length > 0 ? (
+                  currentTournament.entries.length > 0 ? (
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="bg-white/5 border-b border-white/10 text-xs text-gray-400 uppercase tracking-wider">
                         <th className="px-6 py-4 font-medium w-20">#</th>
                         <th className="px-6 py-4 font-medium">Résztvevő</th>
-                        <th className="px-6 py-4 font-medium">ELO</th>
                         {(user?.role === "ADMIN" ||
                           user?.role === "ORGANIZER") && (
-                          <th className="px-6 py-4 font-medium text-right">
-                            Műveletek
-                          </th>
-                        )}
+                            <th className="px-6 py-4 font-medium text-right">
+                              Műveletek
+                            </th>
+                          )}
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
@@ -916,9 +911,7 @@ export function TournamentDetailPage() {
                         const avatar = isSolo
                           ? entry.user!.avatarUrl
                           : entry.team!.logoUrl;
-                        const elo = isSolo
-                          ? entry.user!.elo || 1000
-                          : entry.team!.elo || 1000;
+
                         const link = isSolo
                           ? `/profile/${entry.user!.id}`
                           : `/teams/${entry.team!.id}`;
@@ -954,25 +947,23 @@ export function TournamentDetailPage() {
                                 </span>
                               </Link>
                             </td>
-                            <td className="px-6 py-4 text-gray-400 font-mono">
-                              {elo}
-                            </td>
+
                             {(user?.role === "ADMIN" ||
                               user?.role === "ORGANIZER") && (
-                              <td className="px-6 py-4 text-right">
-                                <button
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    handleUnregister(entry);
-                                  }}
-                                  className="p-2 bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-400 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                                  title="Regisztráció törlése"
-                                >
-                                  <Trash2 size={16} />
-                                </button>
-                              </td>
-                            )}
+                                <td className="px-6 py-4 text-right">
+                                  <button
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      handleUnregister(entry);
+                                    }}
+                                    className="p-2 bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-400 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                                    title="Regisztráció törlése"
+                                  >
+                                    <Trash2 size={16} />
+                                  </button>
+                                </td>
+                              )}
                           </tr>
                         );
                       })}
@@ -1202,9 +1193,8 @@ export function TournamentDetailPage() {
 
         {activeTab === "bracket" && (
           <div
-            className={`bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden shadow-2xl ${
-              isFullscreen ? "fixed inset-0 z-50 rounded-none" : "relative"
-            }`}
+            className={`bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden shadow-2xl ${isFullscreen ? "fixed inset-0 z-50 rounded-none" : "relative"
+              }`}
           >
             <div className="p-4 border-b border-white/5 flex justify-between items-center bg-black/20">
               <h2 className="text-lg font-bold text-white flex items-center gap-2">
@@ -1216,11 +1206,10 @@ export function TournamentDetailPage() {
                   <>
                     {!currentTournament.matches?.length ? (
                       <button
-                        className={`btn btn-primary btn-sm ${
-                          !isQualifierFinished
-                            ? "opacity-50 cursor-not-allowed"
-                            : ""
-                        }`}
+                        className={`btn btn-primary btn-sm ${!isQualifierFinished
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                          }`}
                         onClick={
                           isQualifierFinished
                             ? handleGenerateBracket
@@ -1278,11 +1267,10 @@ export function TournamentDetailPage() {
               </div>
             </div>
             <div
-              className={`overflow-auto flex flex-col relative ${
-                isFullscreen
-                  ? "h-[calc(100vh-60px)]"
-                  : "min-h-[600px] max-h-[800px]"
-              }`}
+              className={`overflow-auto flex flex-col relative ${isFullscreen
+                ? "h-[calc(100vh-60px)]"
+                : "min-h-[600px] max-h-[800px]"
+                }`}
             >
               {/* Loading Overlay */}
               {updateLoading && (
@@ -1377,11 +1365,10 @@ export function TournamentDetailPage() {
                                       );
                                       setSearchedUsers([]);
                                     }}
-                                    className={`p-2 hover:bg-white/5 cursor-pointer flex items-center justify-between text-sm ${
-                                      targetUserId === u.id
-                                        ? "bg-blue-500/20 text-blue-200"
-                                        : "text-gray-300"
-                                    }`}
+                                    className={`p-2 hover:bg-white/5 cursor-pointer flex items-center justify-between text-sm ${targetUserId === u.id
+                                      ? "bg-blue-500/20 text-blue-200"
+                                      : "text-gray-300"
+                                      }`}
                                   >
                                     <span>{u.displayName || u.username}</span>
                                     <span className="text-xs text-gray-500">
@@ -1436,11 +1423,10 @@ export function TournamentDetailPage() {
                                       setSelectedTeamId(team.id);
                                       setTeamSearchQuery(""); // Hide results but keep selection
                                     }}
-                                    className={`p-2 hover:bg-white/5 cursor-pointer flex items-center justify-between text-sm ${
-                                      selectedTeamId === team.id
-                                        ? "bg-blue-500/20 text-blue-200"
-                                        : "text-gray-300"
-                                    }`}
+                                    className={`p-2 hover:bg-white/5 cursor-pointer flex items-center justify-between text-sm ${selectedTeamId === team.id
+                                      ? "bg-blue-500/20 text-blue-200"
+                                      : "text-gray-300"
+                                      }`}
                                   >
                                     <span>{team.name}</span>
                                     <span className="text-xs text-gray-500">
@@ -1540,11 +1526,10 @@ export function TournamentDetailPage() {
                             Válaszd ki a versenyzőket
                           </label>
                           <span
-                            className={`text-xs font-bold px-2 py-1 rounded ${
-                              selectedMemberIds.length === requiredTeamSize
-                                ? "bg-green-500/20 text-green-400"
-                                : "bg-primary/20 text-primary"
-                            }`}
+                            className={`text-xs font-bold px-2 py-1 rounded ${selectedMemberIds.length === requiredTeamSize
+                              ? "bg-green-500/20 text-green-400"
+                              : "bg-primary/20 text-primary"
+                              }`}
                           >
                             Kiválasztva: {selectedMemberIds.length} /{" "}
                             {requiredTeamSize}
@@ -1579,15 +1564,13 @@ export function TournamentDetailPage() {
                                 }}
                                 className={`
                                   relative p-3 rounded-lg border-2 cursor-pointer transition-all duration-300 flex items-center gap-4 group overflow-hidden
-                                  ${
-                                    isSelected
-                                      ? "bg-primary/5 border-primary shadow-[0_0_20px_rgba(var(--primary-rgb),0.2)]"
-                                      : "bg-black/20 border-white/5 hover:border-white/20 hover:bg-white/5"
+                                  ${isSelected
+                                    ? "bg-primary/5 border-primary shadow-[0_0_20px_rgba(var(--primary-rgb),0.2)]"
+                                    : "bg-black/20 border-white/5 hover:border-white/20 hover:bg-white/5"
                                   }
-                                  ${
-                                    !isSelected && isFull
-                                      ? "opacity-30 grayscale cursor-not-allowed border-transparent"
-                                      : ""
+                                  ${!isSelected && isFull
+                                    ? "opacity-30 grayscale cursor-not-allowed border-transparent"
+                                    : ""
                                   }
                             `}
                               >
@@ -1599,11 +1582,10 @@ export function TournamentDetailPage() {
                                 <div
                                   className={`
                                   relative w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-300 z-10 flex-shrink-0
-                                  ${
-                                    isSelected
+                                  ${isSelected
                                       ? "bg-primary border-primary scale-110"
                                       : "border-gray-600 bg-transparent group-hover:border-gray-400"
-                                  }
+                                    }
                               `}
                                 >
                                   {isSelected && (
@@ -1615,9 +1597,8 @@ export function TournamentDetailPage() {
                                 </div>
 
                                 <div
-                                  className={`relative w-10 h-10 rounded-lg overflow-hidden border border-white/10 transition-transform duration-300 flex-shrink-0 ${
-                                    isSelected ? "ring-2 ring-primary/50" : ""
-                                  }`}
+                                  className={`relative w-10 h-10 rounded-lg overflow-hidden border border-white/10 transition-transform duration-300 flex-shrink-0 ${isSelected ? "ring-2 ring-primary/50" : ""
+                                    }`}
                                 >
                                   {member.user.avatarUrl ? (
                                     <img
@@ -1636,11 +1617,10 @@ export function TournamentDetailPage() {
 
                                 <div className="overflow-hidden z-10">
                                   <p
-                                    className={`text-sm font-bold truncate transition-colors ${
-                                      isSelected
-                                        ? "text-white"
-                                        : "text-gray-300 group-hover:text-white"
-                                    }`}
+                                    className={`text-sm font-bold truncate transition-colors ${isSelected
+                                      ? "text-white"
+                                      : "text-gray-300 group-hover:text-white"
+                                      }`}
                                   >
                                     {member.user.displayName ||
                                       member.user.username}
@@ -1668,15 +1648,14 @@ export function TournamentDetailPage() {
                 <button
                   className={`
                     group relative px-8 py-2.5 rounded-xl text-sm font-bold text-white shadow-lg transition-all duration-300
-                    ${
-                      (requiredTeamSize > 1 &&
-                        (!selectedTeamId ||
-                          selectedMemberIds.length !== requiredTeamSize)) ||
+                    ${(requiredTeamSize > 1 &&
+                      (!selectedTeamId ||
+                        selectedMemberIds.length !== requiredTeamSize)) ||
                       (requiredTeamSize === 1 &&
                         targetUserId &&
                         !userSearchQuery)
-                        ? "bg-gray-800 text-gray-500 cursor-not-allowed shadow-none"
-                        : "bg-gradient-to-r from-primary to-purple-600 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] hover:-translate-y-0.5"
+                      ? "bg-gray-800 text-gray-500 cursor-not-allowed shadow-none"
+                      : "bg-gradient-to-r from-primary to-purple-600 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] hover:-translate-y-0.5"
                     }
                 `}
                   onClick={handleRegister}
