@@ -201,7 +201,7 @@ export function TournamentsPage() {
       {/* Modern Header with Gradient */}
       <div className="mb-12 text-center relative">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-primary/20 blur-3xl rounded-full -z-10" />
-        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-primary-100 to-gray-400 bg-clip-text text-transparent mb-4">
+        <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-white via-primary-100 to-gray-400 bg-clip-text text-transparent mb-4">
           Versenyek
         </h1>
         <p className="text-lg text-gray-400 max-w-2xl mx-auto">
@@ -239,7 +239,7 @@ export function TournamentsPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="pl-4 pr-10 py-3 bg-[#1a1b26] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer min-w-[170px]"
+              className="w-full sm:w-auto pl-4 pr-10 py-3 bg-[#1a1b26] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer min-w-[170px]"
             >
               <option value="">Minden státusz</option>
               <option value="REGISTRATION">Regisztráció</option>
@@ -251,7 +251,7 @@ export function TournamentsPage() {
           <select
             value={teamSizeFilter}
             onChange={(e) => setTeamSizeFilter(e.target.value)}
-            className="px-4 py-3 bg-[#1a1b26] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer"
+            className="w-full sm:w-auto px-4 py-3 bg-[#1a1b26] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer"
           >
             <option value="">Minden méret</option>
             <option value="1">1v1</option>
@@ -263,7 +263,7 @@ export function TournamentsPage() {
           <select
             value={gameFilter}
             onChange={(e) => setGameFilter(e.target.value)}
-            className="px-4 py-3 bg-[#1a1b26] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer"
+            className="w-full sm:w-auto px-4 py-3 bg-[#1a1b26] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer"
           >
             <option value="">Minden játék</option>
             {games.map((game: Game) => (

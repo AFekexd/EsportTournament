@@ -659,7 +659,7 @@ export function ProfilePage() {
               </button>
             )}
           </div>
-          <div className="p-6">
+          <div className="p-4 md:p-6 overflow-x-auto custom-scrollbar">
             <MatchHistory
               matches={(userMatches || []).slice(0, 5)}
               currentUserId={isOwnProfile ? user?.id || '' : (profileUser as any)?.id || ''}
@@ -687,7 +687,7 @@ export function ProfilePage() {
           <div className="lg:col-span-2 space-y-6">
             {/* Skill Levels Section */}
             <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-visible">
-              <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
+              <div className="p-4 md:p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
                 <h2 className="text-lg font-bold text-white flex items-center gap-2">
                   <Shield size={20} className="text-primary" />
                   Játék Skillek
@@ -702,7 +702,7 @@ export function ProfilePage() {
                 )}
               </div>
 
-              <div className="p-6">
+              <div className="p-4 md:p-6">
                 {games.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
                     <p>Még nincsenek játékok a rendszerben.</p>
@@ -878,7 +878,7 @@ export function ProfilePage() {
                       <X size={20} />
                     </button>
                   </div>
-                  <div className="p-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                  <div className="p-4 md:p-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
                     <div className="space-y-2">
                       {games.filter(g => !userRanks.find(ur => ur.gameId === g.id)).length === 0 ? (
                         <p className="text-center text-gray-500 py-4">Már minden játékot hozzáadtál.</p>
@@ -912,7 +912,7 @@ export function ProfilePage() {
 
             {/* Teams Section */}
             <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden">
-              <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
+              <div className="p-4 md:p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
                 <h2 className="text-lg font-bold text-white flex items-center gap-2">
                   <Users size={20} className="text-primary" />
                   Csapatok
@@ -927,7 +927,7 @@ export function ProfilePage() {
                 )}
               </div>
 
-              <div className="p-6">
+              <div className="p-4 md:p-6">
                 {effectiveTeams.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-12 text-gray-500 bg-[#0f1015]/30 rounded-xl border border-dashed border-white/5">
                     <Users size={48} className="mb-4 opacity-20" />
@@ -980,7 +980,7 @@ export function ProfilePage() {
               {/* Background decorative elements */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-[#66c0f4] rounded-full filter blur-[100px] opacity-[0.05] group-hover:opacity-[0.1] transition-opacity"></div>
 
-              <div className="p-6 border-b border-white/5 flex justify-between items-center bg-[#171a21] relative z-10">
+              <div className="p-4 md:p-6 border-b border-white/5 flex justify-between items-center bg-[#171a21] relative z-10">
                 <h2 className="text-xl font-bold text-[#c7d5e0] flex items-center gap-3">
                   <div className="w-8 h-8 flex items-center justify-center  rounded-lg shadow-inner">
                     <img src="/steam.png" className="w-full h-full object-cover " />
@@ -1002,7 +1002,7 @@ export function ProfilePage() {
                 )}
               </div>
 
-              <div className="p-6 relative z-10">
+              <div className="p-4 md:p-6 relative z-10">
                 {(
                   isOwnProfile ? user?.steamId : (profileUser as any)?.steamId
                 ) ? (
@@ -1336,7 +1336,7 @@ export function ProfilePage() {
           <div className="space-y-6">
             {/* Recent Tournaments */}
             <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden h-full">
-              <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
+              <div className="p-4 md:p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
                 <h2 className="text-lg font-bold text-white flex items-center gap-2">
                   <Trophy size={20} className="text-purple-400" />
                   Versenyek

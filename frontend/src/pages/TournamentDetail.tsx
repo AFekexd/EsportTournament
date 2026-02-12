@@ -20,6 +20,7 @@ import {
   LogOut,
   ScrollText,
   ArrowRight,
+  Info,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import { useAuth } from "../hooks/useAuth";
@@ -504,11 +505,13 @@ export function TournamentDetailPage() {
         <div className="container mx-auto px-4 h-full relative flex flex-col justify-end pb-8">
           <Link
             to="/tournaments"
-            className="absolute top-8 left-4 md:left-4 inline-flex items-center gap-2 text-white/70 hover:text-white bg-black/40 hover:bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/5 transition-all text-sm font-medium z-20"
+            className="absolute top-8 left-4 md:left-4 inline-flex items-center gap-2 text-white/70 hover:text-white bg-black/40 hover:bg-black/60 backdrop-blur-md px-3 py-2 md:px-4 md:py-2 rounded-full border border-white/5 transition-all text-sm font-medium z-20"
           >
             <ArrowLeft size={16} />
-            Vissza a versenyekhez
+            <span className="hidden md:inline">Vissza a versenyekhez</span>
+            <span className="md:hidden">Vissza</span>
           </Link>
+
 
           {/* Top Right Actions */}
           <div className="absolute top-8 right-4 md:right-4 flex items-center gap-2 z-20">
@@ -602,15 +605,11 @@ export function TournamentDetailPage() {
               </div>
 
               <div>
-                <h1 className="text-4xl md:text-6xl font-black text-white leading-tight drop-shadow-2xl tracking-tight mb-4">
+                <h1 className="text-3xl md:text-6xl font-black text-white leading-tight drop-shadow-2xl tracking-tight mb-4">
                   {currentTournament.name}
                 </h1>
 
-                {currentTournament.description && (
-                  <p className="text-lg text-gray-300 max-w-3xl leading-relaxed drop-shadow-md">
-                    {currentTournament.description}
-                  </p>
-                )}
+
               </div>
 
               <div className="flex flex-wrap items-center gap-6">
@@ -643,7 +642,7 @@ export function TournamentDetailPage() {
                   !isAlreadyRegistered && (
                     <Button
                       onClick={() => setShowRegisterModal(true)}
-                      className="bg-primary hover:bg-primary-hover text-white font-bold px-8 py-2.5 rounded-xl shadow-lg shadow-primary/20 hover:scale-105 transition-all"
+                      className="bg-primary hover:bg-primary-hover text-white font-bold px-8 py-2.5 rounded-xl shadow-lg shadow-primary/20 hover:scale-105 transition-all w-full sm:w-auto"
                     >
                       <UserPlus size={18} className="mr-2" />
                       Nevezés
@@ -836,9 +835,9 @@ export function TournamentDetailPage() {
 
         {/* Tabs */}
         <div className="flex justify-center mb-8">
-          <div className="bg-[#1a1b26] p-1 rounded-full border border-white/5 inline-flex">
+          <div className="bg-[#1a1b26] p-1 rounded-full border border-white/5 inline-flex overflow-x-auto max-w-full">
             <button
-              className={`px-8 py-2 rounded-full text-sm font-bold transition-all ${activeTab === "info"
+              className={`px-4 md:px-8 py-2 rounded-full text-sm font-bold transition-all ${activeTab === "info"
                 ? "bg-primary text-black shadow-lg"
                 : "text-gray-400 hover:text-white"
                 }`}
@@ -848,7 +847,7 @@ export function TournamentDetailPage() {
             </button>
             {currentTournament.hasQualifier && (
               <button
-                className={`px-8 py-2 rounded-full text-sm font-bold transition-all ${activeTab === "qualifier"
+                className={`px-4 md:px-8 py-2 rounded-full text-sm font-bold transition-all ${activeTab === "qualifier"
                   ? "bg-primary text-black shadow-lg"
                   : "text-gray-400 hover:text-white"
                   }`}
@@ -858,7 +857,7 @@ export function TournamentDetailPage() {
               </button>
             )}
             <button
-              className={`px-8 py-2 rounded-full text-sm font-bold transition-all ${activeTab === "bracket"
+              className={`px-4 md:px-8 py-2 rounded-full text-sm font-bold transition-all ${activeTab === "bracket"
                 ? "bg-primary text-black shadow-lg"
                 : "text-gray-400 hover:text-white"
                 }`}
@@ -872,6 +871,20 @@ export function TournamentDetailPage() {
         {/* Content */}
         {activeTab === "info" && (
           <div className="space-y-8">
+            {/* Description Section */}
+            {currentTournament.description && (
+              <div className="bg-[#1a1b26] p-6 rounded-xl border border-white/5 shadow-lg">
+                <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <Info size={20} className="text-primary" />
+                  Leírás
+                </h2>
+                <div className="prose prose-invert max-w-none text-gray-300">
+                  <p className="whitespace-pre-wrap leading-relaxed">
+                    {currentTournament.description}
+                  </p>
+                </div>
+              </div>
+            )}
             {/* Participants Section */}
             <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden">
               <div className="p-6 border-b border-white/5 flex justify-between items-center">
@@ -892,11 +905,11 @@ export function TournamentDetailPage() {
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="bg-white/5 border-b border-white/10 text-xs text-gray-400 uppercase tracking-wider">
-                        <th className="px-6 py-4 font-medium w-20">#</th>
-                        <th className="px-6 py-4 font-medium">Résztvevő</th>
+                        <th className="px-4 md:px-6 py-4 font-medium w-20">#</th>
+                        <th className="px-4 md:px-6 py-4 font-medium">Résztvevő</th>
                         {(user?.role === "ADMIN" ||
                           user?.role === "ORGANIZER") && (
-                            <th className="px-6 py-4 font-medium text-right">
+                            <th className="px-4 md:px-6 py-4 font-medium text-right">
                               Műveletek
                             </th>
                           )}
@@ -921,15 +934,15 @@ export function TournamentDetailPage() {
                             key={entry.id}
                             className="group hover:bg-white/5 transition-colors"
                           >
-                            <td className="px-6 py-4 text-gray-500 font-mono text-sm">
+                            <td className="px-4 md:px-6 py-4 text-gray-500 font-mono text-sm">
                               #{index + 1}
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-4 md:px-6 py-4">
                               <Link
                                 to={link}
                                 className="flex items-center gap-3 group/link"
                               >
-                                <div className="w-10 h-10 rounded-lg bg-black/30 flex items-center justify-center border border-white/5 overflow-hidden text-primary group-hover/link:border-primary/30 transition-colors">
+                                <div className="w-10 h-10 shrink-0 rounded-lg bg-black/30 flex items-center justify-center border border-white/5 overflow-hidden text-primary group-hover/link:border-primary/30 transition-colors">
                                   {avatar ? (
                                     <img
                                       src={avatar}
@@ -950,14 +963,14 @@ export function TournamentDetailPage() {
 
                             {(user?.role === "ADMIN" ||
                               user?.role === "ORGANIZER") && (
-                                <td className="px-6 py-4 text-right">
+                                <td className="px-4 md:px-6 py-4 text-right">
                                   <button
                                     onClick={(e) => {
                                       e.preventDefault();
                                       e.stopPropagation();
                                       handleUnregister(entry);
                                     }}
-                                    className="p-2 bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-400 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                                    className="p-2 bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-400 rounded-lg transition-colors md:opacity-0 group-hover:md:opacity-100"
                                     title="Regisztráció törlése"
                                   >
                                     <Trash2 size={16} />
@@ -1010,11 +1023,11 @@ export function TournamentDetailPage() {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-white/10 text-xs text-gray-400 uppercase tracking-wider">
-                      <th className="px-6 py-4 font-medium">Kiemelés</th>
-                      <th className="px-6 py-4 font-medium">Résztvevő</th>
-                      <th className="px-6 py-4 font-medium">Mérkőzések</th>
-                      <th className="px-6 py-4 font-medium">Pontszám</th>
-                      <th className="px-6 py-4 font-medium text-right">
+                      <th className="px-4 md:px-6 py-4 font-medium">Kiemelés</th>
+                      <th className="px-4 md:px-6 py-4 font-medium">Résztvevő</th>
+                      <th className="px-4 md:px-6 py-4 font-medium">Mérkőzések</th>
+                      <th className="px-4 md:px-6 py-4 font-medium">Pontszám</th>
+                      <th className="px-4 md:px-6 py-4 font-medium text-right">
                         Kezelés
                       </th>
                     </tr>
@@ -1060,14 +1073,14 @@ export function TournamentDetailPage() {
                             key={entry.id}
                             className={`group transition-colors ${rowClass}`}
                           >
-                            <td className="px-6 py-4">
+                            <td className="px-4 md:px-6 py-4">
                               <span className="font-mono text-gray-500 bg-white/5 px-2 py-1 rounded">
                                 #{entry.seed}
                               </span>
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-4 md:px-6 py-4">
                               <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded bg-gray-800 flex items-center justify-center border border-white/10 overflow-hidden text-xs font-bold text-gray-400">
+                                <div className="w-8 h-8 shrink-0 rounded bg-gray-800 flex items-center justify-center border border-white/10 overflow-hidden text-xs font-bold text-gray-400">
                                   {avatar ? (
                                     <img
                                       src={avatar}
@@ -1092,7 +1105,7 @@ export function TournamentDetailPage() {
                                 )}
                               </div>
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-4 md:px-6 py-4">
                               {isEditing ? (
                                 <input
                                   type="number"
@@ -1121,7 +1134,7 @@ export function TournamentDetailPage() {
                                 </span>
                               )}
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-4 md:px-6 py-4">
                               {isEditing ? (
                                 <input
                                   type="number"
@@ -1152,7 +1165,7 @@ export function TournamentDetailPage() {
                                 </span>
                               )}
                             </td>
-                            <td className="px-6 py-4 text-right">
+                            <td className="px-4 md:px-6 py-4 text-right">
                               {(user?.role === "ADMIN" ||
                                 user?.role === "ORGANIZER") &&
                                 (isEditing ? (

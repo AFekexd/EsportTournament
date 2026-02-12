@@ -178,7 +178,7 @@ export function TeamsPage() {
       {/* Modern Header with Gradient */}
       <div className="mb-12 text-center relative">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-primary/20 blur-3xl rounded-full -z-10" />
-        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-primary-100 to-gray-400 bg-clip-text text-transparent mb-4">
+        <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-white via-primary-100 to-gray-400 bg-clip-text text-transparent mb-4">
           Csapatok
         </h1>
         <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-1">
@@ -193,20 +193,19 @@ export function TeamsPage() {
         </p>
 
         {isAuthenticated && (
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
             <button
-              className={`flex items-center gap-2 px-6 py-3 border rounded-xl font-semibold transition-all ${
-                filterMyTeams
+              className={`flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 border rounded-xl font-semibold transition-all ${filterMyTeams
                   ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
                   : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border-white/10"
-              }`}
+                }`}
               onClick={() => setFilterMyTeams(!filterMyTeams)}
             >
               <Users size={18} />
               Saját csapataim
             </button>
             <button
-              className="flex items-center gap-2 px-6 py-3 bg-[#1a1b26] hover:bg-[#0f1015] border border-white/10 text-white rounded-xl font-semibold transition-all"
+              className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-[#1a1b26] hover:bg-[#0f1015] border border-white/10 text-white rounded-xl font-semibold transition-all"
               onClick={() => setShowJoinModal(true)}
             >
               <UserPlus size={18} />
@@ -214,7 +213,7 @@ export function TeamsPage() {
             </button>
             <Link
               to="/teams/create"
-              className="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold transition-all shadow-lg shadow-primary/20"
+              className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold transition-all shadow-lg shadow-primary/20"
               style={{ color: "white" }}
             >
               <Plus size={18} />
@@ -289,11 +288,10 @@ export function TeamsPage() {
           {[...Array(pagination.pages)].map((_, i) => (
             <button
               key={i}
-              className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                pagination.page === i + 1
+              className={`px-4 py-2 rounded-lg font-medium transition-all ${pagination.page === i + 1
                   ? "bg-primary text-white shadow-lg shadow-primary/20"
                   : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border border-white/10"
-              }`}
+                }`}
               onClick={() =>
                 dispatch(
                   fetchTeams({
