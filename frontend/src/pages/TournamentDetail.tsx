@@ -200,9 +200,6 @@ export function TournamentDetailPage() {
     }
   }, [showRegisterModal]);
 
-  useEffect(() => {
-    setSelectedMemberIds([]);
-  }, [selectedTeamId]);
 
   const selectedTeam =
     myTeams.find((t) => t.id === selectedTeamId) ||
@@ -679,6 +676,7 @@ export function TournamentDetailPage() {
               <iframe
                 src={`https://player.twitch.tv/?channel=${currentTournament.streamUrl.split("/").pop()}&parent=${window.location.hostname}`}
                 className="absolute top-0 left-0 w-full h-full"
+                title="Twitch stream"
                 allowFullScreen
               ></iframe>
             )}
@@ -689,6 +687,7 @@ export function TournamentDetailPage() {
                 <iframe
                   src={`https://www.youtube.com/embed/${currentTournament.streamUrl.includes("v=") ? currentTournament.streamUrl.split("v=")[1].split("&")[0] : currentTournament.streamUrl.split("/").pop()}`}
                   className="absolute top-0 left-0 w-full h-full"
+                  title="YouTube stream"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>
@@ -699,6 +698,7 @@ export function TournamentDetailPage() {
               <iframe
                 src={`https://www.tiktok.com/embed/v2/${currentTournament.streamUrl.split("/video/")[1]?.split("?")[0] || ""}`}
                 className="absolute top-0 left-0 w-full h-full"
+                title="TikTok stream"
                 allowFullScreen
                 sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin"
               ></iframe>
@@ -1434,6 +1434,7 @@ export function TournamentDetailPage() {
                                     key={team.id}
                                     onClick={() => {
                                       setSelectedTeamId(team.id);
+                                      setSelectedMemberIds([]);
                                       setTeamSearchQuery(""); // Hide results but keep selection
                                     }}
                                     className={`p-2 hover:bg-white/5 cursor-pointer flex items-center justify-between text-sm ${selectedTeamId === team.id
@@ -1513,7 +1514,7 @@ export function TournamentDetailPage() {
                     <select
                       className="w-full bg-[#1a1b26] border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-inner transition-all appearance-none cursor-pointer hover:border-white/20"
                       value={selectedTeamId}
-                      onChange={(e) => setSelectedTeamId(e.target.value)}
+                      onChange={(e) => { setSelectedTeamId(e.target.value); setSelectedMemberIds([]); }}
                     >
                       <option value="" className="bg-[#1a1b26]">
                         Válassz csapatot...

@@ -9,6 +9,7 @@ import notificationsReducer from './slices/notificationsSlice';
 import usersReducer from './slices/usersSlice';
 import bookingsReducer from './slices/bookingsSlice';
 import kioskReducer from './slices/kioskSlice';
+import leaderboardsReducer from './slices/leaderboardsSlice';
 
 export const store = configureStore({
     reducer: {
@@ -22,6 +23,7 @@ export const store = configureStore({
         users: usersReducer,
         bookings: bookingsReducer,
         kiosk: kioskReducer,
+        leaderboards: leaderboardsReducer,
     },
 });
 

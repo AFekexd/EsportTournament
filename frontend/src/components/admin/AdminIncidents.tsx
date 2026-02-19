@@ -184,6 +184,7 @@ export const AdminIncidents = () => {
                       {handler.avatarUrl && (
                         <img
                           src={handler.avatarUrl}
+                          alt=""
                           className="w-5 h-5 rounded-full"
                         />
                       )}
@@ -238,6 +239,7 @@ export const AdminIncidents = () => {
                             {admin.avatarUrl ? (
                               <img
                                 src={admin.avatarUrl}
+                                alt=""
                                 className="w-full h-full object-cover"
                               />
                             ) : (
@@ -342,6 +344,7 @@ export const AdminIncidents = () => {
                           {incident.reporter.avatarUrl ? (
                             <img
                               src={incident.reporter.avatarUrl}
+                              alt=""
                               className="w-full h-full object-cover"
                             />
                           ) : (

@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import { fetchTournaments } from "../store/slices/tournamentsSlice";
 import { fetchStats } from "../store/slices/statsSlice";
+import { fetchTopPlayers, fetchTopTeams, fetchSteamTopPlayers } from "../store/slices/leaderboardsSlice";
 import { Trophy, Calendar, Users, Crown } from "lucide-react";
-import { API_URL } from "../config";
 
 /* -------------------------------------------------------------------------- */
 /*                                    TYPES                                   */
@@ -150,16 +150,7 @@ function TournamentsSlide({ tournaments }: { tournaments: any[] }) {
   );
 }
 
-function LeaderboardsSlide() {
-  const [topPlayers, setTopPlayers] = useState<LeaderboardPlayer[]>([]);
-
-  useEffect(() => {
-    fetch(`${API_URL}/leaderboards/players/top`)
-      .then((res) => res.json())
-      .then((data) => setTopPlayers(data.data || []))
-      .catch(console.error);
-  }, []);
-
+function LeaderboardsSlide({ topPlayers }: { topPlayers: LeaderboardPlayer[] }) {
   const getRankStyle = (rank: number) => {
     if (rank === 1)
       return {
@@ -279,16 +270,7 @@ function LeaderboardsSlide() {
   );
 }
 
-function TeamsSlide() {
-  const [topTeams, setTopTeams] = useState<LeaderboardTeam[]>([]);
-
-  useEffect(() => {
-    fetch(`${API_URL}/leaderboards/teams?limit=3`)
-      .then((res) => res.json())
-      .then((data) => setTopTeams(data.data || []))
-      .catch(console.error);
-  }, []);
-
+function TeamsSlide({ topTeams }: { topTeams: LeaderboardTeam[] }) {
   const getRankStyle = (rank: number) => {
     if (rank === 1)
       return {
@@ -405,16 +387,7 @@ function TeamsSlide() {
   );
 }
 
-function SteamSlide() {
-  const [topPlayers, setTopPlayers] = useState<any[]>([]);
-
-  useEffect(() => {
-    fetch(`${API_URL}/leaderboards/steam/top?limit=3`)
-      .then((res) => res.json())
-      .then((data) => setTopPlayers(data.data || []))
-      .catch(console.error);
-  }, []);
-
+function SteamSlide({ topPlayers }: { topPlayers: any[] }) {
   const getRankStyle = (rank: number) => {
     if (rank === 1)
       return {
@@ -566,17 +539,20 @@ export function TVDisplayPage() {
 
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const slides: SlideType[] = ["TOURNAMENTS", "LEADERBOARDS", "TEAMS", "STEAM", "PROMO"];
+  const { topPlayers, topTeams, steamTopPlayers } = useAppSelector((state) => state.leaderboards);
 
   // Data fetching
   useEffect(() => {
-    dispatch(fetchTournaments({ page: 1, limit: 10 }));
-    dispatch(fetchStats());
-
-    // Refresh data every 5 minutes
-    const dataInterval = setInterval(() => {
+    const fetchSlideData = () => {
       dispatch(fetchTournaments({ page: 1, limit: 10 }));
       dispatch(fetchStats());
-    }, 5 * 60 * 1000);
+      dispatch(fetchTopPlayers());
+      dispatch(fetchTopTeams(3));
+      dispatch(fetchSteamTopPlayers(3));
+    };
+    fetchSlideData();
+
+    const dataInterval = setInterval(fetchSlideData, 5 * 60 * 1000);
 
     return () => clearInterval(dataInterval);
   }, [dispatch]);
@@ -591,22 +567,6 @@ export function TVDisplayPage() {
     return () => clearInterval(interval);
   }, [slides.length]);
 
-  const CurrentSlideComponent = () => {
-    switch (slides[currentSlideIndex]) {
-      case "TOURNAMENTS":
-        return <TournamentsSlide tournaments={tournaments} />;
-      case "LEADERBOARDS":
-        return <LeaderboardsSlide />;
-      case "TEAMS":
-        return <TeamsSlide />;
-      case "STEAM":
-        return <SteamSlide />;
-      case "PROMO":
-        return <PromoSlide />;
-      default:
-        return <TournamentsSlide tournaments={tournaments} />;
-    }
-  };
 
   return (
     <div className="fixed inset-0 overflow-hidden bg-[#050505] font-sans selection:bg-purple-500/30">
@@ -628,7 +588,22 @@ export function TVDisplayPage() {
           />
         </div>
 
-        {CurrentSlideComponent()}
+        {(() => {
+          switch (slides[currentSlideIndex]) {
+            case "TOURNAMENTS":
+              return <TournamentsSlide tournaments={tournaments} />;
+            case "LEADERBOARDS":
+              return <LeaderboardsSlide topPlayers={topPlayers} />;
+            case "TEAMS":
+              return <TeamsSlide topTeams={topTeams} />;
+            case "STEAM":
+              return <SteamSlide topPlayers={steamTopPlayers} />;
+            case "PROMO":
+              return <PromoSlide />;
+            default:
+              return <TournamentsSlide tournaments={tournaments} />;
+          }
+        })()}
       </div>
 
       {/* Footer / Status Bar - Optional */}

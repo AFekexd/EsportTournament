@@ -196,6 +196,7 @@ export function Sidebar() {
             >
               <img
                 src="/esportlogo.png"
+                alt="EsportHub"
                 className="md:w-15 md:h-15 w-12 h-12"
               />
               <span className="text-xl tracking-tight text-white font-black tracking-tighter drop-shadow-[0_0_10px_rgba(139,92,246,0.3)]">

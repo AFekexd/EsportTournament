@@ -983,7 +983,7 @@ export function ProfilePage() {
               <div className="p-4 md:p-6 border-b border-white/5 flex justify-between items-center bg-[#171a21] relative z-10">
                 <h2 className="text-xl font-bold text-[#c7d5e0] flex items-center gap-3">
                   <div className="w-8 h-8 flex items-center justify-center  rounded-lg shadow-inner">
-                    <img src="/steam.png" className="w-full h-full object-cover " />
+                    <img src="/steam.png" alt="" className="w-full h-full object-cover " />
                   </div>
                   Steam Profil
                 </h2>

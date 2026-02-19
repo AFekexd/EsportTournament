@@ -102,8 +102,7 @@ export function DiscordAdminPage() {
     };
 
     const addMention = (suggestion: MentionSuggestion) => {
-        const current = mentions ? mentions + ', ' : '';
-        setMentions(current + suggestion.mention);
+        setMentions(prev => (prev ? prev + ', ' : '') + suggestion.mention);
         setMentionSearch('');
         setShowSuggestions(false);
     };
@@ -339,8 +338,7 @@ export function DiscordAdminPage() {
                                         key={qm.value}
                                         type="button"
                                         onClick={() => {
-                                            const current = mentions ? mentions + ', ' : '';
-                                            setMentions(current + qm.value);
+                                            setMentions(prev => (prev ? prev + ', ' : '') + qm.value);
                                         }}
                                         className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 text-xs font-medium text-gray-400 hover:text-white transition-all"
                                     >

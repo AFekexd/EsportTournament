@@ -36,10 +36,6 @@ export function CommandPalette() {
         setSelectedIndex(0); // Reset selection on open
     }, [isSearchOpen]);
 
-    useEffect(() => {
-        // Reset selection when results change
-        setSelectedIndex(0);
-    }, [results]);
 
     useEffect(() => {
         // Debounce search
@@ -57,6 +53,7 @@ export function CommandPalette() {
                     const tournaments = tournamentsResult.status === 'fulfilled' ? tournamentsResult.value.tournaments : [];
 
                     setResults({ users, tournaments });
+                    setSelectedIndex(0);
                 } catch (error) {
                     console.error("Search failed:", error);
                 } finally {
@@ -64,6 +61,7 @@ export function CommandPalette() {
                 }
             } else {
                 setResults({ users: [], tournaments: [] });
+                setSelectedIndex(0);
             }
         }, 400);
 

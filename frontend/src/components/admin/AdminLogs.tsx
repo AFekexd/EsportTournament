@@ -451,6 +451,7 @@ export function AdminLogs() {
                               {log.admin.avatarUrl ? (
                                 <img
                                   src={log.admin.avatarUrl}
+                                  alt=""
                                   className="w-full h-full rounded-full object-cover"
                                 />
                               ) : (
@@ -483,6 +484,7 @@ export function AdminLogs() {
                                 {log.user.avatarUrl ? (
                                   <img
                                     src={log.user.avatarUrl}
+                                    alt=""
                                     className="w-full h-full rounded-full object-cover"
                                   />
                                 ) : (

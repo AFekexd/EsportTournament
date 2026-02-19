@@ -17,10 +17,10 @@ export function BookingEditModal({
 }: BookingEditModalProps) {
   const dispatch = useAppDispatch();
   const [startTime, setStartTime] = useState(
-    new Date(booking.startTime).toISOString().slice(0, 16)
+    () => new Date(booking.startTime).toISOString().slice(0, 16)
   );
   const [endTime, setEndTime] = useState(
-    new Date(booking.endTime).toISOString().slice(0, 16)
+    () => new Date(booking.endTime).toISOString().slice(0, 16)
   );
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);

@@ -60,12 +60,8 @@ export function AdminBookingList() {
 
     useEffect(() => {
         dispatch(fetchAdminBookings({ page, limit, search: debouncedSearch, includeExpired }));
-    }, [dispatch, page, limit, debouncedSearch, includeExpired]);
-
-    // Reset selection on page change or filter change
-    useEffect(() => {
         setSelectedBookingIds([]);
-    }, [page, limit, debouncedSearch, includeExpired]);
+    }, [dispatch, page, limit, debouncedSearch, includeExpired]);
 
     const handlePageChange = (newPage: number) => {
         if (newPage >= 1 && newPage <= (pagination?.pages || 1)) {
