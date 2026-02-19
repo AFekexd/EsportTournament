@@ -78,9 +78,25 @@ export async function handleStatsCommand(interaction: ChatInputCommandInteractio
     const totalMatches = totalWins + totalLosses;
     const winRate = totalMatches > 0 ? Math.round((totalWins / totalMatches) * 100) : 0;
 
+    let avatarUrl = user.avatarUrl || user.steamAvatar;
+    const files = [];
+
+    if (avatarUrl && avatarUrl.startsWith('data:image')) {
+        const matches = avatarUrl.match(/^data:image\/([a-zA-Z]+);base64,(.+)$/);
+        if (matches) {
+            const extension = matches[1];
+            const buffer = Buffer.from(matches[2], 'base64');
+            const fileName = `avatar.${extension}`;
+            files.push({ attachment: buffer, name: fileName });
+            avatarUrl = `attachment://${fileName}`;
+        } else {
+            avatarUrl = null;
+        }
+    }
+
     const embed = new EmbedBuilder()
         .setTitle(`📊 ${user.displayName || user.username}`)
-        .setThumbnail(user.avatarUrl || user.steamAvatar || null)
+        .setThumbnail(avatarUrl)
         .addFields(
             { name: '🏆 Elo', value: user.elo.toString(), inline: true },
             { name: '⚔️ Meccsek', value: totalMatches.toString(), inline: true },
@@ -98,7 +114,7 @@ export async function handleStatsCommand(interaction: ChatInputCommandInteractio
         embed.addFields({ name: '👥 Csapatok', value: teams, inline: false });
     }
 
-    await interaction.editReply({ embeds: [embed] });
+    await interaction.editReply({ embeds: [embed], files });
 }
 
 /**
