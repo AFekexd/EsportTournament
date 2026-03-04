@@ -210,7 +210,7 @@ export function Navbar() {
 
                 {/* Notification Dropdown */}
                 {showNotifications && (
-                  <div className="fixed inset-x-4 top-20 z-50 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 w-auto sm:w-80 rounded-xl border border-white/10 bg-[#1a1b26] shadow-xl shadow-black/50 overflow-hidden animate-in slide-in-from-top-2 duration-200">
+                  <div className="fixed inset-x-4 top-20 z-50 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 w-auto sm:w-80 rounded-xl border border-white/10 bg-background shadow-xl shadow-black/50 overflow-hidden animate-in slide-in-from-top-2 duration-200">
                     <div className="flex items-center justify-between px-4 py-3 border-b border-white/5">
                       <h3 className="font-semibold text-white">Értesítések</h3>
                       {notifications.length > 0 && (
@@ -343,7 +343,7 @@ export function Navbar() {
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-zinc-900 font-bold text-white">
+                        <div className="flex h-full w-full items-center justify-center bg-secondary font-bold text-white">
                           {(user.displayName || user.username)
                             .charAt(0)
                             .toUpperCase()}
