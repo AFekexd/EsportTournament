@@ -1,9 +1,9 @@
 /* Modern Weekly Calendar Styles */
 .weekly-calendar {
     /* Glassmorphism handled by glass-card class in usage or manually here */
-    background: rgba(15, 16, 21, 0.6);
+    background: rgba(17, 30, 43, 0.7);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(157, 200, 232, 0.10);
     border-radius: 1rem;
     padding: 1.5rem;
     overflow-x: auto;
@@ -25,29 +25,29 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(157, 200, 232, 0.15);
     border-radius: 0.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    color: #e2e8f0;
+    background: rgba(157, 200, 232, 0.06);
+    color: #EFEFED;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-btn:hover {
-    background: rgba(139, 92, 246, 0.2);
-    border-color: rgba(139, 92, 246, 0.5);
+    background: rgba(64, 108, 147, 0.25);
+    border-color: rgba(64, 108, 147, 0.6);
     color: white;
-    box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+    box-shadow: 0 0 15px rgba(64, 108, 147, 0.35);
 }
 
 .week-range {
     font-size: 1.25rem;
     font-weight: 700;
-    color: white;
+    color: #EFEFED;
     min-width: 200px;
     text-align: center;
     letter-spacing: 0.5px;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    text-shadow: 0 0 10px rgba(157, 200, 232, 0.3);
 }
 
 .weekly-calendar-loading {
@@ -56,16 +56,16 @@
     align-items: center;
     justify-content: center;
     padding: 4rem;
-    color: #94a3b8;
+    color: #9DCCE8;
     gap: 1rem;
 }
 
 /* Grid Layout */
 .weekly-calendar-grid {
     min-width: 800px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(157, 200, 232, 0.08);
     border-radius: 0.75rem;
-    background: rgba(10, 10, 10, 0.4);
+    background: rgba(17, 30, 43, 0.5);
     overflow: hidden; /* Ensure rounded corners clip content */
 }
 
@@ -74,7 +74,7 @@
     grid-template-columns: 80px repeat(7, 1fr);
     gap: 1px;
     background: rgba(0, 0, 0, 0.2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(157, 200, 232, 0.08);
 }
 
 .grid-cell {
@@ -87,8 +87,8 @@
 }
 
 .header-cell {
-    background: rgba(255, 255, 255, 0.03);
-    color: #e2e8f0;
+    background: rgba(157, 200, 232, 0.04);
+    color: #EFEFED;
     font-weight: 600;
     padding: 0.75rem 0.5rem;
     text-transform: uppercase;
@@ -98,9 +98,9 @@
 
 .time-cell {
     font-size: 0.75rem;
-    color: #94a3b8;
+    color: #9DCCE8;
     font-weight: 500;
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(157, 200, 232, 0.03);
     font-family: monospace;
 }
 
@@ -112,7 +112,7 @@
 
 .day-name {
     font-weight: 700;
-    color: white;
+    color: #EFEFED;
 }
 
 .day-date {
@@ -122,7 +122,7 @@
 
 /* Computer Section */
 .computer-section {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(157, 200, 232, 0.06);
 }
 
 .computer-section:last-child {
@@ -136,9 +136,9 @@
     padding: 0.75rem 1rem;
     font-weight: 700;
     font-size: 0.9rem;
-    color: #a78bfa; /* Purple-400 */
-    background: rgba(139, 92, 246, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #9DCCE8; /* Light sky blue */
+    background: rgba(64, 108, 147, 0.06);
+    border-bottom: 1px solid rgba(157, 200, 232, 0.06);
     letter-spacing: 0.02em;
 }
 
@@ -146,19 +146,19 @@
     display: grid;
     grid-template-columns: 80px repeat(7, 1fr);
     gap: 1px;
-    background: rgba(255, 255, 255, 0.02); /* Grid line color */
+    background: rgba(157, 200, 232, 0.03); /* Grid line color */
 }
 
 /* Slot Cells */
 .slot-cell {
-    background: rgba(15, 16, 21, 0.4);
+    background: rgba(17, 30, 43, 0.5);
     cursor: pointer;
     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid transparent; /* Reserve space for border */
 }
 
 .slot-cell:not(:last-child) {
-    border-right: 1px solid rgba(255, 255, 255, 0.03);
+    border-right: 1px solid rgba(157, 200, 232, 0.04);
 }
 
 /* AVAILABLE */
@@ -193,22 +193,22 @@
 
 /* OWN BOOKING */
 .slot-cell.own-booking {
-    background: rgba(139, 92, 246, 0.25);
-    border: 1px solid rgba(139, 92, 246, 0.4);
-    box-shadow: inset 0 0 15px rgba(139, 92, 246, 0.1);
+    background: rgba(64, 108, 147, 0.30);
+    border: 1px solid rgba(64, 108, 147, 0.5);
+    box-shadow: inset 0 0 15px rgba(64, 108, 147, 0.12);
     cursor: pointer;
 }
 
 .slot-cell.own-booking:hover {
-    background: rgba(139, 92, 246, 0.4);
-    box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+    background: rgba(64, 108, 147, 0.45);
+    box-shadow: 0 0 15px rgba(64, 108, 147, 0.35);
     z-index: 10;
 }
 
 /* INACTIVE / PAST */
 .slot-cell.inactive {
-    background: rgba(5, 5, 5, 0.6); 
-    background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background: rgba(17, 30, 43, 0.7);
+    background-image: radial-gradient(rgba(157, 200, 232, 0.06) 1px, transparent 1px);
     background-size: 4px 4px;
     opacity: 0.5;
     cursor: not-allowed;
@@ -226,7 +226,7 @@
 
 .slot-cell.own-booking .booking-indicator {
     color: #ffffff;
-    text-shadow: 0 0 5px rgba(139, 92, 246, 0.8);
+    text-shadow: 0 0 5px rgba(64, 108, 147, 0.8);
 }
 
 /* Legend */
@@ -236,9 +236,9 @@
     gap: 3rem;
     margin-top: 2rem;
     padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(157, 200, 232, 0.03);
     border-radius: 0.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(157, 200, 232, 0.08);
 }
 
 .legend-item {
@@ -246,7 +246,7 @@
     align-items: center;
     gap: 0.75rem;
     font-size: 0.9rem;
-    color: #e2e8f0;
+    color: #EFEFED;
     font-weight: 500;
 }
 

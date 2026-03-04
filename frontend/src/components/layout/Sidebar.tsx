@@ -199,7 +199,7 @@ export function Sidebar() {
                 alt="EsportHub"
                 className="md:w-15 md:h-15 w-12 h-12"
               />
-              <span className="text-xl tracking-tight text-white font-black tracking-tighter drop-shadow-[0_0_10px_rgba(139,92,246,0.3)]">
+              <span className="text-xl tracking-tight text-white font-black tracking-tighter drop-shadow-[0_0_10px_rgba(64,108,147,0.4)]">
                 EsportHub
               </span>
             </Link>
@@ -228,14 +228,14 @@ export function Sidebar() {
                     }
                   }}
                   className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive(item.to)
-                    ? "bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
+                    ? "bg-primary/20 text-white shadow-[0_0_15px_rgba(64,108,147,0.35)] border border-primary/30"
                     : "text-muted-foreground hover:bg-white/5 hover:text-white"
                     } ${!isOpen && "justify-center px-0"}`}
                   title={!isOpen ? item.label : undefined}
                 >
                   <span
                     className={`transition-transform duration-200 group-hover:scale-110 ${isActive(item.to)
-                      ? "text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]"
+                      ? "text-primary drop-shadow-[0_0_8px_rgba(64,108,147,0.8)]"
                       : ""
                       }`}
                   >
@@ -261,7 +261,7 @@ export function Sidebar() {
                         }
                       }}
                       className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive(item.to)
-                        ? "bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
+                        ? "bg-primary/20 text-white shadow-[0_0_15px_rgba(64,108,147,0.35)] border border-primary/30"
                         : "text-muted-foreground hover:bg-white/5 hover:text-white"
                         } ${!isOpen && "justify-center px-0"}`}
                       title={!isOpen ? item.label : undefined}
@@ -269,14 +269,14 @@ export function Sidebar() {
                       <div className="relative">
                         <span
                           className={`transition-transform duration-200 group-hover:scale-110 ${isActive(item.to)
-                            ? "text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]"
+                            ? "text-primary drop-shadow-[0_0_8px_rgba(64,108,147,0.8)]"
                             : ""
                             }`}
                         >
                           {item.icon}
                         </span>
                         {!isOpen && (item as any).badge && requestCount > 0 && (
-                          <span className="absolute -top-1 -right-1 block h-3 w-3 rounded-full bg-red-500 ring-2 ring-[#0f1016]" />
+                          <span className="absolute -top-1 -right-1 block h-3 w-3 rounded-full bg-red-500 ring-2 ring-background" />
                         )}
                       </div>
                       {isOpen && (
@@ -313,7 +313,7 @@ export function Sidebar() {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-zinc-800 text-sm font-bold text-white">
+                    <div className="flex h-full w-full items-center justify-center bg-secondary text-sm font-bold text-white">
                       {(user.displayName || user.username)
                         .charAt(0)
                         .toUpperCase()}
@@ -368,7 +368,7 @@ export function Sidebar() {
               </div>
               {hasUpdate && (
                 <span
-                  className={`bg-primary/20 text-primary font-bold rounded-full animate-pulse shadow-[0_0_10px_rgba(139,92,246,0.3)] ${isOpen
+                  className={`bg-primary/20 text-primary font-bold rounded-full animate-pulse shadow-[0_0_10px_rgba(64,108,147,0.35)] ${isOpen
                     ? "text-[10px] px-2 py-0.5"
                     : "text-[8px] px-1.5 py-0.5 mt-1"
                     }`}
