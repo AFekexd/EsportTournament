@@ -289,8 +289,7 @@ export function HomePage() {
           <iframe
             src="https://discord.com/widget?id=1449786215720026237&theme=dark"
             className="w-full h-[500px] rounded-2xl"
-            allowTransparency={true}
-            frameBorder="0"
+            title="Discord widget"
             sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
           ></iframe>
         </div>

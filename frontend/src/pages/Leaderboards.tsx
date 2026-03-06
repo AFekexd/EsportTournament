@@ -45,8 +45,7 @@ export function LeaderboardsPage() {
           fetch(`${API_URL}/leaderboards/players?limit=50`),
           fetch(`${API_URL}/leaderboards/players/top`),
         ]);
-        const playersData = await playersRes.json();
-        const topData = await topRes.json();
+        const [playersData, topData] = await Promise.all([playersRes.json(), topRes.json()]);
         setPlayers(playersData.data || []);
         setTopPlayers(topData.data || []);
       } else {
