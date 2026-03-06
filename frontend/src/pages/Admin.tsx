@@ -165,7 +165,7 @@ export function AdminPage() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => {},
+    onConfirm: () => { },
     variant: "primary",
   });
 
@@ -188,8 +188,7 @@ export function AdminPage() {
         try {
           const token = authService.keycloak?.token;
           const response = await fetch(
-            `${
-              import.meta.env.VITE_API_URL || "http://localhost:3000/api"
+            `${import.meta.env.VITE_API_URL || "http://localhost:3000/api"
             }/stats`,
             {
               headers: { Authorization: `Bearer ${token}` },
@@ -286,11 +285,11 @@ export function AdminPage() {
         label: "Regisztráció",
       },
       IN_PROGRESS: {
-        class: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+        class: "bg-primary/20 text-primary border-primary/20",
         label: "Folyamatban",
       },
       COMPLETED: {
-        class: "bg-purple-500/10 text-purple-500 border-purple-500/20",
+        class: "bg-primary/20 text-primary border-primary/20",
         label: "Befejezett",
       },
       CANCELLED: {
@@ -299,7 +298,7 @@ export function AdminPage() {
       },
     };
     const config = statusConfig[status] || {
-      class: "bg-gray-500/10 text-gray-500 border-gray-500/20",
+      class: "bg-gray-500/10 text-muted-foreground border-gray-500/20",
       label: status,
     };
     return (
@@ -324,9 +323,9 @@ export function AdminPage() {
     { id: "incidents", label: "Incidensek", icon: AlertTriangle },
     ...(canManageComputers
       ? [
-          { id: "bookings", label: "Gépfoglalás", icon: Calendar },
-          { id: "kiosk", label: "Gépterem", icon: Monitor },
-        ]
+        { id: "bookings", label: "Gépfoglalás", icon: Calendar },
+        { id: "kiosk", label: "Gépterem", icon: Monitor },
+      ]
       : []),
   ];
 
@@ -344,14 +343,14 @@ export function AdminPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 my-8">
-        <div className="relative group overflow-hidden rounded-2xl bg-[#0f1016] border border-white/5 p-6 hover:border-primary/50 transition-all duration-300">
+        <div className="relative group overflow-hidden rounded-2xl bg-[#121A22] border border-border p-6 hover:border-primary/50 transition-all duration-300">
           <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           <div className="relative flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-4 md:gap-0">
             <div>
               <p className="text-muted-foreground text-sm font-medium mb-1">
                 Felhasználók
               </p>
-              <h3 className="text-3xl font-bold text-white">{totalUsers}</h3>
+              <h3 className="text-3xl font-bold text-foreground">{totalUsers}</h3>
             </div>
             <div className="p-3 rounded-xl bg-violet-500/10 text-violet-400">
               <Users size={24} />
@@ -359,31 +358,31 @@ export function AdminPage() {
           </div>
         </div>
 
-        <div className="relative group overflow-hidden rounded-2xl bg-[#0f1016] border border-white/5 p-6 hover:border-blue-500/50 transition-all duration-300">
+        <div className="relative group overflow-hidden rounded-2xl bg-[#121A22] border border-border p-6 hover:border-blue-500/50 transition-all duration-300">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           <div className="relative flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-4 md:gap-0">
             <div>
               <p className="text-muted-foreground text-sm font-medium mb-1">
                 Versenyek
               </p>
-              <h3 className="text-3xl font-bold text-white">
+              <h3 className="text-3xl font-bold text-foreground">
                 {totalTournaments}
               </h3>
             </div>
-            <div className="p-3 rounded-xl bg-blue-500/10 text-blue-400">
+            <div className="p-3 rounded-xl bg-primary/20 text-primary">
               <Trophy size={24} />
             </div>
           </div>
         </div>
 
-        <div className="relative group overflow-hidden rounded-2xl bg-[#0f1016] border border-white/5 p-6 hover:border-emerald-500/50 transition-all duration-300">
+        <div className="relative group overflow-hidden rounded-2xl bg-[#121A22] border border-border p-6 hover:border-emerald-500/50 transition-all duration-300">
           <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           <div className="relative flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-4 md:gap-0">
             <div>
               <p className="text-muted-foreground text-sm font-medium mb-1">
                 Csapatok
               </p>
-              <h3 className="text-3xl font-bold text-white">{totalTeams}</h3>
+              <h3 className="text-3xl font-bold text-foreground">{totalTeams}</h3>
             </div>
             <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
               <Users size={24} />
@@ -391,14 +390,14 @@ export function AdminPage() {
           </div>
         </div>
 
-        <div className="relative group overflow-hidden rounded-2xl bg-[#0f1016] border border-white/5 p-6 hover:border-pink-500/50 transition-all duration-300">
+        <div className="relative group overflow-hidden rounded-2xl bg-[#121A22] border border-border p-6 hover:border-pink-500/50 transition-all duration-300">
           <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           <div className="relative flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-4 md:gap-0">
             <div>
               <p className="text-muted-foreground text-sm font-medium mb-1">
                 Játékok
               </p>
-              <h3 className="text-3xl font-bold text-white">{games.length}</h3>
+              <h3 className="text-3xl font-bold text-foreground">{games.length}</h3>
             </div>
             <div className="p-3 rounded-xl bg-pink-500/10 text-pink-400">
               <Gamepad2 size={24} />
@@ -417,11 +416,10 @@ export function AdminPage() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap
-                                ${
-                                  isActive
-                                    ? "bg-primary text-white shadow-[0_0_20px_rgba(139,92,246,0.3)]"
-                                    : "bg-[#0f1016] border border-white/5 text-muted-foreground hover:text-white hover:bg-white/5"
-                                }`}
+                                ${isActive
+                  ? "bg-primary text-foreground shadow-[0_0_20px_rgba(139,92,246,0.3)]"
+                  : "bg-[#121A22] border border-border text-muted-foreground hover:text-foreground hover:bg-secondary"
+                }`}
             >
               <Icon size={18} />
               {tab.label}
@@ -431,7 +429,7 @@ export function AdminPage() {
       </div>
 
       {/* Main Content Area */}
-      <div className="bg-[#0f1016] border border-white/5 rounded-2xl p-6 min-h-[500px]">
+      <div className="bg-[#121A22] border border-border rounded-2xl p-6 min-h-[500px]">
         <Suspense
           fallback={
             <div className="flex items-center justify-center h-[400px]">
@@ -441,14 +439,14 @@ export function AdminPage() {
         >
           {activeTab === "overview" && (
             <div className="animate-fade-in space-y-6">
-              <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+              <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
                 <Settings className="text-primary" size={24} />
                 Áttekintés
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Recent Registrations */}
-                <div className="rounded-xl border border-white/5 bg-[#161722] p-6 flex flex-col">
-                  <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <div className="rounded-xl border border-border bg-[#121A22] p-6 flex flex-col">
+                  <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
                     <span className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500">
                       <Users size={18} />
                     </span>
@@ -460,7 +458,7 @@ export function AdminPage() {
 
                       if (recentEntries.length === 0) {
                         return (
-                          <div className="h-full flex flex-col items-center justify-center py-12 text-muted-foreground bg-white/5 rounded-lg border border-white/5 border-dashed">
+                          <div className="h-full flex flex-col items-center justify-center py-12 text-muted-foreground bg-secondary rounded-lg border border-border border-dashed">
                             <Users size={32} className="mb-2 opacity-30" />
                             <p className="text-sm">
                               Még nincs regisztrált versenyző
@@ -487,10 +485,10 @@ export function AdminPage() {
                             return (
                               <div
                                 key={entry.id}
-                                className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/5 hover:border-emerald-500/30 transition-all group"
+                                className="flex items-center justify-between p-3 rounded-lg bg-secondary border border-border hover:border-emerald-500/30 transition-all group"
                               >
                                 <div className="flex items-center gap-3">
-                                  <div className="w-10 h-10 rounded-full bg-black/40 flex items-center justify-center overflow-hidden border border-white/10">
+                                  <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center overflow-hidden border border-border">
                                     {avatar ? (
                                       <img
                                         src={avatar}
@@ -498,16 +496,16 @@ export function AdminPage() {
                                         className="w-full h-full object-cover"
                                       />
                                     ) : (
-                                      <span className="text-xs font-bold text-gray-500">
+                                      <span className="text-xs font-bold text-muted-foreground">
                                         {name?.charAt(0).toUpperCase()}
                                       </span>
                                     )}
                                   </div>
                                   <div>
-                                    <p className="text-sm font-medium text-white group-hover:text-emerald-400 transition-colors">
+                                    <p className="text-sm font-medium text-foreground group-hover:text-emerald-400 transition-colors">
                                       {name}
                                     </p>
-                                    <p className="text-xs text-gray-500">
+                                    <p className="text-xs text-muted-foreground">
                                       {tournamentName}
                                       {gameName && (
                                         <span className="opacity-50">
@@ -519,7 +517,7 @@ export function AdminPage() {
                                   </div>
                                 </div>
                                 <div className="text-right">
-                                  <span className="text-xs text-gray-400 font-mono">
+                                  <span className="text-xs text-muted-foreground font-mono">
                                     {new Date(
                                       entry.registeredAt,
                                     ).toLocaleDateString("hu-HU", {
@@ -538,9 +536,9 @@ export function AdminPage() {
                 </div>
 
                 {/* Active Tournaments */}
-                <div className="rounded-xl border border-white/5 bg-[#161722] p-6 flex flex-col">
-                  <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                    <span className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500">
+                <div className="rounded-xl border border-border bg-[#121A22] p-6 flex flex-col">
+                  <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                    <span className="p-1.5 rounded-lg bg-primary/20 text-primary">
                       <Trophy size={18} />
                     </span>
                     Aktív versenyek
@@ -558,16 +556,16 @@ export function AdminPage() {
                           return (
                             <div
                               key={t.id}
-                              className="flex flex-col gap-3 p-4 rounded-lg bg-white/5 border border-white/5 hover:border-blue-500/30 hover:shadow-lg hover:shadow-blue-500/5 transition-all group"
+                              className="flex flex-col gap-3 p-4 rounded-lg bg-secondary border border-border hover:border-primary/20 hover:shadow-lg hover:shadow-blue-500/5 transition-all group"
                             >
                               <div className="flex items-start justify-between">
                                 <div className="flex items-center gap-3">
                                   <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shrink-0" />
                                   <div>
-                                    <h4 className="font-bold text-white group-hover:text-blue-400 transition-colors">
+                                    <h4 className="font-bold text-foreground group-hover:text-primary transition-colors">
                                       {t.name}
                                     </h4>
-                                    <span className="text-xs text-gray-400 flex items-center gap-1.5">
+                                    <span className="text-xs text-muted-foreground flex items-center gap-1.5">
                                       <Gamepad2 size={12} />
                                       {t.game?.name}
                                     </span>
@@ -575,7 +573,7 @@ export function AdminPage() {
                                 </div>
                                 <Link
                                   to={`/tournaments/${t.id}`}
-                                  className="p-2 rounded-lg bg-white/5 hover:bg-blue-500/20 text-gray-400 hover:text-blue-400 transition-colors"
+                                  className="p-2 rounded-lg bg-secondary hover:bg-primary/30 text-muted-foreground hover:text-primary transition-colors"
                                 >
                                   <ArrowUpRight size={18} />
                                 </Link>
@@ -583,13 +581,13 @@ export function AdminPage() {
 
                               {/* Progress & Info */}
                               <div className="space-y-1.5">
-                                <div className="flex justify-between text-xs text-gray-500">
+                                <div className="flex justify-between text-xs text-muted-foreground">
                                   <span>Résztvevők</span>
-                                  <span className="text-white font-mono">
+                                  <span className="text-foreground font-mono">
                                     {filled} / {max}
                                   </span>
                                 </div>
-                                <div className="h-1.5 w-full bg-black/50 rounded-full overflow-hidden">
+                                <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
                                   <div
                                     className="h-full bg-blue-500 rounded-full transition-all duration-1000"
                                     style={{ width: `${progress}%` }}
@@ -601,7 +599,7 @@ export function AdminPage() {
                         })}
                     </div>
                   ) : (
-                    <div className="h-full flex flex-col items-center justify-center py-12 text-muted-foreground bg-white/5 rounded-lg border border-white/5 border-dashed">
+                    <div className="h-full flex flex-col items-center justify-center py-12 text-muted-foreground bg-secondary rounded-lg border border-border border-dashed">
                       <Trophy size={32} className="mb-2 opacity-30" />
                       <p className="text-sm">Nincs aktív verseny</p>
                     </div>
@@ -615,7 +613,7 @@ export function AdminPage() {
             <div className="animate-fade-in">
               <div className="flex flex-wrap justify-between items-center mb-8 gap-4">
                 <div>
-                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                     <Gamepad2 className="text-pink-500" size={24} />
                     Játék kezelés
                   </h2>
@@ -624,7 +622,7 @@ export function AdminPage() {
                   </p>
                 </div>
                 <button
-                  className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors shadow-lg shadow-primary/20"
+                  className="flex items-center gap-2 px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary-hover transition-colors shadow-lg shadow-primary/20"
                   onClick={() => setShowGameModal(true)}
                 >
                   <Plus size={18} />
@@ -634,13 +632,13 @@ export function AdminPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {games.length === 0 ? (
-                  <div className="col-span-full flex flex-col items-center justify-center py-20 bg-white/5 rounded-xl border border-white/10 border-dashed">
-                    <Gamepad2 size={48} className="text-gray-500 mb-4" />
+                  <div className="col-span-full flex flex-col items-center justify-center py-20 bg-secondary rounded-xl border border-border border-dashed">
+                    <Gamepad2 size={48} className="text-muted-foreground mb-4" />
                     <p className="text-muted-foreground text-lg mb-6">
                       Még nincs játék létrehozva
                     </p>
                     <button
-                      className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
+                      className="px-6 py-2 bg-primary text-foreground rounded-lg hover:bg-primary-hover transition-colors"
                       onClick={() => setShowGameModal(true)}
                     >
                       Játék létrehozása
@@ -650,7 +648,7 @@ export function AdminPage() {
                   games.map((game) => (
                     <div
                       key={game.id}
-                      className="group flex flex-col bg-[#161722] rounded-2xl overflow-hidden border border-white/5 hover:border-primary/50 hover:shadow-[0_0_20px_rgba(139,92,246,0.1)] transition-all duration-300"
+                      className="group flex flex-col bg-[#121A22] rounded-2xl overflow-hidden border border-border hover:border-primary/50 hover:shadow-[0_0_20px_rgba(139,92,246,0.1)] transition-all duration-300"
                     >
                       {/* Image & Overlay */}
                       <div className="relative w-full aspect-video overflow-hidden bg-gray-900">
@@ -662,7 +660,7 @@ export function AdminPage() {
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-gray-800">
-                            <Gamepad2 size={40} className="text-gray-600" />
+                            <Gamepad2 size={40} className="text-muted-foreground" />
                           </div>
                         )}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
@@ -670,16 +668,16 @@ export function AdminPage() {
 
                       {/* Content */}
                       <div className="p-5 flex flex-col flex-grow">
-                        <h3 className="text-lg font-bold text-white mb-2 truncate">
+                        <h3 className="text-lg font-bold text-foreground mb-2 truncate">
                           {game.name}
                         </h3>
-                        <p className="text-sm text-gray-400 mb-4 line-clamp-2 min-h-[2.5em]">
+                        <p className="text-sm text-muted-foreground mb-4 line-clamp-2 min-h-[2.5em]">
                           {game.description ||
                             "Nincs leírás megadva a játékhoz."}
                         </p>
 
-                        <div className="flex items-center gap-4 text-xs text-gray-500 mb-6 mt-auto">
-                          <span className="flex items-center gap-1.5 px-2 py-1 rounded bg-white/5">
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground mb-6 mt-auto">
+                          <span className="flex items-center gap-1.5 px-2 py-1 rounded bg-secondary">
                             <Trophy size={12} className="text-yellow-500" />
                             {game._count?.tournaments || 0} verseny
                           </span>
@@ -688,7 +686,7 @@ export function AdminPage() {
                         {/* Action Buttons */}
                         <div className="grid grid-cols-3 gap-2 mt-auto">
                           <button
-                            className="flex flex-col items-center justify-center p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all gap-1 border border-transparent hover:border-white/10"
+                            className="flex flex-col items-center justify-center p-2 rounded-lg bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-all gap-1 border border-transparent hover:border-border"
                             onClick={() => setEditingGameRanks(game)}
                             title="Rangok kezelése"
                           >
@@ -698,7 +696,7 @@ export function AdminPage() {
                             </span>
                           </button>
                           <button
-                            className="flex flex-col items-center justify-center p-2 rounded-lg bg-white/5 hover:bg-primary/10 text-gray-400 hover:text-primary transition-all gap-1 border border-transparent hover:border-primary/20"
+                            className="flex flex-col items-center justify-center p-2 rounded-lg bg-secondary hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all gap-1 border border-transparent hover:border-primary/20"
                             onClick={() => setEditingGame(game)}
                             title="Szerkesztés"
                           >
@@ -708,7 +706,7 @@ export function AdminPage() {
                             </span>
                           </button>
                           <button
-                            className="flex flex-col items-center justify-center p-2 rounded-lg bg-white/5 hover:bg-red-500/10 text-gray-400 hover:text-red-400 transition-all gap-1 border border-transparent hover:border-red-500/20"
+                            className="flex flex-col items-center justify-center p-2 rounded-lg bg-secondary hover:bg-red-500/10 text-muted-foreground hover:text-red-400 transition-all gap-1 border border-transparent hover:border-red-500/20"
                             onClick={() => handleDeleteGame(game.id)}
                             title="Törlés"
                           >
@@ -772,7 +770,7 @@ export function AdminPage() {
             <div className="animate-fade-in">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                 <div>
-                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                     <Trophy className="text-yellow-500" size={24} />
                     Verseny kezelés
                   </h2>
@@ -784,18 +782,18 @@ export function AdminPage() {
                   <div className="relative flex-1 md:w-64">
                     <Search
                       size={18}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                     />
                     <input
                       type="text"
                       placeholder="Keresés..."
                       value={tournamentSearch}
                       onChange={(e) => setTournamentSearch(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 bg-[#0f1015] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors text-sm"
+                      className="w-full pl-10 pr-4 py-2 bg-[#121A22] border border-border rounded-lg text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors text-sm"
                     />
                   </div>
                   <button
-                    className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors shadow-lg shadow-primary/20 whitespace-nowrap"
+                    className="flex items-center gap-2 px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary-hover transition-colors shadow-lg shadow-primary/20 whitespace-nowrap"
                     onClick={() => setShowTournamentModal(true)}
                   >
                     <Plus size={18} />
@@ -804,11 +802,11 @@ export function AdminPage() {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-white/10 overflow-hidden bg-[#161722]/50">
+              <div className="rounded-xl border border-border overflow-hidden bg-[#121A22]/50">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="bg-white/5 border-b border-white/10 text-muted-foreground text-xs uppercase tracking-wider">
+                      <tr className="bg-secondary border-b border-border text-muted-foreground text-xs uppercase tracking-wider">
                         <th className="p-4 font-semibold">Név</th>
                         <th className="p-4 font-semibold">Játék</th>
                         <th className="p-4 font-semibold">Formátum</th>
@@ -840,16 +838,16 @@ export function AdminPage() {
                         tournaments.map((tournament) => (
                           <tr
                             key={tournament.id}
-                            className="group hover:bg-white/5 transition-colors"
+                            className="group hover:bg-secondary transition-colors"
                           >
-                            <td className="p-4 font-medium text-white group-hover:text-primary transition-colors">
+                            <td className="p-4 font-medium text-foreground group-hover:text-primary transition-colors">
                               {tournament.name}
                             </td>
                             <td className="p-4 text-gray-300">
                               {tournament.game?.name || "-"}
                             </td>
-                            <td className="p-4 text-sm text-gray-400">
-                              <span className="inline-block px-1.5 py-0.5 rounded bg-white/10 text-white font-mono text-xs mr-2">
+                            <td className="p-4 text-sm text-muted-foreground">
+                              <span className="inline-block px-1.5 py-0.5 rounded bg-secondary/80 text-foreground font-mono text-xs mr-2">
                                 {(tournament.teamSize ||
                                   tournament.game?.teamSize ||
                                   1) +
@@ -870,11 +868,11 @@ export function AdminPage() {
                             <td className="p-4">
                               {getStatusBadge(tournament.status)}
                             </td>
-                            <td className="p-4 text-sm text-center font-mono bg-black/20 rounded">
+                            <td className="p-4 text-sm text-center font-mono bg-secondary rounded">
                               {tournament._count?.entries || 0} /{" "}
                               {tournament.maxTeams}
                             </td>
-                            <td className="p-4 text-sm text-gray-400 font-mono">
+                            <td className="p-4 text-sm text-muted-foreground font-mono">
                               {new Date(
                                 tournament.startDate,
                               ).toLocaleDateString("hu-HU", {
@@ -886,21 +884,21 @@ export function AdminPage() {
                             </td>
                             <td className="p-4 text-right flex gap-2 justify-end">
                               <button
-                                className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+                                className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-colors"
                                 onClick={() => setStatusTournament(tournament)}
                                 title="Státusz módosítása"
                               >
                                 <Settings size={18} />
                               </button>
                               <button
-                                className="p-2 rounded-lg bg-white/5 hover:bg-primary/10 text-gray-400 hover:text-primary transition-colors"
+                                className="p-2 rounded-lg bg-secondary hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors"
                                 onClick={() => setEditingTournament(tournament)}
                                 title="Szerkesztés"
                               >
                                 <Edit2 size={18} />
                               </button>
                               <button
-                                className="p-2 rounded-lg bg-white/5 hover:bg-red-500/10 text-gray-400 hover:text-red-400 transition-colors"
+                                className="p-2 rounded-lg bg-secondary hover:bg-red-500/10 text-muted-foreground hover:text-red-400 transition-colors"
                                 onClick={() =>
                                   handleDeleteTournament(tournament.id)
                                 }
@@ -917,7 +915,7 @@ export function AdminPage() {
                 </div>
                 {/* Pagination */}
                 {tournamentPagination && tournamentPagination.pages > 1 && (
-                  <div className="flex justify-center p-4 border-t border-white/5 gap-2 bg-[#161722]">
+                  <div className="flex justify-center p-4 border-t border-border gap-2 bg-[#121A22]">
                     {Array.from(
                       { length: tournamentPagination.pages },
                       (_, i) => i + 1,
@@ -925,11 +923,10 @@ export function AdminPage() {
                       <button
                         key={page}
                         onClick={() => setTournamentPage(page)}
-                        className={`px-3 py-1 rounded-lg text-sm transition-colors ${
-                          tournamentPagination.page === page
-                            ? "bg-primary text-white"
-                            : "bg-white/5 text-gray-400 hover:bg-white/10"
-                        }`}
+                        className={`px-3 py-1 rounded-lg text-sm transition-colors ${tournamentPagination.page === page
+                            ? "bg-primary text-foreground"
+                            : "bg-secondary text-muted-foreground hover:bg-secondary/80"
+                          }`}
                       >
                         {page}
                       </button>

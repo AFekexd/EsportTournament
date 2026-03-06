@@ -99,21 +99,21 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div
-        className="bg-[#1a1b26] rounded-2xl w-full max-w-3xl border border-white/10 shadow-2xl max-h-[90vh] overflow-y-auto"
+        className="bg-[#121A22] rounded-2xl w-full max-w-3xl border border-border shadow-2xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="sticky top-0 bg-[#1a1b26] border-b border-white/10 p-6 flex items-center justify-between z-10">
-          <h2 className="text-2xl font-bold text-white">
+        <div className="sticky top-0 bg-[#121A22] border-b border-border p-6 flex items-center justify-between z-10">
+          <h2 className="text-2xl font-bold text-foreground">
             Új verseny létrehozása
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            className="p-2 hover:bg-secondary/80 rounded-lg transition-colors"
           >
-            <X size={20} className="text-gray-400" />
+            <X size={20} className="text-muted-foreground" />
           </button>
         </div>
 
@@ -131,9 +131,8 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
               <input
                 id="tournament-name"
                 type="text"
-                className={`w-full px-4 py-3 bg-[#0f1015] border ${
-                  errors.name ? "border-red-500" : "border-white/10"
-                } rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors`}
+                className={`w-full px-4 py-3 bg-[#121A22] border ${errors.name ? "border-red-500" : "border-border"
+                  } rounded-xl text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors`}
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
@@ -147,7 +146,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                 ) : (
                   <span></span>
                 )}
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-muted-foreground">
                   {formData.name.length}/100
                 </span>
               </div>
@@ -162,9 +161,8 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
               </label>
               <select
                 id="tournament-game"
-                className={`w-full px-4 py-3 bg-[#0f1015] border ${
-                  errors.gameId ? "border-red-500" : "border-white/10"
-                } rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
+                className={`w-full px-4 py-3 bg-[#121A22] border ${errors.gameId ? "border-red-500" : "border-border"
+                  } rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors`}
                 value={formData.gameId}
                 onChange={(e) =>
                   setFormData({ ...formData, gameId: e.target.value })
@@ -198,11 +196,10 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                       participationType: "INDIVIDUAL",
                     })
                   }
-                  className={`px-4 py-3 rounded-xl border font-medium transition-all ${
-                    formData.participationType === "INDIVIDUAL"
+                  className={`px-4 py-3 rounded-xl border font-medium transition-all ${formData.participationType === "INDIVIDUAL"
                       ? "bg-primary/20 border-primary text-primary"
-                      : "bg-[#0f1015] border-white/10 text-gray-400 hover:border-white/20"
-                  }`}
+                      : "bg-[#121A22] border-border text-muted-foreground hover:border-border"
+                    }`}
                 >
                   Egyéni (1v1)
                 </button>
@@ -211,11 +208,10 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                   onClick={() =>
                     setFormData({ ...formData, participationType: "TEAM" })
                   }
-                  className={`px-4 py-3 rounded-xl border font-medium transition-all ${
-                    formData.participationType === "TEAM"
+                  className={`px-4 py-3 rounded-xl border font-medium transition-all ${formData.participationType === "TEAM"
                       ? "bg-primary/20 border-primary text-primary"
-                      : "bg-[#0f1015] border-white/10 text-gray-400 hover:border-white/20"
-                  }`}
+                      : "bg-[#121A22] border-border text-muted-foreground hover:border-border"
+                    }`}
                 >
                   Csapat
                 </button>
@@ -232,7 +228,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                 </label>
                 <select
                   id="team-size"
-                  className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors"
+                  className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors"
                   value={formData.teamSize}
                   onChange={(e) =>
                     setFormData({
@@ -261,7 +257,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
             </label>
             <textarea
               id="tournament-description"
-              className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors resize-none"
+              className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors resize-none"
               value={formData.description}
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
@@ -271,7 +267,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
               maxLength={500}
             />
             <div className="text-right mt-1">
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-muted-foreground">
                 {formData.description.length}/500
               </span>
             </div>
@@ -297,7 +293,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
               </label>
               <select
                 id="tournament-format"
-                className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors"
+                className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors"
                 value={formData.format}
                 onChange={(e) =>
                   setFormData({ ...formData, format: e.target.value })
@@ -320,7 +316,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
               <input
                 id="tournament-streamUrl"
                 type="text"
-                className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
+                className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
                 value={formData.streamUrl}
                 onChange={(e) =>
                   setFormData({ ...formData, streamUrl: e.target.value })
@@ -343,9 +339,8 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
               <input
                 id="tournament-maxTeams"
                 type="number"
-                className={`w-full px-4 py-3 bg-[#0f1015] border ${
-                  errors.maxTeams ? "border-red-500" : "border-white/10"
-                } rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
+                className={`w-full px-4 py-3 bg-[#121A22] border ${errors.maxTeams ? "border-red-500" : "border-border"
+                  } rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors`}
                 value={formData.maxTeams}
                 onChange={(e) =>
                   setFormData({
@@ -374,11 +369,10 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
               <input
                 id="tournament-regDeadline"
                 type="datetime-local"
-                className={`w-full px-4 py-3 bg-[#0f1015] border ${
-                  errors.registrationDeadline
+                className={`w-full px-4 py-3 bg-[#121A22] border ${errors.registrationDeadline
                     ? "border-red-500"
-                    : "border-white/10"
-                } rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
+                    : "border-border"
+                  } rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors`}
                 value={formData.registrationDeadline}
                 onChange={(e) =>
                   setFormData({
@@ -405,9 +399,8 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
               <input
                 id="tournament-startDate"
                 type="datetime-local"
-                className={`w-full px-4 py-3 bg-[#0f1015] border ${
-                  errors.startDate ? "border-red-500" : "border-white/10"
-                } rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors`}
+                className={`w-full px-4 py-3 bg-[#121A22] border ${errors.startDate ? "border-red-500" : "border-border"
+                  } rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors`}
                 value={formData.startDate}
                 onChange={(e) =>
                   setFormData({ ...formData, startDate: e.target.value })
@@ -421,7 +414,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
           </div>
 
           {/* Qualifier Settings */}
-          <div className="bg-[#0f1015] rounded-xl p-4 border border-white/10">
+          <div className="bg-[#121A22] rounded-xl p-4 border border-border">
             <div className="flex items-center gap-3">
               <button
                 type="button"
@@ -434,20 +427,18 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                     hasQualifier: !formData.hasQualifier,
                   })
                 }
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#0f1015] ${
-                  formData.hasQualifier ? "bg-primary" : "bg-gray-700"
-                }`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#0f1015] ${formData.hasQualifier ? "bg-primary" : "bg-gray-700"
+                  }`}
               >
                 <span
-                  className={`${
-                    formData.hasQualifier ? "translate-x-6" : "translate-x-1"
-                  } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                  className={`${formData.hasQualifier ? "translate-x-6" : "translate-x-1"
+                    } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
                 />
               </button>
               <div>
                 <label
                   htmlFor="has-qualifier"
-                  className="text-white font-medium cursor-pointer select-none"
+                  className="text-foreground font-medium cursor-pointer select-none"
                   onClick={() =>
                     setFormData({
                       ...formData,
@@ -472,7 +463,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                   <input
                     id="qualifier-matches"
                     type="number"
-                    className="w-full px-4 py-2 bg-[#1a1b26] border border-white/10 rounded-lg text-white focus:outline-none focus:border-primary/50"
+                    className="w-full px-4 py-2 bg-[#121A22] border border-border rounded-lg text-foreground focus:outline-none focus:border-primary/50"
                     value={formData.qualifierMatches}
                     onChange={(e) =>
                       setFormData({
@@ -493,7 +484,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                   <input
                     id="qualifier-points"
                     type="number"
-                    className="w-full px-4 py-2 bg-[#1a1b26] border border-white/10 rounded-lg text-white focus:outline-none focus:border-primary/50"
+                    className="w-full px-4 py-2 bg-[#121A22] border border-border rounded-lg text-foreground focus:outline-none focus:border-primary/50"
                     value={formData.qualifierMinPoints}
                     onChange={(e) =>
                       setFormData({
@@ -509,7 +500,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
           </div>
 
           {/* Rank Requirement */}
-          <div className="bg-[#0f1015] rounded-xl p-4 border border-white/10">
+          <div className="bg-[#121A22] rounded-xl p-4 border border-border">
             <div className="flex items-center gap-3">
               <button
                 type="button"
@@ -522,20 +513,18 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                     requireRank: !formData.requireRank,
                   })
                 }
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#0f1015] ${
-                  formData.requireRank ? "bg-primary" : "bg-gray-700"
-                }`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#0f1015] ${formData.requireRank ? "bg-primary" : "bg-gray-700"
+                  }`}
               >
                 <span
-                  className={`${
-                    formData.requireRank ? "translate-x-6" : "translate-x-1"
-                  } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                  className={`${formData.requireRank ? "translate-x-6" : "translate-x-1"
+                    } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
                 />
               </button>
               <div>
                 <label
                   htmlFor="require-rank"
-                  className="text-white font-medium cursor-pointer select-none block"
+                  className="text-foreground font-medium cursor-pointer select-none block"
                   onClick={() =>
                     setFormData({
                       ...formData,
@@ -545,7 +534,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                 >
                   Rang követelmény
                 </label>
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   Ha be van kapcsolva, a jelentkezőknek rendelkezniük kell
                   ranggal a választott játékban.
                 </p>
@@ -564,7 +553,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
             <input
               id="tournament-endDate"
               type="datetime-local"
-              className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors"
               value={formData.endDate}
               onChange={(e) =>
                 setFormData({ ...formData, endDate: e.target.value })
@@ -574,17 +563,17 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
           </div>
 
           {/* Footer */}
-          <div className="flex gap-4 pt-6 border-t border-white/10">
+          <div className="flex gap-4 pt-6 border-t border-border">
             <button
               type="button"
-              className="flex-1 px-6 py-3 bg-[#0f1015] hover:bg-[#1a1b26] border border-white/10 text-white rounded-xl font-semibold transition-all"
+              className="flex-1 px-6 py-3 bg-[#121A22] hover:bg-[#121A22] border border-border text-foreground rounded-xl font-semibold transition-all"
               onClick={onClose}
             >
               Mégse
             </button>
             <button
               type="submit"
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-foreground rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={createLoading}
             >
               {createLoading ? (

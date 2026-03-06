@@ -78,21 +78,21 @@ export function TournamentStatusModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div
-        className="bg-[#1a1b26] rounded-2xl w-full max-w-2xl border border-white/10 shadow-2xl max-h-[90vh] overflow-y-auto"
+        className="bg-[#121A22] rounded-2xl w-full max-w-2xl border border-border shadow-2xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="sticky top-0 bg-[#1a1b26] border-b border-white/10 p-6 flex items-center justify-between z-10">
-          <h2 className="text-xl font-bold text-white">Verseny beállítások</h2>
+        <div className="sticky top-0 bg-[#121A22] border-b border-border p-6 flex items-center justify-between z-10">
+          <h2 className="text-xl font-bold text-foreground">Verseny beállítások</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors group"
+            className="p-2 hover:bg-secondary/80 rounded-lg transition-colors group"
           >
             <X
               size={20}
-              className="text-gray-400 group-hover:text-white transition-colors"
+              className="text-muted-foreground group-hover:text-foreground transition-colors"
             />
           </button>
         </div>
@@ -101,7 +101,7 @@ export function TournamentStatusModal({
         <form onSubmit={handleSubmit} className="p-6 space-y-8">
           {/* Status Selection */}
           <div>
-            <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">
+            <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4">
               Státusz
             </h3>
             <div className="grid grid-cols-1 gap-3">
@@ -110,19 +110,17 @@ export function TournamentStatusModal({
                   key={option.value}
                   onClick={() => setSelectedStatus(option.value)}
                   className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 group
-                                        ${
-                                          selectedStatus === option.value
-                                            ? "border-primary bg-primary/10 shadow-[0_0_20px_rgba(139,92,246,0.1)]"
-                                            : "border-white/5 bg-[#0f1015] hover:border-white/20 hover:bg-[#13141c]"
-                                        }`}
+                                        ${selectedStatus === option.value
+                      ? "border-primary bg-primary/10 shadow-[0_0_20px_rgba(139,92,246,0.1)]"
+                      : "border-border bg-[#121A22] hover:border-border hover:bg-[#121A22]"
+                    }`}
                 >
                   <div
                     className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors
-                                        ${
-                                          selectedStatus === option.value
-                                            ? "border-primary"
-                                            : "border-gray-500 group-hover:border-gray-400"
-                                        }`}
+                                        ${selectedStatus === option.value
+                        ? "border-primary"
+                        : "border-gray-500 group-hover:border-gray-400"
+                      }`}
                   >
                     {selectedStatus === option.value && (
                       <div className="w-2.5 h-2.5 rounded-full bg-primary" />
@@ -130,15 +128,14 @@ export function TournamentStatusModal({
                   </div>
                   <div className="flex flex-col">
                     <span
-                      className={`font-bold transition-colors ${
-                        selectedStatus === option.value
-                          ? "text-white"
-                          : "text-gray-300 group-hover:text-white"
-                      }`}
+                      className={`font-bold transition-colors ${selectedStatus === option.value
+                          ? "text-foreground"
+                          : "text-gray-300 group-hover:text-foreground"
+                        }`}
                     >
                       {option.label}
                     </span>
-                    <span className="text-sm text-gray-500 group-hover:text-gray-400 transition-colors">
+                    <span className="text-sm text-muted-foreground group-hover:text-muted-foreground transition-colors">
                       {option.description}
                     </span>
                   </div>
@@ -152,34 +149,31 @@ export function TournamentStatusModal({
 
           {/* Notifications */}
           <div>
-            <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">
+            <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4">
               Értesítések
             </h3>
             <div className="space-y-4">
               {/* User Notifications */}
               <div
-                className={`p-4 rounded-xl border transition-all duration-200 ${
-                  notifyUsers
+                className={`p-4 rounded-xl border transition-all duration-200 ${notifyUsers
                     ? "bg-primary/5 border-primary/30"
-                    : "bg-[#0f1015] border-white/5"
-                }`}
+                    : "bg-[#121A22] border-border"
+                  }`}
               >
                 <label className="flex items-start gap-4 cursor-pointer">
                   <div
-                    className={`p-2 rounded-lg transition-colors ${
-                      notifyUsers
+                    className={`p-2 rounded-lg transition-colors ${notifyUsers
                         ? "bg-primary/20 text-primary"
-                        : "bg-white/5 text-gray-400"
-                    }`}
+                        : "bg-secondary text-muted-foreground"
+                      }`}
                   >
                     <Bell size={20} />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <span
-                        className={`font-semibold ${
-                          notifyUsers ? "text-white" : "text-gray-300"
-                        }`}
+                        className={`font-semibold ${notifyUsers ? "text-foreground" : "text-gray-300"
+                          }`}
                       >
                         Felhasználói értesítések
                       </span>
@@ -187,10 +181,10 @@ export function TournamentStatusModal({
                         type="checkbox"
                         checked={notifyUsers}
                         onChange={(e) => setNotifyUsers(e.target.checked)}
-                        className="w-5 h-5 rounded border-white/20 bg-[#1a1b26] text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer"
+                        className="w-5 h-5 rounded border-border bg-[#121A22] text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer"
                       />
                     </div>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                       Értesítés küldése minden meccs eredményről a résztvevők
                       számára.
                     </p>
@@ -200,28 +194,25 @@ export function TournamentStatusModal({
 
               {/* Discord Notifications */}
               <div
-                className={`p-4 rounded-xl border transition-all duration-200 ${
-                  notifyDiscord
+                className={`p-4 rounded-xl border transition-all duration-200 ${notifyDiscord
                     ? "bg-[#5865F2]/10 border-[#5865F2]/30"
-                    : "bg-[#0f1015] border-white/5"
-                }`}
+                    : "bg-[#121A22] border-border"
+                  }`}
               >
                 <label className="flex items-start gap-4 cursor-pointer">
                   <div
-                    className={`p-2 rounded-lg transition-colors ${
-                      notifyDiscord
+                    className={`p-2 rounded-lg transition-colors ${notifyDiscord
                         ? "bg-[#5865F2]/20 text-[#5865F2]"
-                        : "bg-white/5 text-gray-400"
-                    }`}
+                        : "bg-secondary text-muted-foreground"
+                      }`}
                   >
                     <MessageSquare size={20} />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <span
-                        className={`font-semibold ${
-                          notifyDiscord ? "text-white" : "text-gray-300"
-                        }`}
+                        className={`font-semibold ${notifyDiscord ? "text-foreground" : "text-gray-300"
+                          }`}
                       >
                         Discord értesítések
                       </span>
@@ -229,20 +220,20 @@ export function TournamentStatusModal({
                         type="checkbox"
                         checked={notifyDiscord}
                         onChange={(e) => setNotifyDiscord(e.target.checked)}
-                        className="w-5 h-5 rounded border-white/20 bg-[#1a1b26] text-[#5865F2] focus:ring-[#5865F2] focus:ring-offset-0 cursor-pointer"
+                        className="w-5 h-5 rounded border-border bg-[#121A22] text-[#5865F2] focus:ring-[#5865F2] focus:ring-offset-0 cursor-pointer"
                       />
                     </div>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                       Meccs eredmények automatikus posztolása Discordra.
                     </p>
 
                     {notifyDiscord && (
                       <div className="mt-4 animate-in slide-in-from-top-2 duration-200">
-                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+                        <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
                           Célcsatorna
                         </label>
                         <select
-                          className="w-full px-4 py-2 bg-[#1a1b26] border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#5865F2] transition-colors appearance-none"
+                          className="w-full px-4 py-2 bg-[#121A22] border border-border rounded-lg text-foreground focus:outline-none focus:border-[#5865F2] transition-colors appearance-none"
                           value={discordChannel}
                           onChange={(e) => setDiscordChannel(e.target.value)}
                         >
@@ -260,17 +251,17 @@ export function TournamentStatusModal({
           </div>
 
           {/* Footer */}
-          <div className="flex gap-4 pt-4 border-t border-white/10">
+          <div className="flex gap-4 pt-4 border-t border-border">
             <button
               type="button"
-              className="flex-1 px-6 py-3 bg-[#0f1015] hover:bg-[#13141c] border border-white/10 text-white rounded-xl font-semibold transition-all hover:border-white/20"
+              className="flex-1 px-6 py-3 bg-[#121A22] hover:bg-[#121A22] border border-border text-foreground rounded-xl font-semibold transition-all hover:border-border"
               onClick={onClose}
             >
               Mégse
             </button>
             <button
               type="submit"
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-foreground rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={updateLoading}
             >
               {updateLoading ? (

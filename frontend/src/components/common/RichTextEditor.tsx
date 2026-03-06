@@ -42,7 +42,7 @@ export function RichTextEditor({
           {label} {required && <span className="text-red-400">*</span>}
         </label>
       )}
-      <div className="bg-[#0f1015] border border-white/10 rounded-xl overflow-hidden shadow-sm transition-colors focus-within:border-primary/50 text-white">
+      <div className="bg-[#121A22] border border-border rounded-xl overflow-hidden shadow-sm transition-colors focus-within:border-primary/50 text-foreground">
         <ReactQuill
           theme="snow"
           value={value}
@@ -50,7 +50,7 @@ export function RichTextEditor({
           modules={modules}
           formats={formats}
           placeholder={placeholder}
-          className="text-white"
+          className="text-foreground"
         />
       </div>
       <style>{`

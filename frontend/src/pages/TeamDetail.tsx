@@ -167,23 +167,23 @@ export function TeamDetailPage() {
 
   if (isLoading || !currentTeam) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0f1015]">
+      <div className="min-h-screen flex items-center justify-center bg-[#121A22]">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-          <p className="text-gray-400">Csapat betöltése...</p>
+          <p className="text-muted-foreground">Csapat betöltése...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen  text-white p-4 md:p-8 rounded-sm">
+    <div className="min-h-screen  text-foreground p-4 md:p-8 rounded-sm">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Back Button */}
         <div>
           <button
             onClick={() => navigate("/teams")}
-            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft size={20} />
             <span>Vissza a csapatokhoz</span>
@@ -191,7 +191,7 @@ export function TeamDetailPage() {
         </div>
 
         {/* Team Header Card */}
-        <div className="relative overflow-hidden rounded-2xl bg-[#1a1b26] border border-white/5 shadow-2xl">
+        <div className="relative overflow-hidden rounded-2xl bg-[#121A22] border border-border shadow-2xl">
           {/* Banner */}
           <div className="h-48 md:h-64 relative group">
             {currentTeam.coverUrl ? (
@@ -201,14 +201,14 @@ export function TeamDetailPage() {
                   alt="Cover"
                   className={`absolute inset-0 w-full h-full object-cover ${pendingRequest ? "grayscale-[0.5]" : ""}`}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1a1b26] via-[#1a1b26]/50 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-background to-transparent"></div>
               </>
             ) : (
               <div className="absolute inset-0 bg-gradient-to-r from-purple-900/40 via-blue-900/40 to-primary/40"></div>
             )}
             <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]"></div>
             {!currentTeam.coverUrl && (
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1a1b26] to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent"></div>
             )}
 
 
@@ -224,7 +224,7 @@ export function TeamDetailPage() {
                   ) : (
                     <button
                       onClick={() => setShowEditModal(true)}
-                      className="p-2 bg-black/40 hover:bg-black/60 text-white backdrop-blur-md border border-white/10 rounded-full transition-all hover:scale-105"
+                      className="p-2 bg-secondary hover:bg-secondary text-foreground backdrop-blur-md border border-border rounded-full transition-all hover:scale-105"
                       title="Szerkesztés"
                     >
                       <Edit size={20} />
@@ -239,9 +239,9 @@ export function TeamDetailPage() {
             <div className="relative flex  md:flex-row gap-8 items-end -mt-20">
               {/* Logo */}
               <div className="relative shrink-0 mx-auto md:mx-0 z-10 flex items-center justify-center">
-                <div className="w-36 h-36 md:w-44 md:h-44 flex items-center justify-center rounded-2xl p-1.5 bg-[#1a1b26] shadow-2xl relative transition-transform duration-300">
+                <div className="w-36 h-36 md:w-44 md:h-44 flex items-center justify-center rounded-2xl p-1.5 bg-[#121A22] shadow-2xl relative transition-transform duration-300">
                   <div className="w-full h-full rounded-xl p-1 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                    <div className="w-full h-full rounded-lg bg-[#0f1015] overflow-hidden flex items-center justify-center relative z-10">
+                    <div className="w-full h-full rounded-lg bg-[#121A22] overflow-hidden flex items-center justify-center relative z-10">
                       {currentTeam.logoUrl ? (
                         <img
                           src={currentTeam.logoUrl}
@@ -249,7 +249,7 @@ export function TeamDetailPage() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <span className="text-5xl font-bold text-white">
+                        <span className="text-5xl font-bold text-foreground">
                           {currentTeam.name.charAt(0).toUpperCase()}
                         </span>
                       )}
@@ -261,17 +261,17 @@ export function TeamDetailPage() {
               {/* Info & Meta */}
               <div className="flex-1 w-full flex flex-col md:flex-row items-center md:items-end justify-between gap-6 md:pb-4">
                 <div className="text-center md:text-left space-y-2 w-full md:w-auto">
-                  <h1 className="text-2xl sm:text-3xl md:text-5xl font-black text-white tracking-tight break-words px-2 md:px-0">
+                  <h1 className="text-2xl sm:text-3xl md:text-5xl font-black text-foreground tracking-tight break-words px-2 md:px-0">
                     {currentTeam.name}
                   </h1>
 
-                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 md:gap-4 text-gray-400">
-                    <span className="flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded-full text-xs sm:text-sm">
-                      <Users size={14} className="text-blue-400 shrink-0" />
+                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 md:gap-4 text-muted-foreground">
+                    <span className="flex items-center gap-1.5 bg-secondary px-2.5 py-1 rounded-full text-xs sm:text-sm">
+                      <Users size={14} className="text-primary shrink-0" />
                       <span>{currentTeam.members?.length || 0} tag</span>
                     </span>
-                    <span className="flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded-full text-xs sm:text-sm">
-                      <Calendar size={14} className="text-purple-400 shrink-0" />
+                    <span className="flex items-center gap-1.5 bg-secondary px-2.5 py-1 rounded-full text-xs sm:text-sm">
+                      <Calendar size={14} className="text-primary shrink-0" />
                       <span>
                         {new Date(currentTeam.createdAt).toLocaleDateString(
                           "hu-HU",
@@ -283,17 +283,17 @@ export function TeamDetailPage() {
 
                 {/* Join Code (for Owner) */}
                 {isOwner && currentTeam.joinCode && (
-                  <div className="bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl p-4 flex flex-col gap-2 min-w-[250px]">
-                    <div className="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">
+                  <div className="bg-secondary backdrop-blur-sm border border-border rounded-xl p-4 flex flex-col gap-2 min-w-[250px]">
+                    <div className="text-xs uppercase tracking-wider text-muted-foreground font-bold mb-1">
                       Csatlakozási kód
                     </div>
                     <div className="flex items-center gap-2">
-                      <code className="flex-1 bg-black/50 border border-white/5 rounded px-3 py-1.5 font-mono text-lg text-primary tracking-widest text-center">
+                      <code className="flex-1 bg-secondary border border-border rounded px-3 py-1.5 font-mono text-lg text-primary tracking-widest text-center">
                         {currentTeam.joinCode}
                       </code>
                       <button
                         onClick={handleCopyJoinCode}
-                        className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white"
+                        className="p-2 hover:bg-secondary/80 rounded-lg transition-colors text-muted-foreground hover:text-foreground"
                         title="Másolás"
                       >
                         {copied ? (
@@ -306,7 +306,7 @@ export function TeamDetailPage() {
                     <div className="flex gap-2 mt-1">
                       <button
                         onClick={handleCopyInviteLink}
-                        className="flex-1 text-xs bg-white/5 hover:bg-white/10 py-1.5 rounded text-gray-300 transition-colors flex items-center justify-center gap-1"
+                        className="flex-1 text-xs bg-secondary hover:bg-secondary/80 py-1.5 rounded text-gray-300 transition-colors flex items-center justify-center gap-1"
                       >
                         {copiedLink ? (
                           <Check size={12} />
@@ -317,7 +317,7 @@ export function TeamDetailPage() {
                       </button>
                       <button
                         onClick={handleRegenerateCode}
-                        className="flex-1 text-xs bg-white/5 hover:bg-white/10 py-1.5 rounded text-gray-300 transition-colors flex items-center justify-center gap-1"
+                        className="flex-1 text-xs bg-secondary hover:bg-secondary/80 py-1.5 rounded text-gray-300 transition-colors flex items-center justify-center gap-1"
                       >
                         <RefreshCw size={12} /> Új kód
                       </button>
@@ -329,7 +329,7 @@ export function TeamDetailPage() {
           </div>
 
           {/* Tabs Navigation */}
-          <div className="flex items-center gap-1 px-8 border-t border-white/5 bg-black/20 overflow-x-auto">
+          <div className="flex items-center gap-1 px-8 border-t border-border bg-secondary overflow-x-auto">
             {(["overview", "members", "tournaments", "settings"] as const).map(
               (tab) => {
                 if (tab === "settings" && !isOwner) return null;
@@ -354,7 +354,7 @@ export function TeamDetailPage() {
                     onClick={() => setActiveTab(tab)}
                     className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === tab
                       ? "border-primary text-primary bg-primary/5"
-                      : "border-transparent text-gray-400 hover:text-white hover:bg-white/5"
+                      : "border-transparent text-muted-foreground hover:text-foreground hover:bg-secondary"
                       }`}
                   >
                     <Icon size={18} />
@@ -371,8 +371,8 @@ export function TeamDetailPage() {
           {activeTab === "overview" && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
-                <div className="bg-[#1a1b26] rounded-xl border border-white/5 p-6 h-full">
-                  <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <div className="bg-[#121A22] rounded-xl border border-border p-6 h-full">
+                  <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                     <Info size={20} className="text-primary" />A Csapatról
                   </h2>
                   <div className="prose prose-invert max-w-none text-gray-300 leading-relaxed max-w-[200px] break-words">
@@ -388,32 +388,32 @@ export function TeamDetailPage() {
               </div>
 
               <div className="space-y-4">
-                <div className="bg-[#1a1b26] rounded-xl border border-white/5 p-6">
-                  <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">
+                <div className="bg-[#121A22] rounded-xl border border-border p-6">
+                  <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4">
                     Statisztikák
                   </h2>
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between p-3 bg-black/20 rounded-lg">
-                      <span className="text-gray-400 flex items-center gap-2">
+                    <div className="flex items-center justify-between p-3 bg-secondary rounded-lg">
+                      <span className="text-muted-foreground flex items-center gap-2">
                         <Trophy size={16} /> Versenyek
                       </span>
-                      <span className="text-xl font-bold text-white">
+                      <span className="text-xl font-bold text-foreground">
                         {currentTeam.tournamentEntries?.length || 0}
                       </span>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-black/20 rounded-lg">
-                      <span className="text-gray-400 flex items-center gap-2">
+                    <div className="flex items-center justify-between p-3 bg-secondary rounded-lg">
+                      <span className="text-muted-foreground flex items-center gap-2">
                         <Users size={16} /> Tagok
                       </span>
-                      <span className="text-xl font-bold text-white">
+                      <span className="text-xl font-bold text-foreground">
                         {currentTeam.members?.length || 0}
                       </span>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-black/20 rounded-lg">
-                      <span className="text-gray-400 flex items-center gap-2">
+                    <div className="flex items-center justify-between p-3 bg-secondary rounded-lg">
+                      <span className="text-muted-foreground flex items-center gap-2">
                         <Shield size={16} /> Csapat kapitány
                       </span>
-                      <span className="text-white font-medium">
+                      <span className="text-foreground font-medium">
                         {currentTeam.owner?.displayName ||
                           currentTeam.owner?.username}
                       </span>
@@ -427,7 +427,7 @@ export function TeamDetailPage() {
           {activeTab === "members" && (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-white">Csapattagok</h2>
+                <h2 className="text-xl font-bold text-foreground">Csapattagok</h2>
                 {isOwner && (
                   <button className="btn btn-primary btn-sm gap-2">
                     <UserPlus size={16} />
@@ -448,7 +448,7 @@ export function TeamDetailPage() {
                     />
                   ))
                 ) : (
-                  <div className="col-span-full py-12 text-center text-gray-500 bg-[#1a1b26]/50 rounded-xl border border-dashed border-white/10">
+                  <div className="col-span-full py-12 text-center text-muted-foreground bg-[#121A22]/50 rounded-xl border border-dashed border-border">
                     <Users size={48} className="mx-auto mb-3 opacity-20" />
                     <p>Még nincsenek tagok.</p>
                   </div>
@@ -459,7 +459,7 @@ export function TeamDetailPage() {
 
           {activeTab === "tournaments" && (
             <div className="space-y-6">
-              <h2 className="text-xl font-bold text-white">
+              <h2 className="text-xl font-bold text-foreground">
                 Nevezett Versenyek
               </h2>
               {currentTeam.tournamentEntries?.length ? (
@@ -468,10 +468,10 @@ export function TeamDetailPage() {
                     <Link
                       key={entry.id}
                       to={`/tournaments/${entry.tournament?.id}`}
-                      className="group bg-[#1a1b26] border border-white/5 rounded-xl p-5 hover:border-primary/50 transition-all hover:-translate-y-1 block shadow-lg shadow-black/20"
+                      className="group bg-[#121A22] border border-border rounded-xl p-5 hover:border-primary/50 transition-all hover:-translate-y-1 block shadow-lg shadow-black/20"
                     >
                       <div className="flex justify-between items-start mb-4">
-                        <h3 className="font-bold text-white text-lg group-hover:text-primary transition-colors line-clamp-1">
+                        <h3 className="font-bold text-foreground text-lg group-hover:text-primary transition-colors line-clamp-1">
                           {entry.tournament?.name}
                         </h3>
                         <div
@@ -485,11 +485,11 @@ export function TeamDetailPage() {
                           {entry.tournament?.status}
                         </div>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-gray-400 mb-2">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                         <Trophy size={14} className="text-primary" />
                         <span>{entry.tournament?.game?.name}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <Calendar size={12} />
                         <span>
                           {new Date(
@@ -501,7 +501,7 @@ export function TeamDetailPage() {
                   ))}
                 </div>
               ) : (
-                <div className="py-12 text-center text-gray-500 bg-[#1a1b26]/50 rounded-xl border border-dashed border-white/10">
+                <div className="py-12 text-center text-muted-foreground bg-[#121A22]/50 rounded-xl border border-dashed border-border">
                   <Trophy size={48} className="mx-auto mb-3 opacity-20" />
                   <p>Nincs verseny nevezés.</p>
                 </div>
@@ -511,11 +511,11 @@ export function TeamDetailPage() {
 
           {activeTab === "settings" && isOwner && (
             <div className="space-y-6 max-w-2xl mx-auto">
-              <div className="bg-[#1a1b26] rounded-xl border border-white/5 p-6">
-                <h2 className="text-lg font-bold text-white mb-4">
+              <div className="bg-[#121A22] rounded-xl border border-border p-6">
+                <h2 className="text-lg font-bold text-foreground mb-4">
                   Csapat szerkesztése
                 </h2>
-                <p className="text-gray-400 text-sm mb-4">
+                <p className="text-muted-foreground text-sm mb-4">
                   Kép, név, leírás módosítása.
                 </p>
                 <button

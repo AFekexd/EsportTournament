@@ -111,18 +111,18 @@ export function AdminTeamEditModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[1000] p-4">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-[1000] p-4">
       <div
-        className="bg-[#161722] border border-white/10 rounded-2xl max-w-[800px] w-full max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
+        className="bg-[#121A22] border border-border rounded-2xl max-w-[800px] w-full max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_hsl(var(--background) / 0.5)]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center p-6 border-b border-white/10 sticky top-0 bg-[#161722] z-10">
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+        <div className="flex justify-between items-center p-6 border-b border-border sticky top-0 bg-[#121A22] z-10">
+          <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
             <Shield className="text-primary" size={24} />
             Csapat szerkesztése
           </h2>
           <button
-            className="p-2 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+            className="p-2 rounded-lg hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-colors"
             onClick={onClose}
           >
             <X size={20} />
@@ -132,17 +132,17 @@ export function AdminTeamEditModal({
         <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left: General Info */}
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">
+            <h3 className="text-lg font-semibold text-foreground mb-4">
               Alapadatok
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="form-group">
-                <label className="block text-sm font-medium text-gray-400 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   Csapat neve
                 </label>
                 <input
                   type="text"
-                  className={`w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors ${errors.name ? "border-red-500/50" : ""
+                  className={`w-full bg-secondary border border-border rounded-lg px-4 py-2 text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors ${errors.name ? "border-red-500/50" : ""
                     }`}
                   value={formData.name}
                   onChange={(e) =>
@@ -154,16 +154,16 @@ export function AdminTeamEditModal({
                   {errors.name ? (
                     <span className="text-red-400 text-xs">{errors.name}</span>
                   ) : <span></span>}
-                  <span className="text-xs text-gray-500">{formData.name.length}/50</span>
+                  <span className="text-xs text-muted-foreground">{formData.name.length}/50</span>
                 </div>
               </div>
 
               <div className="form-group">
-                <label className="block text-sm font-medium text-gray-400 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   Leírás
                 </label>
                 <textarea
-                  className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors resize-none"
+                  className="w-full bg-secondary border border-border rounded-lg px-4 py-2 text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors resize-none"
                   value={formData.description}
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
@@ -172,13 +172,13 @@ export function AdminTeamEditModal({
                   maxLength={500}
                 />
                 <div className="text-right mt-1">
-                  <span className="text-xs text-gray-500">{formData.description.length}/500</span>
+                  <span className="text-xs text-muted-foreground">{formData.description.length}/500</span>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">
                     Logó
                   </label>
                   <ImageUpload
@@ -192,7 +192,7 @@ export function AdminTeamEditModal({
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">
                     Borítókép
                   </label>
                   <ImageUpload
@@ -227,18 +227,18 @@ export function AdminTeamEditModal({
 
           {/* Right: Members */}
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center justify-between">
               <span>Csapattagok</span>
               <span className="text-sm font-normal text-muted-foreground">
                 {localMembers.length} tag
               </span>
             </h3>
-            <div className="bg-black/20 rounded-xl border border-white/5 overflow-hidden">
+            <div className="bg-secondary rounded-xl border border-border overflow-hidden">
               <div className="max-h-[400px] overflow-y-auto divide-y divide-white/5">
                 {localMembers.map((member) => (
                   <div
                     key={member.userId}
-                    className="flex items-center justify-between p-3 hover:bg-white/5 transition-colors"
+                    className="flex items-center justify-between p-3 hover:bg-secondary transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       {member.user?.avatarUrl ? (
@@ -248,12 +248,12 @@ export function AdminTeamEditModal({
                           className="w-8 h-8 rounded-full object-cover"
                         />
                       ) : (
-                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-                          <User size={14} className="text-gray-400" />
+                        <div className="w-8 h-8 rounded-full bg-secondary/80 flex items-center justify-center">
+                          <User size={14} className="text-muted-foreground" />
                         </div>
                       )}
                       <div>
-                        <div className="text-sm font-medium text-white flex items-center gap-2">
+                        <div className="text-sm font-medium text-foreground flex items-center gap-2">
                           {member.user?.displayName || member.user?.username}
                           {member.role === "CAPTAIN" && (
                             <span className="text-[10px] bg-yellow-500/20 text-yellow-500 px-1.5 py-0.5 rounded uppercase font-bold">
@@ -261,7 +261,7 @@ export function AdminTeamEditModal({
                             </span>
                           )}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-muted-foreground">
                           @{member.user?.username}
                         </div>
                       </div>

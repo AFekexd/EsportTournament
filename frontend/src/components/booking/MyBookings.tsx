@@ -96,17 +96,17 @@ export function MyBookings() {
       case "active":
         return { label: "Aktív", color: "text-primary bg-primary/10 border-primary/20" };
       default:
-        return { label: "Közelgő", color: "text-blue-400 bg-blue-500/10 border-blue-500/20" };
+        return { label: "Közelgő", color: "text-primary bg-primary/20 border-primary/20" };
     }
   };
 
   if (!isAuthenticated) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 text-center bg-[#1a1b26] rounded-2xl border border-white/5">
-        <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
-          <AlertCircle size={32} className="text-gray-400" />
+      <div className="flex flex-col items-center justify-center p-12 text-center bg-[#121A22] rounded-2xl border border-border">
+        <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mb-4">
+          <AlertCircle size={32} className="text-muted-foreground" />
         </div>
-        <p className="text-gray-400 text-lg">Jelentkezz be a foglalásaid megtekintéséhez</p>
+        <p className="text-muted-foreground text-lg">Jelentkezz be a foglalásaid megtekintéséhez</p>
       </div>
     );
   }
@@ -121,20 +121,20 @@ export function MyBookings() {
 
   if (myBookings.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 text-center bg-[#1a1b26] rounded-2xl border border-white/5">
-        <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
-          <Calendar size={32} className="text-gray-400" />
+      <div className="flex flex-col items-center justify-center p-12 text-center bg-[#121A22] rounded-2xl border border-border">
+        <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mb-4">
+          <Calendar size={32} className="text-muted-foreground" />
         </div>
-        <p className="text-gray-400 text-lg">Nincs aktív foglalásod</p>
+        <p className="text-muted-foreground text-lg">Nincs aktív foglalásod</p>
       </div>
     );
   }
 
   return (
     <div className="w-full">
-      <h3 className="flex items-center gap-2 text-xl font-bold text-white mb-6">
+      <h3 className="flex items-center gap-2 text-xl font-bold text-foreground mb-6">
         <Calendar size={24} className="text-primary" />
-        Saját foglalásaim <span className="text-gray-500 text-lg font-normal">({myBookings.length})</span>
+        Saját foglalásaim <span className="text-muted-foreground text-lg font-normal">({myBookings.length})</span>
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -145,16 +145,16 @@ export function MyBookings() {
           return (
             <div
               key={booking.id}
-              className="group relative bg-[#1a1b26] rounded-xl border border-white/5 p-5 hover:border-primary/50 transition-all duration-300 hover:shadow-[0_0_20px_-5px_rgba(139,92,246,0.15)] flex flex-col"
+              className="group relative bg-[#121A22] rounded-xl border border-border p-5 hover:border-primary/50 transition-all duration-300 hover:shadow-[0_0_20px_-5px_rgba(139,92,246,0.15)] flex flex-col"
             >
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-[#0f1015] flex items-center justify-center border border-white/5 group-hover:border-primary/20 transition-colors">
-                    <Monitor size={20} className="text-gray-400 group-hover:text-primary transition-colors" />
+                  <div className="w-10 h-10 rounded-lg bg-[#121A22] flex items-center justify-center border border-border group-hover:border-primary/20 transition-colors">
+                    <Monitor size={20} className="text-muted-foreground group-hover:text-primary transition-colors" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-white group-hover:text-primary transition-colors">{booking.computer.name}</h4>
-                    <span className="text-xs text-gray-500">Számítógép</span>
+                    <h4 className="font-bold text-foreground group-hover:text-primary transition-colors">{booking.computer.name}</h4>
+                    <span className="text-xs text-muted-foreground">Számítógép</span>
                   </div>
                 </div>
                 <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${statusInfo.color} flex items-center gap-1.5`}>
@@ -165,21 +165,21 @@ export function MyBookings() {
 
               <div className="space-y-3 mb-6">
                 <div className="flex items-center gap-3 text-sm text-gray-300">
-                  <Calendar size={16} className="text-gray-500" />
+                  <Calendar size={16} className="text-muted-foreground" />
                   <span className="capitalize">{formatDate(booking.date)}</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm text-gray-300">
-                  <Clock size={16} className="text-gray-500" />
+                  <Clock size={16} className="text-muted-foreground" />
                   <span>
                     {formatTime(booking.startTime)} - {formatTime(booking.endTime)}
                   </span>
                 </div>
               </div>
 
-              <div className="mt-auto pt-4 border-t border-white/5 flex justify-end">
+              <div className="mt-auto pt-4 border-t border-border flex justify-end">
                 {status === "upcoming" && (
                   <button
-                    className="p-2 rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                    className="p-2 rounded-lg text-muted-foreground hover:text-red-400 hover:bg-red-500/10 transition-colors"
                     onClick={() => handleDelete(booking.id)}
                     title="Foglalás törlése"
                   >

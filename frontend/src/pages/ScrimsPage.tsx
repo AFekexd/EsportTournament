@@ -52,7 +52,7 @@ export function ScrimsPage() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => {},
+    onConfirm: () => { },
   });
 
   const fetchScrims = async () => {
@@ -112,7 +112,7 @@ export function ScrimsPage() {
     <div className="container mx-auto p-6 max-w-7xl animate-fade-in pb-20">
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-black text-white mb-2 flex items-center gap-3">
+          <h1 className="text-3xl font-black text-foreground mb-2 flex items-center gap-3">
             <Swords className="text-primary" size={32} />
             Gyakorló Meccsek
           </h1>
@@ -123,7 +123,7 @@ export function ScrimsPage() {
 
         <button
           onClick={() => setIsCreateModalOpen(true)}
-          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white rounded-xl font-bold shadow-lg shadow-violet-500/20 transition-all hover:scale-105"
+          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-foreground rounded-xl font-bold shadow-lg shadow-violet-500/20 transition-all hover:scale-105"
         >
           <Plus size={20} />
           <span>Új keresés</span>
@@ -131,10 +131,10 @@ export function ScrimsPage() {
       </div>
 
       {/* Filters */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 bg-[#0f1016] border border-white/5 p-4 rounded-xl">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 bg-[#121A22] border border-border p-4 rounded-xl">
         <div className="relative">
           <Search
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
             size={18}
           />
           <input
@@ -142,22 +142,22 @@ export function ScrimsPage() {
             placeholder="Keresés játékra..."
             value={searchGame}
             onChange={(e) => setSearchGame(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-black/20 border border-white/10 rounded-lg text-white focus:outline-none focus:border-primary/50"
+            className="w-full pl-10 pr-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:border-primary/50"
           />
         </div>
         <div className="relative">
           <Calendar
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
             size={18}
           />
           <input
             type="date"
             value={filterDate}
             onChange={(e) => setFilterDate(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-black/20 border border-white/10 rounded-lg text-white focus:outline-none focus:border-primary/50 [color-scheme:dark]"
+            className="w-full pl-10 pr-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:border-primary/50 [color-scheme:dark]"
           />
         </div>
-        <div className="flex items-center justify-end text-sm text-gray-400">
+        <div className="flex items-center justify-end text-sm text-muted-foreground">
           <Filter size={16} className="mr-2" />
           {scrims.length} nyitott lehetőség
         </div>
@@ -170,12 +170,12 @@ export function ScrimsPage() {
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
           </div>
         ) : scrims.length === 0 ? (
-          <div className="text-center py-20 bg-white/5 rounded-2xl border border-white/5 border-dashed">
-            <Swords size={48} className="mx-auto text-gray-600 mb-4" />
-            <h3 className="text-xl font-bold text-gray-400">
+          <div className="text-center py-20 bg-secondary rounded-2xl border border-border border-dashed">
+            <Swords size={48} className="mx-auto text-muted-foreground mb-4" />
+            <h3 className="text-xl font-bold text-muted-foreground">
               Nincs elérhető gyakorló meccs
             </h3>
-            <p className="text-gray-600 mt-2">
+            <p className="text-muted-foreground mt-2">
               Légy te az első aki kiír egyet!
             </p>
           </div>
@@ -183,12 +183,12 @@ export function ScrimsPage() {
           scrims.map((scrim) => (
             <div
               key={scrim.id}
-              className="group bg-[#161722] border border-white/5 rounded-xl p-5 hover:border-primary/30 transition-all hover:shadow-lg hover:shadow-primary/5"
+              className="group bg-[#121A22] border border-border rounded-xl p-5 hover:border-primary/30 transition-all hover:shadow-lg hover:shadow-primary/5"
             >
               <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                 {/* Left: Team & Game Info */}
                 <div className="flex items-center gap-6 w-full md:w-auto">
-                  <div className="w-16 h-16 rounded-xl bg-black/40 border border-white/10 overflow-hidden flex-shrink-0 relative">
+                  <div className="w-16 h-16 rounded-xl bg-secondary border border-border overflow-hidden flex-shrink-0 relative">
                     {scrim.requesterTeam.logoUrl ? (
                       <img
                         src={scrim.requesterTeam.logoUrl}
@@ -196,24 +196,24 @@ export function ScrimsPage() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-xl font-bold text-gray-600">
+                      <div className="w-full h-full flex items-center justify-center text-xl font-bold text-muted-foreground">
                         {scrim.requesterTeam.name.substring(0, 2).toUpperCase()}
                       </div>
                     )}
-                    <div className="absolute bottom-0 right-0 bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-tl-md">
+                    <div className="absolute bottom-0 right-0 bg-primary text-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-tl-md">
                       {scrim.requesterTeam.elo}
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-bold text-white group-hover:text-primary transition-colors flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
                       {scrim.requesterTeam.name}
-                      <span className="text-xs font-normal text-gray-500 px-2 py-0.5 bg-white/5 rounded">
+                      <span className="text-xs font-normal text-muted-foreground px-2 py-0.5 bg-secondary rounded">
                         {scrim.game.name}
                       </span>
                     </h3>
 
-                    <div className="flex flex-wrap gap-4 mt-1.5 text-sm text-gray-400">
+                    <div className="flex flex-wrap gap-4 mt-1.5 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1.5">
                         <Calendar size={14} className="text-primary" />
                         {format(
@@ -227,7 +227,7 @@ export function ScrimsPage() {
                         {scrim.durationMinutes} perc
                       </div>
                       {scrim.notes && (
-                        <div className="flex items-center gap-1.5 text-gray-500 italic max-w-md truncate">
+                        <div className="flex items-center gap-1.5 text-muted-foreground italic max-w-md truncate">
                           <MessageSquare size={14} />
                           {scrim.notes}
                         </div>
@@ -241,7 +241,7 @@ export function ScrimsPage() {
                   {user ? (
                     <button
                       onClick={() => handleAccept(scrim)}
-                      className="w-full md:w-auto px-6 py-2.5 bg-white/5 hover:bg-green-500/20 text-white hover:text-green-400 border border-white/10 hover:border-green-500/50 rounded-lg font-bold transition-all flex items-center justify-center gap-2"
+                      className="w-full md:w-auto px-6 py-2.5 bg-secondary hover:bg-green-500/20 text-foreground hover:text-green-400 border border-border hover:border-green-500/50 rounded-lg font-bold transition-all flex items-center justify-center gap-2"
                     >
                       <Swords size={18} />
                       Kihívás

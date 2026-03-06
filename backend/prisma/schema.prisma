@@ -148,6 +148,7 @@ model User {
   participatingEntries TournamentEntry[] @relation("TournamentParticipants") // For team tournament participation
   discordSettings      DiscordSettings?
   bookings             Booking[] // Computer bookings
+  supervisingHours     BookingSupervisor[] @relation("BookingSupervisorUser") // Hourly responsibilities
   waitlistEntries      Waitlist[] // Waitlist entries
   // Match relations for solo tournaments
   homeMatches          Match[]           @relation("HomeUser")
@@ -540,6 +541,20 @@ model BookingSchedule {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// Felelős (ügyeletes) egy adott napra és órára
+model BookingSupervisor {
+  id        String   @id @default(uuid())
+  date      DateTime @db.Date // The date of the shift
+  hour      Int      // 0-23
+  userId    String
+  user      User     @relation("BookingSupervisorUser", fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([date, hour])
+  @@index([date])
+  @@index([userId])
 }
 
 // Kiosk Client Version Management

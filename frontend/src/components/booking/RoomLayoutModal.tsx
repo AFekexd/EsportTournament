@@ -188,25 +188,25 @@ export const RoomLayoutModal: React.FC<RoomLayoutModalProps> = ({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
             <div
-                className="bg-[#1a1b26] border border-white/10 rounded-2xl w-full max-w-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
+                className="bg-[#121A22] border border-border rounded-2xl w-full max-w-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
                 onClick={e => e.stopPropagation()}
             >
-                <div className="flex items-center justify-between p-4 border-b border-white/5 bg-[#0f1015] flex-shrink-0 z-10">
-                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                <div className="flex items-center justify-between p-4 border-b border-border bg-[#121A22] flex-shrink-0 z-10">
+                    <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                         <Map className="text-primary" />
                         Terem elrendezés (beta)
                     </h2>
                     <button
                         onClick={onClose}
-                        className="p-2 rounded-lg hover:bg-white/5 text-gray-400 hover:text-white transition-colors"
+                        className="p-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
                     >
                         <X size={20} />
                     </button>
                 </div>
 
-                <div className="flex-1 relative overflow-hidden bg-[#0f1015] touch-none cursor-grab active:cursor-grabbing min-h-[50vh] w-full"
+                <div className="flex-1 relative overflow-hidden bg-[#121A22] touch-none cursor-grab active:cursor-grabbing min-h-[50vh] w-full"
                     ref={containerRef}
                     onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
@@ -225,13 +225,13 @@ export const RoomLayoutModal: React.FC<RoomLayoutModalProps> = ({
                     >
                         <canvas
                             ref={canvasRef}
-                            className="w-full h-full border border-white/5 rounded-xl bg-[#1a1b26] shadow-2xl"
+                            className="w-full h-full border border-border rounded-xl bg-[#121A22] shadow-2xl"
                             width={1600}
                             height={800}
                         />
 
                         {/* Legend */}
-                        <div className="absolute bottom-4 left-4 bg-black/50 p-3 rounded-lg border border-white/10 backdrop-blur-md pointer-events-none" style={{ transform: `scale(${1 / scale})`, transformOrigin: 'bottom left' }}>
+                        <div className="absolute bottom-4 left-4 bg-secondary p-3 rounded-lg border border-border backdrop-blur-md pointer-events-none" style={{ transform: `scale(${1 / scale})`, transformOrigin: 'bottom left' }}>
                             <div className="flex items-center gap-2 mb-2">
                                 <div className="w-3 h-3 bg-primary/20 border border-primary"></div>
                                 <span className="text-xs text-gray-300">Normál gép</span>
@@ -245,12 +245,12 @@ export const RoomLayoutModal: React.FC<RoomLayoutModalProps> = ({
 
                     {/* Beta Controls for debugging/desktop */}
                     <div className="absolute bottom-4 right-4 z-10 flex gap-2">
-                        <button onClick={() => setScale(s => Math.min(s + 0.5, 4))} className="bg-black/50 p-2 rounded text-white">+</button>
-                        <button onClick={() => setScale(s => Math.max(s - 0.5, 1))} className="bg-black/50 p-2 rounded text-white">-</button>
+                        <button onClick={() => setScale(s => Math.min(s + 0.5, 4))} className="bg-secondary p-2 rounded text-foreground">+</button>
+                        <button onClick={() => setScale(s => Math.max(s - 0.5, 1))} className="bg-secondary p-2 rounded text-foreground">-</button>
                     </div>
                 </div>
 
-                <div className="p-4 border-t border-white/5 bg-[#1a1b26] text-center text-sm text-gray-400 flex-shrink-0 z-10 transition-colors">
+                <div className="p-4 border-t border-border bg-[#121A22] text-center text-sm text-muted-foreground flex-shrink-0 z-10 transition-colors">
                     {scale === 1 ? "Használd a kétujjas nagyítást a részletekért." : "Mozgasd az ujjad a térképen a nézet váltásához."}
                 </div>
             </div>

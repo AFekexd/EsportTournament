@@ -137,21 +137,21 @@ export function MatchEditModal({
       onClick={onClose}
     >
       {/* Backdrop with blur */}
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-md" />
+      <div className="absolute inset-0 bg-secondary backdrop-blur-md" />
 
       {/* Modal */}
       <div
-        className="relative w-full max-w-lg bg-gradient-to-b from-[#1a1b26] to-[#13141c] rounded-2xl border border-white/10 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] overflow-hidden max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-300"
+        className="relative w-full max-w-lg bg-gradient-to-b from-card to-background rounded-2xl border border-border shadow-[0_25px_50px_-12px_hsl(var(--background) / 0.8)] overflow-hidden max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header with gradient */}
-        <div className="relative px-6 py-5 border-b border-white/5">
+        <div className="relative px-6 py-5 border-b border-border">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-purple-500/5 to-transparent" />
           <div className="absolute top-0 left-0 w-32 h-32 bg-primary/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
 
           <div className="relative flex items-start justify-between">
             <div>
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                 <Swords className="text-primary" size={22} />
                 Mérkőzés szerkesztése
               </h2>
@@ -160,14 +160,14 @@ export function MatchEditModal({
                   <span className="px-2.5 py-1 bg-primary/20 text-primary text-xs font-bold rounded-full border border-primary/30">
                     {getBracketLabel()}
                   </span>
-                  <span className="text-gray-500 text-xs">
+                  <span className="text-muted-foreground text-xs">
                     Kör {match.round} • Pozíció {match.position}
                   </span>
                 </div>
               )}
             </div>
             <button
-              className="text-gray-400 hover:text-white hover:bg-white/10 p-2 rounded-xl transition-all duration-200 hover:rotate-90"
+              className="text-muted-foreground hover:text-foreground hover:bg-secondary/80 p-2 rounded-xl transition-all duration-200 hover:rotate-90"
               onClick={onClose}
             >
               <X size={20} />
@@ -186,13 +186,13 @@ export function MatchEditModal({
                 <p className="text-red-300 font-semibold text-sm">
                   Biztosan törölni szeretnéd?
                 </p>
-                <p className="text-gray-500 text-xs mt-0.5">
+                <p className="text-muted-foreground text-xs mt-0.5">
                   Ez a művelet nem visszavonható.
                 </p>
                 <div className="flex gap-2 mt-3">
                   <button
                     type="button"
-                    className="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors"
+                    className="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-foreground text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors"
                     onClick={() => {
                       onDelete?.();
                       setShowDeleteConfirm(false);
@@ -204,7 +204,7 @@ export function MatchEditModal({
                   </button>
                   <button
                     type="button"
-                    className="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-gray-400 text-xs font-semibold rounded-lg transition-colors"
+                    className="px-3 py-1.5 bg-secondary hover:bg-secondary/80 text-muted-foreground text-xs font-semibold rounded-lg transition-colors"
                     onClick={() => setShowDeleteConfirm(false)}
                   >
                     Mégse
@@ -226,7 +226,7 @@ export function MatchEditModal({
                 <p className="text-yellow-300 font-semibold text-sm">
                   Visszaállítod a meccset?
                 </p>
-                <p className="text-gray-500 text-xs mt-0.5">
+                <p className="text-muted-foreground text-xs mt-0.5">
                   Az eredmény törlődik és a meccs újra függőben lesz.
                 </p>
                 <div className="flex gap-2 mt-3">
@@ -244,7 +244,7 @@ export function MatchEditModal({
                   </button>
                   <button
                     type="button"
-                    className="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-gray-400 text-xs font-semibold rounded-lg transition-colors"
+                    className="px-3 py-1.5 bg-secondary hover:bg-secondary/80 text-muted-foreground text-xs font-semibold rounded-lg transition-colors"
                     onClick={() => setShowResetConfirm(false)}
                   >
                     Mégse
@@ -258,21 +258,21 @@ export function MatchEditModal({
         <form onSubmit={handleSubmit}>
           {/* VS Display */}
           <div className="px-6 py-6">
-            <div className="relative bg-gradient-to-r from-primary/5 via-white/5 to-purple-500/5 rounded-xl p-4 border border-white/5">
+            <div className="relative bg-gradient-to-r from-primary/5 via-white/5 to-purple-500/5 rounded-xl p-4 border border-border">
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(124,58,237,0.1),transparent_70%)]" />
               <div className="relative flex items-center justify-between">
                 <div className="flex-1 text-center">
-                  <p className="text-white font-bold text-lg truncate px-2">
+                  <p className="text-foreground font-bold text-lg truncate px-2">
                     {homeName}
                   </p>
                 </div>
                 <div className="flex-shrink-0 mx-4">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-lg shadow-primary/20">
-                    <span className="text-white font-bold text-sm">VS</span>
+                    <span className="text-foreground font-bold text-sm">VS</span>
                   </div>
                 </div>
                 <div className="flex-1 text-center">
-                  <p className="text-white font-bold text-lg truncate px-2">
+                  <p className="text-foreground font-bold text-lg truncate px-2">
                     {awayName}
                   </p>
                 </div>
@@ -284,12 +284,12 @@ export function MatchEditModal({
           <div className="px-6 pb-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   {homeName} pontszám
                 </label>
                 <input
                   type="number"
-                  className="w-full bg-black/30 border-2 border-white/10 rounded-xl px-4 py-3 text-white text-center text-2xl font-bold focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-600"
+                  className="w-full bg-secondary border-2 border-border rounded-xl px-4 py-3 text-foreground text-center text-2xl font-bold focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground"
                   value={homeScore}
                   onChange={(e) => setHomeScore(e.target.value)}
                   min="0"
@@ -297,12 +297,12 @@ export function MatchEditModal({
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   {awayName} pontszám
                 </label>
                 <input
                   type="number"
-                  className="w-full bg-black/30 border-2 border-white/10 rounded-xl px-4 py-3 text-white text-center text-2xl font-bold focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-600"
+                  className="w-full bg-secondary border-2 border-border rounded-xl px-4 py-3 text-foreground text-center text-2xl font-bold focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground"
                   value={awayScore}
                   onChange={(e) => setAwayScore(e.target.value)}
                   min="0"
@@ -315,12 +315,12 @@ export function MatchEditModal({
           {/* Winner Select */}
           <div className="px-6 pb-6">
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                 <Trophy size={14} className="text-yellow-500" />
                 Győztes
               </label>
               <select
-                className="w-full bg-black/30 border-2 border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all appearance-none cursor-pointer"
+                className="w-full bg-secondary border-2 border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all appearance-none cursor-pointer"
                 value={winnerId}
                 onChange={(e) => setWinnerId(e.target.value)}
                 style={{
@@ -334,7 +334,7 @@ export function MatchEditModal({
                 {homeId && <option value={homeId}>{homeName}</option>}
                 {awayId && <option value={awayId}>{awayName}</option>}
               </select>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 Ha üresen hagyod, a győztest a pontszám alapján határozza meg a
                 rendszer
               </p>
@@ -344,8 +344,8 @@ export function MatchEditModal({
           {/* Proof Upload */}
           <div className="px-6 pb-6">
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-2">
-                <ImageIcon size={14} className="text-blue-400" />
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                <ImageIcon size={14} className="text-primary" />
                 Eredmény igazolás (Kép)
               </label>
               <div className="relative group">
@@ -356,10 +356,10 @@ export function MatchEditModal({
                     const file = e.target.files?.[0];
                     if (file) setProofFile(file);
                   }}
-                  className="w-full bg-black/30 border-2 border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-primary/20 file:text-primary hover:file:bg-primary/30 transition-all cursor-pointer"
+                  className="w-full bg-secondary border-2 border-border rounded-xl px-4 py-3 text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-primary/20 file:text-primary hover:file:bg-primary/30 transition-all cursor-pointer"
                 />
               </div>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 Töltsd fel az eredményről készült képet (nem kerül mentésre az
                 adatbázisba, csak Discordra)
               </p>
@@ -369,8 +369,8 @@ export function MatchEditModal({
           {/* Admin Actions */}
           {isAdmin && (
             <div className="px-6 pb-6">
-              <div className="border-t border-white/5 pt-4">
-                <p className="text-[10px] text-gray-600 uppercase tracking-widest font-bold mb-3 flex items-center gap-2">
+              <div className="border-t border-border pt-4">
+                <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-3 flex items-center gap-2">
                   <span className="w-4 h-px bg-gray-700" />
                   Adminisztrátori műveletek
                   <span className="flex-grow h-px bg-gray-700/50" />
@@ -410,16 +410,16 @@ export function MatchEditModal({
           )}
 
           {/* Footer */}
-          <div className="px-6 py-4 bg-black/20 border-t border-white/5 flex flex-col gap-3">
+          <div className="px-6 py-4 bg-secondary border-t border-border flex flex-col gap-3">
             {isLoading &&
               uploadProgress !== undefined &&
               uploadProgress > 0 && (
                 <div className="w-full space-y-1">
-                  <div className="flex justify-between text-xs text-gray-400">
+                  <div className="flex justify-between text-xs text-muted-foreground">
                     <span>Feltöltés...</span>
                     <span>{uploadProgress}%</span>
                   </div>
-                  <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div className="w-full h-1.5 bg-secondary/80 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-primary transition-all duration-300 ease-out"
                       style={{ width: `${uploadProgress}%` }}
@@ -430,26 +430,26 @@ export function MatchEditModal({
             <div className="flex justify-end gap-3">
               <button
                 type="button"
-                className="px-5 py-2.5 text-gray-400 hover:text-white hover:bg-white/5 text-sm font-semibold rounded-xl transition-all duration-200"
+                className="px-5 py-2.5 text-muted-foreground hover:text-foreground hover:bg-secondary text-sm font-semibold rounded-xl transition-all duration-200"
                 onClick={onClose}
               >
                 Mégse
               </button>
               <button
                 type="submit"
-                className="group relative px-6 py-2.5 bg-gradient-to-r from-primary to-purple-600 text-white text-sm font-bold rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] transition-all duration-200 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="group relative px-6 py-2.5 bg-gradient-to-r from-primary to-purple-600 text-foreground text-sm font-bold rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] transition-all duration-200 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 disabled={isLoading}
               >
                 {isLoading ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-border border-t-white rounded-full animate-spin" />
                     Mentés...
                   </>
                 ) : (
                   <>
                     <Save size={16} />
                     Mentés
-                    <div className="absolute inset-0 rounded-xl bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute inset-0 rounded-xl bg-secondary/80 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </>
                 )}
               </button>

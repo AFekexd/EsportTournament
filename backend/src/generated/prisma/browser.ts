@@ -113,6 +113,11 @@ export type Waitlist = Prisma.WaitlistModel
  */
 export type BookingSchedule = Prisma.BookingScheduleModel
 /**
+ * Model BookingSupervisor
+ * 
+ */
+export type BookingSupervisor = Prisma.BookingSupervisorModel
+/**
  * Model ClientVersion
  * 
  */

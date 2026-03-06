@@ -183,13 +183,13 @@ export function DiscordAdminPage() {
     return (
         <div className="discord-settings-page space-y-8">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/10 pb-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-border pb-6">
                 <div>
-                    <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+                    <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
                         <Send className="text-primary" size={32} />
                         Discord Üzenetközpont
                     </h1>
-                    <p className="text-gray-400 mt-2">
+                    <p className="text-muted-foreground mt-2">
                         Azonnali értesítések küldése a hivatalos szerverre
                     </p>
                 </div>
@@ -201,7 +201,7 @@ export function DiscordAdminPage() {
                 <div className="space-y-6">
 
                     {/* Channel & Color Selection Card */}
-                    <div className="card bg-secondary/50 border-white/5 p-6 shadow-xl">
+                    <div className="card bg-secondary/50 border-border p-6 shadow-xl">
                         <div className="flex items-center gap-2 mb-6 text-primary">
                             <Hash size={20} />
                             <h2 className="font-semibold uppercase tracking-wider text-sm">Beállítások</h2>
@@ -216,13 +216,13 @@ export function DiscordAdminPage() {
                                         id="channel"
                                         value={channel}
                                         onChange={(e) => setChannel(e.target.value)}
-                                        className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary appearance-none transition-all"
+                                        className="w-full bg-secondary border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary appearance-none transition-all"
                                     >
                                         {channels.map((ch) => (
                                             <option key={ch.id} value={ch.id}>#{ch.name}</option>
                                         ))}
                                     </select>
-                                    <Hash className="absolute right-4 top-3.5 text-gray-500 pointer-events-none" size={16} />
+                                    <Hash className="absolute right-4 top-3.5 text-muted-foreground pointer-events-none" size={16} />
                                 </div>
                             </div>
 
@@ -239,12 +239,12 @@ export function DiscordAdminPage() {
                                             onClick={() => setColor(preset.value)}
                                             className={`w-10 h-10 rounded-full border-2 transition-all duration-200 transform hover:scale-110 flex items-center justify-center ${color === preset.value
                                                 ? 'border-white shadow-[0_0_15px_rgba(255,255,255,0.3)] scale-110'
-                                                : 'border-transparent hover:border-white/50'
+                                                : 'border-transparent hover:border-border'
                                                 }`}
                                             style={{ backgroundColor: preset.value }}
                                             title={preset.name}
                                         >
-                                            {color === preset.value && <Check size={16} className="text-white drop-shadow-md" />}
+                                            {color === preset.value && <Check size={16} className="text-foreground drop-shadow-md" />}
                                         </button>
                                     ))}
                                 </div>
@@ -253,7 +253,7 @@ export function DiscordAdminPage() {
                     </div>
 
                     {/* Message Content Card */}
-                    <div className="card bg-secondary/50 border-white/5 p-6 shadow-xl relative overflow-hidden">
+                    <div className="card bg-secondary/50 border-border p-6 shadow-xl relative overflow-hidden">
                         {/* Decorative glowing gradient */}
                         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
 
@@ -268,7 +268,7 @@ export function DiscordAdminPage() {
                                 <input
                                     id="title"
                                     type="text"
-                                    className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-bold"
+                                    className="w-full bg-secondary border border-border rounded-xl px-4 py-3 text-foreground placeholder-gray-600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-bold"
                                     placeholder="Figyelemfelkeltő cím..."
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
@@ -280,7 +280,7 @@ export function DiscordAdminPage() {
                                 <textarea
                                     id="message"
                                     rows={6}
-                                    className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-y min-h-[120px]"
+                                    className="w-full bg-secondary border border-border rounded-xl px-4 py-3 text-foreground placeholder-gray-600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-y min-h-[120px]"
                                     placeholder="Írd ide az üzenet fő tartalmát..."
                                     value={message}
                                     onChange={(e) => setMessage(e.target.value)}
@@ -290,7 +290,7 @@ export function DiscordAdminPage() {
                     </div>
 
                     {/* Mentions Card */}
-                    <div className="card bg-secondary/50 border-white/5 p-6 shadow-xl">
+                    <div className="card bg-secondary/50 border-border p-6 shadow-xl">
                         <div className="flex items-center gap-2 mb-6 text-primary">
                             <AtSign size={20} />
                             <h2 className="font-semibold uppercase tracking-wider text-sm">Említések</h2>
@@ -299,10 +299,10 @@ export function DiscordAdminPage() {
                         <div className="space-y-4">
                             <div className="relative z-20">
                                 <div className="relative">
-                                    <Search className="absolute right-4 top-3.5 text-gray-500" size={16} />
+                                    <Search className="absolute right-4 top-3.5 text-muted-foreground" size={16} />
                                     <input
                                         type="text"
-                                        className="w-full bg-black/40 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-primary transition-all"
+                                        className="w-full bg-secondary border border-border rounded-xl pl-10 pr-4 py-3 text-foreground placeholder-gray-600 focus:outline-none focus:border-primary transition-all"
                                         placeholder="Keresés: @név vagy csapat..."
                                         value={mentionSearch}
                                         onChange={(e) => handleMentionSearchChange(e.target.value)}
@@ -312,7 +312,7 @@ export function DiscordAdminPage() {
 
                                 {/* Autocomplete Dropdown */}
                                 {showSuggestions && mentionSuggestions.length > 0 && (
-                                    <div className="absolute left-0 right-0 top-full mt-2 bg-[#2b2d31] border border-white/10 rounded-xl shadow-2xl overflow-hidden max-h-60 overflow-y-auto">
+                                    <div className="absolute left-0 right-0 top-full mt-2 bg-[#2b2d31] border border-border rounded-xl shadow-2xl overflow-hidden max-h-60 overflow-y-auto">
                                         {mentionSuggestions.map((suggestion) => (
                                             <button
                                                 key={`${suggestion.type}-${suggestion.id}`}
@@ -320,12 +320,12 @@ export function DiscordAdminPage() {
                                                 onClick={() => addMention(suggestion)}
                                                 className="w-full flex items-center gap-3 px-4 py-3 hover:bg-primary/20 hover:border-l-4 border-primary transition-all text-left group"
                                             >
-                                                <div className="w-8 h-8 rounded-full bg-black/30 flex items-center justify-center text-gray-400 group-hover:text-white transition-colors">
+                                                <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-muted-foreground group-hover:text-foreground transition-colors">
                                                     {suggestion.type === 'user' ? <User size={16} /> : <Users size={16} />}
                                                 </div>
                                                 <div>
-                                                    <div className="font-medium text-gray-200 group-hover:text-white">{suggestion.name}</div>
-                                                    <div className="text-xs text-gray-500">{suggestion.mention}</div>
+                                                    <div className="font-medium text-gray-200 group-hover:text-foreground">{suggestion.name}</div>
+                                                    <div className="text-xs text-muted-foreground">{suggestion.mention}</div>
                                                 </div>
                                             </button>
                                         ))}
@@ -342,7 +342,7 @@ export function DiscordAdminPage() {
                                             const current = mentions ? mentions + ', ' : '';
                                             setMentions(current + qm.value);
                                         }}
-                                        className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 text-xs font-medium text-gray-400 hover:text-white transition-all"
+                                        className="px-3 py-1.5 rounded-lg bg-secondary hover:bg-secondary/80 border border-border hover:border-border text-xs font-medium text-muted-foreground hover:text-foreground transition-all"
                                     >
                                         + {qm.label}
                                     </button>
@@ -350,10 +350,10 @@ export function DiscordAdminPage() {
                             </div>
 
                             <div className="pt-2">
-                                <label className="text-xs font-medium text-gray-500 mb-1 block">Aktív említések (vesszővel elválasztva)</label>
+                                <label className="text-xs font-medium text-muted-foreground mb-1 block">Aktív említések (vesszővel elválasztva)</label>
                                 <input
                                     type="text"
-                                    className="w-full bg-black/20 border border-white/5 rounded-lg px-3 py-2 text-sm text-primary font-mono focus:outline-none focus:border-white/20"
+                                    className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-primary font-mono focus:outline-none focus:border-border"
                                     value={mentions}
                                     onChange={(e) => setMentions(e.target.value)}
                                     placeholder="@everyone"
@@ -392,22 +392,22 @@ export function DiscordAdminPage() {
                     <div className="bg-[#313338] rounded-md shadow-2xl border border-[#2b2d31] overflow-hidden">
                         {/* Discord Window Header Mockup */}
                         <div className="bg-[#2b2d31] p-3 border-b border-[#1e1f22] flex items-center gap-2">
-                            <Hash className="text-gray-400" size={16} />
+                            <Hash className="text-muted-foreground" size={16} />
                             <span className="text-sm font-semibold text-gray-200">{channels.find(c => c.id === channel)?.name || 'general'}</span>
-                            <span className="text-xs text-gray-500 ml-auto">Előnézet</span>
+                            <span className="text-xs text-muted-foreground ml-auto">Előnézet</span>
                         </div>
 
                         <div className="p-4 sm:p-6 space-y-4">
                             {/* Bot User Mockup */}
                             <div className="flex gap-4">
-                                <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white shrink-0">
+                                <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-foreground shrink-0">
                                     Bot
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-1">
-                                        <span className="font-medium text-white">Gémer János</span>
-                                        <span className="bg-[#5865F2] text-white text-[10px] px-1.5 rounded uppercase font-bold tracking-wide py-[1px]">BOT</span>
-                                        <span className="text-xs text-gray-400 ml-1">Most</span>
+                                        <span className="font-medium text-foreground">Gémer János</span>
+                                        <span className="bg-[#5865F2] text-foreground text-[10px] px-1.5 rounded uppercase font-bold tracking-wide py-[1px]">BOT</span>
+                                        <span className="text-xs text-muted-foreground ml-1">Most</span>
                                     </div>
 
                                     {/* Mentions Line */}
@@ -420,7 +420,7 @@ export function DiscordAdminPage() {
                                     {/* Embed */}
                                     <div className="flex bg-[#2b2d31] border-l-4 rounded-r px-4 py-3 max-w-lg" style={{ borderLeftColor: color }}>
                                         <div className="grid gap-1.5">
-                                            <h3 className="text-base font-semibold text-white break-words">
+                                            <h3 className="text-base font-semibold text-foreground break-words">
                                                 {title || <span className="text-white/20 italic">Címsor helye...</span>}
                                             </h3>
                                             <p className="text-sm text-[#dbdee1] whitespace-pre-wrap break-words leading-relaxed">
@@ -438,14 +438,14 @@ export function DiscordAdminPage() {
                         onClick={handleSend}
                         disabled={isSending || !title || !message}
                         className={`w-full py-4 rounded-xl font-bold text-lg shadow-lg transform transition-all active:scale-[0.98] flex items-center justify-center gap-3 ${isSending
-                            ? 'bg-gray-400 text-gray-400 cursor-not-allowed'
+                            ? 'bg-gray-400 text-muted-foreground cursor-not-allowed'
                             : sendSuccess
-                                ? 'bg-green-600 hover:bg-green-500 text-white'
-                                : 'bg-blue-600 hover:bg-blue-500 text-white'
+                                ? 'bg-green-600 hover:bg-green-500 text-foreground'
+                                : 'bg-blue-600 hover:bg-blue-500 text-foreground'
                             }`}
                     >
                         {isSending ? (
-                            <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            <div className="w-6 h-6 border-2 border-border border-t-white rounded-full animate-spin" />
                         ) : sendSuccess ? (
                             <>
                                 <Check size={24} />

@@ -78,19 +78,19 @@ export const RoleChangeModal: React.FC<RoleChangeModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
       <div
-        className="bg-[#1a1b26] rounded-xl border border-white/10 shadow-2xl w-full max-w-md overflow-hidden"
+        className="bg-[#121A22] rounded-xl border border-border shadow-2xl w-full max-w-md overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-white/10 flex justify-between items-center bg-gradient-to-r from-primary/10 to-transparent">
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+        <div className="p-6 border-b border-border flex justify-between items-center bg-gradient-to-r from-primary/10 to-transparent">
+          <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
             <Shield className="text-primary" size={24} />
             Szerepkör módosítása
           </h2>
           <button
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors"
             onClick={onClose}
           >
             <X size={24} />
@@ -99,20 +99,20 @@ export const RoleChangeModal: React.FC<RoleChangeModalProps> = ({
 
         {/* Content */}
         <div className="p-6">
-          <div className="flex items-center gap-4 mb-6 bg-white/5 p-4 rounded-lg border border-white/5">
-            <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center border border-white/10 text-xl font-bold text-gray-400">
+          <div className="flex items-center gap-4 mb-6 bg-secondary p-4 rounded-lg border border-border">
+            <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center border border-border text-xl font-bold text-muted-foreground">
               {(user.displayName || user.username).charAt(0).toUpperCase()}
             </div>
             <div>
-              <div className="font-bold text-white text-lg">
+              <div className="font-bold text-foreground text-lg">
                 {user.displayName || user.username}
               </div>
-              <div className="text-gray-400 text-sm">{user.email}</div>
+              <div className="text-muted-foreground text-sm">{user.email}</div>
             </div>
           </div>
 
           <div className="mb-6">
-            <label className="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wide">
+            <label className="block text-muted-foreground text-sm font-bold mb-2 uppercase tracking-wide">
               Válassz új szerepkört
             </label>
             <div className="grid grid-cols-1 gap-2">
@@ -127,28 +127,26 @@ export const RoleChangeModal: React.FC<RoleChangeModalProps> = ({
                       onClick={() => isAllowed && setSelectedRole(role)}
                       disabled={!isAllowed}
                       className={`w-full flex items-center justify-between p-3 rounded-lg border transition-all duration-200 
-                                            ${
-                                              isSelected
-                                                ? "bg-primary/20 border-primary text-white shadow-lg shadow-primary/10"
-                                                : isAllowed
-                                                ? "bg-black/20 border-white/10 text-gray-300 hover:bg-white/5 hover:border-white/20"
-                                                : "bg-black/40 border-white/5 text-gray-600 cursor-not-allowed opacity-50"
-                                            }
+                                            ${isSelected
+                          ? "bg-primary/20 border-primary text-foreground shadow-lg shadow-primary/10"
+                          : isAllowed
+                            ? "bg-secondary border-border text-gray-300 hover:bg-secondary hover:border-border"
+                            : "bg-secondary border-border text-muted-foreground cursor-not-allowed opacity-50"
+                        }
                                         `}
                     >
                       <div className="flex items-center gap-3">
                         <div
-                          className={`w-2 h-2 rounded-full ${
-                            role === "ADMIN"
+                          className={`w-2 h-2 rounded-full ${role === "ADMIN"
                               ? "bg-red-500"
                               : role === "ORGANIZER"
-                              ? "bg-purple-500"
-                              : role === "TEACHER"
-                              ? "bg-green-500"
-                              : role === "MODERATOR"
-                              ? "bg-blue-500"
-                              : "bg-gray-500"
-                          }`}
+                                ? "bg-purple-500"
+                                : role === "TEACHER"
+                                  ? "bg-green-500"
+                                  : role === "MODERATOR"
+                                    ? "bg-blue-500"
+                                    : "bg-gray-500"
+                            }`}
                         />
                         <span>{roleLabels[role]}</span>
                       </div>
@@ -180,7 +178,7 @@ export const RoleChangeModal: React.FC<RoleChangeModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-white/10 flex justify-end gap-3 bg-black/20">
+        <div className="p-6 border-t border-border flex justify-end gap-3 bg-secondary">
           <button
             className="btn btn-secondary"
             onClick={onClose}

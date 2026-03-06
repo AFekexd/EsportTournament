@@ -29,7 +29,7 @@ export function TeamManagement() {
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => {},
+    onConfirm: () => { },
     variant: "primary",
   });
 
@@ -91,14 +91,14 @@ export function TeamManagement() {
           <div className="relative flex-1 md:w-64">
             <Search
               size={18}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
             />
             <input
               type="text"
               placeholder="Keresés..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-[#0f1015] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors text-sm"
+              className="w-full pl-10 pr-4 py-2 bg-[#121A22] border border-border rounded-lg text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors text-sm"
             />
           </div>
         </div>
@@ -106,11 +106,11 @@ export function TeamManagement() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        <div className="bg-[#0f1015] rounded-xl border border-white/5 p-4">
-          <div className="text-2xl font-bold text-white">
+        <div className="bg-[#121A22] rounded-xl border border-border p-4">
+          <div className="text-2xl font-bold text-foreground">
             {pagination?.total || 0}
           </div>
-          <div className="text-sm text-gray-400">Összes csapat</div>
+          <div className="text-sm text-muted-foreground">Összes csapat</div>
         </div>
       </div>
 
@@ -118,7 +118,7 @@ export function TeamManagement() {
       <div className="admin-table-container overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-white/10 text-muted text-sm uppercase">
+            <tr className="border-b border-border text-muted text-sm uppercase">
               <th className="p-3">Csapat</th>
               <th className="p-3">Kód</th>
               <th className="p-3 text-center">Tagok</th>
@@ -139,7 +139,7 @@ export function TeamManagement() {
               teams.map((team) => (
                 <tr
                   key={team.id}
-                  className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                  className="border-b border-border hover:bg-secondary transition-colors"
                 >
                   <td className="p-3">
                     <Link
@@ -150,26 +150,26 @@ export function TeamManagement() {
                         <img
                           src={team.logoUrl}
                           alt={team.name}
-                          className="w-10 h-10 rounded-lg object-cover border border-white/10 group-hover:border-primary/50 transition-colors"
+                          className="w-10 h-10 rounded-lg object-cover border border-border group-hover:border-primary/50 transition-colors"
                         />
                       ) : (
-                        <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center border border-white/10 group-hover:border-primary/50 transition-colors">
+                        <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center border border-border group-hover:border-primary/50 transition-colors">
                           <Users size={20} className="text-emerald-500" />
                         </div>
                       )}
                       <div>
-                        <div className="font-medium text-white group-hover:text-primary transition-colors">
+                        <div className="font-medium text-foreground group-hover:text-primary transition-colors">
                           {team.name}
                         </div>
                         {team.description && (
-                          <div className="text-xs text-gray-500 truncate max-w-[200px]">
+                          <div className="text-xs text-muted-foreground truncate max-w-[200px]">
                             {team.description}
                           </div>
                         )}
                       </div>
                     </Link>
                   </td>
-                  <td className="p-3 font-mono text-sm text-gray-400">
+                  <td className="p-3 font-mono text-sm text-muted-foreground">
                     {team.joinCode}
                   </td>
                   <td className="p-3 text-center text-sm">
@@ -182,13 +182,13 @@ export function TeamManagement() {
                     <div className="flex gap-2 justify-end">
                       <Link
                         to={`/teams/${team.id}`}
-                        className="btn-icon hover:bg-white/10"
+                        className="btn-icon hover:bg-secondary/80"
                         title="Megtekintés"
                       >
                         <Eye size={16} />
                       </Link>
                       <button
-                        className="btn-icon hover:bg-white/10"
+                        className="btn-icon hover:bg-secondary/80"
                         title="Szerkesztés"
                         onClick={() => setEditingTeam(team)}
                       >
@@ -218,11 +218,10 @@ export function TeamManagement() {
               <button
                 key={page}
                 onClick={() => handlePageChange(page)}
-                className={`px-3 py-1 rounded-lg text-sm transition-colors ${
-                  pagination.page === page
-                    ? "bg-primary text-white"
-                    : "bg-white/5 text-gray-400 hover:bg-white/10"
-                }`}
+                className={`px-3 py-1 rounded-lg text-sm transition-colors ${pagination.page === page
+                    ? "bg-primary text-foreground"
+                    : "bg-secondary text-muted-foreground hover:bg-secondary/80"
+                  }`}
               >
                 {page}
               </button>

@@ -170,13 +170,13 @@ export function SettingsPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col items-center justify-center py-20 glass-card rounded-2xl">
-          <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6 neon-border">
-            <Lock size={40} className="text-gray-500" />
+          <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mb-6 neon-border">
+            <Lock size={40} className="text-muted-foreground" />
           </div>
-          <h3 className="text-xl font-bold text-white mb-2 text-glow">
+          <h3 className="text-xl font-bold text-foreground mb-2 text-glow">
             Nem vagy bejelentkezve
           </h3>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             Jelentkezz be a beállítások módosításához.
           </p>
         </div>
@@ -245,7 +245,7 @@ export function SettingsPage() {
         <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-primary-300 to-primary-500 bg-clip-text text-transparent mb-6 text-glow">
           Beállítások
         </h1>
-        <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
           Szabd személyre a profilod és kezeld a fiókod egy helyen.
         </p>
       </div>
@@ -257,10 +257,10 @@ export function SettingsPage() {
               <Clock size={24} />
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-bold text-white">
+              <h3 className="text-lg font-bold text-foreground">
                 Módosítás jóváhagyásra vár
               </h3>
-              <p className="text-gray-400 text-sm">
+              <p className="text-muted-foreground text-sm">
                 A profilodon végzett legutóbbi módosításaidat egy
                 adminisztrátornak jóvá kell hagynia. Amíg a kérelem függőben
                 van, nem indíthatsz újabb módosítást.
@@ -281,8 +281,8 @@ export function SettingsPage() {
               <User size={24} className="text-primary" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-white">Profil Adatai</h2>
-              <p className="text-sm text-gray-400">Hogyan látnak mások téged</p>
+              <h2 className="text-2xl font-bold text-foreground">Profil Adatai</h2>
+              <p className="text-sm text-muted-foreground">Hogyan látnak mások téged</p>
             </div>
           </div>
 
@@ -306,7 +306,7 @@ export function SettingsPage() {
               >
                 <span>Megjelenítendő név</span>
                 {!isAdmin && (
-                  <span className="text-[10px] text-gray-500 uppercase tracking-widest flex items-center gap-1">
+                  <span className="text-[10px] text-muted-foreground uppercase tracking-widest flex items-center gap-1">
                     <Lock size={10} />
                     Csak Admin módosíthatja
                   </span>
@@ -320,22 +320,21 @@ export function SettingsPage() {
                   onChange={(e) => setDisplayName(e.target.value)}
                   disabled={!isAdmin || !!pendingRequest}
                   maxLength={50}
-                  className={`w-full px-5 py-4 bg-[#0a0a0f]/50 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-lg ${
-                    !isAdmin || !!pendingRequest
+                  className={`w-full px-5 py-4 bg-[#0a0a0f]/50 border border-border rounded-xl text-foreground placeholder-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-lg ${!isAdmin || !!pendingRequest
                       ? "opacity-50 cursor-not-allowed"
                       : ""
-                  }`}
+                    }`}
                   placeholder="pl. GamerPro123"
                 />
                 {!isAdmin && (
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground">
                     <Lock size={18} />
                   </div>
                 )}
               </div>
               <div className="flex justify-between items-center mt-1 ml-1">
                 {!isAdmin ? (
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-muted-foreground">
                     Biztonsági okokból a nevedet csak adminisztrátor
                     módosíthatja.
                   </p>
@@ -343,7 +342,7 @@ export function SettingsPage() {
                   <span></span>
                 )}
                 {isAdmin && (
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-muted-foreground">
                     {displayName.length}/50
                   </span>
                 )}
@@ -351,7 +350,7 @@ export function SettingsPage() {
             </div>
 
             {/* Steam ID Section */}
-            <div className="space-y-2 pt-4 border-t border-white/5">
+            <div className="space-y-2 pt-4 border-t border-border">
               <label
                 htmlFor="steamId"
                 className="text-sm font-medium text-gray-300 ml-1 flex items-center justify-between"
@@ -373,13 +372,13 @@ export function SettingsPage() {
                   value={steamId}
                   onChange={(e) => setSteamId(e.target.value)}
                   disabled={!!pendingRequest}
-                  className="flex-1 px-5 py-4 bg-[#0a0a0f]/50 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 px-5 py-4 bg-[#0a0a0f]/50 border border-border rounded-xl text-foreground placeholder-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   placeholder="76561198..."
                 />
                 <button
                   onClick={handleSteamSync}
                   disabled={!steamId || syncLoading || !!pendingRequest}
-                  className="px-4 py-2 bg-[#0f1015] border border-white/10 rounded-xl hover:bg-primary/20 hover:border-primary/50 hover:text-white transition-all text-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 bg-[#121A22] border border-border rounded-xl hover:bg-primary/20 hover:border-primary/50 hover:text-foreground transition-all text-muted-foreground disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Játékok szinkronizálása"
                 >
                   <RefreshCw
@@ -388,7 +387,7 @@ export function SettingsPage() {
                   />
                 </button>
               </div>
-              <p className="text-xs text-gray-500 ml-1">
+              <p className="text-xs text-muted-foreground ml-1">
                 Add meg a Steam ID-dat a Platinum játékok megjelenítéséhez.
                 (Privát profil nem működik!)
               </p>
@@ -402,14 +401,14 @@ export function SettingsPage() {
           style={{ animationDelay: "0.2s" }}
         >
           {/* Account Details */}
-          <div className="glass-card rounded-2xl p-8 hover:border-white/20">
+          <div className="glass-card rounded-2xl p-8 hover:border-border">
             <div className="flex items-center gap-4 mb-6">
-              <div className="p-3 bg-blue-500/10 rounded-xl border border-blue-500/20">
-                <Shield size={24} className="text-blue-400" />
+              <div className="p-3 bg-primary/20 rounded-xl border border-primary/20">
+                <Shield size={24} className="text-primary" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-white">Fiók Adatok</h2>
-                <p className="text-sm text-gray-400">
+                <h2 className="text-xl font-bold text-foreground">Fiók Adatok</h2>
+                <p className="text-sm text-muted-foreground">
                   Biztonsági és azonosítási adatok
                 </p>
               </div>
@@ -417,28 +416,28 @@ export function SettingsPage() {
 
             <div className="space-y-4">
               <div className="group">
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5 block ml-1">
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block ml-1">
                   Email Cím
                 </label>
-                <div className="flex items-center gap-3 px-4 py-3 bg-[#0a0a0f] border border-white/5 rounded-xl text-gray-400 group-hover:border-white/10 transition-colors">
-                  <Mail size={18} className="text-gray-600" />
+                <div className="flex items-center gap-3 px-4 py-3 bg-[#0a0a0f] border border-border rounded-xl text-muted-foreground group-hover:border-border transition-colors">
+                  <Mail size={18} className="text-muted-foreground" />
                   <span className="flex-1 font-mono">{user?.email}</span>
                   <Lock size={14} className="text-gray-700" />
                 </div>
               </div>
 
               <div className="group">
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5 block ml-1">
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block ml-1">
                   Felhasználónév
                 </label>
-                <div className="flex items-center gap-3 px-4 py-3 bg-[#0a0a0f] border border-white/5 rounded-xl text-gray-400 group-hover:border-white/10 transition-colors">
-                  <AtSign size={18} className="text-gray-600" />
+                <div className="flex items-center gap-3 px-4 py-3 bg-[#0a0a0f] border border-border rounded-xl text-muted-foreground group-hover:border-border transition-colors">
+                  <AtSign size={18} className="text-muted-foreground" />
                   <span className="flex-1 font-mono">{user?.username}</span>
                   <Lock size={14} className="text-gray-700" />
                 </div>
               </div>
 
-              <div className="mt-2 text-xs text-center text-gray-600">
+              <div className="mt-2 text-xs text-center text-muted-foreground">
                 Ezek az adatok biztonsági okokból nem módosíthatók ezen az
                 oldalon.
                 <br />
@@ -454,16 +453,16 @@ export function SettingsPage() {
           </div>
 
           {/* Email Notifications */}
-          <div className="glass-card rounded-2xl p-8 hover:border-white/20">
+          <div className="glass-card rounded-2xl p-8 hover:border-border">
             <div className="flex items-center gap-4 mb-6">
               <div className="p-3 bg-yellow-500/10 rounded-xl border border-yellow-500/20">
                 <Bell size={24} className="text-yellow-400" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-white">
+                <h2 className="text-xl font-bold text-foreground">
                   Email Értesítések
                 </h2>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Válaszd ki, miről szeretnél emailt kapni
                 </p>
               </div>
@@ -476,33 +475,30 @@ export function SettingsPage() {
             >
               <div className="flex items-center gap-4">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
-                    emailNotifications
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${emailNotifications
                       ? "bg-primary/20 text-primary"
-                      : "bg-gray-800 text-gray-500"
-                  }`}
+                      : "bg-gray-800 text-muted-foreground"
+                    }`}
                 >
                   <Mail size={20} />
                 </div>
                 <div>
-                  <h3 className="font-medium text-white">
+                  <h3 className="font-medium text-foreground">
                     Összes email értesítés
                   </h3>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-muted-foreground">
                     Fő kapcsoló - kikapcsolva egyik emailt sem kapod meg
                   </p>
                 </div>
               </div>
 
               <div
-                className={`w-12 h-7 rounded-full p-1 transition-colors relative ${
-                  emailNotifications ? "bg-primary" : "bg-gray-700"
-                }`}
+                className={`w-12 h-7 rounded-full p-1 transition-colors relative ${emailNotifications ? "bg-primary" : "bg-gray-700"
+                  }`}
               >
                 <div
-                  className={`w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${
-                    emailNotifications ? "translate-x-5" : "translate-x-0"
-                  }`}
+                  className={`w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${emailNotifications ? "translate-x-5" : "translate-x-0"
+                    }`}
                 />
               </div>
             </div>
@@ -514,45 +510,42 @@ export function SettingsPage() {
               {emailPreferences.map((pref) => (
                 <div
                   key={pref.key}
-                  className="flex items-center justify-between p-3 bg-[#0a0a0f]/50 border border-white/5 rounded-xl hover:bg-[#0a0a0f] transition-all cursor-pointer"
+                  className="flex items-center justify-between p-3 bg-[#0a0a0f]/50 border border-border rounded-xl hover:bg-[#0a0a0f] transition-all cursor-pointer"
                   onClick={() => pref.setValue(!pref.value)}
                 >
                   <div className="flex items-center gap-3">
                     <div
-                      className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
-                        pref.value
+                      className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${pref.value
                           ? "bg-primary/20 text-primary"
-                          : "bg-gray-800 text-gray-500"
-                      }`}
+                          : "bg-gray-800 text-muted-foreground"
+                        }`}
                     >
                       {pref.icon}
                     </div>
                     <div>
-                      <h3 className="font-medium text-white text-sm">
+                      <h3 className="font-medium text-foreground text-sm">
                         {pref.label}
                       </h3>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-muted-foreground">
                         {pref.description}
                       </p>
                     </div>
                   </div>
 
                   <div
-                    className={`w-10 h-6 rounded-full p-0.5 transition-colors relative ${
-                      pref.value ? "bg-primary" : "bg-gray-700"
-                    }`}
+                    className={`w-10 h-6 rounded-full p-0.5 transition-colors relative ${pref.value ? "bg-primary" : "bg-gray-700"
+                      }`}
                   >
                     <div
-                      className={`w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${
-                        pref.value ? "translate-x-4" : "translate-x-0"
-                      }`}
+                      className={`w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${pref.value ? "translate-x-4" : "translate-x-0"
+                        }`}
                     />
                   </div>
                 </div>
               ))}
             </div>
 
-            <p className="text-xs text-gray-600 text-center mt-4">
+            <p className="text-xs text-muted-foreground text-center mt-4">
               💡 Az email értesítéseket az adott email "Leiratkozás" linkjével
               is kikapcsolhatod.
             </p>
@@ -566,15 +559,14 @@ export function SettingsPage() {
           <button
             onClick={handleSave}
             disabled={saveLoading || !!pendingRequest}
-            className={`flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg transform hover:-translate-y-1 ${
-              saveSuccess
-                ? "bg-green-500 hover:bg-green-600 shadow-green-500/25 text-white"
-                : "bg-gradient-to-r from-primary to-neon-pink hover:brightness-110 shadow-primary/25 text-white"
-            } ${saveLoading || !!pendingRequest ? "opacity-75 cursor-wait grayscale" : ""}`}
+            className={`flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg transform hover:-translate-y-1 ${saveSuccess
+                ? "bg-green-500 hover:bg-green-600 shadow-green-500/25 text-foreground"
+                : "bg-gradient-to-r from-primary to-neon-pink hover:brightness-110 shadow-primary/25 text-foreground"
+              } ${saveLoading || !!pendingRequest ? "opacity-75 cursor-wait grayscale" : ""}`}
           >
             {saveLoading ? (
               <>
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-border border-t-white rounded-full animate-spin" />
                 Mentés...
               </>
             ) : saveSuccess ? (

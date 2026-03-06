@@ -41,23 +41,23 @@ interface LeaderboardTeam {
 const statusLabels: Record<string, { label: string; colors: string }> = {
   DRAFT: {
     label: "Tervezet",
-    colors: "bg-gray-500/80 text-white border-gray-500/20",
+    colors: "bg-gray-500/80 text-foreground border-gray-500/20",
   },
   REGISTRATION: {
     label: "Regisztráció",
-    colors: "bg-green-600/90 text-white border-green-500/20",
+    colors: "bg-green-600/90 text-foreground border-green-500/20",
   },
   IN_PROGRESS: {
     label: "Folyamatban",
-    colors: "bg-yellow-500/90 text-white border-yellow-500/20",
+    colors: "bg-yellow-500/90 text-foreground border-yellow-500/20",
   },
   COMPLETED: {
     label: "Befejezett",
-    colors: "bg-primary/90 text-white border-primary/20",
+    colors: "bg-primary/90 text-foreground border-primary/20",
   },
   CANCELLED: {
     label: "Törölve",
-    colors: "bg-red-600/90 text-white border-red-500/20",
+    colors: "bg-red-600/90 text-foreground border-red-500/20",
   },
 };
 
@@ -69,7 +69,7 @@ function TournamentsSlide({ tournaments }: { tournaments: any[] }) {
     <div className="flex h-full flex-col px-12 pt-12 pb-32 animate-in slide-in-from-right duration-700">
       <div className="mb-12 flex items-center gap-6">
         <Trophy className="h-16 w-16 text-primary" />
-        <h2 className="text-6xl font-black uppercase tracking-tight text-white">
+        <h2 className="text-6xl font-black uppercase tracking-tight text-foreground">
           Aktuális Versenyek
         </h2>
       </div>
@@ -81,7 +81,7 @@ function TournamentsSlide({ tournaments }: { tournaments: any[] }) {
           return (
             <div
               key={t.id}
-              className="group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 shadow-2xl"
+              className="group relative flex flex-col overflow-hidden rounded-3xl border border-border shadow-2xl"
               style={{ animationDelay: `${i * 150}ms` }}
             >
               {/* Full Background Image */}
@@ -93,7 +93,7 @@ function TournamentsSlide({ tournaments }: { tournaments: any[] }) {
                     className="h-full w-full object-cover opacity-90"
                   />
                 ) : (
-                  <div className="h-full w-full bg-gradient-to-br from-gray-900 to-[#1a1b26] flex items-center justify-center">
+                  <div className="h-full w-full bg-gradient-to-br from-gray-900 to-background flex items-center justify-center">
                     <Trophy size={120} className="text-white/5" />
                   </div>
                 )}
@@ -113,26 +113,26 @@ function TournamentsSlide({ tournaments }: { tournaments: any[] }) {
 
               {/* Game Badge - Top Right */}
               <div className="absolute top-6 right-6 z-20">
-                <span className="bg-primary/90 px-6 py-2 rounded-full text-xl font-bold text-white shadow-lg backdrop-blur-md border border-white/10 shadow-primary/20">
+                <span className="bg-primary/90 px-6 py-2 rounded-full text-xl font-bold text-foreground shadow-lg backdrop-blur-md border border-border shadow-primary/20">
                   {t.game?.name}
                 </span>
               </div>
 
               {/* Content Container */}
               <div className="relative flex flex-1 flex-col justify-end p-8 z-10">
-                <h3 className="mb-8 text-4xl font-black text-white leading-tight drop-shadow-xl">
+                <h3 className="mb-8 text-4xl font-black text-foreground leading-tight drop-shadow-xl">
                   {t.name}
                 </h3>
 
                 <div className="space-y-4">
-                  <div className="flex items-center gap-4 bg-white/5 rounded-2xl p-4 backdrop-blur-md border border-white/5 hover:bg-white/10 transition-colors">
+                  <div className="flex items-center gap-4 bg-secondary rounded-2xl p-4 backdrop-blur-md border border-border hover:bg-secondary/80 transition-colors">
                     <Calendar className="h-8 w-8 text-primary shrink-0" />
                     <span className="text-2xl font-bold text-gray-100">
                       {new Date(t.startDate).toLocaleDateString("hu-HU")}
                     </span>
                   </div>
-                  <div className="flex items-center gap-4 bg-white/5 rounded-2xl p-4 backdrop-blur-md border border-white/5 hover:bg-white/10 transition-colors">
-                    <Users className="h-8 w-8 text-blue-400 shrink-0" />
+                  <div className="flex items-center gap-4 bg-secondary rounded-2xl p-4 backdrop-blur-md border border-border hover:bg-secondary/80 transition-colors">
+                    <Users className="h-8 w-8 text-primary shrink-0" />
                     <span className="text-2xl font-bold text-gray-100">
                       {t._count?.entries || 0} Nevező
                     </span>
@@ -141,7 +141,7 @@ function TournamentsSlide({ tournaments }: { tournaments: any[] }) {
               </div>
 
               {/* Decorative Border */}
-              <div className="absolute inset-0 border border-white/10 rounded-3xl pointer-events-none" />
+              <div className="absolute inset-0 border border-border rounded-3xl pointer-events-none" />
             </div>
           );
         })}
@@ -183,9 +183,9 @@ function LeaderboardsSlide() {
         shadow: "shadow-[0_0_30px_rgba(249,115,22,0.2)]",
       };
     return {
-      bg: "bg-[#1a1b26]/80",
-      border: "border-white/5",
-      text: "text-white",
+      bg: "bg-[#121A22]/80",
+      border: "border-border",
+      text: "text-foreground",
       shadow: "shadow-xl",
     };
   };
@@ -194,7 +194,7 @@ function LeaderboardsSlide() {
     <div className="flex h-full flex-col px-12 pt-12 pb-32 animate-in slide-in-from-bottom duration-700">
       <div className="mb-12 flex items-center gap-6">
         <Crown className="h-16 w-16 text-yellow-500" />
-        <h2 className="text-6xl font-black uppercase tracking-tight text-white">
+        <h2 className="text-6xl font-black uppercase tracking-tight text-foreground">
           Top Játékosok
         </h2>
       </div>
@@ -209,12 +209,12 @@ function LeaderboardsSlide() {
               className={`flex items-center gap-8 rounded-3xl p-8 backdrop-blur-md border transition-all duration-500 ${style.bg} ${style.border} ${style.shadow}`}
             >
               <div
-                className={`flex h-24 w-24 items-center justify-center rounded-full text-5xl font-black ${style.text} bg-black/40 border border-white/10`}
+                className={`flex h-24 w-24 items-center justify-center rounded-full text-5xl font-black ${style.text} bg-secondary border border-border`}
               >
                 #{player.rank}
               </div>
 
-              <div className="h-28 w-28 rounded-full bg-gray-700 overflow-hidden border-4 border-white/10 shadow-2xl">
+              <div className="h-28 w-28 rounded-full bg-gray-700 overflow-hidden border-4 border-border shadow-2xl">
                 {player.avatarUrl ? (
                   <img
                     src={player.avatarUrl}
@@ -222,7 +222,7 @@ function LeaderboardsSlide() {
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center text-4xl font-bold text-white bg-gradient-to-br from-gray-700 to-gray-800">
+                  <div className="flex h-full w-full items-center justify-center text-4xl font-bold text-foreground bg-gradient-to-br from-gray-700 to-gray-800">
                     {(player.displayName || player.username)
                       .charAt(0)
                       .toUpperCase()}
@@ -236,21 +236,21 @@ function LeaderboardsSlide() {
                 </h3>
                 <div className="flex items-center gap-6">
                   <div className="flex items-center gap-2">
-                    <span className="text-2xl font-bold text-white">
+                    <span className="text-2xl font-bold text-foreground">
                       {player.matchesWon}
                     </span>
-                    <span className="text-xl text-gray-400">GYŐZELEM</span>
+                    <span className="text-xl text-muted-foreground">GYŐZELEM</span>
                   </div>
                   <div className="h-2 w-2 rounded-full bg-gray-600" />
                   <div className="flex items-center gap-2">
-                    <span className="text-2xl font-bold text-white">
+                    <span className="text-2xl font-bold text-foreground">
                       {player.matchesPlayed}
                     </span>
-                    <span className="text-xl text-gray-400">MECCS</span>
+                    <span className="text-xl text-muted-foreground">MECCS</span>
                   </div>
 
                   {/* Win Rate Badge */}
-                  <div className="ml-4 px-4 py-1 rounded-full bg-white/5 border border-white/10">
+                  <div className="ml-4 px-4 py-1 rounded-full bg-secondary border border-border">
                     <span
                       className={`text-xl font-bold ${player.winRate >= 50
                         ? "text-green-400"
@@ -264,7 +264,7 @@ function LeaderboardsSlide() {
               </div>
 
               <div className="text-right px-8">
-                <div className="text-7xl font-black text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                <div className="text-7xl font-black text-foreground drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
                   {player.elo}
                 </div>
                 <div className="text-lg font-bold uppercase tracking-[0.2em] text-primary">
@@ -312,9 +312,9 @@ function TeamsSlide() {
         shadow: "shadow-[0_0_30px_rgba(249,115,22,0.2)]",
       };
     return {
-      bg: "bg-[#1a1b26]/80",
-      border: "border-white/5",
-      text: "text-white",
+      bg: "bg-[#121A22]/80",
+      border: "border-border",
+      text: "text-foreground",
       shadow: "shadow-xl",
     };
   };
@@ -323,7 +323,7 @@ function TeamsSlide() {
     <div className="flex h-full flex-col px-12 pt-12 pb-32 animate-in slide-in-from-bottom duration-700">
       <div className="mb-12 flex items-center gap-6">
         <Trophy className="h-16 w-16 text-primary" />
-        <h2 className="text-6xl font-black uppercase tracking-tight text-white">
+        <h2 className="text-6xl font-black uppercase tracking-tight text-foreground">
           Top Csapatok
         </h2>
       </div>
@@ -338,12 +338,12 @@ function TeamsSlide() {
               className={`flex items-center gap-8 rounded-3xl p-8 backdrop-blur-md border transition-all duration-500 ${style.bg} ${style.border} ${style.shadow}`}
             >
               <div
-                className={`flex h-24 w-24 items-center justify-center rounded-full text-5xl font-black ${style.text} bg-black/40 border border-white/10`}
+                className={`flex h-24 w-24 items-center justify-center rounded-full text-5xl font-black ${style.text} bg-secondary border border-border`}
               >
                 #{team.rank}
               </div>
 
-              <div className="h-28 w-28 rounded-full bg-gray-700 overflow-hidden border-4 border-white/10 shadow-2xl">
+              <div className="h-28 w-28 rounded-full bg-gray-700 overflow-hidden border-4 border-border shadow-2xl">
                 {team.logoUrl ? (
                   <img
                     src={team.logoUrl}
@@ -351,7 +351,7 @@ function TeamsSlide() {
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center text-4xl font-bold text-white bg-gradient-to-br from-primary to-purple-600">
+                  <div className="flex h-full w-full items-center justify-center text-4xl font-bold text-foreground bg-gradient-to-br from-primary to-purple-600">
                     {team.name.charAt(0).toUpperCase()}
                   </div>
                 )}
@@ -363,20 +363,20 @@ function TeamsSlide() {
                 </h3>
                 <div className="flex items-center gap-6">
                   <div className="flex items-center gap-2">
-                    <span className="text-2xl font-bold text-white">
+                    <span className="text-2xl font-bold text-foreground">
                       {team.matchesWon}
                     </span>
-                    <span className="text-xl text-gray-400">GYŐZELEM</span>
+                    <span className="text-xl text-muted-foreground">GYŐZELEM</span>
                   </div>
                   <div className="h-2 w-2 rounded-full bg-gray-600" />
                   <div className="flex items-center gap-2">
-                    <span className="text-2xl font-bold text-white">
+                    <span className="text-2xl font-bold text-foreground">
                       {team.matchesPlayed}
                     </span>
-                    <span className="text-xl text-gray-400">MECCS</span>
+                    <span className="text-xl text-muted-foreground">MECCS</span>
                   </div>
 
-                  <div className="ml-4 px-4 py-1 rounded-full bg-white/5 border border-white/10">
+                  <div className="ml-4 px-4 py-1 rounded-full bg-secondary border border-border">
                     <span
                       className={`text-xl font-bold ${team.winRate >= 50
                         ? "text-green-400"
@@ -390,7 +390,7 @@ function TeamsSlide() {
               </div>
 
               <div className="text-right px-8">
-                <div className="text-7xl font-black text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                <div className="text-7xl font-black text-foreground drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
                   {team.elo}
                 </div>
                 <div className="text-lg font-bold uppercase tracking-[0.2em] text-primary">
@@ -420,7 +420,7 @@ function SteamSlide() {
       return {
         bg: "bg-gradient-to-r from-blue-500/20 to-cyan-500/5",
         border: "border-cyan-500/50",
-        text: "text-cyan-400",
+        text: "text-primary",
         shadow: "shadow-[0_0_30px_rgba(34,211,238,0.2)]",
       };
     if (rank === 2)
@@ -434,13 +434,13 @@ function SteamSlide() {
       return {
         bg: "bg-gradient-to-r from-indigo-500/20 to-indigo-600/5",
         border: "border-indigo-500/50",
-        text: "text-indigo-400",
+        text: "text-primary",
         shadow: "shadow-[0_0_30px_rgba(99,102,241,0.2)]",
       };
     return {
-      bg: "bg-[#1a1b26]/80",
-      border: "border-white/5",
-      text: "text-white",
+      bg: "bg-[#121A22]/80",
+      border: "border-border",
+      text: "text-foreground",
       shadow: "shadow-xl",
     };
   };
@@ -448,12 +448,12 @@ function SteamSlide() {
   return (
     <div className="flex h-full flex-col px-12 pt-12 pb-32 animate-in slide-in-from-bottom duration-700">
       <div className="mb-12 flex items-center gap-6">
-        <Trophy className="h-16 w-16 text-cyan-400" />
-        <h2 className="text-6xl font-black uppercase tracking-tight text-white">
+        <Trophy className="h-16 w-16 text-primary" />
+        <h2 className="text-6xl font-black uppercase tracking-tight text-foreground">
           Platinum Mesterek
         </h2>
       </div>
-      <p className="text-2xl text-gray-400 mb-8 -mt-6 ml-24">
+      <p className="text-2xl text-muted-foreground mb-8 -mt-6 ml-24">
         100%-ra teljesített játékok száma (Steam)
       </p>
 
@@ -467,12 +467,12 @@ function SteamSlide() {
               className={`flex items-center gap-8 rounded-3xl p-8 backdrop-blur-md border transition-all duration-500 ${style.bg} ${style.border} ${style.shadow}`}
             >
               <div
-                className={`flex h-24 w-24 items-center justify-center rounded-full text-5xl font-black ${style.text} bg-black/40 border border-white/10`}
+                className={`flex h-24 w-24 items-center justify-center rounded-full text-5xl font-black ${style.text} bg-secondary border border-border`}
               >
                 #{player.rank}
               </div>
 
-              <div className="h-28 w-28 rounded-full bg-gray-700 overflow-hidden border-4 border-white/10 shadow-2xl">
+              <div className="h-28 w-28 rounded-full bg-gray-700 overflow-hidden border-4 border-border shadow-2xl">
                 {player.avatarUrl ? (
                   <img
                     src={player.avatarUrl}
@@ -480,7 +480,7 @@ function SteamSlide() {
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center text-4xl font-bold text-white bg-gradient-to-br from-cyan-600 to-blue-800">
+                  <div className="flex h-full w-full items-center justify-center text-4xl font-bold text-foreground bg-gradient-to-br from-cyan-600 to-blue-800">
                     {(player.displayName || player.username)
                       .charAt(0)
                       .toUpperCase()}
@@ -496,13 +496,13 @@ function SteamSlide() {
               </div>
 
               <div className="text-right px-8 flex items-center gap-4">
-                <div className="text-lg font-bold uppercase tracking-[0.2em] text-cyan-500 mr-4">
+                <div className="text-lg font-bold uppercase tracking-[0.2em] text-primary mr-4">
                   PLATINUM
                 </div>
-                <div className="text-7xl font-black text-white drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]">
+                <div className="text-7xl font-black text-foreground drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]">
                   {player.perfectGamesCount}
                 </div>
-                <Trophy size={48} className="text-cyan-400" />
+                <Trophy size={48} className="text-primary" />
               </div>
             </div>
           );
@@ -515,13 +515,13 @@ function SteamSlide() {
 function PromoSlide() {
   return (
     <div className="flex h-full flex-col items-center justify-center px-12 pt-12 pb-32 text-center animate-in fade-in duration-1000">
-      <h2 className="mb-16 text-7xl font-black text-white uppercase tracking-tight">
+      <h2 className="mb-16 text-7xl font-black text-foreground uppercase tracking-tight">
         Csatlakozz a Közösséghez!
       </h2>
 
       <div className="flex w-full max-w-6xl justify-center gap-20">
         {/* Website QR */}
-        <div className="flex flex-1 flex-col items-center rounded-3xl bg-[#1a1b26]/80 p-12 border border-white/10 shadow-2xl backdrop-blur-md">
+        <div className="flex flex-1 flex-col items-center rounded-3xl bg-[#121A22]/80 p-12 border border-border shadow-2xl backdrop-blur-md">
           <div className="mb-8 rounded-2xl bg-white p-4 shadow-[0_0_50px_rgba(139,92,246,0.3)]">
             {/* Generate a QR code for the website using an external service or placeholder */}
             <img
@@ -530,7 +530,7 @@ function PromoSlide() {
               className="h-64 w-64"
             />
           </div>
-          <h3 className="mb-4 text-4xl font-bold text-white">Weboldal</h3>
+          <h3 className="mb-4 text-4xl font-bold text-foreground">Weboldal</h3>
           <p className="text-2xl text-primary font-bold tracking-wide">
             esport.pollak.info
           </p>
@@ -546,7 +546,7 @@ function PromoSlide() {
               className="h-64 w-64"
             />
           </div>
-          <h3 className="mb-4 text-4xl font-bold text-white">Discord</h3>
+          <h3 className="mb-4 text-4xl font-bold text-foreground">Discord</h3>
           <p className="text-2xl text-[#5865F2] font-bold tracking-wide">
             discord.pollak.info
           </p>
@@ -609,9 +609,9 @@ export function TVDisplayPage() {
   };
 
   return (
-    <div className="fixed inset-0 overflow-hidden bg-[#050505] font-sans selection:bg-purple-500/30">
+    <div className="fixed inset-0 overflow-hidden bg-[#121A22] font-sans selection:bg-purple-500/30">
       {/* Dynamic Background */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#0f0f15] via-[#050505] to-[#1a1025]" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-card via-[#050505] to-background" />
       <div className="absolute -top-[20%] -left-[10%] h-[70%] w-[70%] rounded-full bg-purple-900/10 blur-[150px] animate-pulse" />
       <div className="absolute -bottom-[20%] -right-[10%] h-[70%] w-[70%] rounded-full bg-indigo-900/10 blur-[150px] animate-pulse delay-1000" />
 
@@ -632,7 +632,7 @@ export function TVDisplayPage() {
       </div>
 
       {/* Footer / Status Bar - Optional */}
-      <div className="absolute bottom-8 left-12 right-12 flex justify-between items-end border-t border-white/10 pt-6 z-50">
+      <div className="absolute bottom-8 left-12 right-12 flex justify-between items-end border-t border-border pt-6 z-50">
         <div className="flex gap-4">
           {slides.map((_, i) => (
             <div
@@ -643,10 +643,10 @@ export function TVDisplayPage() {
           ))}
         </div>
         <div className="text-right">
-          <h4 className="text-xl font-bold text-white tracking-wider ">
+          <h4 className="text-xl font-bold text-foreground tracking-wider ">
             POLLÁK ESPORT
           </h4>
-          <p className="text-sm text-gray-400 font-sans">
+          <p className="text-sm text-muted-foreground font-sans">
             Hivatalos Versenyplatform
           </p>
         </div>

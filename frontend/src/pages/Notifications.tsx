@@ -105,7 +105,7 @@ export function NotificationsPage() {
                     {notifications.map((notification) => (
                         <div
                             key={notification.id}
-                            className={`flex items-start gap-6 p-6 transition-all duration-150 relative hover:translate-x-1 hover:shadow-[0_4px_12px_rgba(0,0,0,0.2)] max-md:flex-col max-md:gap-4 card ${!notification.read ? 'bg-gradient-to-r from-primary/10 to-transparent border-l-[3px] border-l-primary' : ''}`}
+                            className={`flex items-start gap-6 p-6 transition-all duration-150 relative hover:translate-x-1 hover:shadow-[0_4px_12px_hsl(var(--background) / 0.2)] max-md:flex-col max-md:gap-4 card ${!notification.read ? 'bg-gradient-to-r from-primary/10 to-transparent border-l-[3px] border-l-primary' : ''}`}
                         >
                             <div className="text-2xl shrink-0 w-12 h-12 flex items-center justify-center bg-secondary rounded-lg">{getNotificationIcon(notification.type)}</div>
                             <div className="flex-1 min-w-0">

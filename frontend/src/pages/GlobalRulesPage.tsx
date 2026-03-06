@@ -11,15 +11,15 @@ export function GlobalRulesPage() {
                     <ScrollText size={32} />
                 </div>
                 <div>
-                    <h1 className="text-3xl font-bold text-white">Házirend</h1>
-                    <p className="text-gray-400 text-lg">
+                    <h1 className="text-3xl font-bold text-foreground">Házirend</h1>
+                    <p className="text-muted-foreground text-lg">
                         A terem és a versenyek általános házirendje
                     </p>
                 </div>
             </div>
 
             {/* Content */}
-            <div className="bg-[#1a1b26] rounded-2xl border border-white/10 shadow-xl overflow-hidden h-[80vh]">
+            <div className="bg-[#121A22] rounded-2xl border border-border shadow-xl overflow-hidden h-[80vh]">
                 <iframe
                     src={pdfUrl}
                     className="w-full h-full"

@@ -35,7 +35,7 @@ export function AdminBookingStats() {
 
             <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-6 mb-8">
                 <div className="bg-muted/50 p-6 rounded-md border border-border flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full flex items-center justify-center bg-blue-500/15 text-blue-500">
+                    <div className="w-12 h-12 rounded-full flex items-center justify-center bg-blue-500/15 text-primary">
                         <Calendar size={24} />
                     </div>
                     <div className="flex flex-col">
@@ -79,7 +79,7 @@ export function AdminBookingStats() {
                                     style={{ height: `${(count / maxDayValue) * 100}%` }}
                                     title={`${count} foglalás`}
                                 >
-                                    <span className="absolute bottom-full left-1/2 -translate-x-1/2 bg-black text-white px-1.5 py-0.5 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap mb-1">{count}</span>
+                                    <span className="absolute bottom-full left-1/2 -translate-x-1/2 bg-black text-foreground px-1.5 py-0.5 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap mb-1">{count}</span>
                                 </div>
                                 <span className="mt-2 text-xs text-muted-foreground">{dayNames[index]}</span>
                             </div>

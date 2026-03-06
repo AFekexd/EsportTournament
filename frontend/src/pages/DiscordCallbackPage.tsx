@@ -70,12 +70,12 @@ export function DiscordCallbackPage() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#07090e]">
-            <div className="bg-[#161722] p-8 rounded-2xl border border-white/10 shadow-2xl max-w-md w-full text-center">
+            <div className="bg-[#121A22] p-8 rounded-2xl border border-border shadow-2xl max-w-md w-full text-center">
                 {status === 'loading' && (
                     <div className="flex flex-col items-center gap-4">
                         <Loader2 className="animate-spin text-primary" size={48} />
-                        <h2 className="text-xl font-bold text-white">Összekapcsolás...</h2>
-                        <p className="text-gray-400">{message}</p>
+                        <h2 className="text-xl font-bold text-foreground">Összekapcsolás...</h2>
+                        <p className="text-muted-foreground">{message}</p>
                     </div>
                 )}
 
@@ -86,8 +86,8 @@ export function DiscordCallbackPage() {
                                 <polyline points="20 6 9 17 4 12"></polyline>
                             </svg>
                         </div>
-                        <h2 className="text-xl font-bold text-white">Siker!</h2>
-                        <p className="text-gray-400">{message}</p>
+                        <h2 className="text-xl font-bold text-foreground">Siker!</h2>
+                        <p className="text-muted-foreground">{message}</p>
                     </div>
                 )}
 
@@ -99,9 +99,9 @@ export function DiscordCallbackPage() {
                                 <line x1="6" y1="6" x2="18" y2="18"></line>
                             </svg>
                         </div>
-                        <h2 className="text-xl font-bold text-white">Hiba</h2>
+                        <h2 className="text-xl font-bold text-foreground">Hiba</h2>
                         <p className="text-red-400">{message}</p>
-                        <p className="text-sm text-gray-500 mt-2">Átirányítás a profilra...</p>
+                        <p className="text-sm text-muted-foreground mt-2">Átirányítás a profilra...</p>
                     </div>
                 )}
             </div>

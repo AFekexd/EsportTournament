@@ -78,43 +78,43 @@ export function TermsModal() {
     setPageNumber((prev) => Math.min(prev + 1, numPages || 1));
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 animate-in fade-in duration-300">
-      <div className="bg-[#161722] rounded-2xl border border-white/10 shadow-2xl w-full max-w-5xl h-[85vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-300">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-md p-4 animate-in fade-in duration-300">
+      <div className="bg-[#121A22] rounded-2xl border border-border shadow-2xl w-full max-w-5xl h-[85vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-300">
         {/* Header */}
-        <div className="p-6 border-b border-white/10 bg-[#1a1b26]">
-          <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+        <div className="p-6 border-b border-border bg-[#121A22]">
+          <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
             <ScrollText className="text-primary" size={32} />
             Házirend Elfogadása
           </h2>
-          <p className="text-gray-400 mt-2">
+          <p className="text-muted-foreground mt-2">
             A szolgáltatás használatához el kell olvasnod és el kell fogadnod a
             házirendet.
           </p>
         </div>
 
         {/* PDF Viewer / Content */}
-        <div className="flex-1 overflow-y-auto bg-[#0f1015] p-4 flex flex-col items-center">
+        <div className="flex-1 overflow-y-auto bg-[#121A22] p-4 flex flex-col items-center">
           {!pdfError ? (
             <>
               {/* Page Navigation */}
               {numPages && numPages > 1 && (
-                <div className="flex items-center gap-4 mb-4 sticky top-0 z-10 bg-[#0f1015] py-2 rounded-lg">
+                <div className="flex items-center gap-4 mb-4 sticky top-0 z-10 bg-[#121A22] py-2 rounded-lg">
                   <button
                     onClick={goToPrevPage}
                     disabled={pageNumber <= 1}
-                    className="p-2 rounded-lg bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   >
-                    <ChevronLeft size={20} className="text-white" />
+                    <ChevronLeft size={20} className="text-foreground" />
                   </button>
-                  <span className="text-white text-sm">
+                  <span className="text-foreground text-sm">
                     {pageNumber} / {numPages}
                   </span>
                   <button
                     onClick={goToNextPage}
                     disabled={pageNumber >= numPages}
-                    className="p-2 rounded-lg bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   >
-                    <ChevronRight size={20} className="text-white" />
+                    <ChevronRight size={20} className="text-foreground" />
                   </button>
                 </div>
               )}
@@ -127,7 +127,7 @@ export function TermsModal() {
                 loading={
                   <div className="flex items-center justify-center p-8">
                     <Loader2 className="animate-spin text-primary" size={32} />
-                    <span className="ml-2 text-white">
+                    <span className="ml-2 text-foreground">
                       Dokumentum betöltése...
                     </span>
                   </div>
@@ -144,19 +144,19 @@ export function TermsModal() {
               </Document>
             </>
           ) : (
-            <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center text-center p-8 bg-[#161722]">
-              <ScrollText size={48} className="text-gray-600 mb-4" />
-              <h3 className="text-lg font-bold text-white mb-2">
+            <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center text-center p-8 bg-[#121A22]">
+              <ScrollText size={48} className="text-muted-foreground mb-4" />
+              <h3 className="text-lg font-bold text-foreground mb-2">
                 A dokumentum nem tölthető be
               </h3>
-              <p className="text-gray-400 mb-6 max-w-md">
+              <p className="text-muted-foreground mb-6 max-w-md">
                 A házirend dokumentum (rules.pdf) jelenleg nem érhető el a
                 szerveren, vagy hibás.
               </p>
               <a
                 href="/rules.pdf"
                 target="_blank"
-                className="px-6 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white transition-colors border border-white/10"
+                className="px-6 py-2 bg-secondary hover:bg-secondary/80 rounded-lg text-foreground transition-colors border border-border"
               >
                 Megnyitás új lapon (Megpróbálhatod így)
               </a>
@@ -165,8 +165,8 @@ export function TermsModal() {
         </div>
 
         {/* Footer / Actions */}
-        <div className="p-6 border-t border-white/10 bg-[#1a1b26] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-sm text-gray-500 flex items-center gap-2">
+        <div className="p-6 border-t border-border bg-[#121A22] flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="text-sm text-muted-foreground flex items-center gap-2">
             <FileText size={16} />
             <a
               href="/rules.pdf"
@@ -180,7 +180,7 @@ export function TermsModal() {
           <button
             onClick={handleAccept}
             disabled={isLoading}
-            className="w-full sm:w-auto px-8 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-8 py-3 bg-primary hover:bg-primary/90 text-foreground font-bold rounded-xl shadow-lg shadow-primary/20 transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isLoading ? (
               "Feldolgozás..."

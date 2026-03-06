@@ -85,16 +85,16 @@ export const InstallerManager: React.FC = () => {
   };
 
   return (
-    <div className="bg-tertiary rounded-lg border border-white/5 overflow-hidden mb-8">
-      <div className="p-4 border-b border-white/5 flex justify-between items-center">
-        <h3 className="font-bold text-white flex items-center gap-2">
+    <div className="bg-tertiary rounded-lg border border-border overflow-hidden mb-8">
+      <div className="p-4 border-b border-border flex justify-between items-center">
+        <h3 className="font-bold text-foreground flex items-center gap-2">
           <Package size={18} className="text-secondary" />
           Telepítő Kezelése (Új gépekhez)
         </h3>
         <button
           onClick={fetchInstallerInfo}
           disabled={loading}
-          className="p-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white transition-colors"
+          className="p-2 hover:bg-secondary rounded-lg text-muted-foreground hover:text-foreground transition-colors"
         >
           <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
         </button>
@@ -103,8 +103,8 @@ export const InstallerManager: React.FC = () => {
       <div className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Current Installer Info */}
-          <div className="bg-black/20 rounded-xl p-4 border border-white/5">
-            <h4 className="text-sm font-medium text-gray-400 mb-4">
+          <div className="bg-secondary rounded-xl p-4 border border-border">
+            <h4 className="text-sm font-medium text-muted-foreground mb-4">
               Jelenlegi Telepítő
             </h4>
 
@@ -112,10 +112,10 @@ export const InstallerManager: React.FC = () => {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <div className="text-2xl font-bold text-white">
+                    <div className="text-2xl font-bold text-foreground">
                       v{installerInfo.version}
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-muted-foreground">
                       {(installerInfo.size / 1024 / 1024).toFixed(2)} MB •
                       {new Date(installerInfo.uploadedAt).toLocaleString(
                         "hu-HU",
@@ -124,7 +124,7 @@ export const InstallerManager: React.FC = () => {
                   </div>
                   <button
                     onClick={handleDownload}
-                    className="flex items-center gap-2 bg-secondary hover:bg-secondary/90 text-white px-4 py-2 rounded-lg transition-colors font-medium text-sm"
+                    className="flex items-center gap-2 bg-secondary hover:bg-secondary/90 text-foreground px-4 py-2 rounded-lg transition-colors font-medium text-sm"
                   >
                     <Download size={16} />
                     Letöltés
@@ -132,27 +132,27 @@ export const InstallerManager: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <div className="text-center py-8 text-gray-500 text-sm">
+              <div className="text-center py-8 text-muted-foreground text-sm">
                 Nincs elérhető telepítő.
               </div>
             )}
           </div>
 
           {/* Upload New Installer */}
-          <div className="bg-black/20 rounded-xl p-4 border border-white/5">
-            <h4 className="text-sm font-medium text-gray-400 mb-4">
+          <div className="bg-secondary rounded-xl p-4 border border-border">
+            <h4 className="text-sm font-medium text-muted-foreground mb-4">
               Új Telepítő Feltöltése
             </h4>
 
             <div className="flex gap-4 items-end">
               <div className="flex-1 space-y-2">
-                <label className="text-xs text-gray-500">Verziószám</label>
+                <label className="text-xs text-muted-foreground">Verziószám</label>
                 <input
                   type="text"
                   value={versionInput}
                   onChange={(e) => setVersionInput(e.target.value)}
                   placeholder="pl. 1.0.19"
-                  className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-secondary/50"
+                  className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:border-secondary/50"
                 />
               </div>
 
@@ -167,7 +167,7 @@ export const InstallerManager: React.FC = () => {
                 <button
                   onClick={handleUploadClick}
                   disabled={uploading || !versionInput}
-                  className="flex items-center gap-2 bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg transition-colors font-medium text-sm border border-white/5"
+                  className="flex items-center gap-2 bg-secondary/80 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed text-foreground px-4 py-2 rounded-lg transition-colors font-medium text-sm border border-border"
                 >
                   {uploading ? (
                     <RefreshCw size={16} className="animate-spin" />
@@ -178,7 +178,7 @@ export const InstallerManager: React.FC = () => {
                 </button>
               </div>
             </div>
-            <p className="text-[10px] text-gray-600 mt-3">
+            <p className="text-[10px] text-muted-foreground mt-3">
               Feltöltés csak .zip formátumban. Az auto-build script ezt
               generálja.
             </p>

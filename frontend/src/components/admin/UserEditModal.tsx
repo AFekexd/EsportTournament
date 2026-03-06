@@ -41,7 +41,7 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
     isOpen: false,
     title: "",
     message: "",
-    onConfirm: () => {},
+    onConfirm: () => { },
     variant: "primary",
   });
 
@@ -196,19 +196,19 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
       <div
-        className="bg-[#1a1b26] rounded-xl border border-white/10 shadow-2xl w-full max-w-md overflow-hidden"
+        className="bg-[#121A22] rounded-xl border border-border shadow-2xl w-full max-w-md overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-white/10 flex justify-between items-center bg-gradient-to-r from-blue-500/10 to-transparent">
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <Edit2 className="text-blue-400" size={24} />
+        <div className="p-6 border-b border-border flex justify-between items-center bg-gradient-to-r from-blue-500/10 to-transparent">
+          <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+            <Edit2 className="text-primary" size={24} />
             Felhasználó szerkesztése
           </h2>
           <button
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors"
             onClick={onClose}
           >
             <X size={24} />
@@ -218,7 +218,7 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
         {/* Content */}
         <div className="p-6 space-y-6">
           {/* Basic Info */}
-          <div className="flex items-center gap-4 bg-white/5 p-4 rounded-lg border border-white/5">
+          <div className="flex items-center gap-4 bg-secondary p-4 rounded-lg border border-border">
             {user.avatarUrl ? (
               <img
                 src={user.avatarUrl}
@@ -226,22 +226,22 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
                 className="w-12 h-12 rounded-full object-cover"
               />
             ) : (
-              <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center border border-white/10 text-xl font-bold text-gray-400">
+              <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center border border-border text-xl font-bold text-muted-foreground">
                 {(user.displayName || user.username).charAt(0).toUpperCase()}
               </div>
             )}
             <div className="flex-1">
-              <div className="text-sm text-gray-400">Megjelenített név</div>
+              <div className="text-sm text-muted-foreground">Megjelenített név</div>
               <input
                 type="text"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                className="w-full bg-transparent border-b border-white/10 focus:border-blue-500 outline-none py-1 text-white font-medium"
+                className="w-full bg-transparent border-b border-border focus:border-blue-500 outline-none py-1 text-foreground font-medium"
                 placeholder="Név megadása"
                 maxLength={50}
               />
               <div className="text-right mt-1">
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-muted-foreground">
                   {displayName.length}/50
                 </span>
               </div>
@@ -249,8 +249,8 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
           </div>
 
           {/* ELO Edit */}
-          <div className="bg-white/5 p-4 rounded-lg border border-white/5">
-            <h3 className="text-sm font-medium text-gray-400 mb-2">
+          <div className="bg-secondary p-4 rounded-lg border border-border">
+            <h3 className="text-sm font-medium text-muted-foreground mb-2">
               Verseny pontszám (ELO)
             </h3>
             <div className="flex items-center gap-3">
@@ -258,18 +258,18 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
                 type="number"
                 value={elo}
                 onChange={(e) => setElo(e.target.value)}
-                className="flex-1 bg-black/40 border border-white/10 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500"
+                className="flex-1 bg-secondary border border-border rounded px-3 py-2 text-foreground focus:outline-none focus:border-blue-500"
                 placeholder="1000"
               />
               <button
                 onClick={() => setElo(1000)}
-                className="px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded text-sm text-gray-400 hover:text-white transition-colors"
+                className="px-3 py-2 bg-secondary hover:bg-secondary/80 border border-border rounded text-sm text-muted-foreground hover:text-foreground transition-colors"
                 title="Visszaállítás alapértelmezettre (1000)"
               >
                 Reset
               </button>
             </div>
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-muted-foreground mt-2">
               Ezzel módosíthatod a felhasználó rangsorolási pontszámát. Csak
               indokolt esetben használd!
             </p>
@@ -281,22 +281,21 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
             <button
               onClick={handleResetAvatar}
               disabled={!user.avatarUrl || isLoading}
-              className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${
-                !user.avatarUrl
-                  ? "opacity-50 cursor-not-allowed border-white/5"
-                  : "hover:bg-red-500/10 border-white/10 hover:border-red-500/30"
-              }`}
+              className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${!user.avatarUrl
+                  ? "opacity-50 cursor-not-allowed border-border"
+                  : "hover:bg-red-500/10 border-border hover:border-red-500/30"
+                }`}
             >
               <div className="flex items-center gap-3">
                 <ImageOff
-                  className={user.avatarUrl ? "text-red-400" : "text-gray-500"}
+                  className={user.avatarUrl ? "text-red-400" : "text-muted-foreground"}
                   size={20}
                 />
                 <div className="text-left">
-                  <div className="text-white font-medium">
+                  <div className="text-foreground font-medium">
                     Profilkép törlése
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-muted-foreground">
                     Alapértelmezett visszaállítása
                   </div>
                 </div>
@@ -304,10 +303,10 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
             </button>
 
             {/* Password Reset */}
-            <div className="p-3 rounded-lg border border-white/10 bg-black/20">
+            <div className="p-3 rounded-lg border border-border bg-secondary">
               <div className="flex items-center gap-3 mb-3">
                 <Key className="text-yellow-400" size={20} />
-                <div className="text-white font-medium">
+                <div className="text-foreground font-medium">
                   Új jelszó beállítása
                 </div>
               </div>
@@ -317,12 +316,12 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Írd be az új jelszót..."
-                  className="flex-1 bg-black/40 border border-white/10 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-yellow-500/50"
+                  className="flex-1 bg-secondary border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:border-yellow-500/50"
                 />
                 <button
                   onClick={handlePasswordReset}
                   disabled={!password || isLoading}
-                  className="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-2 rounded text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-yellow-600 hover:bg-yellow-700 text-foreground px-3 py-2 rounded text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Mentés
                 </button>
@@ -333,24 +332,23 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
             <button
               onClick={handleUnlinkDiscord}
               disabled={!user.discordId || isLoading}
-              className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${
-                !user.discordId
-                  ? "opacity-50 cursor-not-allowed border-white/5"
-                  : "hover:bg-indigo-500/10 border-white/10 hover:border-indigo-500/30"
-              }`}
+              className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${!user.discordId
+                  ? "opacity-50 cursor-not-allowed border-border"
+                  : "hover:bg-primary/20 border-border hover:border-primary/20"
+                }`}
             >
               <div className="flex items-center gap-3">
                 <Unplug
                   className={
-                    user.discordId ? "text-indigo-400" : "text-gray-500"
+                    user.discordId ? "text-primary" : "text-muted-foreground"
                   }
                   size={20}
                 />
                 <div className="text-left">
-                  <div className="text-white font-medium">
+                  <div className="text-foreground font-medium">
                     Discord leválasztása
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-muted-foreground">
                     {user.discordId ? `${user.discordId}` : "Nincs csatolva"}
                   </div>
                 </div>
@@ -360,7 +358,7 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-white/10 flex justify-end gap-3 bg-black/20">
+        <div className="p-6 border-t border-border flex justify-end gap-3 bg-secondary">
           <button
             className="btn btn-secondary"
             onClick={onClose}

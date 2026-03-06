@@ -38,7 +38,7 @@ export function LogsToolbar({
         {/* Search */}
         <div className="relative flex-1">
           <Search
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
             size={16}
           />
           <input
@@ -46,7 +46,7 @@ export function LogsToolbar({
             placeholder="Keresés üzenetben, felhasználóban..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full bg-[#1a1b26] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary/50 transition-all shadow-sm"
+            className="w-full bg-[#121A22] border border-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-all shadow-sm"
           />
         </div>
 
@@ -54,11 +54,10 @@ export function LogsToolbar({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all text-sm font-medium ${
-              showFilters || hasActiveFilters
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all text-sm font-medium ${showFilters || hasActiveFilters
                 ? "bg-primary/10 border-primary/30 text-primary"
-                : "bg-[#1a1b26] border-white/10 text-gray-400 hover:text-white"
-            }`}
+                : "bg-[#121A22] border-border text-muted-foreground hover:text-foreground"
+              }`}
           >
             <Filter size={16} />
             Szűrők
@@ -69,7 +68,7 @@ export function LogsToolbar({
 
           <button
             onClick={onExport}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#1a1b26] border border-white/10 text-gray-400 hover:text-white hover:border-white/20 transition-all text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#121A22] border border-border text-muted-foreground hover:text-foreground hover:border-border transition-all text-sm font-medium"
             title="Exportálás CSV-be"
           >
             <Download size={16} />
@@ -80,16 +79,16 @@ export function LogsToolbar({
 
       {/* Expanded Filters */}
       {(showFilters || hasActiveFilters) && (
-        <div className="p-4 bg-[#1a1b26] border border-white/10 rounded-xl animate-fade-in grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="p-4 bg-[#121A22] border border-border rounded-xl animate-fade-in grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Type Filter */}
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-gray-400">
+            <label className="text-xs font-medium text-muted-foreground">
               Esemény Típus
             </label>
             <select
               value={filterType}
               onChange={(e) => onFilterTypeChange(e.target.value)}
-              className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-sm text-gray-300 focus:outline-none focus:border-primary/50"
+              className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-gray-300 focus:outline-none focus:border-primary/50"
             >
               <option value="">Összes típus</option>
               <optgroup label="Általános">
@@ -119,38 +118,38 @@ export function LogsToolbar({
 
           {/* Date Range Start */}
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-gray-400">
+            <label className="text-xs font-medium text-muted-foreground">
               Kezdő dátum
             </label>
             <div className="relative">
               <Calendar
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                 size={14}
               />
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => onStartDateChange(e.target.value)}
-                className="w-full bg-black/20 border border-white/10 rounded-lg pl-9 pr-3 py-2 text-sm text-gray-300 focus:outline-none focus:border-primary/50 [color-scheme:dark]"
+                className="w-full bg-secondary border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-gray-300 focus:outline-none focus:border-primary/50 [color-scheme:dark]"
               />
             </div>
           </div>
 
           {/* Date Range End */}
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-gray-400">
+            <label className="text-xs font-medium text-muted-foreground">
               Záró dátum
             </label>
             <div className="relative">
               <Calendar
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                 size={14}
               />
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => onEndDateChange(e.target.value)}
-                className="w-full bg-black/20 border border-white/10 rounded-lg pl-9 pr-3 py-2 text-sm text-gray-300 focus:outline-none focus:border-primary/50 [color-scheme:dark]"
+                className="w-full bg-secondary border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-gray-300 focus:outline-none focus:border-primary/50 [color-scheme:dark]"
               />
             </div>
           </div>
@@ -158,7 +157,7 @@ export function LogsToolbar({
           {/* Active User Filter Chip */}
           {userId && (
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-gray-400">
+              <label className="text-xs font-medium text-muted-foreground">
                 Aktív szűrők
               </label>
               <div className="flex items-center gap-2">
@@ -166,7 +165,7 @@ export function LogsToolbar({
                   User ID: {userId.substring(0, 8)}...
                   <button
                     onClick={onClearUserFilter}
-                    className="hover:text-white"
+                    className="hover:text-foreground"
                   >
                     <X size={14} />
                   </button>
@@ -185,7 +184,7 @@ export function LogsToolbar({
                   onEndDateChange("");
                   if (onClearUserFilter) onClearUserFilter();
                 }}
-                className="text-xs text-gray-500 hover:text-white underline decoration-dashed"
+                className="text-xs text-muted-foreground hover:text-foreground underline decoration-dashed"
               >
                 Szűrők törlése
               </button>

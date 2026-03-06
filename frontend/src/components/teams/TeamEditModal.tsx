@@ -65,9 +65,9 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[1000] p-4">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-[1000] p-4">
       <div
-        className="bg-[#1a1b26]  border border-border rounded-2xl max-w-[600px] w-full max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.5)] max-md:max-h-[95vh]"
+        className="bg-[#121A22]  border border-border rounded-2xl max-w-[600px] w-full max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_hsl(var(--background) / 0.5)] max-md:max-h-[95vh]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center p-6 border-b border-border max-md:p-4">
@@ -103,7 +103,7 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
               ) : (
                 <span></span>
               )}
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-muted-foreground">
                 {formData.name.length}/50
               </span>
             </div>
@@ -125,7 +125,7 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
               maxLength={500}
             />
             <div className="text-right mt-1">
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-muted-foreground">
                 {formData.description.length}/500
               </span>
             </div>

@@ -69,19 +69,19 @@ export const UserTimeModal: React.FC<UserTimeModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
       <div
-        className="bg-[#1a1b26] rounded-xl border border-white/10 shadow-2xl w-full max-w-md overflow-hidden"
+        className="bg-[#121A22] rounded-xl border border-border shadow-2xl w-full max-w-md overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-white/10 flex justify-between items-center bg-gradient-to-r from-blue-500/10 to-transparent">
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <Clock className="text-blue-400" size={24} />
+        <div className="p-6 border-b border-border flex justify-between items-center bg-gradient-to-r from-blue-500/10 to-transparent">
+          <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+            <Clock className="text-primary" size={24} />
             Időkeret kezelése
           </h2>
           <button
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors"
             onClick={onClose}
           >
             <X size={24} />
@@ -90,37 +90,35 @@ export const UserTimeModal: React.FC<UserTimeModalProps> = ({
 
         {/* Content */}
         <div className="p-6">
-          <div className="flex items-center gap-4 mb-6 bg-white/5 p-4 rounded-lg border border-white/5">
-            <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center border border-white/10 text-xl font-bold text-gray-400">
+          <div className="flex items-center gap-4 mb-6 bg-secondary p-4 rounded-lg border border-border">
+            <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center border border-border text-xl font-bold text-muted-foreground">
               {(user.displayName || user.username).charAt(0).toUpperCase()}
             </div>
             <div>
-              <div className="font-bold text-white text-lg">
+              <div className="font-bold text-foreground text-lg">
                 {user.displayName || user.username}
               </div>
-              <div className="text-gray-400 text-sm">
+              <div className="text-muted-foreground text-sm">
                 Jelenlegi egyenleg módosítása
               </div>
             </div>
           </div>
 
-          <div className="flex bg-black/40 p-1 rounded-lg mb-6">
+          <div className="flex bg-secondary p-1 rounded-lg mb-6">
             <button
-              className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
-                mode === "ADD"
+              className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2 ${mode === "ADD"
                   ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                  : "text-gray-400 hover:text-white"
-              }`}
+                  : "text-muted-foreground hover:text-foreground"
+                }`}
               onClick={() => setMode("ADD")}
             >
               <Plus size={16} /> Hozzáadás
             </button>
             <button
-              className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
-                mode === "REMOVE"
+              className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2 ${mode === "REMOVE"
                   ? "bg-red-500/20 text-red-400 border border-red-500/30"
-                  : "text-gray-400 hover:text-white"
-              }`}
+                  : "text-muted-foreground hover:text-foreground"
+                }`}
               onClick={() => setMode("REMOVE")}
             >
               <Minus size={16} /> Levonás
@@ -128,33 +126,33 @@ export const UserTimeModal: React.FC<UserTimeModalProps> = ({
           </div>
 
           <div className="mb-6">
-            <label className="block text-gray-400 text-sm font-bold mb-2">
+            <label className="block text-muted-foreground text-sm font-bold mb-2">
               Időtartam (perc)
             </label>
             <div className="flex items-center gap-4">
               <input
                 type="number"
                 min="1"
-                className="flex-1 bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500/50"
+                className="flex-1 bg-secondary border border-border rounded-lg px-4 py-3 text-foreground focus:outline-none focus:border-blue-500/50"
                 value={amount}
                 onChange={(e) => setAmount(Number(e.target.value))}
               />
               <div className="flex gap-2">
                 <button
                   onClick={() => setAmount(30)}
-                  className="px-3 py-1 rounded border border-white/10 text-sm hover:bg-white/5"
+                  className="px-3 py-1 rounded border border-border text-sm hover:bg-secondary"
                 >
                   30p
                 </button>
                 <button
                   onClick={() => setAmount(60)}
-                  className="px-3 py-1 rounded border border-white/10 text-sm hover:bg-white/5"
+                  className="px-3 py-1 rounded border border-border text-sm hover:bg-secondary"
                 >
                   1h
                 </button>
                 <button
                   onClick={() => setAmount(120)}
-                  className="px-3 py-1 rounded border border-white/10 text-sm hover:bg-white/5"
+                  className="px-3 py-1 rounded border border-border text-sm hover:bg-secondary"
                 >
                   2h
                 </button>
@@ -163,7 +161,7 @@ export const UserTimeModal: React.FC<UserTimeModalProps> = ({
           </div>
 
           <div className="mb-6">
-            <label className="block text-gray-400 text-sm font-bold mb-2">
+            <label className="block text-muted-foreground text-sm font-bold mb-2">
               Indoklás (Kötelező)
             </label>
             <div className="flex flex-wrap gap-2 mb-3">
@@ -177,18 +175,17 @@ export const UserTimeModal: React.FC<UserTimeModalProps> = ({
                 <button
                   key={preset}
                   onClick={() => setReason(preset)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
-                    reason === preset
-                      ? "bg-primary text-white border-primary"
-                      : "bg-white/5 text-gray-400 border-white/10 hover:bg-white/10 hover:text-white"
-                  }`}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${reason === preset
+                      ? "bg-primary text-foreground border-primary"
+                      : "bg-secondary text-muted-foreground border-border hover:bg-secondary/80 hover:text-foreground"
+                    }`}
                 >
                   {preset}
                 </button>
               ))}
             </div>
             <textarea
-              className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500/50 min-h-[80px]"
+              className="w-full bg-secondary border border-border rounded-lg px-4 py-3 text-foreground focus:outline-none focus:border-blue-500/50 min-h-[80px]"
               placeholder="Írd ide az indoklást..."
               value={reason}
               onChange={(e) => setReason(e.target.value)}
@@ -197,7 +194,7 @@ export const UserTimeModal: React.FC<UserTimeModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-white/10 flex justify-end gap-3 bg-black/20">
+        <div className="p-6 border-t border-border flex justify-end gap-3 bg-secondary">
           <button
             className="btn btn-secondary"
             onClick={onClose}
@@ -206,19 +203,18 @@ export const UserTimeModal: React.FC<UserTimeModalProps> = ({
             Mégse
           </button>
           <button
-            className={`btn ${
-              mode === "ADD"
+            className={`btn ${mode === "ADD"
                 ? "bg-green-600 hover:bg-green-700"
                 : "bg-red-600 hover:bg-red-700"
-            } text-white border-none`}
+              } text-foreground border-none`}
             onClick={handleSave}
             disabled={isLoading}
           >
             {isLoading
               ? "Mentés..."
               : mode === "ADD"
-              ? "Idő jóváírása"
-              : "Idő levonása"}
+                ? "Idő jóváírása"
+                : "Idő levonása"}
           </button>
         </div>
       </div>

@@ -108,13 +108,13 @@ export function TeacherTimePage() {
         );
       case "STUDENT":
         return (
-          <span className="px-2 py-1 rounded-md bg-blue-500/10 text-blue-500 text-xs font-medium border border-blue-500/20">
+          <span className="px-2 py-1 rounded-md bg-primary/20 text-primary text-xs font-medium border border-primary/20">
             Diák
           </span>
         );
       default:
         return (
-          <span className="px-2 py-1 rounded-md bg-white/5 text-gray-400 text-xs font-medium border border-white/10">
+          <span className="px-2 py-1 rounded-md bg-secondary text-muted-foreground text-xs font-medium border border-border">
             {role}
           </span>
         );
@@ -125,10 +125,10 @@ export function TeacherTimePage() {
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">
+          <h1 className="text-3xl font-bold text-foreground mb-2">
             Időkeret Kezelés
           </h1>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             Diákok időegyenlegének megtekintése és módosítása
           </p>
         </div>
@@ -136,20 +136,20 @@ export function TeacherTimePage() {
         <div className="relative w-full md:w-96">
           <Search
             size={18}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
           />
           <input
             type="text"
             placeholder="Keresés..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-[#0f1015] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-sm"
+            className="w-full pl-10 pr-4 py-2.5 bg-[#121A22] border border-border rounded-lg text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-sm"
             autoFocus
           />
         </div>
       </div>
 
-      <div className="bg-[#0f1015] border border-white/5 rounded-xl overflow-hidden shadow-xl">
+      <div className="bg-[#121A22] border border-border rounded-xl overflow-hidden shadow-xl">
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
@@ -159,17 +159,17 @@ export function TeacherTimePage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-white/5 bg-white/[0.02]">
-                    <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                  <tr className="border-b border-border bg-white/[0.02]">
+                    <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Felhasználó
                     </th>
-                    <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Rang
                     </th>
-                    <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-400 text-right">
+                    <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground text-right">
                       Időegyenleg
                     </th>
-                    <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-400 text-center">
+                    <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground text-center">
                       Művelet
                     </th>
                   </tr>
@@ -184,11 +184,10 @@ export function TeacherTimePage() {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div
-                            className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center text-sm font-bold overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all ${
-                              user.role === "TEACHER"
+                            className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center text-sm font-bold overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all ${user.role === "TEACHER"
                                 ? "bg-green-500/20 text-green-400"
                                 : "bg-primary/20 text-primary"
-                            }`}
+                              }`}
                             onClick={(e) => {
                               e.stopPropagation();
                               navigate(`/profile/${user.id}`);
@@ -213,10 +212,10 @@ export function TeacherTimePage() {
                               navigate(`/profile/${user.id}`);
                             }}
                           >
-                            <div className="font-medium text-white group-hover:text-primary transition-colors hover:underline">
+                            <div className="font-medium text-foreground group-hover:text-primary transition-colors hover:underline">
                               {user.displayName || user.username}
                             </div>
-                            <div className="text-sm text-gray-500">
+                            <div className="text-sm text-muted-foreground">
                               {user.email}
                             </div>
                           </div>
@@ -225,11 +224,10 @@ export function TeacherTimePage() {
                       <td className="px-6 py-4">{generateRole(user.role)}</td>
                       <td className="px-6 py-4 text-right">
                         <span
-                          className={`font-mono font-bold text-lg ${
-                            user.timeBalanceSeconds < 0
+                          className={`font-mono font-bold text-lg ${user.timeBalanceSeconds < 0
                               ? "text-red-400"
                               : "text-green-400"
-                          }`}
+                            }`}
                         >
                           {["ADMIN", "TEACHER"].includes(user.role)
                             ? "∞"
@@ -238,7 +236,7 @@ export function TeacherTimePage() {
                       </td>
                       <td className="px-6 py-4 text-center">
                         <button
-                          className="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-primary hover:bg-primary/20 transition-all"
+                          className="p-2 rounded-lg bg-secondary text-muted-foreground hover:text-primary hover:bg-primary/20 transition-all"
                           onClick={(e) => {
                             e.stopPropagation();
                             setTimeModalUser(user);
@@ -268,7 +266,7 @@ export function TeacherTimePage() {
                     <tr>
                       <td
                         colSpan={4}
-                        className="px-6 py-12 text-center text-gray-500"
+                        className="px-6 py-12 text-center text-muted-foreground"
                       >
                         Nincs találat a keresési feltétekre.
                       </td>
@@ -280,22 +278,22 @@ export function TeacherTimePage() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-between px-6 py-4 border-t border-white/5 bg-white/[0.02]">
-                <div className="text-sm text-gray-500">
+              <div className="flex items-center justify-between px-6 py-4 border-t border-border bg-white/[0.02]">
+                <div className="text-sm text-muted-foreground">
                   {page}. oldal / {totalPages}
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={page === 1}
-                    className="p-2 rounded-lg bg-white/5 border border-white/10 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10 transition-colors"
+                    className="p-2 rounded-lg bg-secondary border border-border text-foreground disabled:opacity-30 disabled:cursor-not-allowed hover:bg-secondary/80 transition-colors"
                   >
                     <ChevronLeft size={16} />
                   </button>
                   <button
                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                     disabled={page === totalPages}
-                    className="p-2 rounded-lg bg-white/5 border border-white/10 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10 transition-colors"
+                    className="p-2 rounded-lg bg-secondary border border-border text-foreground disabled:opacity-30 disabled:cursor-not-allowed hover:bg-secondary/80 transition-colors"
                   >
                     <ChevronRight size={16} />
                   </button>

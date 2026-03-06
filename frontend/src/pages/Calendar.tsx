@@ -176,31 +176,29 @@ export function CalendarPage() {
         <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-primary-100 to-gray-400 bg-clip-text text-transparent mb-4">
           Naptár
         </h1>
-        <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Közelgő versenyek és mérkőzések áttekintése
         </p>
       </div>
 
       {/* View Toggle */}
       <div className="mb-8 flex justify-center">
-        <div className="flex bg-[#1a1b26] p-1 rounded-xl border border-white/5">
+        <div className="flex bg-[#121A22] p-1 rounded-xl border border-border">
           <button
-            className={`flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-all ${
-              view === "month"
-                ? "bg-[#0f1015] text-white shadow-lg"
-                : "text-gray-400 hover:text-gray-300"
-            }`}
+            className={`flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-all ${view === "month"
+                ? "bg-[#121A22] text-foreground shadow-lg"
+                : "text-muted-foreground hover:text-gray-300"
+              }`}
             onClick={() => setView("month")}
           >
             <CalendarDays size={16} />
             Hónap
           </button>
           <button
-            className={`flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-all ${
-              view === "list"
-                ? "bg-[#0f1015] text-white shadow-lg"
-                : "text-gray-400 hover:text-gray-300"
-            }`}
+            className={`flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-all ${view === "list"
+                ? "bg-[#121A22] text-foreground shadow-lg"
+                : "text-muted-foreground hover:text-gray-300"
+              }`}
             onClick={() => setView("list")}
           >
             <ListIcon size={16} />
@@ -211,33 +209,33 @@ export function CalendarPage() {
 
       {view === "month" ? (
         <div className="flex flex-col gap-6">
-          <div className="bg-[#1a1b26] rounded-2xl border border-white/5 p-4 md:p-6 shadow-lg">
+          <div className="bg-[#121A22] rounded-2xl border border-border p-4 md:p-6 shadow-lg">
             {/* Calendar Header */}
             <div className="flex items-center justify-between mb-6">
               <button
-                className="p-3 md:p-2 hover:bg-white/5 rounded-lg transition-colors border border-white/5 hover:border-white/10"
+                className="p-3 md:p-2 hover:bg-secondary rounded-lg transition-colors border border-border hover:border-border"
                 onClick={goToPreviousMonth}
               >
-                <ChevronLeft size={20} className="text-gray-400" />
+                <ChevronLeft size={20} className="text-muted-foreground" />
               </button>
-              <h2 className="text-xl md:text-2xl font-bold text-white capitalize">
+              <h2 className="text-xl md:text-2xl font-bold text-foreground capitalize">
                 {monthName}
               </h2>
               <button
-                className="p-3 md:p-2 hover:bg-white/5 rounded-lg transition-colors border border-white/5 hover:border-white/10"
+                className="p-3 md:p-2 hover:bg-secondary rounded-lg transition-colors border border-border hover:border-border"
                 onClick={goToNextMonth}
               >
-                <ChevronRight size={20} className="text-gray-400" />
+                <ChevronRight size={20} className="text-muted-foreground" />
               </button>
             </div>
 
             {/* Calendar Grid */}
-            <div className="grid grid-cols-7 gap-2 gap-px bg-white/5 rounded-lg overflow-hidden border border-white/5">
+            <div className="grid grid-cols-7 gap-2 gap-px bg-secondary rounded-lg overflow-hidden border border-border">
               {/* Weekday Headers */}
               {weekDays.map((day) => (
                 <div
                   key={day}
-                  className="bg-[#0f1015] p-2 md:p-4 text-center text-xs md:text-sm font-medium text-gray-400"
+                  className="bg-[#121A22] p-2 md:p-4 text-center text-xs md:text-sm font-medium text-muted-foreground"
                 >
                   {day}
                 </div>
@@ -256,14 +254,12 @@ export function CalendarPage() {
                     className={`
                       h-8 md:h-auto md:min-h-[120px] p-1 md:p-2 transition-colors relative group
                       flex flex-col items-center justify-center md:items-start md:justify-start
-                      ${
-                        !day.isCurrentMonth
-                          ? "bg-[#15161c] text-gray-700"
-                          : "bg-[#1a1b26] text-white"
+                      ${!day.isCurrentMonth
+                        ? "bg-[#15161c] text-gray-700"
+                        : "bg-[#121A22] text-foreground"
                       }
                       ${isToday ? "bg-primary/5" : ""}
-                      ${
-                        isSelected ? "ring-1 ring-primary/50 bg-primary/10" : ""
+                      ${isSelected ? "ring-1 ring-primary/50 bg-primary/10" : ""
                       }
                       hover:bg-[#202230] cursor-pointer
                     `}
@@ -282,7 +278,7 @@ export function CalendarPage() {
                       </span>
                       {/* Desktop Event Count */}
                       {day.events.length > 0 && (
-                        <span className="hidden md:flex text-xs font-medium text-gray-500 bg-white/5 px-1.5 py-0.5 rounded">
+                        <span className="hidden md:flex text-xs font-medium text-muted-foreground bg-secondary px-1.5 py-0.5 rounded">
                           {day.events.length}
                         </span>
                       )}
@@ -314,7 +310,7 @@ export function CalendarPage() {
                         </div>
                       ))}
                       {day.events.length > 3 && (
-                        <div className="text-xs text-gray-500 pl-1">
+                        <div className="text-xs text-muted-foreground pl-1">
                           +{day.events.length - 3} további
                         </div>
                       )}
@@ -329,22 +325,22 @@ export function CalendarPage() {
           {selectedDayEvents.length > 0 && (
             <div className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
               <div className="flex items-center gap-3">
-                <div className="h-px bg-white/10 flex-1"></div>
-                <h3 className="text-lg font-bold text-white whitespace-nowrap">
+                <div className="h-px bg-secondary/80 flex-1"></div>
+                <h3 className="text-lg font-bold text-foreground whitespace-nowrap">
                   {new Intl.DateTimeFormat("hu-HU", {
                     month: "long",
                     day: "numeric",
                   }).format(selectedDate)}{" "}
                   eseményei
                 </h3>
-                <div className="h-px bg-white/10 flex-1"></div>
+                <div className="h-px bg-secondary/80 flex-1"></div>
               </div>
 
               <div className="grid gap-4">
                 {selectedDayEvents.map((event) => (
                   <div
                     key={event.id}
-                    className="group bg-[#1a1b26] rounded-xl border border-white/5 p-4 md:p-6 hover:border-primary/50 transition-all duration-300 hover:shadow-xl cursor-pointer"
+                    className="group bg-[#121A22] rounded-xl border border-border p-4 md:p-6 hover:border-primary/50 transition-all duration-300 hover:shadow-xl cursor-pointer"
                     onClick={(e) => handleEventClick(e, event)}
                   >
                     <div className="flex items-start justify-between gap-4">
@@ -356,10 +352,10 @@ export function CalendarPage() {
                           />
                         </div>
                         <div>
-                          <h3 className="text-base md:text-xl font-bold text-white group-hover:text-primary transition-colors line-clamp-1">
+                          <h3 className="text-base md:text-xl font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1">
                             {event.title}
                           </h3>
-                          <div className="flex items-center gap-2 text-xs md:text-sm text-gray-400 mt-1">
+                          <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mt-1">
                             <Clock size={14} />
                             <span>{formatDate(event.date)}</span>
                           </div>
@@ -367,10 +363,9 @@ export function CalendarPage() {
                       </div>
                       {event.tournament && (
                         <span
-                          className={`shrink-0 px-2 md:px-3 py-1 rounded-full text-[10px] md:text-xs font-semibold border ${
-                            statusColors[event.tournament.status] ||
+                          className={`shrink-0 px-2 md:px-3 py-1 rounded-full text-[10px] md:text-xs font-semibold border ${statusColors[event.tournament.status] ||
                             statusColors.COMPLETED
-                          }`}
+                            }`}
                         >
                           {statusLabels[event.tournament.status] ||
                             "Ismeretlen"}
@@ -384,7 +379,7 @@ export function CalendarPage() {
           )}
 
           {selectedDayEvents.length === 0 && (
-            <div className="text-center py-8 text-gray-500 text-sm">
+            <div className="text-center py-8 text-muted-foreground text-sm">
               Nincs esemény ezen a napon:{" "}
               {new Intl.DateTimeFormat("hu-HU", {
                 month: "short",
@@ -399,17 +394,17 @@ export function CalendarPage() {
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-20">
               <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
-              <p className="text-gray-400">Betöltés...</p>
+              <p className="text-muted-foreground">Betöltés...</p>
             </div>
           ) : upcomingEvents.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 bg-[#1a1b26]/50 rounded-2xl border border-white/5">
-              <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6">
-                <CalendarIcon size={40} className="text-gray-500" />
+            <div className="flex flex-col items-center justify-center py-20 bg-[#121A22]/50 rounded-2xl border border-border">
+              <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mb-6">
+                <CalendarIcon size={40} className="text-muted-foreground" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">
+              <h3 className="text-xl font-bold text-foreground mb-2">
                 Nincs közelgő esemény
               </h3>
-              <p className="text-gray-400">
+              <p className="text-muted-foreground">
                 Jelenleg nincsenek tervezett versenyek vagy mérkőzések.
               </p>
             </div>
@@ -418,7 +413,7 @@ export function CalendarPage() {
               {upcomingEvents.map((event) => (
                 <div
                   key={event.id}
-                  className="group bg-[#1a1b26] rounded-xl border border-white/5 p-6 hover:border-primary/50 transition-all duration-300 hover:shadow-xl cursor-pointer"
+                  className="group bg-[#121A22] rounded-xl border border-border p-6 hover:border-primary/50 transition-all duration-300 hover:shadow-xl cursor-pointer"
                   onClick={(e) => handleEventClick(e, event)}
                 >
                   <div className="flex items-start justify-between mb-4">
@@ -427,10 +422,10 @@ export function CalendarPage() {
                         <Trophy size={24} className="text-primary" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-bold text-white group-hover:text-primary transition-colors">
+                        <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
                           {event.title}
                         </h3>
-                        <div className="flex items-center gap-2 text-sm text-gray-400 mt-1">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                           <Clock size={14} />
                           <span>{formatDate(event.date)}</span>
                         </div>
@@ -443,10 +438,9 @@ export function CalendarPage() {
                       {event.tournament && (
                         <div className="mt-2">
                           <span
-                            className={`px-3 py-1 rounded-full text-xs font-semibold border ${
-                              statusColors[event.tournament.status] ||
+                            className={`px-3 py-1 rounded-full text-xs font-semibold border ${statusColors[event.tournament.status] ||
                               statusColors.COMPLETED
-                            }`}
+                              }`}
                           >
                             {statusLabels[event.tournament.status] ||
                               "Ismeretlen"}
@@ -457,9 +451,9 @@ export function CalendarPage() {
                   </div>
 
                   {event.tournament?.game && (
-                    <div className="flex items-center gap-2 text-sm text-gray-400 pt-4 border-t border-white/5">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground pt-4 border-t border-border">
                       <span>Játék:</span>
-                      <span className="text-white font-medium">
+                      <span className="text-foreground font-medium">
                         {event.tournament.game.name}
                       </span>
                     </div>

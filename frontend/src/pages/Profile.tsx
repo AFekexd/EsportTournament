@@ -332,13 +332,13 @@ export function ProfilePage() {
       case "ADMIN":
         return "bg-red-500/10 text-red-500 border-red-500/20";
       case "ORGANIZER":
-        return "bg-purple-500/10 text-purple-500 border-purple-500/20";
+        return "bg-primary/20 text-primary border-primary/20";
       case "MODERATOR":
-        return "bg-blue-500/10 text-blue-500 border-blue-500/20";
+        return "bg-primary/20 text-primary border-primary/20";
       case "TEACHER":
         return "bg-green-500/10 text-green-500 border-green-500/20";
       default:
-        return "bg-gray-500/10 text-gray-500 border-gray-500/20";
+        return "bg-gray-500/10 text-muted-foreground border-gray-500/20";
     }
   };
 
@@ -413,13 +413,13 @@ export function ProfilePage() {
   const topGameImage = getTopGameImage();
 
   return (
-    <div className="min-h-screen bg-[#0f1015] text-white p-4 md:p-8">
+    <div className="min-h-screen bg-[#121A22] text-foreground p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Profile Header & Stats Combined */}
-        <div className="relative overflow-hidden rounded-2xl bg-[#1a1b26] border border-white/5 shadow-2xl">
+        <div className="relative overflow-hidden rounded-2xl bg-[#121A22] border border-border shadow-2xl">
           {/* Banner */}
           <div
-            className={`h-72 md:h-80 relative group ${!topGameImage ? "bg-[#0f1015]" : ""}`}
+            className={`h-72 md:h-80 relative group ${!topGameImage ? "bg-[#121A22]" : ""}`}
           >
             {/* Background Image */}
             {topGameImage && (
@@ -436,7 +436,7 @@ export function ProfilePage() {
                 <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]"></div>
                 <div className="absolute inset-0 overflow-hidden">
                   <div className="absolute -top-1/2 -right-1/2 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[120px] opacity-30 animate-pulse"></div>
-                  <div className="absolute -bottom-1/2 -left-1/2 w-[600px] h-[600px] bg-purple-600/20 rounded-full blur-[100px] opacity-30"></div>
+                  <div className="absolute -bottom-1/2 -left-1/2 w-[600px] h-[600px] bg-primary/30 rounded-full blur-[100px] opacity-30"></div>
                 </div>
               </>
             )}
@@ -444,8 +444,8 @@ export function ProfilePage() {
             {/* Overlay */}
             <div
               className={`absolute inset-0 ${topGameImage
-                ? "bg-gradient-to-t from-[#1a1b26] via-black/30 to-black/10"
-                : "bg-gradient-to-t from-[#1a1b26] via-transparent to-transparent"
+                ? "bg-gradient-to-t from-card via-black/30 to-black/10"
+                : "bg-gradient-to-t from-card via-transparent to-transparent"
                 }`}
             ></div>
 
@@ -453,7 +453,7 @@ export function ProfilePage() {
               <div className="absolute top-6 right-6 flex gap-3 z-20">
                 <Link
                   to="/settings"
-                  className="p-2 bg-primary hover:bg-primary/90 !text-white shadow-lg shadow-primary/20 rounded-full transition-all hover:scale-105"
+                  className="p-2 bg-primary hover:bg-primary/90 !text-foreground shadow-lg shadow-primary/20 rounded-full transition-all hover:scale-105"
                   title="Szerkesztés"
                 >
                   <Edit size={20} />
@@ -467,11 +467,11 @@ export function ProfilePage() {
               {/* Avatar */}
               <div className="relative shrink-0 mx-auto md:mx-0 z-10">
                 <div
-                  className="w-36 h-36 md:w-44 md:h-44 rounded-full p-1.5 bg-[#1a1b26] shadow-2xl relative cursor-pointer group/avatar"
+                  className="w-36 h-36 md:w-44 md:h-44 rounded-full p-1.5 bg-[#121A22] shadow-2xl relative cursor-pointer group/avatar"
                   onClick={() => setIsAvatarOpen(true)}
                 >
                   <div className="w-full h-full rounded-full p-1 bg-gradient-to-br from-primary to-purple-600 group-hover/avatar:scale-[1.02] transition-transform">
-                    <div className="w-full h-full rounded-full bg-[#0f1015] overflow-hidden flex items-center justify-center relative z-10">
+                    <div className="w-full h-full rounded-full bg-[#121A22] overflow-hidden flex items-center justify-center relative z-10">
                       {profileUser?.avatarUrl ? (
                         <img
                           src={profileUser.avatarUrl}
@@ -479,7 +479,7 @@ export function ProfilePage() {
                           className="w-full h-full object-cover transform transition-transform group-hover/avatar:scale-110 duration-500"
                         />
                       ) : (
-                        <span className="text-5xl font-bold text-white">
+                        <span className="text-5xl font-bold text-foreground">
                           {(
                             profileUser?.displayName ||
                             profileUser?.username ||
@@ -493,19 +493,19 @@ export function ProfilePage() {
                   </div>
 
                   {/* Zoom hint overlay */}
-                  <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-opacity z-20 pointer-events-none">
-                    <span className="text-white text-xs font-bold uppercase tracking-widest">Nagyítás</span>
+                  <div className="absolute inset-0 rounded-full bg-secondary opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-opacity z-20 pointer-events-none">
+                    <span className="text-foreground text-xs font-bold uppercase tracking-widest">Nagyítás</span>
                   </div>
                 </div>
                 {/* Status Indicator */}
                 <div className="absolute bottom-3 right-3 md:bottom-5 md:right-5 z-20">
                   <div
-                    className={`w-8 h-8 rounded-full border-[4px] border-[#1a1b26] flex items-center justify-center ${profileUser?.role === "ADMIN"
-                      ? "bg-red-500 text-white"
+                    className={`w-8 h-8 rounded-full border-[4px] border-border flex items-center justify-center ${profileUser?.role === "ADMIN"
+                      ? "bg-red-500 text-foreground"
                       : profileUser?.role === "ORGANIZER"
-                        ? "bg-purple-500 text-white"
+                        ? "bg-purple-500 text-foreground"
                         : profileUser?.role === "MODERATOR"
-                          ? "bg-blue-500 text-white"
+                          ? "bg-blue-500 text-foreground"
                           : "bg-gray-600 text-gray-200"
                       }`}
                     title={getRoleLabel(profileUser?.role)}
@@ -527,7 +527,7 @@ export function ProfilePage() {
               <div className="flex-1 flex flex-col items-center md:items-start w-full gap-4">
                 {/* Info */}
                 <div className="text-center md:text-left space-y-2 w-full">
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight flex flex-col sm:flex-row items-center sm:items-baseline gap-2 sm:gap-3">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground tracking-tight flex flex-col sm:flex-row items-center sm:items-baseline gap-2 sm:gap-3">
                     {profileUser?.displayName || profileUser?.username}
                     <span
                       className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-widest ${getRoleBadgeStyle(
@@ -538,7 +538,7 @@ export function ProfilePage() {
                     </span>
                   </h1>
 
-                  <div className="flex flex-wrap justify-center md:justify-start items-center gap-2 sm:gap-4 text-gray-400 text-sm">
+                  <div className="flex flex-wrap justify-center md:justify-start items-center gap-2 sm:gap-4 text-muted-foreground text-sm">
                     {profileUser?.displayName && (
                       <span className="font-medium text-primary">
                         {profileUser?.username?.includes('@') ? profileUser?.username : `@${profileUser?.username}`}
@@ -563,10 +563,10 @@ export function ProfilePage() {
                     {isOwnProfile && user?.omId && (
                       <>
                         <div className="hidden sm:block w-1 h-1 bg-gray-600 rounded-full"></div>
-                        <div className="flex items-center gap-2 text-gray-400">
+                        <div className="flex items-center gap-2 text-muted-foreground">
                           <FileText size={14} />
                           <span className="whitespace-nowrap">
-                            OM: <span className="text-white font-mono">{user.omId}</span>
+                            OM: <span className="text-foreground font-mono">{user.omId}</span>
                           </span>
                         </div>
                       </>
@@ -575,8 +575,8 @@ export function ProfilePage() {
                     <div className="hidden sm:block w-1 h-1 bg-gray-600 rounded-full"></div>
                     <div className="flex items-center gap-2">
                       {/* Generic Discord/Gamepad Icon acting as Discord indicator */}
-                      <Gamepad2 size={14} className={profileUser?.discordId ? "text-[#5865F2]" : "text-gray-500"} />
-                      <span className={`whitespace-nowrap ${profileUser?.discordId ? "text-[#5865F2] font-medium" : "text-gray-500"}`}>
+                      <Gamepad2 size={14} className={profileUser?.discordId ? "text-[#5865F2]" : "text-muted-foreground"} />
+                      <span className={`whitespace-nowrap ${profileUser?.discordId ? "text-[#5865F2] font-medium" : "text-muted-foreground"}`}>
                         {profileUser?.discordId ? (
                           "Discord: Összekötve"
                         ) : (
@@ -598,25 +598,25 @@ export function ProfilePage() {
 
                 {/* Stats */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full">
-                  <div className="bg-[#0f1015] rounded-xl p-3 sm:p-4 border border-white/5 text-center hover:border-primary/50 transition-all group relative overflow-hidden">
+                  <div className="bg-[#121A22] rounded-xl p-3 sm:p-4 border border-border text-center hover:border-primary/50 transition-all group relative overflow-hidden">
                     <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors"></div>
                     <div className="relative z-10">
-                      <div className="text-gray-500 text-[10px] uppercase tracking-widest font-bold mb-1 group-hover:text-primary transition-colors">
+                      <div className="text-muted-foreground text-[10px] uppercase tracking-widest font-bold mb-1 group-hover:text-primary transition-colors">
                         Csapat
                       </div>
-                      <div className="text-xl sm:text-2xl font-black text-white">
+                      <div className="text-xl sm:text-2xl font-black text-foreground">
                         {effectiveTeams.length}
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-[#0f1015] rounded-xl p-3 sm:p-4 border border-white/5 text-center hover:border-purple-500/50 transition-all group relative overflow-hidden">
-                    <div className="absolute inset-0 bg-purple-500/5 group-hover:bg-purple-500/10 transition-colors"></div>
+                  <div className="bg-[#121A22] rounded-xl p-3 sm:p-4 border border-border text-center hover:border-purple-500/50 transition-all group relative overflow-hidden">
+                    <div className="absolute inset-0 bg-purple-500/5 group-hover:bg-primary/20 transition-colors"></div>
                     <div className="relative z-10">
-                      <div className="text-gray-500 text-[10px] uppercase tracking-widest font-bold mb-1 group-hover:text-purple-400 transition-colors">
+                      <div className="text-muted-foreground text-[10px] uppercase tracking-widest font-bold mb-1 group-hover:text-primary transition-colors">
                         Verseny
                       </div>
-                      <div className="text-xl sm:text-2xl font-black text-white">
+                      <div className="text-xl sm:text-2xl font-black text-foreground">
                         {effectiveTournaments.length}
                       </div>
                     </div>
@@ -624,13 +624,13 @@ export function ProfilePage() {
 
 
                   {isOwnProfile && (
-                    <div className="bg-[#0f1015] rounded-xl p-3 sm:p-4 border border-white/5 text-center hover:border-green-500/50 transition-all group relative overflow-hidden">
+                    <div className="bg-[#121A22] rounded-xl p-3 sm:p-4 border border-border text-center hover:border-green-500/50 transition-all group relative overflow-hidden">
                       <div className="absolute inset-0 bg-green-500/5 group-hover:bg-green-500/10 transition-colors"></div>
                       <div className="relative z-10">
-                        <div className="text-gray-500 text-[10px] uppercase tracking-widest font-bold mb-1 group-hover:text-green-400 transition-colors">
+                        <div className="text-muted-foreground text-[10px] uppercase tracking-widest font-bold mb-1 group-hover:text-green-400 transition-colors">
                           Időegyenleg
                         </div>
-                        <div className="text-xl sm:text-2xl font-black text-white">
+                        <div className="text-xl sm:text-2xl font-black text-foreground">
                           {formatTimeBalance(user?.timeBalanceSeconds || 0)}
                         </div>
                       </div>
@@ -643,16 +643,16 @@ export function ProfilePage() {
         </div>
 
         {/* Match History Section */}
-        <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden mb-6">
-          <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
-            <h2 className="text-lg font-bold text-white flex items-center gap-2">
+        <div className="bg-[#121A22] rounded-xl border border-border overflow-hidden mb-6">
+          <div className="p-6 border-b border-border flex justify-between items-center bg-secondary">
+            <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
               <Gamepad2 size={20} className="text-primary" />
               Mérkőzés Előzmények
             </h2>
             {userMatches && userMatches.length > 5 && (
               <button
                 onClick={() => setIsMatchHistoryOpen(true)}
-                className="text-xs font-bold text-primary hover:text-white transition-colors flex items-center gap-1 uppercase tracking-wider"
+                className="text-xs font-bold text-primary hover:text-foreground transition-colors flex items-center gap-1 uppercase tracking-wider"
               >
                 Összes
                 <ChevronRight size={14} />
@@ -686,16 +686,16 @@ export function ProfilePage() {
           {/* Main Column */}
           <div className="lg:col-span-2 space-y-6">
             {/* Skill Levels Section */}
-            <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-visible">
-              <div className="p-4 md:p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+            <div className="bg-[#121A22] rounded-xl border border-border overflow-visible">
+              <div className="p-4 md:p-6 border-b border-border flex justify-between items-center bg-secondary">
+                <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
                   <Shield size={20} className="text-primary" />
                   Játék Skillek
                 </h2>
                 {isOwnProfile && (
                   <button
                     onClick={() => setIsAddGameModalOpen(true)}
-                    className="text-xs font-bold text-primary hover:text-white transition-colors flex items-center gap-1 uppercase tracking-wider"
+                    className="text-xs font-bold text-primary hover:text-foreground transition-colors flex items-center gap-1 uppercase tracking-wider"
                   >
                     <Plus size={14} /> Játék hozzáadása
                   </button>
@@ -704,7 +704,7 @@ export function ProfilePage() {
 
               <div className="p-4 md:p-6">
                 {games.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className="text-center py-8 text-muted-foreground">
                     <p>Még nincsenek játékok a rendszerben.</p>
                   </div>
                 ) : (
@@ -738,11 +738,11 @@ export function ProfilePage() {
                       return (
                         <div
                           key={game.id}
-                          className="bg-[#0f1015]/50 border border-white/5 rounded-xl p-4 hover:border-primary/30 transition-all group"
+                          className="bg-[#121A22]/50 border border-border rounded-xl p-4 hover:border-primary/30 transition-all group"
                         >
                           <div className="flex items-center gap-4">
                             {/* Left Side: Game Info */}
-                            <div className="w-12 h-12 rounded-lg bg-[#1a1b26] border border-white/10 flex items-center justify-center shadow-lg overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
+                            <div className="w-12 h-12 rounded-lg bg-[#121A22] border border-border flex items-center justify-center shadow-lg overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
                               {game.imageUrl ? (
                                 <img
                                   src={game.imageUrl}
@@ -750,16 +750,16 @@ export function ProfilePage() {
                                   className="w-full h-full object-cover"
                                 />
                               ) : (
-                                <span className="text-lg font-bold text-gray-400">
+                                <span className="text-lg font-bold text-muted-foreground">
                                   {game.name.charAt(0)}
                                 </span>
                               )}
                             </div>
                             <div className="min-w-0 flex-1">
-                              <h3 className="font-bold text-white group-hover:text-primary transition-colors truncate">
+                              <h3 className="font-bold text-foreground group-hover:text-primary transition-colors truncate">
                                 {game.name}
                               </h3>
-                              <div className="text-sm text-gray-400 mt-0.5">
+                              <div className="text-sm text-muted-foreground mt-0.5">
                                 {userRank?.rank ? (
                                   <span className="flex items-center gap-1.5 whitespace-nowrap">
                                     <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
@@ -768,7 +768,7 @@ export function ProfilePage() {
                                     {userRank.rank.value}p
                                   </span>
                                 ) : (
-                                  <span className="text-gray-600 italic">
+                                  <span className="text-muted-foreground italic">
                                     Nincs rang
                                   </span>
                                 )}
@@ -779,7 +779,7 @@ export function ProfilePage() {
                           {/* Actions Row - Separate row below game info */}
                           {/* Actions Row - Separate row below game info */}
                           {isOwnProfile && (
-                            <div className="flex items-center gap-3 mt-4 pt-4 border-t border-white/5">
+                            <div className="flex items-center gap-3 mt-4 pt-4 border-t border-border">
                               {/* Favorite Toggle - Always visible */}
                               <button
                                 onClick={async () => {
@@ -803,7 +803,7 @@ export function ProfilePage() {
                                 }}
                                 className={`w-10 h-10 flex items-center justify-center rounded-xl border transition-all shrink-0 ${user?.favoriteGameId === game.id
                                   ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20 shadow-[0_0_15px_rgba(234,179,8,0.2)]"
-                                  : "bg-[#1a1b26] text-gray-400 border-white/10 hover:text-yellow-500 hover:border-yellow-500/50"
+                                  : "bg-[#121A22] text-muted-foreground border-border hover:text-yellow-500 hover:border-yellow-500/50"
                                   }`}
                                 title={user?.favoriteGameId === game.id ? "Kedvenc játék eltávolítása" : "Beállítás kedvencként"}
                               >
@@ -823,7 +823,7 @@ export function ProfilePage() {
 
                                   <button
                                     onClick={() => handleRankChange(game.id, "")}
-                                    className="w-10 h-10 flex items-center justify-center rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20 transition-all hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] shrink-0"
+                                    className="w-10 h-10 flex items-center justify-center rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-foreground border border-red-500/20 transition-all hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] shrink-0"
                                     title="Játék eltávolítása"
                                   >
                                     <Trash2 size={18} />
@@ -836,7 +836,7 @@ export function ProfilePage() {
                                     setVisibleGameIds(prev => prev.filter(id => id !== game.id));
                                     toast.success("Játék eltávolítva a nézetből");
                                   }}
-                                  className="w-10 h-10 flex items-center justify-center rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20 transition-all hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] shrink-0 ml-auto"
+                                  className="w-10 h-10 flex items-center justify-center rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-foreground border border-red-500/20 transition-all hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] shrink-0 ml-auto"
                                   title="Játék eltávolítása"
                                 >
                                   <Trash2 size={18} />
@@ -848,8 +848,8 @@ export function ProfilePage() {
                       );
                     })}
                     {displayedGames.length === 0 && (
-                      <div className="col-span-1 md:col-span-2 text-center py-8 border-2 border-dashed border-white/5 rounded-xl">
-                        <p className="text-gray-500">Nincs beállított rang egy játéknál sem.</p>
+                      <div className="col-span-1 md:col-span-2 text-center py-8 border-2 border-dashed border-border rounded-xl">
+                        <p className="text-muted-foreground">Nincs beállított rang egy játéknál sem.</p>
                         {isOwnProfile && (
                           <button
                             onClick={() => setIsAddGameModalOpen(true)}
@@ -867,13 +867,13 @@ export function ProfilePage() {
 
             {/* Add Game Modal */}
             {isAddGameModalOpen && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-                <div className="w-full max-w-md bg-[#1a1b26] border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-                  <div className="flex items-center justify-between p-6 border-b border-white/10">
-                    <h2 className="text-xl font-bold text-white">Játék hozzáadása</h2>
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+                <div className="w-full max-w-md bg-[#121A22] border border-border rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+                  <div className="flex items-center justify-between p-6 border-b border-border">
+                    <h2 className="text-xl font-bold text-foreground">Játék hozzáadása</h2>
                     <button
                       onClick={() => setIsAddGameModalOpen(false)}
-                      className="text-gray-400 hover:text-white transition-colors"
+                      className="text-muted-foreground hover:text-foreground transition-colors"
                     >
                       <X size={20} />
                     </button>
@@ -881,7 +881,7 @@ export function ProfilePage() {
                   <div className="p-4 md:p-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
                     <div className="space-y-2">
                       {games.filter(g => !userRanks.find(ur => ur.gameId === g.id)).length === 0 ? (
-                        <p className="text-center text-gray-500 py-4">Már minden játékot hozzáadtál.</p>
+                        <p className="text-center text-muted-foreground py-4">Már minden játékot hozzáadtál.</p>
                       ) : (
                         games.filter(g => !userRanks.find(ur => ur.gameId === g.id)).map(game => (
                           <button
@@ -890,17 +890,17 @@ export function ProfilePage() {
                               toggleGameVisibility(game.id);
                               setIsAddGameModalOpen(false);
                             }}
-                            className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/10 group text-left"
+                            className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-secondary transition-colors border border-transparent hover:border-border group text-left"
                           >
-                            <div className="w-10 h-10 rounded-lg bg-[#0f1015] flex items-center justify-center overflow-hidden border border-white/5">
+                            <div className="w-10 h-10 rounded-lg bg-[#121A22] flex items-center justify-center overflow-hidden border border-border">
                               {game.imageUrl ? (
                                 <img src={game.imageUrl} alt={game.name} className="w-full h-full object-cover" />
                               ) : (
-                                <span className="font-bold text-gray-500">{game.name.charAt(0)}</span>
+                                <span className="font-bold text-muted-foreground">{game.name.charAt(0)}</span>
                               )}
                             </div>
-                            <span className="font-medium text-white group-hover:text-primary transition-colors">{game.name}</span>
-                            <Plus size={16} className="ml-auto text-gray-500 group-hover:text-primary" />
+                            <span className="font-medium text-foreground group-hover:text-primary transition-colors">{game.name}</span>
+                            <Plus size={16} className="ml-auto text-muted-foreground group-hover:text-primary" />
                           </button>
                         ))
                       )}
@@ -911,9 +911,9 @@ export function ProfilePage() {
             )}
 
             {/* Teams Section */}
-            <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden">
-              <div className="p-4 md:p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+            <div className="bg-[#121A22] rounded-xl border border-border overflow-hidden">
+              <div className="p-4 md:p-6 border-b border-border flex justify-between items-center bg-secondary">
+                <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
                   <Users size={20} className="text-primary" />
                   Csapatok
                 </h2>
@@ -929,7 +929,7 @@ export function ProfilePage() {
 
               <div className="p-4 md:p-6">
                 {effectiveTeams.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-12 text-gray-500 bg-[#0f1015]/30 rounded-xl border border-dashed border-white/5">
+                  <div className="flex flex-col items-center justify-center py-12 text-muted-foreground bg-[#121A22]/30 rounded-xl border border-dashed border-border">
                     <Users size={48} className="mb-4 opacity-20" />
                     <p>Nincs csapat tagság</p>
                     {isOwnProfile && (
@@ -944,9 +944,9 @@ export function ProfilePage() {
                       <Link
                         key={team.id}
                         to={`/teams/${team.id}`}
-                        className="group bg-[#0f1015]/50 border border-white/5 rounded-xl p-4 flex items-center gap-4 hover:border-primary/50 hover:bg-[#0f1015] transition-all"
+                        className="group bg-[#121A22]/50 border border-border rounded-xl p-4 flex items-center gap-4 hover:border-primary/50 hover:bg-[#121A22] transition-all"
                       >
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-gray-800 to-gray-900 border border-white/10 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform text-white">
+                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-gray-800 to-gray-900 border border-border flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform text-foreground">
                           {team.logoUrl ? (
                             <img
                               src={team.logoUrl}
@@ -960,10 +960,10 @@ export function ProfilePage() {
                           )}
                         </div>
                         <div className="overflow-hidden">
-                          <h3 className="font-bold text-white truncate group-hover:text-primary transition-colors">
+                          <h3 className="font-bold text-foreground truncate group-hover:text-primary transition-colors">
                             {team.name}
                           </h3>
-                          <div className="text-xs text-gray-400 mt-1 flex items-center gap-2">
+                          <div className="text-xs text-muted-foreground mt-1 flex items-center gap-2">
                             <span>{team.members?.length || 0} tag</span>
                             <span className="w-1 h-1 rounded-full bg-gray-600"></span>
                             <span>{team.elo} ELO</span>
@@ -980,7 +980,7 @@ export function ProfilePage() {
               {/* Background decorative elements */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-[#66c0f4] rounded-full filter blur-[100px] opacity-[0.05] group-hover:opacity-[0.1] transition-opacity"></div>
 
-              <div className="p-4 md:p-6 border-b border-white/5 flex justify-between items-center bg-[#171a21] relative z-10">
+              <div className="p-4 md:p-6 border-b border-border flex justify-between items-center bg-[#171a21] relative z-10">
                 <h2 className="text-xl font-bold text-[#c7d5e0] flex items-center gap-3">
                   <div className="w-8 h-8 flex items-center justify-center  rounded-lg shadow-inner">
                     <img src="/steam.png" className="w-full h-full object-cover " />
@@ -991,7 +991,7 @@ export function ProfilePage() {
                   <button
                     onClick={handleSteamSync}
                     disabled={syncLoading || !user?.steamId}
-                    className="p-2 bg-[#2a475e] hover:bg-[#66c0f4] text-white rounded-lg transition-all shadow-lg hover:shadow-cyan-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="p-2 bg-[#2a475e] hover:bg-[#66c0f4] text-foreground rounded-lg transition-all shadow-lg hover:shadow-cyan-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Adatok Szinkronizálása"
                   >
                     <RefreshCw
@@ -1024,7 +1024,7 @@ export function ProfilePage() {
                           />
                         </div>
                         {/* Level Badge */}
-                        <div className="absolute -bottom-3 -right-3 w-10 h-10 rounded-full border-4 border-[#171a21] bg-[#1b2838] flex items-center justify-center text-white font-bold text-sm shadow-xl z-20">
+                        <div className="absolute -bottom-3 -right-3 w-10 h-10 rounded-full border-4 border-[#171a21] bg-[#1b2838] flex items-center justify-center text-foreground font-bold text-sm shadow-xl z-20">
                           {isOwnProfile
                             ? user?.steamLevel || "0"
                             : (profileUser as any)?.steamLevel || "0"}
@@ -1032,7 +1032,7 @@ export function ProfilePage() {
                       </div>
 
                       <div className="space-y-2">
-                        <div className="text-3xl font-bold text-white tracking-tight">
+                        <div className="text-3xl font-bold text-foreground tracking-tight">
                           {isOwnProfile
                             ? user?.steamPersonaname || user?.username
                             : (profileUser as any)?.steamPersonaname ||
@@ -1065,7 +1065,7 @@ export function ProfilePage() {
                             <line x1="10" y1="14" x2="21" y2="3"></line>
                           </svg>
                         </a>
-                        <div className="text-xs text-gray-500 font-mono bg-[#0f1015] px-2 py-1 rounded inline-block">
+                        <div className="text-xs text-muted-foreground font-mono bg-[#121A22] px-2 py-1 rounded inline-block">
                           ID:{" "}
                           {isOwnProfile
                             ? user?.steamId
@@ -1076,14 +1076,14 @@ export function ProfilePage() {
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
                       {/* Perfect Games Stat */}
-                      <div className="bg-gradient-to-br from-[#1b2838] to-[#171a21] p-4 rounded-xl border border-white/5 relative overflow-hidden group/stat">
+                      <div className="bg-gradient-to-br from-[#1b2838] to-[#171a21] p-4 rounded-xl border border-border relative overflow-hidden group/stat">
                         <div className="absolute top-0 right-0 p-2 opacity-10 group-hover/stat:opacity-20 transition-opacity">
                           <Trophy size={40} />
                         </div>
                         <div className="text-[#66c0f4] text-[10px] font-bold uppercase tracking-widest mb-1">
                           Tökéletes
                         </div>
-                        <div className="text-2xl font-black text-white flex items-center gap-2">
+                        <div className="text-2xl font-black text-foreground flex items-center gap-2">
                           {isOwnProfile
                             ? user?.perfectGamesCount || 0
                             : (profileUser as any)?.perfectGamesCount || 0}
@@ -1097,7 +1097,7 @@ export function ProfilePage() {
                             return null;
                           })()}
                         </div>
-                        <div className="text-[10px] text-gray-500 mt-1">
+                        <div className="text-[10px] text-muted-foreground mt-1">
                           {(() => {
                             const syncStatus = isOwnProfile
                               ? (user as any)?.steamSyncStatus
@@ -1111,32 +1111,32 @@ export function ProfilePage() {
                       </div>
 
                       {/* Total Games Stat */}
-                      <div className="bg-gradient-to-br from-[#1b2838] to-[#171a21] p-4 rounded-xl border border-white/5 relative overflow-hidden group/stat">
+                      <div className="bg-gradient-to-br from-[#1b2838] to-[#171a21] p-4 rounded-xl border border-border relative overflow-hidden group/stat">
                         <div className="absolute top-0 right-0 p-2 opacity-10 group-hover/stat:opacity-20 transition-opacity">
                           <Gamepad2 size={40} />
                         </div>
                         <div className="text-[#66c0f4] text-[10px] font-bold uppercase tracking-widest mb-1">
                           Összes Játék
                         </div>
-                        <div className="text-2xl font-black text-white">
+                        <div className="text-2xl font-black text-foreground">
                           {isOwnProfile
                             ? (user as any)?.steamTotalGames || "-"
                             : (profileUser as any)?.steamTotalGames || "-"}
                         </div>
-                        <div className="text-[10px] text-gray-500 mt-1">
+                        <div className="text-[10px] text-muted-foreground mt-1">
                           A könyvtárban
                         </div>
                       </div>
 
                       {/* Total Playtime Stat */}
-                      <div className="bg-gradient-to-br from-[#1b2838] to-[#171a21] p-4 rounded-xl border border-white/5 relative overflow-hidden group/stat">
+                      <div className="bg-gradient-to-br from-[#1b2838] to-[#171a21] p-4 rounded-xl border border-border relative overflow-hidden group/stat">
                         <div className="absolute top-0 right-0 p-2 opacity-10 group-hover/stat:opacity-20 transition-opacity">
                           <Clock size={40} />
                         </div>
                         <div className="text-[#66c0f4] text-[10px] font-bold uppercase tracking-widest mb-1">
                           Játékidő
                         </div>
-                        <div className="text-2xl font-black text-white">
+                        <div className="text-2xl font-black text-foreground">
                           {(() => {
                             const minutes = isOwnProfile
                               ? (user as any)?.steamTotalPlaytime
@@ -1147,20 +1147,20 @@ export function ProfilePage() {
                             return hours;
                           })()}
                         </div>
-                        <div className="text-[10px] text-gray-500 mt-1">
+                        <div className="text-[10px] text-muted-foreground mt-1">
                           Óra összesen
                         </div>
                       </div>
 
                       {/* Account Age Stat */}
-                      <div className="bg-gradient-to-br from-[#1b2838] to-[#171a21] p-4 rounded-xl border border-white/5 relative overflow-hidden group/stat">
+                      <div className="bg-gradient-to-br from-[#1b2838] to-[#171a21] p-4 rounded-xl border border-border relative overflow-hidden group/stat">
                         <div className="absolute top-0 right-0 p-2 opacity-10 group-hover/stat:opacity-20 transition-opacity">
                           <Calendar size={40} />
                         </div>
                         <div className="text-[#66c0f4] text-[10px] font-bold uppercase tracking-widest mb-1">
                           Fiók Kora
                         </div>
-                        <div className="text-2xl font-black text-white">
+                        <div className="text-2xl font-black text-foreground">
                           {(() => {
                             const created = isOwnProfile
                               ? user?.steamCreatedAt
@@ -1170,7 +1170,7 @@ export function ProfilePage() {
                             return `${years}`;
                           })()}
                         </div>
-                        <div className="text-[10px] text-gray-500 mt-1">
+                        <div className="text-[10px] text-muted-foreground mt-1">
                           {isOwnProfile && user?.steamCreatedAt
                             ? `${new Date(user.steamCreatedAt).getFullYear()} óta`
                             : "Év"}
@@ -1196,7 +1196,7 @@ export function ProfilePage() {
                                 href={`https://store.steampowered.com/app/${game.appid}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="group/game flex items-center gap-2 bg-[#1b2838] hover:bg-[#2a475e] px-3 py-2 rounded-lg border border-white/5 transition-all"
+                                className="group/game flex items-center gap-2 bg-[#1b2838] hover:bg-[#2a475e] px-3 py-2 rounded-lg border border-border transition-all"
                                 title={`${game.name} - ${Math.floor(game.playtime2weeks / 60)}h az elmúlt 2 hétben`}
                               >
                                 <img
@@ -1208,10 +1208,10 @@ export function ProfilePage() {
                                   }}
                                 />
                                 <div className="max-w-[120px]">
-                                  <div className="text-white text-xs font-medium truncate group-hover/game:text-[#66c0f4] transition-colors">
+                                  <div className="text-foreground text-xs font-medium truncate group-hover/game:text-[#66c0f4] transition-colors">
                                     {game.name}
                                   </div>
-                                  <div className="text-gray-500 text-[10px]">
+                                  <div className="text-muted-foreground text-[10px]">
                                     {Math.floor(game.playtime2weeks / 60)}h /2hét
                                   </div>
                                 </div>
@@ -1240,7 +1240,7 @@ export function ProfilePage() {
                                 href={`https://store.steampowered.com/app/${game.appid}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="group/game flex items-center gap-2 bg-[#1b2838] hover:bg-[#2a475e] px-3 py-2 rounded-lg border border-white/5 transition-all relative"
+                                className="group/game flex items-center gap-2 bg-[#1b2838] hover:bg-[#2a475e] px-3 py-2 rounded-lg border border-border transition-all relative"
                                 title={`${game.name} - ${game.playtimeHours} óra összesen`}
                               >
                                 {idx === 0 && (
@@ -1257,10 +1257,10 @@ export function ProfilePage() {
                                   }}
                                 />
                                 <div className="max-w-[120px]">
-                                  <div className="text-white text-xs font-medium truncate group-hover/game:text-[#66c0f4] transition-colors">
+                                  <div className="text-foreground text-xs font-medium truncate group-hover/game:text-[#66c0f4] transition-colors">
                                     {game.name}
                                   </div>
-                                  <div className="text-gray-500 text-[10px]">
+                                  <div className="text-muted-foreground text-[10px]">
                                     {game.playtimeHours}h összesen
                                   </div>
                                 </div>
@@ -1282,10 +1282,10 @@ export function ProfilePage() {
                         <path d="M11.979 0C5.362 0 0 5.383 0 11.971c0 3.256 1.3 6.22 3.42 8.353l3.65-5.32c-.522-.728-.84-1.61-.84-2.583 0-2.482 1.992-4.482 4.473-4.482 2.474 0 4.474 2.008 4.474 4.482 0 2.482-2.008 4.49-4.474 4.49-.66 0-1.282-.136-1.848-.375L5.753 21.61c1.864 1.488 4.212 2.39 6.758 2.39 6.632 0 12-5.375 12-12.029C23.987 5.375 18.611 0 11.979 0zM8.336 12.42c0-1.12.92-2.032 2.04-2.032 1.128 0 2.04.912 2.04 2.032 0 1.12-.912 2.04-2.04 2.04-1.12 0-2.04-.92-2.04-2.04zm6.04-3.64c0 .6.471 1.087 1.054 1.087.6 0 1.063-.487 1.063-1.087 0-.608-.471-1.095-1.063-1.095-.575 0-1.054.487-1.054 1.095z" />
                       </svg>
                     </div>
-                    <h3 className="text-white font-bold text-lg mb-2">
+                    <h3 className="text-foreground font-bold text-lg mb-2">
                       Még nincs összekapcsolva
                     </h3>
-                    <p className="text-gray-400 text-sm mb-6 max-w-xs mx-auto">
+                    <p className="text-muted-foreground text-sm mb-6 max-w-xs mx-auto">
                       {isOwnProfile
                         ? "Kapcsold össze Steam fiókodat, hogy megjelenjenek a statisztikáid és jelvényeid."
                         : "Ez a felhasználó még nem aktiválta a Steam integrációt."}
@@ -1298,12 +1298,12 @@ export function ProfilePage() {
                           value={localSteamId}
                           onChange={(e) => setLocalSteamId(e.target.value)}
                           placeholder="Steam ID64 beillesztése..."
-                          className="bg-[#0f1015] border border-white/10 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#66c0f4] transition-colors w-full text-center"
+                          className="bg-[#121A22] border border-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#66c0f4] transition-colors w-full text-center"
                         />
                         <button
                           onClick={handleSteamSync}
                           disabled={!localSteamId || syncLoading}
-                          className="w-full py-3 bg-gradient-to-r from-[#2a475e] to-[#66c0f4] hover:from-[#1b2838] hover:to-[#2a475e] text-white rounded-lg font-bold shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                          className="w-full py-3 bg-gradient-to-r from-[#2a475e] to-[#66c0f4] hover:from-[#1b2838] hover:to-[#2a475e] text-foreground rounded-lg font-bold shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                         >
                           {syncLoading ? (
                             <>
@@ -1335,10 +1335,10 @@ export function ProfilePage() {
           </div>
           <div className="space-y-6">
             {/* Recent Tournaments */}
-            <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden h-full">
-              <div className="p-4 md:p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <Trophy size={20} className="text-purple-400" />
+            <div className="bg-[#121A22] rounded-xl border border-border overflow-hidden h-full">
+              <div className="p-4 md:p-6 border-b border-border flex justify-between items-center bg-secondary">
+                <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+                  <Trophy size={20} className="text-primary" />
                   Versenyek
                 </h2>
                 {isOwnProfile && effectiveTournaments.length > 0 && (
@@ -1353,7 +1353,7 @@ export function ProfilePage() {
 
               <div className="p-4 space-y-3">
                 {effectiveTournaments.length === 0 ? (
-                  <div className="text-center py-12 text-gray-500">
+                  <div className="text-center py-12 text-muted-foreground">
                     <Trophy size={40} className="mx-auto mb-3 opacity-20" />
                     <p className="text-sm">Nincs aktív verseny</p>
                   </div>
@@ -1362,10 +1362,10 @@ export function ProfilePage() {
                     <Link
                       key={tournament.id}
                       to={`/tournaments/${tournament.id}`}
-                      className="block bg-[#0f1015]/50 border border-white/5 rounded-lg p-4 hover:border-purple-500/50 hover:bg-[#0f1015] transition-all group"
+                      className="block bg-[#121A22]/50 border border-border rounded-lg p-4 hover:border-purple-500/50 hover:bg-[#121A22] transition-all group"
                     >
                       <div className="flex justify-between items-start mb-3">
-                        <h3 className="font-bold text-white text-sm line-clamp-2 group-hover:text-purple-400 transition-colors">
+                        <h3 className="font-bold text-foreground text-sm line-clamp-2 group-hover:text-primary transition-colors">
                           {tournament.name}
                         </h3>
                         <span
@@ -1373,7 +1373,7 @@ export function ProfilePage() {
                             ? "bg-green-500/10 text-green-500 border-green-500/20"
                             : tournament.status === "IN_PROGRESS"
                               ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
-                              : "bg-blue-500/10 text-blue-500 border-blue-500/20"
+                              : "bg-primary/20 text-primary border-primary/20"
                             }`}
                         >
                           {tournament.status === "REGISTRATION"
@@ -1384,8 +1384,8 @@ export function ProfilePage() {
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-3 text-xs text-gray-400">
-                        <div className="flex items-center gap-1.5 bg-black/30 px-2 py-1 rounded">
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1.5 bg-secondary px-2 py-1 rounded">
                           <Calendar size={12} />
                           <span>
                             {new Date(tournament.startDate).toLocaleDateString(
@@ -1417,7 +1417,7 @@ export function ProfilePage() {
         >
           {/* Close button */}
           <button
-            className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 rounded-full text-white transition-all hover:scale-110 hover:rotate-90 duration-300 z-10"
+            className="absolute top-6 right-6 p-3 bg-secondary/80 hover:bg-white/20 rounded-full text-foreground transition-all hover:scale-110 hover:rotate-90 duration-300 z-10"
             onClick={() => setIsAvatarOpen(false)}
           >
             <X size={24} />
@@ -1437,9 +1437,9 @@ export function ProfilePage() {
 
           {/* Username below image */}
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
-            <p className="text-white font-bold text-lg">{profileUser.displayName || profileUser.username}</p>
+            <p className="text-foreground font-bold text-lg">{profileUser.displayName || profileUser.username}</p>
             {profileUser.displayName && (
-              <p className="text-gray-400 text-sm">
+              <p className="text-muted-foreground text-sm">
                 {profileUser.username?.includes('@') ? profileUser.username : `@${profileUser.username}`}
               </p>
             )}

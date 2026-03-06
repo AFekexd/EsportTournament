@@ -407,7 +407,7 @@ export function TournamentBracket({
     return (
       <div className="bracket-empty">
         <LayoutTemplate size={48} className="opacity-20 mb-4" />
-        <h3 className="text-xl font-bold text-white mb-2">
+        <h3 className="text-xl font-bold text-foreground mb-2">
           A sorsolás még nem készült el
         </h3>
         <p className="max-w-md mx-auto">

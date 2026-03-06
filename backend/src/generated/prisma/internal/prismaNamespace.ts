@@ -403,6 +403,7 @@ export const ModelName = {
   Log: 'Log',
   Waitlist: 'Waitlist',
   BookingSchedule: 'BookingSchedule',
+  BookingSupervisor: 'BookingSupervisor',
   ClientVersion: 'ClientVersion',
   ChangeRequest: 'ChangeRequest',
   Changelog: 'Changelog',
@@ -431,7 +432,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "team" | "teamMember" | "game" | "tournament" | "tournamentEntry" | "match" | "gameStats" | "rank" | "userRank" | "notification" | "event" | "discordSettings" | "computer" | "booking" | "session" | "log" | "waitlist" | "bookingSchedule" | "clientVersion" | "changeRequest" | "changelog" | "emailLog" | "discordLog" | "matchCheckIn" | "matchPrediction" | "scrim" | "newsPost" | "bugReport" | "bugReportNotificationSetting" | "incident" | "systemSetting"
+    modelProps: "user" | "team" | "teamMember" | "game" | "tournament" | "tournamentEntry" | "match" | "gameStats" | "rank" | "userRank" | "notification" | "event" | "discordSettings" | "computer" | "booking" | "session" | "log" | "waitlist" | "bookingSchedule" | "bookingSupervisor" | "clientVersion" | "changeRequest" | "changelog" | "emailLog" | "discordLog" | "matchCheckIn" | "matchPrediction" | "scrim" | "newsPost" | "bugReport" | "bugReportNotificationSetting" | "incident" | "systemSetting"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1841,6 +1842,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    BookingSupervisor: {
+      payload: Prisma.$BookingSupervisorPayload<ExtArgs>
+      fields: Prisma.BookingSupervisorFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BookingSupervisorFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingSupervisorPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BookingSupervisorFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingSupervisorPayload>
+        }
+        findFirst: {
+          args: Prisma.BookingSupervisorFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingSupervisorPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BookingSupervisorFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingSupervisorPayload>
+        }
+        findMany: {
+          args: Prisma.BookingSupervisorFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingSupervisorPayload>[]
+        }
+        create: {
+          args: Prisma.BookingSupervisorCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingSupervisorPayload>
+        }
+        createMany: {
+          args: Prisma.BookingSupervisorCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BookingSupervisorCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingSupervisorPayload>[]
+        }
+        delete: {
+          args: Prisma.BookingSupervisorDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingSupervisorPayload>
+        }
+        update: {
+          args: Prisma.BookingSupervisorUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingSupervisorPayload>
+        }
+        deleteMany: {
+          args: Prisma.BookingSupervisorDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BookingSupervisorUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BookingSupervisorUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingSupervisorPayload>[]
+        }
+        upsert: {
+          args: Prisma.BookingSupervisorUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingSupervisorPayload>
+        }
+        aggregate: {
+          args: Prisma.BookingSupervisorAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBookingSupervisor>
+        }
+        groupBy: {
+          args: Prisma.BookingSupervisorGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingSupervisorGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BookingSupervisorCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingSupervisorCountAggregateOutputType> | number
+        }
+      }
+    }
     ClientVersion: {
       payload: Prisma.$ClientVersionPayload<ExtArgs>
       fields: Prisma.ClientVersionFieldRefs
@@ -3172,6 +3247,17 @@ export const BookingScheduleScalarFieldEnum = {
 export type BookingScheduleScalarFieldEnum = (typeof BookingScheduleScalarFieldEnum)[keyof typeof BookingScheduleScalarFieldEnum]
 
 
+export const BookingSupervisorScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  hour: 'hour',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type BookingSupervisorScalarFieldEnum = (typeof BookingSupervisorScalarFieldEnum)[keyof typeof BookingSupervisorScalarFieldEnum]
+
+
 export const ClientVersionScalarFieldEnum = {
   id: 'id',
   version: 'version',
@@ -3930,6 +4016,7 @@ export type GlobalOmitConfig = {
   log?: Prisma.LogOmit
   waitlist?: Prisma.WaitlistOmit
   bookingSchedule?: Prisma.BookingScheduleOmit
+  bookingSupervisor?: Prisma.BookingSupervisorOmit
   clientVersion?: Prisma.ClientVersionOmit
   changeRequest?: Prisma.ChangeRequestOmit
   changelog?: Prisma.ChangelogOmit

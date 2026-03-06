@@ -93,7 +93,7 @@ export function NewsPage() {
     <div className="container mx-auto p-6 max-w-7xl animate-fade-in pb-20">
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-black text-white mb-2 flex items-center gap-3">
+          <h1 className="text-3xl font-black text-foreground mb-2 flex items-center gap-3">
             <Newspaper className="text-primary" size={32} />
             Hírek és Blog
           </h1>
@@ -105,7 +105,7 @@ export function NewsPage() {
         {isAdminOrOrganizer && (
           <Button
             onClick={handleCreate}
-            className="bg-primary hover:bg-primary/90 text-white gap-2"
+            className="bg-primary hover:bg-primary/90 text-foreground gap-2"
           >
             <Plus size={18} />
             Új hír
@@ -118,10 +118,10 @@ export function NewsPage() {
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
         </div>
       ) : news.length === 0 ? (
-        <div className="text-center py-20 bg-white/5 rounded-2xl border border-white/5 border-dashed">
-          <Newspaper size={48} className="mx-auto text-gray-600 mb-4" />
-          <h3 className="text-xl font-bold text-gray-400">Nincsenek hírek</h3>
-          <p className="text-gray-600 mt-2">
+        <div className="text-center py-20 bg-secondary rounded-2xl border border-border border-dashed">
+          <Newspaper size={48} className="mx-auto text-muted-foreground mb-4" />
+          <h3 className="text-xl font-bold text-muted-foreground">Nincsenek hírek</h3>
+          <p className="text-muted-foreground mt-2">
             Nézz vissza később a legfrissebb információkért!
           </p>
         </div>
@@ -131,7 +131,7 @@ export function NewsPage() {
             <Link
               key={post.id}
               to={`/news/${post.slug}`}
-              className="group bg-[#161722] border border-white/5 rounded-2xl overflow-hidden hover:border-primary/30 transition-all hover:shadow-lg hover:shadow-primary/5 flex flex-col h-full relative"
+              className="group bg-[#121A22] border border-border rounded-2xl overflow-hidden hover:border-primary/30 transition-all hover:shadow-lg hover:shadow-primary/5 flex flex-col h-full relative"
             >
               {/* Status Badge for Unpublished */}
               {!post.isPublished && (
@@ -141,7 +141,7 @@ export function NewsPage() {
               )}
 
               {/* Cover Image */}
-              <div className="h-48 bg-black/40 relative overflow-hidden">
+              <div className="h-48 bg-secondary relative overflow-hidden">
                 {post.coverImage ? (
                   <img
                     src={post.coverImage}
@@ -155,7 +155,7 @@ export function NewsPage() {
                 )}
 
                 {/* Date Badge */}
-                <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1 rounded-full text-xs font-bold text-white flex items-center gap-1.5">
+                <div className="absolute top-4 right-4 bg-secondary backdrop-blur-md border border-border px-3 py-1 rounded-full text-xs font-bold text-foreground flex items-center gap-1.5">
                   <Calendar size={12} className="text-primary" />
                   {format(new Date(post.createdAt), "yyyy. MM. dd.", {
                     locale: hu,
@@ -165,19 +165,19 @@ export function NewsPage() {
 
               {/* Content */}
               <div className="p-6 flex flex-col flex-1">
-                <h2 className="text-xl font-bold text-white mb-3 group-hover:text-primary transition-colors line-clamp-2">
+                <h2 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-2">
                   {post.title}
                 </h2>
 
                 {post.excerpt && (
-                  <p className="text-gray-400 text-sm mb-4 line-clamp-3">
+                  <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
                     {post.excerpt}
                   </p>
                 )}
 
-                <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between">
+                <div className="mt-auto pt-4 border-t border-border flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-white/10 overflow-hidden">
+                    <div className="w-8 h-8 rounded-full bg-secondary/80 overflow-hidden">
                       {post.author.avatarUrl ? (
                         <img
                           src={post.author.avatarUrl}
@@ -191,7 +191,7 @@ export function NewsPage() {
                       )}
                     </div>
                     <div className="text-xs">
-                      <div className="text-white font-medium">
+                      <div className="text-foreground font-medium">
                         {post.author.displayName || post.author.username}
                       </div>
                     </div>
@@ -202,7 +202,7 @@ export function NewsPage() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-8 p-0 text-gray-400 hover:text-white"
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
                         onClick={(e) => handleEdit(e, post)}
                       >
                         <Edit size={14} />
@@ -210,7 +210,7 @@ export function NewsPage() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-8 p-0 text-gray-400 hover:text-red-400"
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-red-400"
                         onClick={(e) => handleDeleteClick(e, post.id)}
                       >
                         <Trash2 size={14} />

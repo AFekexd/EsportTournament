@@ -178,19 +178,19 @@ export default function RequestsPage() {
     <div className="container mx-auto p-6 max-w-7xl animate-fade-in">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Kérelmek</h1>
-          <p className="text-gray-400">
+          <h1 className="text-3xl font-bold text-foreground mb-2">Kérelmek</h1>
+          <p className="text-muted-foreground">
             Jóváhagyásra váró profil és csapat módosítások
           </p>
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="flex bg-white/5 rounded-lg p-1 border border-white/10">
+          <div className="flex bg-secondary rounded-lg p-1 border border-border">
             <button
               onClick={() => setActiveTab("pending")}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${activeTab === "pending"
-                ? "bg-primary text-white shadow-lg"
-                : "text-gray-400 hover:text-white"
+                ? "bg-primary text-foreground shadow-lg"
+                : "text-muted-foreground hover:text-foreground"
                 }`}
             >
               Váratlanok
@@ -198,8 +198,8 @@ export default function RequestsPage() {
             <button
               onClick={() => setActiveTab("history")}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${activeTab === "history"
-                ? "bg-primary text-white shadow-lg"
-                : "text-gray-400 hover:text-white"
+                ? "bg-primary text-foreground shadow-lg"
+                : "text-muted-foreground hover:text-foreground"
                 }`}
             >
               Előzmények
@@ -207,7 +207,7 @@ export default function RequestsPage() {
           </div>
           <button
             onClick={fetchRequests}
-            className="flex items-center gap-2 p-2.5 bg-white/5 hover:bg-white/10 rounded-lg transition-colors text-white border border-white/10"
+            className="flex items-center gap-2 p-2.5 bg-secondary hover:bg-secondary/80 rounded-lg transition-colors text-foreground border border-border"
             title="Frissítés"
           >
             <RefreshCw size={20} />
@@ -216,14 +216,14 @@ export default function RequestsPage() {
       </div>
 
       {requests.length === 0 ? (
-        <div className="bg-[#1a1b26] border border-white/5 rounded-2xl p-12 text-center animate-fade-in">
-          <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="bg-[#121A22] border border-border rounded-2xl p-12 text-center animate-fade-in">
+          <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
             <Check className="text-green-500" size={32} />
           </div>
-          <h3 className="text-xl font-medium text-white mb-2">
+          <h3 className="text-xl font-medium text-foreground mb-2">
             Nincs {activeTab === "pending" ? "függőben lévő" : ""} kérelem
           </h3>
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             {activeTab === "pending"
               ? "Jelenleg minden kérelem fel van dolgozva."
               : "Még nincsenek előzmények."}
@@ -234,26 +234,26 @@ export default function RequestsPage() {
           {requests.map((request) => (
             <div
               key={request.id}
-              className="bg-[#1a1b26] border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-colors animate-slide-up"
+              className="bg-[#121A22] border border-border rounded-2xl overflow-hidden hover:border-border transition-colors animate-slide-up"
             >
               <div className="p-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                   <div className="flex items-center gap-4">
                     {request.type === "USER_PROFILE" ? (
-                      <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500">
+                      <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                         <User size={20} />
                       </div>
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500">
+                      <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                         <Shield size={20} />
                       </div>
                     )}
                     <div>
-                      <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                      <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
                         {request.type === "USER_PROFILE"
                           ? "Felhasználói Profil"
                           : "Csapat Profil"}
-                        <span className="text-gray-400 font-normal text-sm">
+                        <span className="text-muted-foreground font-normal text-sm">
                           • {request.requester.displayName || request.entityName}
                         </span>
                         {/* Status Badge for History Tab */}
@@ -270,7 +270,7 @@ export default function RequestsPage() {
                           </span>
                         )}
                       </h3>
-                      <div className="text-sm text-gray-400 flex items-center gap-2">
+                      <div className="text-sm text-muted-foreground flex items-center gap-2">
                         <span>Kérelmező: {request.requester.displayName || request.requester.username}</span>
                         <span>•</span>
                         <span>
@@ -284,7 +284,7 @@ export default function RequestsPage() {
 
                       {/* Processed By info for History */}
                       {activeTab === "history" && request.processedAt && (
-                        <div className="text-xs text-gray-500 mt-1">
+                        <div className="text-xs text-muted-foreground mt-1">
                           Feldolgozva:{" "}
                           {format(
                             new Date(request.processedAt),
@@ -322,14 +322,14 @@ export default function RequestsPage() {
                       <div className="text-red-400 text-xs font-bold uppercase tracking-wider mb-1">
                         Elutasítás indoka
                       </div>
-                      <div className="text-white text-sm">
+                      <div className="text-foreground text-sm">
                         {request.rejectionReason}
                       </div>
                     </div>
                   )}
 
-                <div className="bg-black/20 rounded-xl p-5 border border-white/5">
-                  <h4 className="text-sm font-medium text-gray-400 mb-4 uppercase tracking-wider">
+                <div className="bg-secondary rounded-xl p-5 border border-border">
+                  <h4 className="text-sm font-medium text-muted-foreground mb-4 uppercase tracking-wider">
                     Változtatások
                   </h4>
                   <div className="space-y-4">
@@ -340,12 +340,12 @@ export default function RequestsPage() {
                       return (
                         <div
                           key={key}
-                          className="bg-[#0f1015] rounded-xl p-4 border border-white/5"
+                          className="bg-[#121A22] rounded-xl p-4 border border-border"
                         >
                           <div className="text-sm font-semibold text-primary mb-3">
                             {dict[key as keyof typeof dict] || key}
                           </div>
-                          <div className="text-white">
+                          <div className="text-foreground">
                             {isUrl && typeof value === "string" ? (
                               <div className="flex flex-col gap-4">
                                 <div className="flex flex-wrap items-center gap-6">
@@ -359,7 +359,7 @@ export default function RequestsPage() {
                                         <img
                                           src={oldValue}
                                           alt="Old"
-                                          className="h-24 w-24 rounded-xl object-cover bg-black/50 border-2 border-red-500/30 opacity-70"
+                                          className="h-24 w-24 rounded-xl object-cover bg-secondary border-2 border-red-500/30 opacity-70"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-red-500/20 to-transparent rounded-xl" />
                                       </div>
@@ -367,7 +367,7 @@ export default function RequestsPage() {
                                   )}
 
                                   {oldValue && (
-                                    <div className="text-2xl text-gray-500">→</div>
+                                    <div className="text-2xl text-muted-foreground">→</div>
                                   )}
 
                                   {/* New Image */}
@@ -380,14 +380,14 @@ export default function RequestsPage() {
                                         <img
                                           src={value}
                                           alt="New"
-                                          className="h-24 w-24 rounded-xl object-cover bg-black/50 border-2 border-green-500/50 shadow-lg shadow-green-500/10"
+                                          className="h-24 w-24 rounded-xl object-cover bg-secondary border-2 border-green-500/50 shadow-lg shadow-green-500/10"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-green-500/10 to-transparent rounded-xl" />
                                       </div>
                                     </div>
                                   )}
                                 </div>
-                                <span className="text-xs text-gray-400 font-medium">
+                                <span className="text-xs text-muted-foreground font-medium">
                                   {value
                                     ? oldValue
                                       ? "Kép lecserélése"
@@ -402,11 +402,11 @@ export default function RequestsPage() {
                                     <>
                                       <div className="flex flex-col gap-1">
                                         <span className="text-[10px] font-bold text-red-400 uppercase tracking-wider">Régi</span>
-                                        <span className="line-through text-gray-400 decoration-red-500/50 decoration-2 bg-red-500/10 px-3 py-1.5 rounded-lg">
+                                        <span className="line-through text-muted-foreground decoration-red-500/50 decoration-2 bg-red-500/10 px-3 py-1.5 rounded-lg">
                                           {String(oldValue)}
                                         </span>
                                       </div>
-                                      <span className="text-xl text-gray-500">→</span>
+                                      <span className="text-xl text-muted-foreground">→</span>
                                     </>
                                   )}
                                 <div className="flex flex-col gap-1">
@@ -439,12 +439,12 @@ export default function RequestsPage() {
 
       {/* Reject Modal */}
       {rejectModal.isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="bg-[#1a1b26] border border-white/10 rounded-2xl w-full max-w-md shadow-2xl p-6 animate-scale-in">
-            <h3 className="text-xl font-bold text-white mb-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-fade-in">
+          <div className="bg-[#121A22] border border-border rounded-2xl w-full max-w-md shadow-2xl p-6 animate-scale-in">
+            <h3 className="text-xl font-bold text-foreground mb-2">
               Kérelem elutasítása
             </h3>
-            <p className="text-gray-400 text-sm mb-4">
+            <p className="text-muted-foreground text-sm mb-4">
               Kérlek pótold az elutasítás okát, amit a felhasználó is meg fog
               kapni.
             </p>
@@ -454,7 +454,7 @@ export default function RequestsPage() {
               onChange={(e) =>
                 setRejectModal((prev) => ({ ...prev, reason: e.target.value }))
               }
-              className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-white placeholder-gray-600 focus:outline-none focus:border-red-500/50 min-h-[100px] mb-6 resize-none"
+              className="w-full bg-secondary border border-border rounded-xl p-3 text-foreground placeholder-gray-600 focus:outline-none focus:border-red-500/50 min-h-[100px] mb-6 resize-none"
               placeholder="Pl.: Nem megfelelő profilkép, trágár kifejezés..."
               autoFocus
             />
@@ -464,14 +464,14 @@ export default function RequestsPage() {
                 onClick={() =>
                   setRejectModal((prev) => ({ ...prev, isOpen: false }))
                 }
-                className="px-4 py-2 hover:bg-white/5 rounded-lg text-gray-400 transition-colors"
+                className="px-4 py-2 hover:bg-secondary rounded-lg text-muted-foreground transition-colors"
               >
                 Mégse
               </button>
               <button
                 onClick={handleRejectConfirm}
                 disabled={!rejectModal.reason.trim()}
-                className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg text-foreground font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Elutasítás
               </button>

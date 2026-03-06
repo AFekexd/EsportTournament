@@ -52,7 +52,7 @@
 
 .team-size-badge {
     padding: var(--spacing-xs) var(--spacing-sm);
-    background: rgba(0, 0, 0, 0.7);
+    background: hsl(var(--background) / 0.7);
     backdrop-filter: blur(4px);
     color: white;
     font-size: 0.75rem;

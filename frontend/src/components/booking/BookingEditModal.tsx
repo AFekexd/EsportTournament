@@ -69,16 +69,16 @@ export function BookingEditModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div
-        className="bg-[#1a1b26] rounded-2xl w-full max-w-md border border-white/10 shadow-2xl overflow-hidden"
+        className="bg-[#121A22] rounded-2xl w-full max-w-md border border-border shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-[#1a1b26] border-b border-white/10 p-6 flex items-center justify-between">
-          <h3 className="text-xl font-bold text-white">Foglalás módosítása</h3>
+        <div className="bg-[#121A22] border-b border-border p-6 flex items-center justify-between">
+          <h3 className="text-xl font-bold text-foreground">Foglalás módosítása</h3>
           <button
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white"
+            className="p-2 hover:bg-secondary/80 rounded-lg transition-colors text-muted-foreground hover:text-foreground"
             onClick={onClose}
           >
             <X size={20} />
@@ -93,11 +93,11 @@ export function BookingEditModal({
             </div>
           )}
 
-          <div className="flex flex-col gap-1 pb-4 border-b border-white/5">
-            <span className="text-sm font-medium text-gray-400">
+          <div className="flex flex-col gap-1 pb-4 border-b border-border">
+            <span className="text-sm font-medium text-muted-foreground">
               Jelenlegi időpont
             </span>
-            <span className="text-lg font-bold text-white flex items-center gap-2">
+            <span className="text-lg font-bold text-foreground flex items-center gap-2">
               <Calendar size={18} className="text-primary" />
               {new Date(booking.startTime).toLocaleTimeString([], {
                 hour: "2-digit",
@@ -122,7 +122,7 @@ export function BookingEditModal({
               <input
                 type="datetime-local"
                 id="edit-start-time"
-                className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors calendar-picker-indicator-invert"
+                className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors calendar-picker-indicator-invert"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
                 step="1800"
@@ -140,7 +140,7 @@ export function BookingEditModal({
               <input
                 type="datetime-local"
                 id="edit-end-time"
-                className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors calendar-picker-indicator-invert"
+                className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors calendar-picker-indicator-invert"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
                 step="1800"
@@ -149,7 +149,7 @@ export function BookingEditModal({
             </div>
           </div>
 
-          <p className="text-xs text-gray-500 italic bg-white/5 p-3 rounded-lg border border-white/5">
+          <p className="text-xs text-muted-foreground italic bg-secondary p-3 rounded-lg border border-border">
             Csak az időpont módosítható. Ha másik gépet szeretnél, töröld ezt a
             foglalást és hozz létre újat.
           </p>
@@ -157,7 +157,7 @@ export function BookingEditModal({
           <div className="flex gap-3 pt-2">
             <button
               type="button"
-              className="flex-1 px-6 py-3 bg-[#0f1015] hover:bg-[#2a2b36] border border-white/10 text-white rounded-xl font-semibold transition-all"
+              className="flex-1 px-6 py-3 bg-[#121A22] hover:bg-[#121A22] border border-border text-foreground rounded-xl font-semibold transition-all"
               onClick={onClose}
               disabled={isSaving}
             >
@@ -165,7 +165,7 @@ export function BookingEditModal({
             </button>
             <button
               type="submit"
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-foreground rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isSaving}
             >
               {isSaving ? (

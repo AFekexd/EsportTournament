@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Bell, BellOff, Loader2 } from 'lucide-react';
+import { format } from 'date-fns';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { addToWaitlist, removeFromWaitlist } from '../../store/slices/bookingsSlice';
 
@@ -21,7 +22,7 @@ export function WaitlistButton({ computerId, date, startHour, endHour }: Waitlis
     const existingEntry = myWaitlist.find(
         (entry) =>
             entry.computerId === computerId &&
-            new Date(entry.date).toISOString().split('T')[0] === date &&
+            format(new Date(entry.date), 'yyyy-MM-dd') === date &&
             entry.startHour === startHour // Simplified match for exact slot
     );
 

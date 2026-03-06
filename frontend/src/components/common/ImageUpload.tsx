@@ -165,20 +165,20 @@ export function ImageUpload({
 
       {/* Cropping Modal Overlay */}
       {imageToCrop && createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#1a1b26] rounded-2xl w-[90vw] max-w-7xl overflow-hidden border border-white/10 shadow-2xl flex flex-col max-h-[95vh] ">
-            <div className="p-4 border-b border-white/5 flex justify-between items-center bg-[#0f1015]">
-              <h3 className="font-bold text-white">Kép szerkesztése</h3>
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+          <div className="bg-[#121A22] rounded-2xl w-[90vw] max-w-7xl overflow-hidden border border-border shadow-2xl flex flex-col max-h-[95vh] ">
+            <div className="p-4 border-b border-border flex justify-between items-center bg-[#121A22]">
+              <h3 className="font-bold text-foreground">Kép szerkesztése</h3>
               <button
                 onClick={handleCropCancel}
-                className="p-1 hover:bg-white/10 rounded-full transition-colors"
+                className="p-1 hover:bg-secondary/80 rounded-full transition-colors"
                 title="Mégse"
               >
-                <X size={20} className="text-gray-400 hover:text-white" />
+                <X size={20} className="text-muted-foreground hover:text-foreground" />
               </button>
             </div>
 
-            <div className="relative h-[75vh] bg-[#0f1015] w-full">
+            <div className="relative h-[75vh] bg-[#121A22] w-full">
               <Cropper
                 image={imageToCrop}
                 crop={crop}
@@ -194,9 +194,9 @@ export function ImageUpload({
               />
             </div>
 
-            <div className="p-6 bg-[#1a1b26] space-y-4">
+            <div className="p-6 bg-[#121A22] space-y-4">
               <div className="flex gap-4 items-center">
-                <ZoomOut size={16} className="text-gray-400" />
+                <ZoomOut size={16} className="text-muted-foreground" />
                 <input
                   type="range"
                   value={zoom}
@@ -207,11 +207,11 @@ export function ImageUpload({
                   onChange={(e) => setZoom(Number(e.target.value))}
                   className="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-primary"
                 />
-                <ZoomIn size={16} className="text-gray-400" />
+                <ZoomIn size={16} className="text-muted-foreground" />
               </div>
 
               <div className="flex gap-4 items-center">
-                <RotateCcw size={16} className="text-gray-400" />
+                <RotateCcw size={16} className="text-muted-foreground" />
                 <input
                   type="range"
                   value={rotation}
@@ -222,19 +222,19 @@ export function ImageUpload({
                   onChange={(e) => setRotation(Number(e.target.value))}
                   className="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-primary"
                 />
-                <span className="text-xs text-gray-400 w-8">{rotation}°</span>
+                <span className="text-xs text-muted-foreground w-8">{rotation}°</span>
               </div>
 
               <div className="flex gap-3 justify-end pt-2">
                 <button
                   onClick={handleCropCancel}
-                  className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
                 >
                   Mégse
                 </button>
                 <button
                   onClick={handleCropSave}
-                  className="px-6 py-2 bg-primary hover:bg-primary/90 text-white text-sm font-bold rounded-lg flex items-center gap-2 transition-all shadow-lg shadow-primary/20"
+                  className="px-6 py-2 bg-primary hover:bg-primary/90 text-foreground text-sm font-bold rounded-lg flex items-center gap-2 transition-all shadow-lg shadow-primary/20"
                 >
                   <Check size={16} />
                   Kép mentése
@@ -254,8 +254,8 @@ export function ImageUpload({
               type="button"
               onClick={() => setMode("upload")}
               className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${mode === "upload"
-                ? "bg-primary text-white"
-                : "bg-[#0f1015] text-gray-400 hover:text-white border border-white/10"
+                ? "bg-primary text-foreground"
+                : "bg-[#121A22] text-muted-foreground hover:text-foreground border border-border"
                 }`}
             >
               <Upload size={16} className="inline mr-2" />
@@ -265,8 +265,8 @@ export function ImageUpload({
               type="button"
               onClick={() => setMode("url")}
               className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${mode === "url"
-                ? "bg-primary text-white"
-                : "bg-[#0f1015] text-gray-400 hover:text-white border border-white/10"
+                ? "bg-primary text-foreground"
+                : "bg-[#121A22] text-muted-foreground hover:text-foreground border border-border"
                 }`}
             >
               <LinkIcon size={16} className="inline mr-2" />
@@ -283,7 +283,7 @@ export function ImageUpload({
               onClick={() => fileInputRef.current?.click()}
               className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${isDragging
                 ? "border-primary bg-primary/10"
-                : "border-white/20 hover:border-primary/50 bg-[#0f1015]"
+                : "border-border hover:border-primary/50 bg-[#121A22]"
                 }`}
             >
               <input
@@ -293,11 +293,11 @@ export function ImageUpload({
                 onChange={handleFileChange}
                 className="hidden"
               />
-              <ImageIcon size={48} className="mx-auto mb-4 text-gray-500" />
-              <p className="text-white font-medium mb-1">
+              <ImageIcon size={48} className="mx-auto mb-4 text-muted-foreground" />
+              <p className="text-foreground font-medium mb-1">
                 Kattints vagy húzd ide a képet
               </p>
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 PNG, JPG, GIF, WebP (max {maxSizeMB}MB)
               </p>
             </div>
@@ -313,7 +313,7 @@ export function ImageUpload({
                 onBlur={handleUrlSubmit}
                 onKeyDown={(e) => e.key === "Enter" && handleUrlSubmit()}
                 placeholder={placeholder}
-                className="flex-1 px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
+                className="flex-1 px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
               />
             </div>
           )}
@@ -325,18 +325,18 @@ export function ImageUpload({
         <div className="relative">
           <div
             className={`relative w-full ${aspect === "square" ? "aspect-square" : "aspect-video"
-              } bg-[#0f1015] rounded-xl overflow-hidden border border-white/10 group`}
+              } bg-[#121A22] rounded-xl overflow-hidden border border-border group`}
           >
             <img
               src={value}
               alt="Preview"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <div className="absolute inset-0 bg-secondary opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
               <button
                 type="button"
                 onClick={handleClear}
-                className="px-4 py-2 bg-red-500/80 hover:bg-red-500 text-white rounded-lg transition-colors flex items-center gap-2"
+                className="px-4 py-2 bg-red-500/80 hover:bg-red-500 text-foreground rounded-lg transition-colors flex items-center gap-2"
               >
                 <X size={16} />
                 Kép törlése / csere
@@ -344,7 +344,7 @@ export function ImageUpload({
             </div>
           </div>
           {value.startsWith("data:") && (
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-muted-foreground mt-2">
               Méret: {((value.length * 0.75) / 1024).toFixed(2)} KB
             </p>
           )}

@@ -92,7 +92,7 @@ export function ComputerCardGrid({
                 borderColor: 'border-gray-600/30',
                 bgColor: 'bg-gray-800/30',
                 statusText: status.isMaintenance ? 'Karbantartás alatt' : 'Nem működik',
-                statusColor: 'text-gray-500',
+                statusColor: 'text-muted-foreground',
                 buttonText: null,
                 buttonStyle: '',
             };
@@ -103,7 +103,7 @@ export function ComputerCardGrid({
             statusText: 'Szabad',
             statusColor: 'text-green-400',
             buttonText: 'Foglalás',
-            buttonStyle: 'bg-primary hover:bg-primary/90 text-white',
+            buttonStyle: 'bg-primary hover:bg-primary/90 text-foreground',
         };
     };
 
@@ -139,14 +139,14 @@ export function ComputerCardGrid({
                                                 status.isOwn ? 'bg-primary/20 text-primary' :
                                                     status.isTournament ? 'bg-yellow-500/20 text-yellow-400' :
                                                         status.isBooked ? 'bg-red-500/20 text-red-400' :
-                                                            'bg-gray-700/50 text-gray-500'}
+                                                            'bg-gray-700/50 text-muted-foreground'}
                     `}>
                                             {status.isTournament ? <Trophy size={20} /> :
                                                 status.isMaintenance || status.isOutOfOrder ? <Wrench size={20} /> :
                                                     <Monitor size={20} />}
                                         </div>
                                         <div>
-                                            <h4 className="font-semibold text-white">{status.computer.name}</h4>
+                                            <h4 className="font-semibold text-foreground">{status.computer.name}</h4>
                                             <span className={`text-xs font-medium ${config.statusColor}`}>
                                                 {config.statusText}
                                             </span>
@@ -158,7 +158,7 @@ export function ComputerCardGrid({
                                         onClick={() => setExpandedId(isExpanded ? null : status.computer.id)}
                                         className={`
                       p-2 rounded-lg transition-all
-                      ${isExpanded ? 'bg-primary/20 text-primary' : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'}
+                      ${isExpanded ? 'bg-primary/20 text-primary' : 'bg-secondary text-muted-foreground hover:text-foreground hover:bg-secondary/80'}
                     `}
                                     >
                                         <ChevronDown
@@ -172,13 +172,13 @@ export function ComputerCardGrid({
                                 {status.computer.specs && (
                                     <div className="flex flex-wrap gap-2 mb-3">
                                         {status.computer.specs.gpu && (
-                                            <span className="flex items-center gap-1 text-[10px] px-2 py-1 bg-white/5 rounded-full text-gray-400">
+                                            <span className="flex items-center gap-1 text-[10px] px-2 py-1 bg-secondary rounded-full text-muted-foreground">
                                                 <Cpu size={10} />
                                                 {status.computer.specs.gpu.split(' ').slice(0, 2).join(' ')}
                                             </span>
                                         )}
                                         {status.computer.specs.ram && (
-                                            <span className="flex items-center gap-1 text-[10px] px-2 py-1 bg-white/5 rounded-full text-gray-400">
+                                            <span className="flex items-center gap-1 text-[10px] px-2 py-1 bg-secondary rounded-full text-muted-foreground">
                                                 <HardDrive size={10} />
                                                 {status.computer.specs.ram}
                                             </span>
@@ -211,47 +211,47 @@ export function ComputerCardGrid({
                             {/* Expanded specs */}
                             {isExpanded && (
                                 <div className="px-4 pb-4 pt-0 animate-in fade-in slide-in-from-top-2 duration-200">
-                                    <div className="border-t border-white/10 pt-4">
+                                    <div className="border-t border-border pt-4">
                                         {status.computer.specs ? (
                                             <div className="space-y-3">
-                                                <h5 className="text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+                                                <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
                                                     <Info size={12} />
                                                     Részletek
                                                 </h5>
                                                 <div className="grid grid-cols-2 gap-2 text-xs">
                                                     {status.computer.specs.cpu && (
-                                                        <div className="p-2 bg-white/5 rounded-lg">
-                                                            <span className="text-gray-500 block">CPU</span>
+                                                        <div className="p-2 bg-secondary rounded-lg">
+                                                            <span className="text-muted-foreground block">CPU</span>
                                                             <span className="text-gray-300">{status.computer.specs.cpu}</span>
                                                         </div>
                                                     )}
                                                     {status.computer.specs.gpu && (
-                                                        <div className="p-2 bg-white/5 rounded-lg">
-                                                            <span className="text-gray-500 block">GPU</span>
+                                                        <div className="p-2 bg-secondary rounded-lg">
+                                                            <span className="text-muted-foreground block">GPU</span>
                                                             <span className="text-gray-300">{status.computer.specs.gpu}</span>
                                                         </div>
                                                     )}
                                                     {status.computer.specs.ram && (
-                                                        <div className="p-2 bg-white/5 rounded-lg">
-                                                            <span className="text-gray-500 block">RAM</span>
+                                                        <div className="p-2 bg-secondary rounded-lg">
+                                                            <span className="text-muted-foreground block">RAM</span>
                                                             <span className="text-gray-300">{status.computer.specs.ram}</span>
                                                         </div>
                                                     )}
                                                     {status.computer.specs.monitor && (
-                                                        <div className="p-2 bg-white/5 rounded-lg">
-                                                            <span className="text-gray-500 block">Monitor</span>
+                                                        <div className="p-2 bg-secondary rounded-lg">
+                                                            <span className="text-muted-foreground block">Monitor</span>
                                                             <span className="text-gray-300">{status.computer.specs.monitor}</span>
                                                         </div>
                                                     )}
                                                 </div>
                                             </div>
                                         ) : (
-                                            <p className="text-xs text-gray-500 italic">Nincs elérhető specifikáció.</p>
+                                            <p className="text-xs text-muted-foreground italic">Nincs elérhető specifikáció.</p>
                                         )}
 
                                         {status.computer.installedGames && status.computer.installedGames.length > 0 && (
                                             <div className="mt-4">
-                                                <h5 className="text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-1.5 mb-2">
+                                                <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5 mb-2">
                                                     <Gamepad2 size={12} />
                                                     Telepített játékok
                                                 </h5>

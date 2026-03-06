@@ -74,7 +74,7 @@ export const ClientVersionList: React.FC = () => {
 
   if (isInitialLoad && versions.length === 0) {
     return (
-      <div className="bg-tertiary rounded-lg border border-white/5 overflow-hidden min-h-[100px] flex items-center justify-center">
+      <div className="bg-tertiary rounded-lg border border-border overflow-hidden min-h-[100px] flex items-center justify-center">
         <div className="text-white/50 text-sm">Verziók betöltése...</div>
       </div>
     );
@@ -82,16 +82,16 @@ export const ClientVersionList: React.FC = () => {
 
   return (
     <>
-      <div className="bg-tertiary rounded-lg border border-white/5 overflow-hidden">
-        <div className="p-4 border-b border-white/5 flex justify-between items-center">
-          <h3 className="font-bold text-white flex items-center gap-2">
+      <div className="bg-tertiary rounded-lg border border-border overflow-hidden">
+        <div className="p-4 border-b border-border flex justify-between items-center">
+          <h3 className="font-bold text-foreground flex items-center gap-2">
             <History size={18} className="text-primary" />
             Kliens Verzió Előzmények
           </h3>
           <button
             onClick={handleRefresh}
             disabled={isRefreshing}
-            className="p-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white transition-colors"
+            className="p-2 hover:bg-secondary rounded-lg text-muted-foreground hover:text-foreground transition-colors"
             title="Frissítés"
           >
             <RefreshCw
@@ -104,11 +104,11 @@ export const ClientVersionList: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-white/5 text-gray-400 text-xs uppercase">
-                <th className="p-3 border-b border-white/5">Verzió</th>
-                <th className="p-3 border-b border-white/5">Feltöltve</th>
-                <th className="p-3 border-b border-white/5">Státusz</th>
-                <th className="p-3 border-b border-white/5 text-right">
+              <tr className="bg-secondary text-muted-foreground text-xs uppercase">
+                <th className="p-3 border-b border-border">Verzió</th>
+                <th className="p-3 border-b border-border">Feltöltve</th>
+                <th className="p-3 border-b border-border">Státusz</th>
+                <th className="p-3 border-b border-border text-right">
                   Műveletek
                 </th>
               </tr>
@@ -118,12 +118,12 @@ export const ClientVersionList: React.FC = () => {
                 versions.map((ver) => (
                   <tr
                     key={ver.id}
-                    className="hover:bg-white/5 transition-colors group"
+                    className="hover:bg-secondary transition-colors group"
                   >
-                    <td className="p-3 border-b border-white/5 text-white font-mono">
+                    <td className="p-3 border-b border-border text-foreground font-mono">
                       {ver.version}
                     </td>
-                    <td className="p-3 border-b border-white/5 text-gray-400">
+                    <td className="p-3 border-b border-border text-muted-foreground">
                       {new Date(ver.createdAt).toLocaleString("hu-HU", {
                         year: "numeric",
                         month: "2-digit",
@@ -132,20 +132,20 @@ export const ClientVersionList: React.FC = () => {
                         minute: "2-digit",
                       })}
                     </td>
-                    <td className="p-3 border-b border-white/5">
+                    <td className="p-3 border-b border-border">
                       {ver.isActive ? (
                         <span className="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs border border-green-500/30">
                           AKTÍV
                         </span>
                       ) : (
-                        <span className="text-gray-500 text-xs">Inaktív</span>
+                        <span className="text-muted-foreground text-xs">Inaktív</span>
                       )}
                     </td>
-                    <td className="p-3 border-b border-white/5 text-right">
+                    <td className="p-3 border-b border-border text-right">
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => handleDownload(ver.id)}
-                          className="p-1.5 hover:bg-white/10 rounded text-blue-400 hover:text-blue-300 transition-colors"
+                          className="p-1.5 hover:bg-secondary/80 rounded text-primary hover:text-blue-300 transition-colors"
                           title="Letöltés"
                         >
                           <Download size={16} />
@@ -155,7 +155,7 @@ export const ClientVersionList: React.FC = () => {
                             onClick={() =>
                               handleDeleteClick(ver.id, ver.version)
                             }
-                            className="p-1.5 hover:bg-white/10 rounded text-red-400 hover:text-red-300 transition-colors"
+                            className="p-1.5 hover:bg-secondary/80 rounded text-red-400 hover:text-red-300 transition-colors"
                             title="Törlés"
                           >
                             <Trash2 size={16} />
@@ -167,7 +167,7 @@ export const ClientVersionList: React.FC = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-gray-500">
+                  <td colSpan={4} className="p-8 text-center text-muted-foreground">
                     Nincs feltöltött verzió.
                   </td>
                 </tr>

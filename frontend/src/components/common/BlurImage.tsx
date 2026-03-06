@@ -8,7 +8,7 @@ export function BlurImage({ src, alt, className, containerClassName, ...props }:
     const [isLoading, setIsLoading] = useState(true);
 
     return (
-        <div className={`relative overflow-hidden bg-white/5 ${containerClassName || ""}`}>
+        <div className={`relative overflow-hidden bg-secondary ${containerClassName || ""}`}>
             <img
                 src={src}
                 alt={alt}
@@ -21,7 +21,7 @@ export function BlurImage({ src, alt, className, containerClassName, ...props }:
             />
             {/* Loading Skeleton/Overlap */}
             {isLoading && (
-                <div className="absolute inset-0 bg-white/10 animate-pulse backdrop-blur-sm" />
+                <div className="absolute inset-0 bg-secondary/80 animate-pulse backdrop-blur-sm" />
             )}
         </div>
     );

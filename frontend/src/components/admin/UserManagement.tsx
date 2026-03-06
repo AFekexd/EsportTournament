@@ -167,7 +167,7 @@ export function UserManagement() {
         label: "Admin",
       },
       ORGANIZER: {
-        class: "bg-purple-500/20 text-purple-400 border-purple-500/30",
+        class: "bg-primary/30 text-primary border-primary/20",
         label: "Szervező",
       },
       TEACHER: {
@@ -175,16 +175,16 @@ export function UserManagement() {
         label: "Tanár",
       },
       MODERATOR: {
-        class: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+        class: "bg-primary/30 text-primary border-primary/20",
         label: "Moderátor",
       },
       STUDENT: {
-        class: "bg-gray-500/20 text-gray-400 border-gray-500/30",
+        class: "bg-gray-500/20 text-muted-foreground border-gray-500/30",
         label: "Diák",
       },
     };
     const config = roleConfig[role] || {
-      class: "bg-gray-500/20 text-gray-400 border-gray-500/30",
+      class: "bg-gray-500/20 text-muted-foreground border-gray-500/30",
       label: role,
     };
     return (
@@ -345,14 +345,14 @@ export function UserManagement() {
           <div className="relative flex-1 md:w-64">
             <Search
               size={18}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
             />
             <input
               type="text"
               placeholder="Keresés..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-[#0f1015] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors text-sm"
+              className="w-full pl-10 pr-4 py-2 bg-[#121A22] border border-border rounded-lg text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors text-sm"
             />
           </div>
 
@@ -361,7 +361,7 @@ export function UserManagement() {
             <select
               value={selectedRole}
               onChange={(e) => setSelectedRole(e.target.value)}
-              className="appearance-none w-full sm:w-auto px-4 py-2 pr-10 bg-[#0f1015] border border-white/10 rounded-lg text-white focus:outline-none focus:border-primary/50 transition-colors text-sm cursor-pointer"
+              className="appearance-none w-full sm:w-auto px-4 py-2 pr-10 bg-[#121A22] border border-border rounded-lg text-foreground focus:outline-none focus:border-primary/50 transition-colors text-sm cursor-pointer"
               style={{
                 colorScheme: "dark",
               }}
@@ -373,7 +373,7 @@ export function UserManagement() {
               <option value="MODERATOR">Moderátor</option>
               <option value="STUDENT">Diák</option>
             </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground">
               <svg
                 className="w-4 h-4"
                 fill="none"
@@ -423,7 +423,7 @@ export function UserManagement() {
                 }
               });
             }}
-            className="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-500 border border-red-500/20 rounded-lg hover:bg-red-500 hover:text-white transition-all whitespace-nowrap"
+            className="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-500 border border-red-500/20 rounded-lg hover:bg-red-500 hover:text-foreground transition-all whitespace-nowrap"
           >
             <Shield size={18} />
             Házirend Reset
@@ -434,40 +434,40 @@ export function UserManagement() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div
-          className="bg-[#0f1015] rounded-xl border border-white/5 p-4 cursor-pointer hover:border-primary/50 transition-colors"
+          className="bg-[#121A22] rounded-xl border border-border p-4 cursor-pointer hover:border-primary/50 transition-colors"
           onClick={() => setSelectedRole("ALL")}
         >
-          <div className="text-2xl font-bold text-white">
+          <div className="text-2xl font-bold text-foreground">
             {stats?.registeredUsers || "-"}
           </div>
-          <div className="text-sm text-gray-400">Összes felhasználó</div>
+          <div className="text-sm text-muted-foreground">Összes felhasználó</div>
         </div>
         <div
-          className="bg-[#0f1015] rounded-xl border border-white/5 p-4 cursor-pointer hover:border-red-500/50 transition-colors"
+          className="bg-[#121A22] rounded-xl border border-border p-4 cursor-pointer hover:border-red-500/50 transition-colors"
           onClick={() => setSelectedRole("ADMIN")}
         >
           <div className="text-2xl font-bold text-red-400">
             {stats?.usersByRole?.["ADMIN"] || 0}
           </div>
-          <div className="text-sm text-gray-400">Admin</div>
+          <div className="text-sm text-muted-foreground">Admin</div>
         </div>
         <div
-          className="bg-[#0f1015] rounded-xl border border-white/5 p-4 cursor-pointer hover:border-green-500/50 transition-colors"
+          className="bg-[#121A22] rounded-xl border border-border p-4 cursor-pointer hover:border-green-500/50 transition-colors"
           onClick={() => setSelectedRole("TEACHER")}
         >
           <div className="text-2xl font-bold text-green-400">
             {stats?.usersByRole?.["TEACHER"] || 0}
           </div>
-          <div className="text-sm text-gray-400">Tanár</div>
+          <div className="text-sm text-muted-foreground">Tanár</div>
         </div>
         <div
-          className="bg-[#0f1015] rounded-xl border border-white/5 p-4 cursor-pointer hover:border-blue-500/50 transition-colors"
+          className="bg-[#121A22] rounded-xl border border-border p-4 cursor-pointer hover:border-blue-500/50 transition-colors"
           onClick={() => setSelectedRole("MODERATOR")}
         >
-          <div className="text-2xl font-bold text-blue-400">
+          <div className="text-2xl font-bold text-primary">
             {stats?.usersByRole?.["MODERATOR"] || 0}
           </div>
-          <div className="text-sm text-gray-400">Moderátor</div>
+          <div className="text-sm text-muted-foreground">Moderátor</div>
         </div>
       </div>
 
@@ -475,51 +475,51 @@ export function UserManagement() {
       <div className="admin-table-container overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-white/10 text-muted text-sm uppercase">
+            <tr className="border-b border-border text-muted text-sm uppercase">
               <th
-                className="p-3 cursor-pointer hover:text-white transition-colors"
+                className="p-3 cursor-pointer hover:text-foreground transition-colors"
                 onClick={() => handleSort('username')}
               >
                 Felhasználó {getSortIcon('username')}
               </th>
               <th
-                className="p-3 cursor-pointer hover:text-white transition-colors"
+                className="p-3 cursor-pointer hover:text-foreground transition-colors"
                 onClick={() => handleSort('email')}
               >
                 Email {getSortIcon('email')}
               </th>
               <th
-                className="p-3 cursor-pointer hover:text-white transition-colors"
+                className="p-3 cursor-pointer hover:text-foreground transition-colors"
                 onClick={() => handleSort('omId')}
               >
                 OM Azonosító {getSortIcon('omId')}
               </th>
               <th
-                className="p-3 cursor-pointer hover:text-white transition-colors"
+                className="p-3 cursor-pointer hover:text-foreground transition-colors"
                 onClick={() => handleSort('discordId')}
               >
                 Discord {getSortIcon('discordId')}
               </th>
               <th
-                className="p-3 cursor-pointer hover:text-white transition-colors"
+                className="p-3 cursor-pointer hover:text-foreground transition-colors"
                 onClick={() => handleSort('role')}
               >
                 Szerep {getSortIcon('role')}
               </th>
               <th
-                className="p-3 text-center cursor-pointer hover:text-white transition-colors"
+                className="p-3 text-center cursor-pointer hover:text-foreground transition-colors"
                 onClick={() => handleSort('timeBalanceSeconds')}
               >
                 Időkeret {getSortIcon('timeBalanceSeconds')}
               </th>
               <th
-                className="p-3 text-center cursor-pointer hover:text-white transition-colors"
+                className="p-3 text-center cursor-pointer hover:text-foreground transition-colors"
                 onClick={() => handleSort('elo')}
               >
                 ELO {getSortIcon('elo')}
               </th>
               <th
-                className="p-3 cursor-pointer hover:text-white transition-colors"
+                className="p-3 cursor-pointer hover:text-foreground transition-colors"
                 onClick={() => handleSort('createdAt')}
               >
                 Regisztráció {getSortIcon('createdAt')}
@@ -540,7 +540,7 @@ export function UserManagement() {
               filteredUsers.map((user) => (
                 <tr
                   key={user.id}
-                  className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                  className="border-b border-border hover:bg-secondary transition-colors"
                 >
                   <td className="p-3">
                     <Link
@@ -551,19 +551,19 @@ export function UserManagement() {
                         <img
                           src={user.avatarUrl}
                           alt={user.username}
-                          className="w-10 h-10 rounded-full object-cover border border-white/10 group-hover:border-primary/50 transition-colors"
+                          className="w-10 h-10 rounded-full object-cover border border-border group-hover:border-primary/50 transition-colors"
                         />
                       ) : (
-                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center border border-white/10 group-hover:border-primary/50 transition-colors">
+                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center border border-border group-hover:border-primary/50 transition-colors">
                           <Users size={20} className="text-primary" />
                         </div>
                       )}
                       <div>
-                        <div className="font-medium text-white group-hover:text-primary transition-colors">
+                        <div className="font-medium text-foreground group-hover:text-primary transition-colors">
                           {user.displayName || user.username}
                         </div>
                         {user.displayName && (
-                          <div className="text-xs text-gray-500">
+                          <div className="text-xs text-muted-foreground">
                             {user.username.includes("@")
                               ? user.username
                               : `@${user.username}`}
@@ -573,10 +573,10 @@ export function UserManagement() {
                     </Link>
                   </td>
                   <td className="p-3 text-muted">{user.email}</td>
-                  <td className="p-3 font-mono text-sm text-gray-400">
+                  <td className="p-3 font-mono text-sm text-muted-foreground">
                     {user.omId || "-"}
                   </td>
-                  <td className="p-3 font-mono text-sm text-gray-400">
+                  <td className="p-3 font-mono text-sm text-muted-foreground">
                     {user.discordId ? <span className="text-[#5865F2]">{user.discordId}</span> : "-"}
                   </td>
                   <td className="p-3">{getRoleBadge(user.role)}</td>
@@ -599,21 +599,21 @@ export function UserManagement() {
                   <td className="p-3 text-right">
                     <div className="flex gap-2 justify-end">
                       <button
-                        className="btn-icon hover:bg-white/10"
+                        className="btn-icon hover:bg-secondary/80"
                         title="Időkeret kezelése"
                         onClick={() => setTimeModalUser(user)}
                       >
                         <Clock size={16} />
                       </button>
                       <button
-                        className="btn-icon hover:bg-white/10"
+                        className="btn-icon hover:bg-secondary/80"
                         title="Szerep módosítása"
                         onClick={() => setRoleModalUser(user)}
                       >
                         <Shield size={16} />
                       </button>
                       <button
-                        className="btn-icon hover:bg-white/10"
+                        className="btn-icon hover:bg-secondary/80"
                         title="Szerkesztés"
                         onClick={() => setEditModalUser(user)}
                       >
@@ -644,7 +644,7 @@ export function UserManagement() {
 
       {/* Pagination Controls */}
       <div className="flex items-center justify-between mt-4 px-2">
-        <div className="text-sm text-gray-400">
+        <div className="text-sm text-muted-foreground">
           {totalUsers > 0 && <span>Összesen: {totalUsers} találat</span>}
           {totalPages > 1 && (
             <span className="ml-2">
@@ -654,7 +654,7 @@ export function UserManagement() {
         </div>
         <div className="flex gap-1">
           <button
-            className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-sm text-white disabled:opacity-30 hover:bg-white/10 transition-colors"
+            className="px-3 py-1 bg-secondary border border-border rounded-lg text-sm text-foreground disabled:opacity-30 hover:bg-secondary/80 transition-colors"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
           >
@@ -673,8 +673,8 @@ export function UserManagement() {
                     key={p}
                     onClick={() => setPage(p)}
                     className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors mx-0.5 ${page === p
-                      ? "bg-primary text-white"
-                      : "bg-white/5 text-gray-400 hover:bg-white/10"
+                      ? "bg-primary text-foreground"
+                      : "bg-secondary text-muted-foreground hover:bg-secondary/80"
                       }`}
                   >
                     {p}
@@ -685,7 +685,7 @@ export function UserManagement() {
             })}
           </div>
           <button
-            className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-sm text-white disabled:opacity-30 hover:bg-white/10 transition-colors"
+            className="px-3 py-1 bg-secondary border border-border rounded-lg text-sm text-foreground disabled:opacity-30 hover:bg-secondary/80 transition-colors"
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
           >

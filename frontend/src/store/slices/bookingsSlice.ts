@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { format } from 'date-fns';
 import { API_URL } from '../../config';
 import type { RootState } from '../index';
 
@@ -73,11 +74,21 @@ export interface BookingStats {
     period: { start: string; end: string };
 }
 
+export interface BookingSupervisor {
+    id: string;
+    date: string;
+    hour: number;
+    userId: string;
+    user: { id: string; username: string; displayName: string | null };
+    createdAt: string;
+}
+
 interface BookingsState {
     computers: Computer[];
     bookings: Booking[];
     weeklyBookings: Booking[];
     schedules: BookingSchedule[];
+    supervisors: BookingSupervisor[];
     myBookings: Booking[];
     adminBookings: Booking[];
     pagination: {
@@ -102,7 +113,7 @@ const getMonday = (date: Date): string => {
     const day = d.getDay();
     const diff = d.getDate() - day + (day === 0 ? -6 : 1);
     d.setDate(diff);
-    return d.toISOString().split('T')[0];
+    return format(d, 'yyyy-MM-dd');
 };
 
 const initialState: BookingsState = {
@@ -117,10 +128,11 @@ const initialState: BookingsState = {
         pages: 0
     },
     schedules: [],
+    supervisors: [],
     myBookings: [],
     myWaitlist: [],
     stats: null,
-    selectedDate: new Date().toISOString().split('T')[0],
+    selectedDate: format(new Date(), 'yyyy-MM-dd'),
     selectedWeekStart: getMonday(new Date()),
     viewMode: 'daily',
     isLoading: false,
@@ -315,8 +327,6 @@ export const bulkDeleteBookings = createAsyncThunk(
     }
 );
 
-// New async thunks for enhanced booking features
-
 export const fetchWeeklyBookings = createAsyncThunk(
     'bookings/fetchWeeklyBookings',
     async (startDate: string) => {
@@ -324,6 +334,64 @@ export const fetchWeeklyBookings = createAsyncThunk(
         const data = await response.json();
         if (!data.success) throw new Error(data.error?.message || 'Failed to fetch weekly bookings');
         return data.data as Booking[];
+    }
+);
+
+export const fetchSupervisorsForDate = createAsyncThunk(
+    'bookings/fetchSupervisorsForDate',
+    async (date: string) => {
+        const response = await fetch(`${API_URL}/supervisors/date/${date}`);
+        const data = await response.json();
+        if (!data.success) throw new Error(data.error?.message || 'Failed to fetch supervisors');
+        return data.data as BookingSupervisor[];
+    }
+);
+
+export const fetchSupervisorsForWeek = createAsyncThunk(
+    'bookings/fetchSupervisorsForWeek',
+    async (startDate: string) => {
+        const response = await fetch(`${API_URL}/supervisors/week/${startDate}`);
+        const data = await response.json();
+        if (!data.success) throw new Error(data.error?.message || 'Failed to fetch supervisors');
+        return data.data as BookingSupervisor[];
+    }
+);
+
+export const assignSupervisor = createAsyncThunk(
+    'bookings/assignSupervisor',
+    async (assignmentData: { date: string; hour: number }, { getState }) => {
+        const state = getState() as RootState;
+        const token = getToken(state);
+        if (!token) throw new Error('Nincs bejelentkezve!');
+
+        const response = await fetch(`${API_URL}/supervisors`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(assignmentData),
+        });
+        const data = await response.json();
+        if (!data.success) throw new Error(data.error?.message || 'Failed to assign supervisor');
+        return data.data as BookingSupervisor;
+    }
+);
+
+export const removeSupervisor = createAsyncThunk(
+    'bookings/removeSupervisor',
+    async (id: string, { getState }) => {
+        const state = getState() as RootState;
+        const token = getToken(state);
+        if (!token) throw new Error('Nincs bejelentkezve!');
+
+        const response = await fetch(`${API_URL}/supervisors/${id}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await response.json();
+        if (!data.success) throw new Error(data.error?.message || 'Failed to remove supervisor');
+        return id;
     }
 );
 
@@ -630,6 +698,19 @@ const bookingsSlice = createSlice({
             // Stats
             .addCase(fetchBookingStats.fulfilled, (state, action) => {
                 state.stats = action.payload;
+            })
+            // Supervisors
+            .addCase(fetchSupervisorsForDate.fulfilled, (state, action) => {
+                state.supervisors = action.payload;
+            })
+            .addCase(fetchSupervisorsForWeek.fulfilled, (state, action) => {
+                state.supervisors = action.payload;
+            })
+            .addCase(assignSupervisor.fulfilled, (state, action) => {
+                state.supervisors.push(action.payload);
+            })
+            .addCase(removeSupervisor.fulfilled, (state, action) => {
+                state.supervisors = state.supervisors.filter(s => s.id !== action.payload);
             });
     },
 });

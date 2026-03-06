@@ -56,26 +56,26 @@ export function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#1a1b26] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-fade-in">
+      <div className="bg-[#121A22] border border-border rounded-2xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 md:p-6 border-b border-white/5">
+        <div className="flex items-center justify-between p-4 md:p-6 border-b border-border">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
               <GitCommit size={20} />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">
+              <h2 className="text-xl font-bold text-foreground">
                 Újdonságok és Változások
               </h2>
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 Kövesd nyomon a legfrissebb fejlesztéseket
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+            className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
           >
             <X size={20} />
           </button>
@@ -84,58 +84,55 @@ export function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-8 custom-scrollbar">
           {loading ? (
-            <div className="py-12 text-center text-gray-400">Betöltés...</div>
+            <div className="py-12 text-center text-muted-foreground">Betöltés...</div>
           ) : changelogs.length === 0 ? (
-            <div className="py-12 text-center text-gray-400">
+            <div className="py-12 text-center text-muted-foreground">
               <Tag size={48} className="mx-auto mb-4 opacity-20" />
               <p>Még nincsenek feljegyzett változtatások.</p>
             </div>
           ) : (
-            <div className="relative border-l border-white/10 ml-3 space-y-8">
+            <div className="relative border-l border-border ml-3 space-y-8">
               {changelogs.map((log, index) => (
                 <div key={log.id} className="relative pl-8">
                   {/* Timeline dot */}
                   <div
-                    className={`absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full ring-4 ring-[#1a1b26] ${
-                      index === 0 ? "bg-primary animate-pulse" : "bg-white/20"
-                    }`}
+                    className={`absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full ring-4 ring-border ${index === 0 ? "bg-primary animate-pulse" : "bg-white/20"
+                      }`}
                   />
 
                   {/* Version Header */}
                   <div className="flex flex-wrap items-center gap-3 mb-3">
                     <span
-                      className={`text-lg font-bold ${
-                        index === 0 ? "text-white" : "text-gray-300"
-                      }`}
+                      className={`text-lg font-bold ${index === 0 ? "text-foreground" : "text-gray-300"
+                        }`}
                     >
                       v{log.version}
                     </span>
                     <span
-                      className={`px-2 py-0.5 rounded textxs font-bold uppercase tracking-wider ${
-                        log.type === "MAJOR"
+                      className={`px-2 py-0.5 rounded textxs font-bold uppercase tracking-wider ${log.type === "MAJOR"
                           ? "bg-red-500/20 text-red-400"
                           : log.type === "MINOR"
-                            ? "bg-blue-500/20 text-blue-400"
-                            : "bg-gray-500/20 text-gray-400"
-                      }`}
+                            ? "bg-primary/30 text-primary"
+                            : "bg-gray-500/20 text-muted-foreground"
+                        }`}
                     >
                       {log.type}
                     </span>
-                    <span className="text-sm text-gray-500 flex items-center gap-1">
+                    <span className="text-sm text-muted-foreground flex items-center gap-1">
                       <Calendar size={12} />
                       {format(new Date(log.createdAt), "yyyy. MM. dd.", {
                         locale: hu,
                       })}
                     </span>
                     {log.author?.username && (
-                      <span className="text-xs text-gray-600 ml-auto">
+                      <span className="text-xs text-muted-foreground ml-auto">
                         by {log.author.displayName || log.author.username}
                       </span>
                     )}
                   </div>
 
                   {/* Changes List */}
-                  <div className="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-white/10 transition-colors">
+                  <div className="bg-secondary rounded-xl p-4 border border-border hover:border-border transition-colors">
                     <ul className="space-y-2">
                       {log.changes.map((change, i) => (
                         <li
@@ -158,7 +155,7 @@ export function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-white/5 bg-black/20 text-center text-xs text-gray-500">
+        <div className="p-4 border-t border-border bg-secondary text-center text-xs text-muted-foreground">
           Jelenlegi verzió: v{changelogs[0]?.version || "0.0.0"}
         </div>
       </div>

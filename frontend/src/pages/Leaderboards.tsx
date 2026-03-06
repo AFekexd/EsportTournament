@@ -70,7 +70,7 @@ export function LeaderboardsPage() {
 
   const getRankBadge = (rank: number) => {
     if (rank === 1) return <Crown size={16} className="text-yellow-500" />;
-    if (rank === 2) return <Medal size={16} className="text-gray-400" />;
+    if (rank === 2) return <Medal size={16} className="text-muted-foreground" />;
     if (rank === 3) return <Medal size={16} className="text-orange-600" />;
     return null;
   };
@@ -83,18 +83,18 @@ export function LeaderboardsPage() {
         <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-white via-primary-100 to-gray-400 bg-clip-text text-transparent mb-4">
           Ranglisták
         </h1>
-        <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           A legjobb játékosok és csapatok győzelmek alapján rangsorolva
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="mb-8 border-b border-white/10">
+      <div className="mb-8 border-b border-border">
         <div className="flex gap-4 md:gap-8 justify-center">
           <button
             className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative ${activeTab === "players"
               ? "border-primary text-primary"
-              : "border-transparent text-gray-400 hover:text-gray-300"
+              : "border-transparent text-muted-foreground hover:text-gray-300"
               }`}
             onClick={() => setActiveTab("players")}
           >
@@ -104,7 +104,7 @@ export function LeaderboardsPage() {
           <button
             className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative ${activeTab === "teams"
               ? "border-primary text-primary"
-              : "border-transparent text-gray-400 hover:text-gray-300"
+              : "border-transparent text-muted-foreground hover:text-gray-300"
               }`}
             onClick={() => setActiveTab("teams")}
           >
@@ -116,8 +116,8 @@ export function LeaderboardsPage() {
 
       {/* Top 3 Podium */}
       {activeTab === "players" && topPlayers.length > 0 && (
-        <div className="mb-12 bg-[#1a1b26] rounded-2xl border border-white/5 p-8 shadow-lg">
-          <h2 className="text-2xl font-bold text-white mb-8 text-center flex items-center justify-center gap-2">
+        <div className="mb-12 bg-[#121A22] rounded-2xl border border-border p-8 shadow-lg">
+          <h2 className="text-2xl font-bold text-foreground mb-8 text-center flex items-center justify-center gap-2">
             <Trophy className="text-yellow-500" size={28} />
             Top 3 Játékosok
           </h2>
@@ -129,7 +129,7 @@ export function LeaderboardsPage() {
                   player.rank
                 )} p-[2px] rounded-xl overflow-hidden`}
               >
-                <div className="bg-[#0f1015] rounded-xl p-6 text-center">
+                <div className="bg-[#121A22] rounded-xl p-6 text-center">
                   <div className="absolute top-4 right-4">
                     {getRankBadge(player.rank)}
                   </div>
@@ -138,7 +138,7 @@ export function LeaderboardsPage() {
                     className="hover:opacity-80 transition-opacity group"
                   >
                     <div className="mb-4 flex justify-center">
-                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-foreground text-2xl font-bold shadow-lg">
                         {player.avatarUrl ? (
                           <img
                             src={player.avatarUrl}
@@ -154,11 +154,11 @@ export function LeaderboardsPage() {
                         )}
                       </div>
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-2 !text-primary">
+                    <h3 className="text-xl font-bold text-foreground mb-2 !text-primary">
                       {player.displayName || player.username}
                     </h3>
                   </Link>
-                  <div className="text-sm text-gray-400">
+                  <div className="text-sm text-muted-foreground">
                     {player.matchesWon}/{player.matchesPlayed} győzelem (
                     {(player.winRate || 0).toFixed(1)}%)
                   </div>
@@ -170,16 +170,16 @@ export function LeaderboardsPage() {
       )}
 
       {/* Leaderboard Table */}
-      <div className="bg-[#1a1b26] rounded-2xl border border-white/5 overflow-hidden shadow-lg">
+      <div className="bg-[#121A22] rounded-2xl border border-border overflow-hidden shadow-lg">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
-            <p className="text-gray-400">Betöltés...</p>
+            <p className="text-muted-foreground">Betöltés...</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-[#0f1015] border-b border-white/5">
+              <thead className="bg-[#121A22] border-b border-border">
                 <tr>
                   <th className="px-3 md:px-6 py-4 text-left text-sm font-semibold text-gray-300">
                     Helyezés
@@ -206,11 +206,11 @@ export function LeaderboardsPage() {
                   ? players.map((player) => (
                     <tr
                       key={player.id}
-                      className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                      className="border-b border-border hover:bg-secondary transition-colors"
                     >
                       <td className="px-3 md:px-6 py-4">
                         <div className="flex items-center gap-2">
-                          <span className="text-lg font-bold text-white">
+                          <span className="text-lg font-bold text-foreground">
                             {player.rank}
                           </span>
                           {getRankBadge(player.rank)}
@@ -222,7 +222,7 @@ export function LeaderboardsPage() {
                             to={`/profile/${player.id}`}
                             className="flex items-center gap-2"
                           >
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-white text-sm font-bold shrink-0">
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-foreground text-sm font-bold shrink-0">
                               {player.avatarUrl ? (
                                 <img
                                   src={player.avatarUrl}
@@ -237,7 +237,7 @@ export function LeaderboardsPage() {
                                 </span>
                               )}
                             </div>
-                            <span className="font-medium text-primary hover:!text-white transition-colors">
+                            <span className="font-medium text-primary hover:!text-foreground transition-colors">
                               {player.displayName || player.username}
                             </span>
                           </Link>
@@ -259,11 +259,11 @@ export function LeaderboardsPage() {
                   : teams.map((team) => (
                     <tr
                       key={team.id}
-                      className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                      className="border-b border-border hover:bg-secondary transition-colors"
                     >
                       <td className="px-3 md:px-6 py-4">
                         <div className="flex items-center gap-2">
-                          <span className="text-lg font-bold text-white">
+                          <span className="text-lg font-bold text-foreground">
                             {team.rank}
                           </span>
                           {getRankBadge(team.rank)}
@@ -271,7 +271,7 @@ export function LeaderboardsPage() {
                       </td>
                       <td className="px-3 md:px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-white text-sm font-bold shrink-0">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-foreground text-sm font-bold shrink-0">
                             {team.logoUrl ? (
                               <img
                                 src={team.logoUrl}
@@ -282,7 +282,7 @@ export function LeaderboardsPage() {
                               <span>{team.name.charAt(0).toUpperCase()}</span>
                             )}
                           </div>
-                          <span className="font-medium text-white">
+                          <span className="font-medium text-foreground">
                             {team.name}
                           </span>
                         </div>

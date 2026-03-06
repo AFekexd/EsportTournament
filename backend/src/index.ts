@@ -112,6 +112,8 @@ app.use('/api/notifications', notificationsRouter);
 app.use('/api/leaderboards', leaderboardsRouter);
 app.use('/api/discord', discordRouter);
 app.use('/api/bookings', bookingsRouter);
+import { supervisorsRouter } from './routes/supervisors.js';
+app.use('/api/supervisors', supervisorsRouter);
 app.use('/api/logs', logsRouter);
 app.use('/api/steam', steamRouter);
 import { changelogRouter } from './routes/changelog.js';

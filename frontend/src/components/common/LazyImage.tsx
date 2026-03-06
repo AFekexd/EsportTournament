@@ -21,8 +21,8 @@ export function LazyImage({ src, alt, className, fallbackText, ...props }: LazyI
 
     if (error || !src) {
         return (
-            <div className={`flex items-center justify-center bg-white/5 ${className}`}>
-                <span className="text-gray-500 font-bold">{fallbackText || alt.charAt(0).toUpperCase()}</span>
+            <div className={`flex items-center justify-center bg-secondary ${className}`}>
+                <span className="text-muted-foreground font-bold">{fallbackText || alt.charAt(0).toUpperCase()}</span>
             </div>
         );
     }
@@ -30,7 +30,7 @@ export function LazyImage({ src, alt, className, fallbackText, ...props }: LazyI
     return (
         <div className={`relative overflow-hidden ${className}`}>
             {!isLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center bg-white/5 animate-pulse">
+                <div className="absolute inset-0 flex items-center justify-center bg-secondary animate-pulse">
                     <Loader2 className="w-6 h-6 text-primary animate-spin opacity-50" />
                 </div>
             )}

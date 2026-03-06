@@ -139,8 +139,8 @@ export function AnnouncementManager() {
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col gap-1">
-        <h2 className="text-xl font-bold text-white flex items-center gap-2">
-          <MessageSquare className="text-blue-500" size={24} />
+        <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+          <MessageSquare className="text-primary" size={24} />
           Bejelentések Kezelése
         </h2>
         <p className="text-sm text-muted-foreground">
@@ -151,18 +151,18 @@ export function AnnouncementManager() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Editor */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-[#161722] border border-white/5 rounded-xl p-6 space-y-4">
+          <div className="bg-[#121A22] border border-border rounded-xl p-6 space-y-4">
             {/* User Search (Only visible if individual) */}
             {recipientType === "individual" && (
               <div className="animate-fade-in relative z-20">
-                <label className="block text-sm font-medium text-gray-400 mb-1.5">
+                <label className="block text-sm font-medium text-muted-foreground mb-1.5">
                   Címzett keresése
                 </label>
 
                 {selectedUser ? (
-                  <div className="flex items-center justify-between p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-primary/20 border border-primary/20 rounded-lg">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+                      <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-foreground font-bold">
                         {selectedUser.avatarUrl ? (
                           <img
                             src={selectedUser.avatarUrl}
@@ -175,17 +175,17 @@ export function AnnouncementManager() {
                         )}
                       </div>
                       <div>
-                        <div className="font-bold text-white">
+                        <div className="font-bold text-foreground">
                           {selectedUser.displayName || selectedUser.username}
                         </div>
-                        <div className="text-xs text-gray-400">
+                        <div className="text-xs text-muted-foreground">
                           {selectedUser.email || selectedUser.username}
                         </div>
                       </div>
                     </div>
                     <button
                       onClick={handleClearUser}
-                      className="p-2 hover:bg-white/10 rounded-full text-gray-400 hover:text-white transition-colors"
+                      className="p-2 hover:bg-secondary/80 rounded-full text-muted-foreground hover:text-foreground transition-colors"
                     >
                       <X size={18} />
                     </button>
@@ -193,7 +193,7 @@ export function AnnouncementManager() {
                 ) : (
                   <div className="relative">
                     <Search
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                       size={18}
                     />
                     <input
@@ -201,22 +201,22 @@ export function AnnouncementManager() {
                       value={userSearch}
                       onChange={(e) => setUserSearch(e.target.value)}
                       placeholder="Keresés név vagy email alapján..."
-                      className="w-full pl-10 pr-4 py-2.5 bg-[#0f1016] border border-white/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-colors"
+                      className="w-full pl-10 pr-4 py-2.5 bg-[#121A22] border border-border rounded-lg text-foreground placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-colors"
                     />
                     {isSearching && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                        <div className="w-4 h-4 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+                        <div className="w-4 h-4 border-2 border-primary/20 border-t-blue-500 rounded-full animate-spin" />
                       </div>
                     )}
 
                     {/* Dropdown Results */}
                     {foundUsers.length > 0 && (
-                      <div className="absolute top-full left-0 right-0 mt-2 bg-[#1a1b26] border border-white/10 rounded-lg shadow-xl overflow-hidden max-h-60 overflow-y-auto">
+                      <div className="absolute top-full left-0 right-0 mt-2 bg-[#121A22] border border-border rounded-lg shadow-xl overflow-hidden max-h-60 overflow-y-auto">
                         {foundUsers.map((user) => (
                           <button
                             key={user.id}
                             onClick={() => handleSelectUser(user)}
-                            className="w-full flex items-center gap-3 p-3 hover:bg-white/5 transition-colors text-left border-b border-white/5 last:border-0"
+                            className="w-full flex items-center gap-3 p-3 hover:bg-secondary transition-colors text-left border-b border-border last:border-0"
                           >
                             <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-gray-300 text-xs shrink-0 overflow-hidden">
                               {user.avatarUrl ? (
@@ -230,10 +230,10 @@ export function AnnouncementManager() {
                               )}
                             </div>
                             <div className="truncate">
-                              <div className="font-medium text-white text-sm">
+                              <div className="font-medium text-foreground text-sm">
                                 {user.displayName || user.username}
                               </div>
-                              <div className="text-xs text-gray-500">
+                              <div className="text-xs text-muted-foreground">
                                 {user.email}
                               </div>
                             </div>
@@ -247,7 +247,7 @@ export function AnnouncementManager() {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1.5">
+              <label className="block text-sm font-medium text-muted-foreground mb-1.5">
                 Üzenet Címe (Opcionális)
               </label>
               <input
@@ -259,13 +259,13 @@ export function AnnouncementManager() {
                     ? "pl. Nyeremény átvétele"
                     : "pl. Verseny Emlékeztető"
                 }
-                className="w-full px-4 py-2.5 bg-[#0f1016] border border-white/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-colors"
+                className="w-full px-4 py-2.5 bg-[#121A22] border border-border rounded-lg text-foreground placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-colors"
                 disabled={isSending}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1.5">
+              <label className="block text-sm font-medium text-muted-foreground mb-1.5">
                 Üzenet Tartalma
               </label>
               <textarea
@@ -273,7 +273,7 @@ export function AnnouncementManager() {
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Írd ide az üzenet szövegét..."
                 rows={recipientType === "individual" ? 5 : 8}
-                className="w-full px-4 py-3 bg-[#0f1016] border border-white/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-colors resize-none"
+                className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-lg text-foreground placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-colors resize-none"
                 disabled={isSending}
               />
             </div>
@@ -282,59 +282,56 @@ export function AnnouncementManager() {
 
         {/* Sidebar Options */}
         <div className="space-y-6">
-          <div className="bg-[#161722] border border-white/5 rounded-xl p-6 space-y-6">
+          <div className="bg-[#121A22] border border-border rounded-xl p-6 space-y-6">
             {/* Recipient Type Selector */}
-            <h3 className="font-semibold text-white flex items-center gap-2">
-              <Users size={18} className="text-purple-400" />
+            <h3 className="font-semibold text-foreground flex items-center gap-2">
+              <Users size={18} className="text-primary" />
               Címzett Típusa
             </h3>
 
-            <div className="grid grid-cols-2 gap-2 p-1 bg-[#0f1016] rounded-lg border border-white/5">
+            <div className="grid grid-cols-2 gap-2 p-1 bg-[#121A22] rounded-lg border border-border">
               <button
                 onClick={() => setRecipientType("broadcast")}
-                className={`flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium transition-all ${
-                  recipientType === "broadcast"
-                    ? "bg-purple-500 text-white shadow-lg"
-                    : "text-gray-400 hover:text-white"
-                }`}
+                className={`flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium transition-all ${recipientType === "broadcast"
+                    ? "bg-purple-500 text-foreground shadow-lg"
+                    : "text-muted-foreground hover:text-foreground"
+                  }`}
               >
                 <MessageSquare size={14} />
                 Mindenki
               </button>
               <button
                 onClick={() => setRecipientType("individual")}
-                className={`flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium transition-all ${
-                  recipientType === "individual"
-                    ? "bg-blue-500 text-white shadow-lg"
-                    : "text-gray-400 hover:text-white"
-                }`}
+                className={`flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium transition-all ${recipientType === "individual"
+                    ? "bg-blue-500 text-foreground shadow-lg"
+                    : "text-muted-foreground hover:text-foreground"
+                  }`}
               >
                 <User size={14} />
                 Egyéni
               </button>
             </div>
 
-            <div className="h-px bg-white/5" />
+            <div className="h-px bg-secondary" />
 
             {/* Target Channel Selector */}
-            <h3 className="font-semibold text-white flex items-center gap-2">
-              <Send size={18} className="text-blue-400" />
+            <h3 className="font-semibold text-foreground flex items-center gap-2">
+              <Send size={18} className="text-primary" />
               Küldési Csatorna
             </h3>
 
             <div className="space-y-3">
               <button
                 onClick={() => setTargetChannel("discord")}
-                className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${
-                  targetChannel === "discord"
-                    ? "bg-blue-500/10 border-blue-500/50 text-white"
-                    : "bg-[#0f1016] border-white/5 text-gray-400 hover:bg-white/5"
-                }`}
+                className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${targetChannel === "discord"
+                    ? "bg-primary/20 border-blue-500/50 text-foreground"
+                    : "bg-[#121A22] border-border text-muted-foreground hover:bg-secondary"
+                  }`}
               >
                 <div
                   className={`p-2 rounded-full ${targetChannel === "discord" ? "bg-blue-500" : "bg-gray-800"}`}
                 >
-                  <MessageSquare size={16} className="text-white" />
+                  <MessageSquare size={16} className="text-foreground" />
                 </div>
                 <div className="text-left">
                   <div className="font-medium">Discord</div>
@@ -348,16 +345,15 @@ export function AnnouncementManager() {
 
               <button
                 onClick={() => setTargetChannel("email")}
-                className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${
-                  targetChannel === "email"
-                    ? "bg-emerald-500/10 border-emerald-500/50 text-white"
-                    : "bg-[#0f1016] border-white/5 text-gray-400 hover:bg-white/5"
-                }`}
+                className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${targetChannel === "email"
+                    ? "bg-emerald-500/10 border-emerald-500/50 text-foreground"
+                    : "bg-[#121A22] border-border text-muted-foreground hover:bg-secondary"
+                  }`}
               >
                 <div
                   className={`p-2 rounded-full ${targetChannel === "email" ? "bg-emerald-500" : "bg-gray-800"}`}
                 >
-                  <Mail size={16} className="text-white" />
+                  <Mail size={16} className="text-foreground" />
                 </div>
                 <div className="text-left">
                   <div className="font-medium">Email</div>
@@ -367,16 +363,15 @@ export function AnnouncementManager() {
 
               <button
                 onClick={() => setTargetChannel("both")}
-                className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${
-                  targetChannel === "both"
-                    ? "bg-purple-500/10 border-purple-500/50 text-white"
-                    : "bg-[#0f1016] border-white/5 text-gray-400 hover:bg-white/5"
-                }`}
+                className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${targetChannel === "both"
+                    ? "bg-primary/20 border-purple-500/50 text-foreground"
+                    : "bg-[#121A22] border-border text-muted-foreground hover:bg-secondary"
+                  }`}
               >
                 <div
                   className={`p-2 rounded-full ${targetChannel === "both" ? "bg-purple-500" : "bg-gray-800"}`}
                 >
-                  <Send size={16} className="text-white" />
+                  <Send size={16} className="text-foreground" />
                 </div>
                 <div className="text-left">
                   <div className="font-medium">Mindkettő</div>
@@ -385,7 +380,7 @@ export function AnnouncementManager() {
               </button>
             </div>
 
-            <div className="pt-4 border-t border-white/5">
+            <div className="pt-4 border-t border-border">
               <button
                 onClick={handleSend}
                 disabled={
@@ -393,11 +388,11 @@ export function AnnouncementManager() {
                   !message.trim() ||
                   (recipientType === "individual" && !selectedUser)
                 }
-                className="w-full py-3 px-4 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+                className="w-full py-3 px-4 bg-primary text-foreground font-bold rounded-lg hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
               >
                 {isSending ? (
                   <>
-                    <span className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                    <span className="w-5 h-5 border-2 border-border border-t-white rounded-full animate-spin" />
                     Küldés...
                   </>
                 ) : (

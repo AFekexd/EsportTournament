@@ -17,11 +17,11 @@ import type { Tournament, Game } from "../types";
 const statusLabels: Record<string, { label: string; colors: string }> = {
   DRAFT: {
     label: "Tervezet",
-    colors: "bg-gray-500/60 text-gray-400 border-gray-500/20 !text-white",
+    colors: "bg-gray-500/60 text-muted-foreground border-gray-500/20 !text-foreground",
   },
   REGISTRATION: {
     label: "Regisztráció",
-    colors: "bg-green-500/60 text-green-400 border-green-500/20 !text-white",
+    colors: "bg-green-500/60 text-green-400 border-green-500/20 !text-foreground",
   },
   IN_PROGRESS: {
     label: "Folyamatban",
@@ -30,11 +30,11 @@ const statusLabels: Record<string, { label: string; colors: string }> = {
   },
   COMPLETED: {
     label: "Befejezett",
-    colors: "bg-primary/80 text-primary border-primary/20 !text-white",
+    colors: "bg-primary/80 text-primary border-primary/20 !text-foreground",
   },
   CANCELLED: {
     label: "Törölve",
-    colors: "bg-red-500/60 text-red-400 border-red-500/20 !text-white",
+    colors: "bg-red-500/60 text-red-400 border-red-500/20 !text-foreground",
   },
 };
 
@@ -61,10 +61,10 @@ function TournamentCard({ tournament }: { tournament: Tournament }) {
   return (
     <Link
       to={`/tournaments/${tournament.id}`}
-      className="group relative flex flex-col bg-[#1a1b26] rounded-xl overflow-hidden border border-white/5 shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-primary/50 hover:-translate-y-1"
+      className="group relative flex flex-col bg-[#121A22] rounded-xl overflow-hidden border border-border shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-primary/50 hover:-translate-y-1"
     >
       {/* Game Image Header */}
-      <div className="relative w-full h-48 overflow-hidden bg-[#0f1015]">
+      <div className="relative w-full h-48 overflow-hidden bg-[#121A22]">
         {tournament.imageUrl || tournament.game?.imageUrl ? (
           <BlurImage
             src={tournament.imageUrl || tournament.game?.imageUrl}
@@ -79,11 +79,11 @@ function TournamentCard({ tournament }: { tournament: Tournament }) {
         )}
 
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1a1b26] via-transparent to-transparent opacity-90" />
+        <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent opacity-90" />
 
         {/* Team Size Badge */}
-        <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 shadow-lg z-10">
-          <span className="text-xs font-bold text-white tracking-wider flex items-center gap-1">
+        <div className="absolute top-3 left-3 bg-secondary backdrop-blur-md px-3 py-1 rounded-full border border-border shadow-lg z-10">
+          <span className="text-xs font-bold text-foreground tracking-wider flex items-center gap-1">
             <Users size={12} className="text-primary" />
             {teamSizeLabels[teamSize] || `${teamSize}v${teamSize}`}
           </span>
@@ -99,8 +99,8 @@ function TournamentCard({ tournament }: { tournament: Tournament }) {
         </div>
 
         {/* Game Name Badge */}
-        <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10">
-          <span className="text-xs font-bold text-white">
+        <div className="absolute bottom-3 left-3 bg-secondary backdrop-blur-md px-3 py-1.5 rounded-lg border border-border">
+          <span className="text-xs font-bold text-foreground">
             {tournament.game?.name}
           </span>
         </div>
@@ -108,34 +108,34 @@ function TournamentCard({ tournament }: { tournament: Tournament }) {
 
       {/* Content */}
       <div className="relative p-5 flex flex-col flex-grow">
-        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors line-clamp-1">
+        <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-1">
           {tournament.name}
         </h3>
 
         {tournament.description && (
-          <p className="text-sm text-gray-400 mb-4 line-clamp-2 leading-relaxed">
+          <p className="text-sm text-muted-foreground mb-4 line-clamp-2 leading-relaxed">
             {tournament.description}
           </p>
         )}
 
         {/* Meta Info */}
-        <div className="grid grid-cols-2 gap-3 mb-4 pb-4 border-t border-white/5 pt-4">
+        <div className="grid grid-cols-2 gap-3 mb-4 pb-4 border-t border-border pt-4">
           <div className="flex items-center gap-2">
             <Calendar size={16} className="text-primary" />
             <div>
-              <p className="text-xs text-gray-500">Kezdés</p>
-              <p className="text-xs font-medium text-white">
+              <p className="text-xs text-muted-foreground">Kezdés</p>
+              <p className="text-xs font-medium text-foreground">
                 {startDate.toLocaleDateString("hu-HU")}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Users size={16} className="text-blue-400" />
+            <Users size={16} className="text-primary" />
             <div>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 {teamSize === 1 ? "Játékosok" : "Csapatok"}
               </p>
-              <p className="text-xs font-medium text-white">
+              <p className="text-xs font-medium text-foreground">
                 {tournament._count?.entries || 0} / {tournament.maxTeams}
               </p>
             </div>
@@ -145,7 +145,7 @@ function TournamentCard({ tournament }: { tournament: Tournament }) {
         {/* Footer */}
         <div className="mt-auto flex flex-col gap-2">
           <div className="flex justify-between items-center text-xs">
-            <span className="px-2 py-1 bg-white/5 rounded text-gray-400 font-medium">
+            <span className="px-2 py-1 bg-secondary rounded text-muted-foreground font-medium">
               {formatLabels[tournament.format]}
             </span>
             {tournament.status === "REGISTRATION" && (
@@ -204,7 +204,7 @@ export function TournamentsPage() {
         <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-white via-primary-100 to-gray-400 bg-clip-text text-transparent mb-4">
           Versenyek
         </h1>
-        <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Böngészd a közelgő és folyamatban lévő versenyeket, és mutasd meg a
           tudásod!
         </p>
@@ -217,14 +217,14 @@ export function TournamentsPage() {
           <div className="relative flex items-center">
             <Search
               size={18}
-              className="absolute right-4 text-gray-500 pointer-events-none z-10"
+              className="absolute right-4 text-muted-foreground pointer-events-none z-10"
             />
             <input
               type="text"
               placeholder="Keresés versenyek között..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-[#1a1b26] border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full pl-12 pr-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
             />
           </div>
         </div>
@@ -234,12 +234,12 @@ export function TournamentsPage() {
           <div className="relative">
             <Filter
               size={16}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
             />
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full sm:w-auto pl-4 pr-10 py-3 bg-[#1a1b26] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer min-w-[170px]"
+              className="w-full sm:w-auto pl-4 pr-10 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer min-w-[170px]"
             >
               <option value="">Minden státusz</option>
               <option value="REGISTRATION">Regisztráció</option>
@@ -251,7 +251,7 @@ export function TournamentsPage() {
           <select
             value={teamSizeFilter}
             onChange={(e) => setTeamSizeFilter(e.target.value)}
-            className="w-full sm:w-auto px-4 py-3 bg-[#1a1b26] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer"
+            className="w-full sm:w-auto px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer"
           >
             <option value="">Minden méret</option>
             <option value="1">1v1</option>
@@ -263,7 +263,7 @@ export function TournamentsPage() {
           <select
             value={gameFilter}
             onChange={(e) => setGameFilter(e.target.value)}
-            className="w-full sm:w-auto px-4 py-3 bg-[#1a1b26] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer"
+            className="w-full sm:w-auto px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer"
           >
             <option value="">Minden játék</option>
             {games.map((game: Game) => (
@@ -281,27 +281,27 @@ export function TournamentsPage() {
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
-              className="bg-[#1a1b26] rounded-xl overflow-hidden border border-white/5 h-[320px] animate-pulse"
+              className="bg-[#121A22] rounded-xl overflow-hidden border border-border h-[320px] animate-pulse"
             >
-              <div className="h-16 bg-white/5" />
+              <div className="h-16 bg-secondary" />
               <div className="p-6 space-y-4">
-                <div className="h-6 w-2/3 bg-white/5 rounded" />
-                <div className="h-4 w-full bg-white/5 rounded" />
-                <div className="h-4 w-5/6 bg-white/5 rounded" />
+                <div className="h-6 w-2/3 bg-secondary rounded" />
+                <div className="h-4 w-full bg-secondary rounded" />
+                <div className="h-4 w-5/6 bg-secondary rounded" />
                 <div className="pt-4 flex gap-4">
-                  <div className="h-10 w-full bg-white/5 rounded" />
+                  <div className="h-10 w-full bg-secondary rounded" />
                 </div>
               </div>
             </div>
           ))}
         </div>
       ) : filteredTournaments.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-[#1a1b26]/50 rounded-2xl border border-white/5">
-          <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6">
-            <Trophy size={40} className="text-gray-500" />
+        <div className="flex flex-col items-center justify-center py-20 bg-[#121A22]/50 rounded-2xl border border-border">
+          <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mb-6">
+            <Trophy size={40} className="text-muted-foreground" />
           </div>
-          <h3 className="text-xl font-bold text-white mb-2">Nincs találat</h3>
-          <p className="text-gray-400">
+          <h3 className="text-xl font-bold text-foreground mb-2">Nincs találat</h3>
+          <p className="text-muted-foreground">
             Próbálj más szűrőket vagy keresési feltételeket.
           </p>
         </div>
@@ -320,8 +320,8 @@ export function TournamentsPage() {
             <button
               key={i}
               className={`px-4 py-2 rounded-lg font-medium transition-all ${pagination.page === i + 1
-                ? "bg-primary text-white shadow-lg shadow-primary/20"
-                : "bg-[#1a1b26] text-gray-400 hover:bg-[#0f1015] hover:text-white border border-white/10"
+                ? "bg-primary text-foreground shadow-lg shadow-primary/20"
+                : "bg-[#121A22] text-muted-foreground hover:bg-[#121A22] hover:text-foreground border border-border"
                 }`}
               onClick={() =>
                 dispatch(

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { Calendar, Check } from 'lucide-react';
+import { format } from 'date-fns';
 import type { Booking, BookingSchedule } from '../../store/slices/bookingsSlice';
 
 interface DayCalendarStripProps {
@@ -41,7 +42,7 @@ export function DayCalendarStrip({
     for (let i = 0; i < 14; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
-      const dateStr = date.toISOString().split('T')[0];
+      const dateStr = format(date, 'yyyy-MM-dd');
       const dayOfWeek = date.getDay();
 
       // Find schedule for this day
@@ -56,7 +57,7 @@ export function DayCalendarStrip({
 
         // Filter bookings for this specific date
         const dayBookings = bookings.filter(b => {
-          const bookingDate = b.date || new Date(b.startTime).toISOString().split('T')[0];
+          const bookingDate = b.date || format(new Date(b.startTime), 'yyyy-MM-dd');
           return bookingDate === dateStr;
         });
 
@@ -118,7 +119,7 @@ export function DayCalendarStrip({
       closed: {
         bg: 'bg-gray-800/50',
         border: 'border-gray-700/30',
-        text: 'text-gray-500',
+        text: 'text-muted-foreground',
         label: 'Zárva',
       },
     };
@@ -126,7 +127,7 @@ export function DayCalendarStrip({
   };
 
   return (
-    <div className="bg-[#1a1b26] rounded-2xl border border-white/5 p-5">
+    <div className="bg-[#121A22] rounded-2xl border border-border p-5">
       {/* Header with legend */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
         <div className="flex items-center gap-2">
@@ -134,8 +135,8 @@ export function DayCalendarStrip({
             <Calendar size={18} className="text-primary" />
           </div>
           <div>
-            <h3 className="text-base font-semibold text-white">Válassz napot</h3>
-            <p className="text-xs text-gray-500">Következő 14 nap</p>
+            <h3 className="text-base font-semibold text-foreground">Válassz napot</h3>
+            <p className="text-xs text-muted-foreground">Következő 14 nap</p>
           </div>
         </div>
 
@@ -180,7 +181,7 @@ export function DayCalendarStrip({
             >
               {/* Today indicator */}
               {day.isToday && (
-                <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-primary text-[9px] font-bold text-white rounded-full uppercase tracking-wide">
+                <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-primary text-[9px] font-bold text-foreground rounded-full uppercase tracking-wide">
                   Ma
                 </div>
               )}
@@ -188,22 +189,22 @@ export function DayCalendarStrip({
               {/* Selected checkmark */}
               {day.isSelected && (
                 <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center shadow-lg">
-                  <Check size={12} className="text-white" />
+                  <Check size={12} className="text-foreground" />
                 </div>
               )}
 
               {/* Day name */}
-              <div className={`text-xs font-medium mb-0.5 ${day.isSelected ? 'text-white' : 'text-gray-400'}`}>
+              <div className={`text-xs font-medium mb-0.5 ${day.isSelected ? 'text-foreground' : 'text-muted-foreground'}`}>
                 {day.dayName}
               </div>
 
               {/* Day number */}
-              <div className={`text-2xl font-bold ${day.isSelected ? 'text-white' : 'text-gray-200'}`}>
+              <div className={`text-2xl font-bold ${day.isSelected ? 'text-foreground' : 'text-gray-200'}`}>
                 {day.dayNumber}
               </div>
 
               {/* Month */}
-              <div className={`text-[10px] uppercase tracking-wider mb-1 ${day.isSelected ? 'text-gray-300' : 'text-gray-500'}`}>
+              <div className={`text-[10px] uppercase tracking-wider mb-1 ${day.isSelected ? 'text-gray-300' : 'text-muted-foreground'}`}>
                 {day.monthName}
               </div>
 

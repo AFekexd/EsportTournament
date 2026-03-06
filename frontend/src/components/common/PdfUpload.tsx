@@ -105,11 +105,10 @@ export function PdfUpload({
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
-            className={`relative border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
-              isDragging
+            className={`relative border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${isDragging
                 ? "border-primary bg-primary/10"
-                : "border-white/20 hover:border-primary/50 bg-[#0f1015]"
-            }`}
+                : "border-border hover:border-primary/50 bg-[#121A22]"
+              }`}
           >
             <input
               ref={fileInputRef}
@@ -118,31 +117,31 @@ export function PdfUpload({
               onChange={handleFileChange}
               className="hidden"
             />
-            <FileText size={32} className="mx-auto mb-3 text-gray-500" />
-            <p className="text-white font-medium mb-1">
+            <FileText size={32} className="mx-auto mb-3 text-muted-foreground" />
+            <p className="text-foreground font-medium mb-1">
               Kattints vagy húzd ide a PDF-et
             </p>
-            <p className="text-sm text-gray-400">Max {maxSizeMB}MB</p>
+            <p className="text-sm text-muted-foreground">Max {maxSizeMB}MB</p>
           </div>
           {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
         </>
       ) : (
-        <div className="relative bg-[#0f1015] border border-white/10 rounded-xl p-4 flex items-center justify-between group">
+        <div className="relative bg-[#121A22] border border-border rounded-xl p-4 flex items-center justify-between group">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-red-500/10 rounded-lg text-red-500">
               <FileText size={24} />
             </div>
             <div>
-              <p className="text-white font-medium text-sm">
+              <p className="text-foreground font-medium text-sm">
                 Feltöltött PDF szabályzat
               </p>
-              <p className="text-xs text-gray-500">{getSize()} MB</p>
+              <p className="text-xs text-muted-foreground">{getSize()} MB</p>
             </div>
           </div>
           <button
             type="button"
             onClick={handleClear}
-            className="p-2 hover:bg-white/10 text-gray-400 hover:text-red-400 rounded-lg transition-colors"
+            className="p-2 hover:bg-secondary/80 text-muted-foreground hover:text-red-400 rounded-lg transition-colors"
             title="Törlés"
           >
             <Trash2 size={18} />

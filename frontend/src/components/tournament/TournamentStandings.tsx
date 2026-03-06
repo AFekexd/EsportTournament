@@ -127,8 +127,8 @@ export function TournamentStandings({
               type === "home" && match.winnerId === match.homeTeamId
                 ? "font-bold text-primary"
                 : type === "away" && match.winnerId === match.awayTeamId
-                ? "font-bold text-primary"
-                : ""
+                  ? "font-bold text-primary"
+                  : ""
             }
           >
             {team?.name || "Ismeretlen"}
@@ -154,8 +154,8 @@ export function TournamentStandings({
               type === "home" && match.winnerUserId === match.homeUserId
                 ? "font-bold text-primary"
                 : type === "away" && match.winnerUserId === match.awayUserId
-                ? "font-bold text-primary"
-                : ""
+                  ? "font-bold text-primary"
+                  : ""
             }
           >
             {user?.displayName || user?.username || "Ismeretlen"}
@@ -169,25 +169,23 @@ export function TournamentStandings({
     <div className="space-y-6">
       {/* Custom Tabs Implementation */}
       <div className="w-full">
-        <div className="grid w-full grid-cols-2 bg-[#1a1b26] border border-white/5 rounded-lg p-1">
+        <div className="grid w-full grid-cols-2 bg-[#121A22] border border-border rounded-lg p-1">
           <button
             onClick={() => setActiveTab("standings")}
-            className={`flex items-center justify-center py-2 text-sm font-medium rounded-md transition-all ${
-              activeTab === "standings"
+            className={`flex items-center justify-center py-2 text-sm font-medium rounded-md transition-all ${activeTab === "standings"
                 ? "bg-primary text-black shadow-sm"
-                : "text-gray-400 hover:text-white hover:bg-white/5"
-            }`}
+                : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+              }`}
           >
             <Trophy className="mr-2 h-4 w-4" />
             Tabella
           </button>
           <button
             onClick={() => setActiveTab("matches")}
-            className={`flex items-center justify-center py-2 text-sm font-medium rounded-md transition-all ${
-              activeTab === "matches"
+            className={`flex items-center justify-center py-2 text-sm font-medium rounded-md transition-all ${activeTab === "matches"
                 ? "bg-primary text-black shadow-sm"
-                : "text-gray-400 hover:text-white hover:bg-white/5"
-            }`}
+                : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+              }`}
           >
             <Swords className="mr-2 h-4 w-4" />
             Mérkőzések
@@ -196,9 +194,9 @@ export function TournamentStandings({
 
         <div className="mt-6">
           {activeTab === "standings" && (
-            <Card className="border-white/5 bg-[#1a1b26] shadow-xl">
+            <Card className="border-border bg-[#121A22] shadow-xl">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
+                <CardTitle className="text-foreground flex items-center gap-2">
                   <Trophy className="h-5 w-5 text-primary" />
                   Bajnoki Tabella
                 </CardTitle>
@@ -207,23 +205,23 @@ export function TournamentStandings({
                 <div className="relative w-full overflow-auto">
                   <table className="w-full caption-bottom text-sm">
                     <thead className="[&_tr]:border-b">
-                      <tr className="border-white/5 hover:bg-transparent transition-colors data-[state=selected]:bg-muted">
-                        <th className="h-12 px-4 text-left align-middle font-medium text-gray-400 w-[50px]">
+                      <tr className="border-border hover:bg-transparent transition-colors data-[state=selected]:bg-muted">
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground w-[50px]">
                           #
                         </th>
-                        <th className="h-12 px-4 text-left align-middle font-medium text-gray-400">
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
                           Résztvevő
                         </th>
-                        <th className="h-12 px-4 text-center align-middle font-medium text-gray-400">
+                        <th className="h-12 px-4 text-center align-middle font-medium text-muted-foreground">
                           M
                         </th>
-                        <th className="h-12 px-4 text-center align-middle font-medium text-gray-400">
+                        <th className="h-12 px-4 text-center align-middle font-medium text-muted-foreground">
                           GY
                         </th>
-                        <th className="h-12 px-4 text-center align-middle font-medium text-gray-400">
+                        <th className="h-12 px-4 text-center align-middle font-medium text-muted-foreground">
                           D
                         </th>
-                        <th className="h-12 px-4 text-center align-middle font-medium text-gray-400">
+                        <th className="h-12 px-4 text-center align-middle font-medium text-muted-foreground">
                           V
                         </th>
                         <th className="h-12 px-4 text-center align-middle font-bold text-primary">
@@ -235,9 +233,9 @@ export function TournamentStandings({
                       {standings.map((team, index) => (
                         <tr
                           key={team.id}
-                          className="border-b border-white/5 hover:bg-white/5 transition-colors data-[state=selected]:bg-muted"
+                          className="border-b border-border hover:bg-secondary transition-colors data-[state=selected]:bg-muted"
                         >
-                          <td className="p-4 align-middle font-medium text-white">
+                          <td className="p-4 align-middle font-medium text-foreground">
                             {index + 1}.
                           </td>
                           <td className="p-4 align-middle">
@@ -253,7 +251,7 @@ export function TournamentStandings({
                                   {team.name.charAt(0)}
                                 </div>
                               )}
-                              <span className="font-semibold text-white">
+                              <span className="font-semibold text-foreground">
                                 {team.name}
                               </span>
                             </div>
@@ -279,7 +277,7 @@ export function TournamentStandings({
                         <tr>
                           <td
                             colSpan={7}
-                            className="p-4 align-middle h-24 text-center text-gray-400"
+                            className="p-4 align-middle h-24 text-center text-muted-foreground"
                           >
                             Nincsenek adatok
                           </td>
@@ -293,9 +291,9 @@ export function TournamentStandings({
           )}
 
           {activeTab === "matches" && (
-            <Card className="border-white/5 bg-[#1a1b26] shadow-xl">
+            <Card className="border-border bg-[#121A22] shadow-xl">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
+                <CardTitle className="text-foreground flex items-center gap-2">
                   <Swords className="h-5 w-5 text-primary" />
                   Mérkőzések
                 </CardTitle>
@@ -307,28 +305,26 @@ export function TournamentStandings({
                       <div
                         key={match.id}
                         onClick={() => onMatchClick?.(match)}
-                        className={`flex items-center justify-between p-4 rounded-lg bg-black/20 border border-white/5 hover:border-primary/30 transition-all ${
-                          onMatchClick ? "cursor-pointer hover:bg-white/5" : ""
-                        }`}
+                        className={`flex items-center justify-between p-4 rounded-lg bg-secondary border border-border hover:border-primary/30 transition-all ${onMatchClick ? "cursor-pointer hover:bg-secondary" : ""
+                          }`}
                       >
                         <div className="flex items-center gap-4 flex-1 justify-end text-right">
                           <span
-                            className={`text-white font-medium ${
-                              match.winnerId === match.homeTeamId ||
-                              match.winnerUserId === match.homeUserId
+                            className={`text-foreground font-medium ${match.winnerId === match.homeTeamId ||
+                                match.winnerUserId === match.homeUserId
                                 ? "text-green-400"
                                 : ""
-                            }`}
+                              }`}
                           >
                             {getParticipantDisplay("home", match)}
                           </span>
                         </div>
 
                         <div className="flex flex-col items-center px-6 min-w-[100px]">
-                          <div className="text-2xl font-bold text-white tracking-widest bg-black/40 px-3 py-1 rounded border border-white/10">
+                          <div className="text-2xl font-bold text-foreground tracking-widest bg-secondary px-3 py-1 rounded border border-border">
                             {match.homeScore ?? "-"} : {match.awayScore ?? "-"}
                           </div>
-                          <div className="text-xs text-gray-500 mt-1 uppercase tracking-wider">
+                          <div className="text-xs text-muted-foreground mt-1 uppercase tracking-wider">
                             {match.status === "COMPLETED"
                               ? "Vége"
                               : "Folyamatban"}
@@ -337,12 +333,11 @@ export function TournamentStandings({
 
                         <div className="flex items-center gap-4 flex-1 justify-start">
                           <span
-                            className={`text-white font-medium ${
-                              match.winnerId === match.awayTeamId ||
-                              match.winnerUserId === match.awayUserId
+                            className={`text-foreground font-medium ${match.winnerId === match.awayTeamId ||
+                                match.winnerUserId === match.awayUserId
                                 ? "text-green-400"
                                 : ""
-                            }`}
+                              }`}
                           >
                             {getParticipantDisplay("away", match)}
                           </span>
@@ -350,7 +345,7 @@ export function TournamentStandings({
                       </div>
                     ))
                   ) : (
-                    <div className="text-center py-12 text-gray-500">
+                    <div className="text-center py-12 text-muted-foreground">
                       Még nincsenek generált mérkőzések.
                     </div>
                   )}

@@ -6,9 +6,13 @@ import {
   fetchWeeklyBookings,
   type Booking,
   type Computer,
+  type BookingSupervisor,
 } from "../../store/slices/bookingsSlice";
 import { useAuth } from "../../hooks/useAuth";
+import { format } from "date-fns";
 import "./WeeklyCalendar.css";
+import { assignSupervisor } from "../../store/slices/bookingsSlice";
+import { toast } from "sonner";
 
 interface WeeklyCalendarProps {
   onSlotClick?: (
@@ -18,6 +22,7 @@ interface WeeklyCalendarProps {
     minute: number
   ) => void;
   onBookingClick?: (booking: Booking) => void;
+  supervisors?: BookingSupervisor[];
 }
 
 export function WeeklyCalendar({
@@ -26,7 +31,7 @@ export function WeeklyCalendar({
 }: WeeklyCalendarProps) {
   const dispatch = useAppDispatch();
   const { user } = useAuth();
-  const { computers, weeklyBookings, schedules, selectedWeekStart, isLoading } =
+  const { computers, weeklyBookings, schedules, supervisors, selectedWeekStart, isLoading } =
     useAppSelector((state) => state.bookings);
 
   const [selectedComputerId, setSelectedComputerId] = useState<string>("all");
@@ -51,10 +56,10 @@ export function WeeklyCalendar({
 
     for (let i = 0; i < 7; i++) {
       const d = new Date(start);
-      d.setUTCDate(d.getUTCDate() + i);
+      d.setDate(start.getDate() + i);
       days.push({
         date: d,
-        dateStr: d.toISOString().split("T")[0],
+        dateStr: format(d, "yyyy-MM-dd"),
         dayName: dayNames[d.getDay()],
       });
     }
@@ -174,9 +179,9 @@ export function WeeklyCalendar({
         </div>
 
         <div className="flex items-center gap-2 ml-4">
-          <Filter size={16} className="text-gray-400" />
+          <Filter size={16} className="text-muted-foreground" />
           <select
-            className="bg-[#0f1015] border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-primary"
+            className="bg-[#121A22] border border-border rounded-lg px-3 py-1.5 text-sm text-foreground focus:outline-none focus:border-primary"
             value={selectedComputerId}
             onChange={(e) => setSelectedComputerId(e.target.value)}
           >
@@ -205,155 +210,259 @@ export function WeeklyCalendar({
           ))}
         </div>
 
-        {/* Computer Rows */}
-        {filteredComputers.map((computer) => (
-          <div key={computer.id} className="computer-section">
-            <div className="computer-label">
-              <Monitor size={14} />
-              <span>{computer.name}</span>
-            </div>
-
-            {timeSlots.map((hour) => (
-              <div key={hour} className="contents">
-                {/*  Render :00 slot */}
-                <div className="time-row">
-                  <div className="grid-cell time-cell">{hour}:00</div>
-                  {weekDays.map((day) => {
-                    const booking = getBookingForSlot(
-                      computer.id,
-                      day.dateStr,
-                      hour,
-                      0
-                    );
-                    const isActive = isScheduleActive(
-                      day.date.getDay(),
-                      hour,
-                      0
-                    );
-                    const slotTime = new Date(day.dateStr);
-                    slotTime.setHours(hour, 0, 0, 0);
-                    const now = new Date();
-                    const isPast = slotTime < now && !booking;
-                    const isOwn = booking?.userId === user?.id;
-
-                    let cellClass = "grid-cell slot-cell h-8"; // Reduced height for granular view
-                    if (!isActive) cellClass += " inactive";
-                    else if (booking)
-                      cellClass += isOwn ? " own-booking" : " booked";
-                    else if (isPast) cellClass += " past inactive";
-                    else cellClass += " available";
-
-                    return (
-                      <div
-                        key={`${day.dateStr}-${hour}-00`}
-                        className={cellClass}
-                        onClick={() => {
-                          if (booking && onBookingClick) {
-                            onBookingClick(booking);
-                          } else if (
-                            !booking &&
-                            isActive &&
-                            !isPast &&
-                            onSlotClick
-                          ) {
-                            onSlotClick(computer, day.dateStr, hour, 0);
-                          }
-                        }}
-                        title={
-                          booking
-                            ? `Foglalta: ${booking.user?.displayName ||
-                            booking.user?.username
-                            }`
-                            : !isActive
-                              ? "Nem elérhető"
-                              : isPast
-                                ? "Múltbeli időpont"
-                                : "Szabad (1. félidő)"
-                        }
-                      >
-                        {booking && (
-                          <span className="booking-indicator text-xs">
-                            {isOwn ? "✓" : "●"}
-                          </span>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Render :30 slot */}
-                <div className="time-row">
-                  <div className="grid-cell time-cell text-xs text-gray-500">
-                    {hour}:30
-                  </div>
-                  {weekDays.map((day) => {
-                    const booking = getBookingForSlot(
-                      computer.id,
-                      day.dateStr,
-                      hour,
-                      30
-                    );
-                    const isActive = isScheduleActive(
-                      day.date.getDay(),
-                      hour,
-                      30
-                    );
-                    const slotTime = new Date(day.dateStr);
-                    slotTime.setHours(hour, 30, 0, 0);
-                    const now = new Date();
-                    const isPast = slotTime < now && !booking;
-                    const isOwn = booking?.userId === user?.id;
-
-                    let cellClass =
-                      "grid-cell slot-cell h-8 border-t border-white/5"; // subtle border
-                    if (!isActive) cellClass += " inactive";
-                    else if (booking)
-                      cellClass += isOwn ? " own-booking" : " booked";
-                    else if (isPast) cellClass += " past inactive";
-                    else cellClass += " available";
-
-                    return (
-                      <div
-                        key={`${day.dateStr}-${hour}-30`}
-                        className={cellClass}
-                        onClick={() => {
-                          if (booking && onBookingClick) {
-                            onBookingClick(booking);
-                          } else if (
-                            !booking &&
-                            isActive &&
-                            !isPast &&
-                            onSlotClick
-                          ) {
-                            onSlotClick(computer, day.dateStr, hour, 30);
-                          }
-                        }}
-                        title={
-                          booking
-                            ? `Foglalta: ${booking.user?.displayName ||
-                            booking.user?.username
-                            }`
-                            : !isActive
-                              ? "Nem elérhető"
-                              : isPast
-                                ? "Múltbeli időpont"
-                                : "Szabad (2. félidő)"
-                        }
-                      >
-                        {booking && (
-                          <span className="booking-indicator text-xs">
-                            {isOwn ? "✓" : "●"}
-                          </span>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
+        {/* Supervisor Row */}
+        <div className="computer-section supervisor-section">
+          <div className="computer-label text-yellow-500">
+            <Monitor size={14} className="text-yellow-500" />
+            <span>Felelős</span>
           </div>
-        ))}
-      </div>
+
+          {timeSlots.map((hour) => (
+            <div key={`sup-hour-${hour}`} className="contents">
+              <div className="time-row">
+                <div className="grid-cell time-cell bg-yellow-500/10 text-yellow-500">{hour}:00</div>
+                {weekDays.map((day) => {
+                  const isActive = isScheduleActive(day.date.getDay(), hour, 0);
+                  const supervisor = supervisors.find(s => {
+                    return new Date(s.date).toDateString() === new Date(day.dateStr).toDateString() && s.hour === hour;
+                  });
+
+                  // Parse date string in local timezone
+                  const [year, month, d] = day.dateStr.split('-').map(Number);
+                  const slotTime = new Date();
+                  slotTime.setFullYear(year, month - 1, d);
+                  slotTime.setHours(hour, 0, 0, 0);
+                  const now = new Date();
+                  const isPast = slotTime < now;
+
+                  const canSupervise = isActive && !isPast && !supervisor;
+                  const isMySupervision = user && supervisor?.userId === user.id;
+
+                  return (
+                    <div
+                      key={`sup-${day.dateStr}-${hour}`}
+                      className={`grid-cell slot-cell h-8 border-b-0 flex items-center justify-center
+                        ${!isActive ? 'inactive' : isPast ? 'past inactive' : ''}
+                        ${isMySupervision ? 'bg-yellow-500/20 text-yellow-500' : supervisor ? 'bg-card/50 text-muted-foreground' : ''}
+                      `}
+                    >
+                      {supervisor ? (
+                        <span className="text-xs font-medium px-1 truncate w-full text-center" title={supervisor.user?.displayName || supervisor.user?.username}>
+                          {isMySupervision ? "Én" : (supervisor.user?.displayName || supervisor.user?.username)}
+                        </span>
+                      ) : (canSupervise && user && user.role !== "ADMIN") ? (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            dispatch(assignSupervisor({
+                              date: day.dateStr,
+                              hour: hour
+                            }))
+                              .unwrap()
+                              .then(() => toast.success("Sikeresen vállaltad a felelősséget!"))
+                              .catch((err) => toast.error(err.message || "Hiba történt a felelősség vállalásakor"));
+                          }}
+                          className="w-full h-full text-[10px] font-bold text-yellow-500/70 hover:text-yellow-500 hover:bg-yellow-500/10 transition-colors uppercase tracking-wider"
+                        >
+                          Jelentkezem
+                        </button>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
+              {/* Visual filler for the :30 half-hour row so the grid aligns */}
+              <div className="time-row">
+                <div className="grid-cell time-cell bg-yellow-500/10 border-t border-border/50"></div>
+                {weekDays.map(day => (
+                  <div key={`sup-filler-${day.dateStr}-${hour}`} className="grid-cell slot-cell h-8 border-t border-border/50 bg-card/20 pointer-events-none"></div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Computer Rows */}
+        {
+          filteredComputers.map((computer) => (
+            <div key={computer.id} className="computer-section">
+              <div className="computer-label">
+                <Monitor size={14} />
+                <span>{computer.name}</span>
+              </div>
+
+              {timeSlots.map((hour) => (
+                <div key={hour} className="contents">
+                  {/*  Render :00 slot */}
+                  <div className="time-row">
+                    <div className="grid-cell time-cell">{hour}:00</div>
+                    {weekDays.map((day) => {
+                      const booking = getBookingForSlot(
+                        computer.id,
+                        day.dateStr,
+                        hour,
+                        0
+                      );
+                      const isActive = isScheduleActive(
+                        day.date.getDay(),
+                        hour,
+                        0
+                      );
+                      const slotTime = new Date(day.dateStr);
+                      slotTime.setHours(hour, 0, 0, 0);
+                      const now = new Date();
+                      const isPast = slotTime < now && !booking;
+                      const isOwn = booking?.userId === user?.id;
+
+                      // Supervisor check
+                      const supervisor = supervisors.find(s => {
+                        return new Date(s.date).toDateString() === new Date(day.dateStr).toDateString() && s.hour === hour;
+                      });
+                      const needsSupervisor = !supervisor;
+                      const isMySupervision = supervisor && user && supervisor.userId === user.id;
+
+                      let cellClass = "grid-cell slot-cell h-8"; // Reduced height for granular view
+                      if (!isActive) cellClass += " inactive";
+                      else if (booking)
+                        cellClass += isOwn ? " own-booking" : " booked";
+                      else if (isPast) cellClass += " past inactive";
+                      else {
+                        cellClass += " available";
+                        if (needsSupervisor) cellClass += " opacity-60";
+                        else if (isMySupervision) cellClass += " opacity-60";
+                      }
+
+                      return (
+                        <div
+                          key={`${day.dateStr}-${hour}-00`}
+                          className={cellClass}
+                          onClick={() => {
+                            if (booking && onBookingClick) {
+                              onBookingClick(booking);
+                            } else if (
+                              !booking &&
+                              isActive &&
+                              !isPast &&
+                              onSlotClick
+                            ) {
+                              onSlotClick(computer, day.dateStr, hour, 0);
+                            }
+                          }}
+                          title={
+                            booking
+                              ? `Foglalta: ${booking.user?.displayName ||
+                              booking.user?.username
+                              }`
+                              : !isActive
+                                ? "Nem elérhető"
+                                : isPast
+                                  ? "Múltbeli időpont"
+                                  : needsSupervisor
+                                    ? "Nincs jelen felelős"
+                                    : isMySupervision
+                                      ? "Te vagy a felelős, nem foglalhatsz"
+                                      : "Szabad (1. félidő)"
+                          }
+                        >
+                          {booking && (
+                            <span className="booking-indicator text-xs">
+                              {isOwn ? "✓" : "●"}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Render :30 slot */}
+                  <div className="time-row">
+                    <div className="grid-cell time-cell text-xs text-muted-foreground">
+                      {hour}:30
+                    </div>
+                    {weekDays.map((day) => {
+                      const booking = getBookingForSlot(
+                        computer.id,
+                        day.dateStr,
+                        hour,
+                        30
+                      );
+                      const isActive = isScheduleActive(
+                        day.date.getDay(),
+                        hour,
+                        30
+                      );
+                      const slotTime = new Date(day.dateStr);
+                      slotTime.setHours(hour, 30, 0, 0);
+                      const now = new Date();
+                      const isPast = slotTime < now && !booking;
+                      const isOwn = booking?.userId === user?.id;
+
+                      // Supervisor check (supervisors apply per hour)
+                      const supervisor = supervisors.find(s => {
+                        return new Date(s.date).toDateString() === new Date(day.dateStr).toDateString() && s.hour === hour;
+                      });
+                      const needsSupervisor = !supervisor;
+                      const isMySupervision = supervisor && user && supervisor.userId === user.id;
+
+                      let cellClass =
+                        "grid-cell slot-cell h-8 border-t border-border"; // subtle border
+                      if (!isActive) cellClass += " inactive";
+                      else if (booking)
+                        cellClass += isOwn ? " own-booking" : " booked";
+                      else if (isPast) cellClass += " past inactive";
+                      else {
+                        cellClass += " available";
+                        if (needsSupervisor) cellClass += " opacity-60";
+                        else if (isMySupervision) cellClass += " opacity-60";
+                      }
+
+                      return (
+                        <div
+                          key={`${day.dateStr}-${hour}-30`}
+                          className={cellClass}
+                          onClick={() => {
+                            if (booking && onBookingClick) {
+                              onBookingClick(booking);
+                            } else if (
+                              !booking &&
+                              isActive &&
+                              !isPast &&
+                              onSlotClick
+                            ) {
+                              onSlotClick(computer, day.dateStr, hour, 30);
+                            }
+                          }}
+                          title={
+                            booking
+                              ? `Foglalta: ${booking.user?.displayName ||
+                              booking.user?.username
+                              }`
+                              : !isActive
+                                ? "Nem elérhető"
+                                : isPast
+                                  ? "Múltbeli időpont"
+                                  : needsSupervisor
+                                    ? "Nincs jelen felelős"
+                                    : isMySupervision
+                                      ? "Te vagy a felelős, nem foglalhatsz"
+                                      : "Szabad (2. félidő)"
+                          }
+                        >
+                          {booking && (
+                            <span className="booking-indicator text-xs">
+                              {isOwn ? "✓" : "●"}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))
+        }
+      </div >
 
       <div className="flex gap-2 w-full p-2 justify-evenly ">
         <div className="legend-item">
@@ -365,10 +474,10 @@ export function WeeklyCalendar({
           <span>Foglalt</span>
         </div>
         <div className="legend-item">
-          <span className="booking-indicator inactive text-gray-500">●</span>
+          <span className="booking-indicator inactive text-muted-foreground">●</span>
           <span>Nem elérhető</span>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

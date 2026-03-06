@@ -129,32 +129,32 @@ const IncidentPage = () => {
 
   const getStatusBadge = (status: string) => {
     const config: Record<string, { label: string; color: string; icon: any }> =
-      {
-        OPEN: {
-          label: "Nyitott",
-          color: "text-red-400 bg-red-400/10 border-red-400/20",
-          icon: AlertTriangle,
-        },
-        IN_PROGRESS: {
-          label: "Folyamatban",
-          color: "text-blue-400 bg-blue-400/10 border-blue-400/20",
-          icon: Loader2,
-        },
-        RESOLVED: {
-          label: "Megoldva",
-          color: "text-green-400 bg-green-400/10 border-green-400/20",
-          icon: CheckCircle,
-        },
-        CLOSED: {
-          label: "Lezárva",
-          color: "text-gray-400 bg-gray-400/10 border-gray-400/20",
-          icon: XCircle,
-        },
-      };
+    {
+      OPEN: {
+        label: "Nyitott",
+        color: "text-red-400 bg-red-400/10 border-red-400/20",
+        icon: AlertTriangle,
+      },
+      IN_PROGRESS: {
+        label: "Folyamatban",
+        color: "text-primary bg-primary/20 border-primary/20",
+        icon: Loader2,
+      },
+      RESOLVED: {
+        label: "Megoldva",
+        color: "text-green-400 bg-green-400/10 border-green-400/20",
+        icon: CheckCircle,
+      },
+      CLOSED: {
+        label: "Lezárva",
+        color: "text-muted-foreground bg-gray-400/10 border-gray-400/20",
+        icon: XCircle,
+      },
+    };
 
     const item = config[status] || {
       label: status,
-      color: "text-gray-400",
+      color: "text-muted-foreground",
       icon: HelpCircle,
     };
     const Icon = item.icon;
@@ -172,11 +172,11 @@ const IncidentPage = () => {
   if (!isAuthenticated) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col items-center justify-center py-20 glass-card rounded-2xl bg-[#0a0a0f]/50 border border-white/10">
-          <h3 className="text-xl font-bold text-white mb-2">
+        <div className="flex flex-col items-center justify-center py-20 glass-card rounded-2xl bg-[#0a0a0f]/50 border border-border">
+          <h3 className="text-xl font-bold text-foreground mb-2">
             Nem vagy bejelentkezve
           </h3>
-          <p className="text-gray-400">Jelentkezz be a hibajelentéshez.</p>
+          <p className="text-muted-foreground">Jelentkezz be a hibajelentéshez.</p>
         </div>
       </div>
     );
@@ -189,7 +189,7 @@ const IncidentPage = () => {
         <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-yellow-200 to-yellow-500 bg-clip-text text-transparent mb-4">
           Incidens Jelentés
         </h1>
-        <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Hiba a teremben? Probléma a géppel? Jelentsd be itt!
         </p>
       </div>
@@ -197,7 +197,7 @@ const IncidentPage = () => {
       <div className="flex justify-end mb-8 max-w-6xl mx-auto">
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-xl font-medium hover:brightness-110 transition-all shadow-lg shadow-yellow-500/20"
+          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-foreground rounded-xl font-medium hover:brightness-110 transition-all shadow-lg shadow-yellow-500/20"
         >
           {showForm ? <XCircle size={20} /> : <Plus size={20} />}
           {showForm ? "Mégse" : "Új bejelentés"}
@@ -205,8 +205,8 @@ const IncidentPage = () => {
       </div>
 
       {showForm && (
-        <div className="max-w-3xl mx-auto mb-12 glass-card rounded-2xl p-8 bg-[#0f1016] border border-white/5 animate-slide-up">
-          <h2 className="text-2xl font-bold text-white mb-6">Új Incidens</h2>
+        <div className="max-w-3xl mx-auto mb-12 glass-card rounded-2xl p-8 bg-[#121A22] border border-border animate-slide-up">
+          <h2 className="text-2xl font-bold text-foreground mb-6">Új Incidens</h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-300 ml-1">
@@ -214,7 +214,7 @@ const IncidentPage = () => {
               </label>
               <input
                 type="text"
-                className="w-full px-5 py-4 bg-[#0a0a0f]/50 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-yellow-500/50 transition-all"
+                className="w-full px-5 py-4 bg-[#0a0a0f]/50 border border-border rounded-xl text-foreground placeholder-gray-600 focus:outline-none focus:border-yellow-500/50 transition-all"
                 placeholder="Pl. Nem működik a fejhallgató..."
                 value={formData.title}
                 onChange={(e) =>
@@ -231,11 +231,11 @@ const IncidentPage = () => {
                 </label>
                 <div className="relative">
                   <Monitor
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
                     size={18}
                   />
                   <select
-                    className="w-full pl-12 pr-5 py-4 bg-[#0a0a0f]/50 border border-white/10 rounded-xl text-white appearance-none focus:outline-none focus:border-yellow-500/50 transition-all"
+                    className="w-full pl-12 pr-5 py-4 bg-[#0a0a0f]/50 border border-border rounded-xl text-foreground appearance-none focus:outline-none focus:border-yellow-500/50 transition-all"
                     value={formData.computerId}
                     onChange={(e) =>
                       setFormData({ ...formData, computerId: e.target.value })
@@ -259,7 +259,7 @@ const IncidentPage = () => {
                   Prioritás
                 </label>
                 <select
-                  className="w-full px-5 py-4 bg-[#0a0a0f]/50 border border-white/10 rounded-xl text-white appearance-none focus:outline-none focus:border-yellow-500/50 transition-all"
+                  className="w-full px-5 py-4 bg-[#0a0a0f]/50 border border-border rounded-xl text-foreground appearance-none focus:outline-none focus:border-yellow-500/50 transition-all"
                   value={formData.priority}
                   onChange={(e) =>
                     setFormData({ ...formData, priority: e.target.value })
@@ -287,7 +287,7 @@ const IncidentPage = () => {
               </label>
               <textarea
                 rows={5}
-                className="w-full px-5 py-4 bg-[#0a0a0f]/50 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-yellow-500/50 transition-all resize-none"
+                className="w-full px-5 py-4 bg-[#0a0a0f]/50 border border-border rounded-xl text-foreground placeholder-gray-600 focus:outline-none focus:border-yellow-500/50 transition-all resize-none"
                 placeholder="Írd le részletesen, mi történt..."
                 value={formData.description}
                 onChange={(e) =>
@@ -300,7 +300,7 @@ const IncidentPage = () => {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-lg bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:brightness-110 transition-all disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-lg bg-gradient-to-r from-yellow-500 to-orange-500 text-foreground hover:brightness-110 transition-all disabled:opacity-50"
             >
               {submitting ? (
                 <Loader2 className="animate-spin" />
@@ -315,7 +315,7 @@ const IncidentPage = () => {
       )}
 
       <div className="max-w-6xl mx-auto space-y-6">
-        <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+        <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
           <Clock className="w-6 h-6 text-yellow-500" /> Korábbi bejelentéseim
         </h2>
 
@@ -324,12 +324,12 @@ const IncidentPage = () => {
             <Loader2 className="animate-spin text-yellow-500" size={32} />
           </div>
         ) : incidents.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 bg-[#0a0a0f]/30 border border-white/5 rounded-2xl border-dashed">
-            <CheckCircle className="w-12 h-12 text-gray-600 mb-4" />
-            <h3 className="text-lg font-medium text-white">
+          <div className="flex flex-col items-center justify-center p-12 bg-[#0a0a0f]/30 border border-border rounded-2xl border-dashed">
+            <CheckCircle className="w-12 h-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-medium text-foreground">
               Nincs bejelentésed
             </h3>
-            <p className="text-gray-500">
+            <p className="text-muted-foreground">
               Még nem jelentettél be egy hibát sem.
             </p>
           </div>
@@ -338,21 +338,20 @@ const IncidentPage = () => {
             {incidents.map((incident) => (
               <div
                 key={incident.id}
-                className="group relative overflow-hidden bg-[#0f1016] border border-white/5 rounded-2xl p-6 hover:border-yellow-500/30 transition-all hover:shadow-[0_0_20px_rgba(234,179,8,0.1)]"
+                className="group relative overflow-hidden bg-[#121A22] border border-border rounded-2xl p-6 hover:border-yellow-500/30 transition-all hover:shadow-[0_0_20px_rgba(234,179,8,0.1)]"
               >
                 <div
-                  className={`absolute top-0 left-0 w-1 h-full ${
-                    incident.status === "RESOLVED"
+                  className={`absolute top-0 left-0 w-1 h-full ${incident.status === "RESOLVED"
                       ? "bg-green-500"
                       : incident.status === "CLOSED"
                         ? "bg-gray-500"
                         : "bg-yellow-500"
-                  }`}
+                    }`}
                 />
 
                 <div className="flex justify-between items-start mb-4">
                   <h3
-                    className="text-lg font-bold text-white truncate pr-2"
+                    className="text-lg font-bold text-foreground truncate pr-2"
                     title={incident.title}
                   >
                     {incident.title}
@@ -360,7 +359,7 @@ const IncidentPage = () => {
                   {getStatusBadge(incident.status)}
                 </div>
 
-                <div className="flex items-center gap-4 text-xs text-gray-400 mb-4">
+                <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4">
                   <span className="flex items-center gap-1">
                     <Clock size={12} />
                     {new Date(incident.createdAt).toLocaleDateString("hu-HU")}
@@ -378,7 +377,7 @@ const IncidentPage = () => {
                 </p>
 
                 {incident.resolutionNote && (
-                  <div className="bg-white/5 p-3 rounded-lg border border-white/5">
+                  <div className="bg-secondary p-3 rounded-lg border border-border">
                     <span className="block text-xs font-semibold uppercase text-green-400 mb-1">
                       Megoldás / Válasz:
                     </span>

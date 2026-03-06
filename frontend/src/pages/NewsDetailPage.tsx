@@ -67,7 +67,7 @@ export function NewsDetailPage() {
   return (
     <div className="animate-fade-in pb-20">
       {/* Header / Cover */}
-      <div className="relative h-[400px] md:h-[500px] w-full bg-black/50">
+      <div className="relative h-[400px] md:h-[500px] w-full bg-secondary">
         {post.coverImage && (
           <>
             <img
@@ -75,7 +75,7 @@ export function NewsDetailPage() {
               alt={post.title}
               className="w-full h-full object-cover opacity-60"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0f1016] via-transparent to-black/30"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-black/30"></div>
           </>
         )}
 
@@ -90,7 +90,7 @@ export function NewsDetailPage() {
           <div className="flex justify-between items-start mb-6">
             <Link
               to="/news"
-              className="inline-flex items-center gap-2 text-gray-300 hover:text-white transition-colors backdrop-blur-sm bg-black/30 px-3 py-1.5 rounded-lg w-fit"
+              className="inline-flex items-center gap-2 text-gray-300 hover:text-foreground transition-colors backdrop-blur-sm bg-secondary px-3 py-1.5 rounded-lg w-fit"
             >
               <ArrowLeft size={16} /> Vissza a hírekhez
             </Link>
@@ -98,7 +98,7 @@ export function NewsDetailPage() {
             {isAdminOrOrganizer && (
               <Button
                 onClick={() => setIsEditorOpen(true)}
-                className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/10"
+                className="bg-secondary/80 hover:bg-white/20 backdrop-blur-md text-foreground border border-border"
               >
                 <Edit size={16} className="mr-2" />
                 Szerkesztés
@@ -106,13 +106,13 @@ export function NewsDetailPage() {
             )}
           </div>
 
-          <h1 className="text-3xl md:text-5xl font-black text-white mb-6 leading-tight drop-shadow-xl">
+          <h1 className="text-3xl md:text-5xl font-black text-foreground mb-6 leading-tight drop-shadow-xl">
             {post.title}
           </h1>
 
           <div className="flex flex-wrap items-center gap-6 text-sm md:text-base text-gray-200">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-white/10 overflow-hidden border border-white/20">
+              <div className="w-8 h-8 rounded-full bg-secondary/80 overflow-hidden border border-border">
                 {post.author.avatarUrl ? (
                   <img
                     src={post.author.avatarUrl}
@@ -141,7 +141,7 @@ export function NewsDetailPage() {
 
             <button
               onClick={handleShare}
-              className="ml-auto flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg transition-colors backdrop-blur-sm"
+              className="ml-auto flex items-center gap-2 px-3 py-1.5 bg-secondary/80 hover:bg-white/20 rounded-lg transition-colors backdrop-blur-sm"
             >
               <Share2 size={16} />
               <span className="hidden sm:inline">Megosztás</span>

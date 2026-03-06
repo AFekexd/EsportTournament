@@ -92,24 +92,24 @@ export function ComputerModal({ computer, onClose }: ComputerModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div
-        className="bg-[#1a1b26] rounded-2xl w-full max-w-lg border border-white/10 shadow-2xl overflow-hidden"
+        className="bg-[#121A22] rounded-2xl w-full max-w-lg border border-border shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-[#1a1b26] border-b border-white/10 p-6 flex items-center justify-between">
+        <div className="bg-[#121A22] border-b border-border p-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-primary/10 rounded-lg">
               <Monitor size={20} className="text-primary" />
             </div>
-            <h2 className="text-xl font-bold text-white">
+            <h2 className="text-xl font-bold text-foreground">
               {computer ? "Gép szerkesztése" : "Új gép hozzáadása"}
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white"
+            className="p-2 hover:bg-secondary/80 rounded-lg transition-colors text-muted-foreground hover:text-foreground"
           >
             <X size={20} />
           </button>
@@ -123,7 +123,7 @@ export function ComputerModal({ computer, onClose }: ComputerModalProps) {
             </label>
             <input
               type="text"
-              className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
               value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
@@ -140,7 +140,7 @@ export function ComputerModal({ computer, onClose }: ComputerModalProps) {
               </label>
               <input
                 type="number"
-                className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors"
+                className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors"
                 value={formData.row + 1}
                 onChange={(e) =>
                   setFormData({
@@ -159,7 +159,7 @@ export function ComputerModal({ computer, onClose }: ComputerModalProps) {
               </label>
               <input
                 type="number"
-                className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors"
+                className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors"
                 value={formData.position + 1}
                 onChange={(e) =>
                   setFormData({
@@ -179,7 +179,7 @@ export function ComputerModal({ computer, onClose }: ComputerModalProps) {
               Specifikációk
             </label>
             <textarea
-              className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors resize-none"
+              className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors resize-none"
               value={formData.specs}
               onChange={(e) =>
                 setFormData({ ...formData, specs: e.target.value })
@@ -195,7 +195,7 @@ export function ComputerModal({ computer, onClose }: ComputerModalProps) {
               Státusz
             </label>
             <select
-              className="w-full px-4 py-3 bg-[#0f1015] border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors"
               value={formData.status}
               onChange={(e) =>
                 setFormData({ ...formData, status: e.target.value })
@@ -212,14 +212,13 @@ export function ComputerModal({ computer, onClose }: ComputerModalProps) {
           <div>
             <label className="flex items-center gap-3 cursor-pointer group select-none">
               <div
-                className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${
-                  formData.isActive
+                className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${formData.isActive
                     ? "bg-primary border-primary"
-                    : "border-white/20 group-hover:border-primary/50"
-                }`}
+                    : "border-border group-hover:border-primary/50"
+                  }`}
               >
                 {formData.isActive && (
-                  <Check size={14} className="text-white" />
+                  <Check size={14} className="text-foreground" />
                 )}
               </div>
               <input
@@ -230,24 +229,24 @@ export function ComputerModal({ computer, onClose }: ComputerModalProps) {
                 }
                 className="hidden"
               />
-              <span className="text-sm text-gray-300 group-hover:text-white transition-colors">
+              <span className="text-sm text-gray-300 group-hover:text-foreground transition-colors">
                 Aktív (foglalható)
               </span>
             </label>
           </div>
 
           {/* Footer */}
-          <div className="flex gap-4 pt-2 border-t border-white/10 mt-6">
+          <div className="flex gap-4 pt-2 border-t border-border mt-6">
             <button
               type="button"
-              className="flex-1 px-6 py-3 bg-[#0f1015] hover:bg-[#2a2b36] border border-white/10 text-white rounded-xl font-semibold transition-all"
+              className="flex-1 px-6 py-3 bg-[#121A22] hover:bg-[#121A22] border border-border text-foreground rounded-xl font-semibold transition-all"
               onClick={onClose}
             >
               Mégse
             </button>
             <button
               type="submit"
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-foreground rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={loading}
             >
               {loading ? (

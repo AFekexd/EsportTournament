@@ -68,7 +68,7 @@ export function BookingManagement() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight text-white mb-2">
+          <h2 className="text-3xl font-bold tracking-tight text-foreground mb-2">
             Gépfoglalás
           </h2>
           <p className="text-muted-foreground">

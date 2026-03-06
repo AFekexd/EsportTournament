@@ -141,7 +141,7 @@ export function AdminBookingList() {
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-muted/30 p-4 rounded-lg border border-white/5">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-muted/30 p-4 rounded-lg border border-border">
                 <div className="flex items-center gap-4 w-full md:w-auto">
                     {/* Search */}
                     <div className="relative w-full md:w-64">
@@ -155,7 +155,7 @@ export function AdminBookingList() {
                     </div>
 
                     {/* Expired toggle */}
-                    <label className="flex items-center gap-2 cursor-pointer select-none border border-white/10 rounded-md px-3 py-1.5 hover:bg-white/5 transition-colors">
+                    <label className="flex items-center gap-2 cursor-pointer select-none border border-border rounded-md px-3 py-1.5 hover:bg-secondary transition-colors">
                         <input
                             type="checkbox"
                             checked={includeExpired}
@@ -170,7 +170,7 @@ export function AdminBookingList() {
                         <Button
                             variant="destructive"
                             size="sm"
-                            className="bg-red-500 hover:bg-red-600 text-white animate-in fade-in"
+                            className="bg-red-500 hover:bg-red-600 text-foreground animate-in fade-in"
                             onClick={handleBulkDelete}
                         >
                             <Trash2 size={14} className="mr-2" />
@@ -182,7 +182,7 @@ export function AdminBookingList() {
                 </div>
             </div>
 
-            <Card className="border-white/5 bg-card/50">
+            <Card className="border-border bg-[#121A22]/50">
                 <CardContent className="p-0">
                     {isLoading ? (
                         <div className="p-8 text-center text-muted-foreground">Betöltés...</div>
@@ -195,7 +195,7 @@ export function AdminBookingList() {
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse">
                                 <thead>
-                                    <tr className="border-b border-white/5 text-muted-foreground text-xs uppercase tracking-wider bg-white/5">
+                                    <tr className="border-b border-border text-muted-foreground text-xs uppercase tracking-wider bg-secondary">
                                         <th className="p-4 w-[40px]">
                                             <input
                                                 type="checkbox"
@@ -219,7 +219,7 @@ export function AdminBookingList() {
                                         const isLive = startDate <= new Date() && endDate >= new Date();
 
                                         return (
-                                            <tr key={booking.id} className={`group hover:bg-white/5 transition-colors ${selectedBookingIds.includes(booking.id) ? "bg-primary/5" : ""}`}>
+                                            <tr key={booking.id} className={`group hover:bg-secondary transition-colors ${selectedBookingIds.includes(booking.id) ? "bg-primary/5" : ""}`}>
                                                 <td className="p-4">
                                                     <input
                                                         type="checkbox"
@@ -230,7 +230,7 @@ export function AdminBookingList() {
                                                 </td>
                                                 <td className="p-4">
                                                     <div className="flex flex-col">
-                                                        <span className="font-medium text-white flex items-center gap-2">
+                                                        <span className="font-medium text-foreground flex items-center gap-2">
                                                             {startDate.toLocaleDateString("hu-HU", { weekday: 'short', month: 'short', day: 'numeric' })}
                                                         </span>
                                                         <span className="text-sm text-muted-foreground flex items-center gap-1.5 mt-1">
@@ -239,7 +239,7 @@ export function AdminBookingList() {
                                                             {endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                         </span>
                                                         {isLive && <span className="mt-1 text-[10px] font-bold text-green-500 uppercase tracking-wider">Élő</span>}
-                                                        {isPast && <span className="mt-1 text-[10px] font-medium text-gray-600 uppercase tracking-wider">Vége</span>}
+                                                        {isPast && <span className="mt-1 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Vége</span>}
                                                     </div>
                                                 </td>
                                                 <td className="p-4">
@@ -248,14 +248,14 @@ export function AdminBookingList() {
                                                             <User size={16} />
                                                         </div>
                                                         <div>
-                                                            <div className="font-medium text-white">{booking.user.displayName || booking.user.username}</div>
+                                                            <div className="font-medium text-foreground">{booking.user.displayName || booking.user.username}</div>
                                                             <div className="text-xs text-muted-foreground">@{booking.user.username}</div>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="p-4">
                                                     <div className="flex items-center gap-2 text-sm text-gray-300">
-                                                        <Monitor size={16} className="text-gray-500" />
+                                                        <Monitor size={16} className="text-muted-foreground" />
                                                         {booking.computer.name}
                                                     </div>
                                                 </td>
@@ -265,13 +265,13 @@ export function AdminBookingList() {
                                                             {new Date(booking.checkedInAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                         </span>
                                                     ) : (
-                                                        <span className="text-xs text-gray-500">-</span>
+                                                        <span className="text-xs text-muted-foreground">-</span>
                                                     )}
                                                 </td>
                                                 <td className="p-4 text-right">
                                                     <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                         <Button variant="ghost" size="sm" onClick={() => setEditingBooking(booking)} title="Szerkesztés">
-                                                            <Edit2 size={16} className="text-blue-400" />
+                                                            <Edit2 size={16} className="text-primary" />
                                                         </Button>
                                                         <Button variant="ghost" size="sm" onClick={() => handleDeleteBooking(booking)} title="Törlés">
                                                             <Trash2 size={16} className="text-red-400" />

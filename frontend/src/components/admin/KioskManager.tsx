@@ -119,7 +119,7 @@ export const KioskManager: React.FC = () => {
       </h2>
 
       {isLoading && machines.length === 0 ? (
-        <div className="p-12 text-center text-gray-400 border border-white/5 rounded-lg bg-white/5 animate-pulse">
+        <div className="p-12 text-center text-muted-foreground border border-border rounded-lg bg-secondary animate-pulse">
           Betöltés...
         </div>
       ) : (
@@ -145,7 +145,7 @@ export const KioskManager: React.FC = () => {
                       />
                     ))
                   ) : (
-                    <div className="col-span-full p-4 border border-dashed border-white/10 rounded-lg text-center text-muted">
+                    <div className="col-span-full p-4 border border-dashed border-border rounded-lg text-center text-muted">
                       Nincsenek gépek ebben a sorban
                     </div>
                   )}
@@ -154,9 +154,9 @@ export const KioskManager: React.FC = () => {
             ))}
           </div>
 
-          <div className="mt-8 p-4 bg-tertiary rounded-lg border border-white/5">
-            <h3 className="font-bold text-white mb-2">Jelmagyarázat</h3>
-            <div className="flex flex-wrap gap-4 text-sm text-gray-400">
+          <div className="mt-8 p-4 bg-tertiary rounded-lg border border-border">
+            <h3 className="font-bold text-foreground mb-2">Jelmagyarázat</h3>
+            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-green-500"></div> Szabad
               </span>
@@ -221,7 +221,7 @@ const MachineCard: React.FC<MachineCardProps> = ({
   onDelete,
 }) => {
   // Determine status color
-  let statusColor = "bg-gray-800 border-white/10";
+  let statusColor = "bg-gray-800 border-border";
   let statusDot = "bg-gray-500";
 
   // Calculate if offline (no update in last 2 minutes)
@@ -232,7 +232,7 @@ const MachineCard: React.FC<MachineCardProps> = ({
 
   if (isOffline) {
     statusDot = "bg-gray-600"; // Offline
-    statusColor = "bg-gray-900 border-white/5 opacity-75";
+    statusColor = "bg-gray-900 border-border opacity-75";
   } else if (machine.isLocked) {
     statusColor = "bg-red-900/20 border-red-500/50";
     statusDot = "bg-red-500";
@@ -243,7 +243,7 @@ const MachineCard: React.FC<MachineCardProps> = ({
     statusColor = "bg-green-900/10 border-green-500/30";
     statusDot = "bg-green-500";
   } else {
-    statusColor = "bg-blue-900/20 border-blue-500/30"; // Occupied logic
+    statusColor = "bg-blue-900/20 border-primary/20"; // Occupied logic
     statusDot = "bg-blue-500";
   }
 
@@ -257,7 +257,7 @@ const MachineCard: React.FC<MachineCardProps> = ({
             e.stopPropagation();
             onEdit();
           }}
-          className="p-1.5 rounded-lg bg-black/50 hover:bg-black/70 text-gray-300 hover:text-white transition-colors border border-white/10"
+          className="p-1.5 rounded-lg bg-secondary hover:bg-secondary text-gray-300 hover:text-foreground transition-colors border border-border"
           title="Szerkesztés"
         >
           <Edit2 size={14} />
@@ -267,7 +267,7 @@ const MachineCard: React.FC<MachineCardProps> = ({
             e.stopPropagation();
             onDelete();
           }}
-          className="p-1.5 rounded-lg bg-black/50 hover:bg-red-900/80 text-gray-300 hover:text-red-400 transition-colors border border-white/10"
+          className="p-1.5 rounded-lg bg-secondary hover:bg-red-900/80 text-gray-300 hover:text-red-400 transition-colors border border-border"
           title="Törlés"
         >
           <Trash2 size={14} />
@@ -280,19 +280,19 @@ const MachineCard: React.FC<MachineCardProps> = ({
             <div
               className={`w-2 h-2 rounded-full ${statusDot} animate-pulse`}
             ></div>
-            <span className="font-bold text-lg text-white leading-none">
+            <span className="font-bold text-lg text-foreground leading-none">
               {machine.name}
             </span>
           </div>
           {machine.hostname && machine.hostname !== machine.name && (
-            <span className="text-xs text-gray-500 font-mono mt-1 ml-4">
+            <span className="text-xs text-muted-foreground font-mono mt-1 ml-4">
               {machine.hostname}
             </span>
           )}
         </div>
 
         {machine.clientVersion && (
-          <span className="text-[10px] bg-white/5 border border-white/10 px-1.5 py-0.5 rounded text-gray-400 font-mono">
+          <span className="text-[10px] bg-secondary border border-border px-1.5 py-0.5 rounded text-muted-foreground font-mono">
             {machine.clientVersion}
           </span>
         )}
@@ -300,7 +300,7 @@ const MachineCard: React.FC<MachineCardProps> = ({
 
       <div className="space-y-2 mb-4">
         <div className="flex justify-between text-sm">
-          <span className="text-gray-400">Állapot:</span>
+          <span className="text-muted-foreground">Állapot:</span>
           <span
             className={`font-medium ${machine.isLocked ? "text-red-400" : "text-gray-200"
               }`}
@@ -317,11 +317,11 @@ const MachineCard: React.FC<MachineCardProps> = ({
         {/* Placeholder for active user if session exists (would require session join in fetch) */}
         {(machine.specs ||
           (machine.installedGames && machine.installedGames.length > 0)) && (
-            <div className="text-[10px] text-gray-500 mt-2 pt-2 border-t border-white/5">
+            <div className="text-[10px] text-muted-foreground mt-2 pt-2 border-t border-border">
               {machine.installedGames && machine.installedGames.length > 0 && (
                 <div className="flex gap-1 flex-wrap mb-1">
                   {machine.installedGames.slice(0, 3).map((g, i) => (
-                    <span key={i} className="px-1 py-0.5 bg-white/5 rounded">
+                    <span key={i} className="px-1 py-0.5 bg-secondary rounded">
                       {g}
                     </span>
                   ))}
@@ -339,8 +339,8 @@ const MachineCard: React.FC<MachineCardProps> = ({
         <button
           onClick={onLock}
           className={`btn btn-sm flex items-center justify-center gap-1 ${machine.isLocked
-            ? "bg-red-500 hover:bg-red-600 text-white"
-            : "bg-white/5 hover:bg-white/10 text-gray-300"
+            ? "bg-red-500 hover:bg-red-600 text-foreground"
+            : "bg-secondary hover:bg-secondary/80 text-gray-300"
             }`}
           title={machine.isLocked ? "Feloldás" : "Zárolás"}
         >
@@ -350,8 +350,8 @@ const MachineCard: React.FC<MachineCardProps> = ({
         <button
           onClick={onCompetitionToggle}
           className={`btn btn-sm flex items-center justify-center gap-1 ${machine.isCompetitionMode
-            ? "bg-purple-500 hover:bg-purple-600 text-white"
-            : "bg-white/5 hover:bg-white/10 text-gray-300"
+            ? "bg-purple-500 hover:bg-purple-600 text-foreground"
+            : "bg-secondary hover:bg-secondary/80 text-gray-300"
             }`}
           title="Verseny mód"
         >

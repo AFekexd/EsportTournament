@@ -81,9 +81,9 @@ const priorities = [
 
 const statuses = [
     { value: "PENDING", label: "Függőben", icon: <Clock size={14} />, color: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20" },
-    { value: "IN_PROGRESS", label: "Folyamatban", icon: <Loader2 size={14} />, color: "text-blue-400 bg-blue-400/10 border-blue-400/20" },
+    { value: "IN_PROGRESS", label: "Folyamatban", icon: <Loader2 size={14} />, color: "text-primary bg-primary/20 border-primary/20" },
     { value: "RESOLVED", label: "Megoldva", icon: <CheckCircle size={14} />, color: "text-green-400 bg-green-400/10 border-green-400/20" },
-    { value: "CLOSED", label: "Lezárva", icon: <XCircle size={14} />, color: "text-gray-400 bg-gray-400/10 border-gray-400/20" },
+    { value: "CLOSED", label: "Lezárva", icon: <XCircle size={14} />, color: "text-muted-foreground bg-gray-400/10 border-gray-400/20" },
 ];
 
 export function BugReportsAdmin() {
@@ -311,7 +311,7 @@ export function BugReportsAdmin() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div className="flex items-center gap-4">
                     <div>
-                        <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                        <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                             <Bug className="text-red-400" size={24} />
                             Hibajelentések
                         </h2>
@@ -322,8 +322,8 @@ export function BugReportsAdmin() {
                     <button
                         onClick={() => setShowNotificationSettings(!showNotificationSettings)}
                         className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${showNotificationSettings
-                                ? "bg-primary/20 border-primary/50 text-primary"
-                                : "border-white/10 text-gray-400 hover:text-white hover:border-white/20"
+                            ? "bg-primary/20 border-primary/50 text-primary"
+                            : "border-border text-muted-foreground hover:text-foreground hover:border-border"
                             }`}
                         title="Értesítési beállítások"
                     >
@@ -335,20 +335,20 @@ export function BugReportsAdmin() {
                 {/* Filters */}
                 <div className="flex flex-wrap gap-3">
                     <div className="relative">
-                        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                         <input
                             type="text"
                             placeholder="Keresés..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="pl-9 pr-4 py-2 bg-[#0f1015] border border-white/10 rounded-lg text-white placeholder-gray-500 text-sm focus:outline-none focus:border-primary/50"
+                            className="pl-9 pr-4 py-2 bg-[#121A22] border border-border rounded-lg text-foreground placeholder-gray-500 text-sm focus:outline-none focus:border-primary/50"
                         />
                     </div>
 
                     <select
                         value={filterStatus}
                         onChange={(e) => setFilterStatus(e.target.value)}
-                        className="px-3 py-2 bg-[#0f1015] border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-primary/50"
+                        className="px-3 py-2 bg-[#121A22] border border-border rounded-lg text-foreground text-sm focus:outline-none focus:border-primary/50"
                     >
                         <option value="">Minden státusz</option>
                         {statuses.map((s) => (
@@ -361,7 +361,7 @@ export function BugReportsAdmin() {
                     <select
                         value={filterCategory}
                         onChange={(e) => setFilterCategory(e.target.value)}
-                        className="px-3 py-2 bg-[#0f1015] border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-primary/50"
+                        className="px-3 py-2 bg-[#121A22] border border-border rounded-lg text-foreground text-sm focus:outline-none focus:border-primary/50"
                     >
                         <option value="">Minden kategória</option>
                         {categories.map((c) => (
@@ -374,12 +374,12 @@ export function BugReportsAdmin() {
 
                 {/* Notification Settings Panel */}
                 {showNotificationSettings && (
-                    <div className="bg-[#161722] rounded-xl border border-white/5 p-6">
-                        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <div className="bg-[#121A22] rounded-xl border border-border p-6">
+                        <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
                             <Bell className="text-primary" size={20} />
                             Értesítési beállítások
                         </h3>
-                        <p className="text-sm text-gray-400 mb-4">
+                        <p className="text-sm text-muted-foreground mb-4">
                             Új hibajelentéskor az alábbi admin-ok kapnak értesítést:
                         </p>
 
@@ -388,7 +388,7 @@ export function BugReportsAdmin() {
                             <select
                                 value={selectedAdminToAdd}
                                 onChange={(e) => setSelectedAdminToAdd(e.target.value)}
-                                className="flex-1 px-3 py-2 bg-[#0f1015] border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-primary/50"
+                                className="flex-1 px-3 py-2 bg-[#121A22] border border-border rounded-lg text-foreground text-sm focus:outline-none focus:border-primary/50"
                             >
                                 <option value="">Válassz admin-t...</option>
                                 {availableAdmins.map((admin) => (
@@ -400,7 +400,7 @@ export function BugReportsAdmin() {
                             <button
                                 onClick={handleAddAdmin}
                                 disabled={!selectedAdminToAdd}
-                                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-50 flex items-center gap-2"
+                                className="px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-50 flex items-center gap-2"
                             >
                                 <Plus size={16} />
                                 Hozzáadás
@@ -409,7 +409,7 @@ export function BugReportsAdmin() {
 
                         {/* Admin List */}
                         {notificationSettings.length === 0 ? (
-                            <div className="text-center py-8 text-gray-500">
+                            <div className="text-center py-8 text-muted-foreground">
                                 Még nincs beállított értesítés. Adj hozzá admin-okat!
                             </div>
                         ) : (
@@ -417,7 +417,7 @@ export function BugReportsAdmin() {
                                 {notificationSettings.map((setting) => (
                                     <div
                                         key={setting.id}
-                                        className="flex items-center justify-between p-3 bg-black/20 rounded-lg"
+                                        className="flex items-center justify-between p-3 bg-secondary rounded-lg"
                                     >
                                         <div className="flex items-center gap-3">
                                             <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
@@ -430,10 +430,10 @@ export function BugReportsAdmin() {
                                                 )}
                                             </div>
                                             <div>
-                                                <p className="text-sm font-medium text-white">
+                                                <p className="text-sm font-medium text-foreground">
                                                     {setting.user.displayName || setting.user.username}
                                                 </p>
-                                                <p className="text-xs text-gray-500">{setting.user.email}</p>
+                                                <p className="text-xs text-muted-foreground">{setting.user.email}</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2">
@@ -441,7 +441,7 @@ export function BugReportsAdmin() {
                                                 onClick={() => handleToggleNotification(setting.userId, "receiveEmail")}
                                                 className={`p-2 rounded-lg transition-colors ${setting.receiveEmail
                                                     ? "bg-green-500/20 text-green-400"
-                                                    : "bg-white/5 text-gray-500"
+                                                    : "bg-secondary text-muted-foreground"
                                                     }`}
                                                 title="Email értesítés"
                                             >
@@ -450,8 +450,8 @@ export function BugReportsAdmin() {
                                             <button
                                                 onClick={() => handleToggleNotification(setting.userId, "receiveDiscord")}
                                                 className={`p-2 rounded-lg transition-colors ${setting.receiveDiscord
-                                                    ? "bg-indigo-500/20 text-indigo-400"
-                                                    : "bg-white/5 text-gray-500"
+                                                    ? "bg-primary/30 text-primary"
+                                                    : "bg-secondary text-muted-foreground"
                                                     }`}
                                                 title="Discord értesítés"
                                             >
@@ -482,8 +482,8 @@ export function BugReportsAdmin() {
                             <Loader2 size={32} className="animate-spin text-primary" />
                         </div>
                     ) : filteredReports.length === 0 ? (
-                        <div className="text-center py-12 bg-white/5 rounded-xl border border-white/10 border-dashed">
-                            <Bug size={48} className="mx-auto mb-4 text-gray-600" />
+                        <div className="text-center py-12 bg-secondary rounded-xl border border-border border-dashed">
+                            <Bug size={48} className="mx-auto mb-4 text-muted-foreground" />
                             <p className="text-muted-foreground">Nincs hibajelentés</p>
                         </div>
                     ) : (
@@ -502,11 +502,11 @@ export function BugReportsAdmin() {
                                     }}
                                     className={`p-4 rounded-xl border cursor-pointer transition-all ${isSelected
                                         ? "bg-primary/10 border-primary/50"
-                                        : "bg-[#161722] border-white/5 hover:border-white/20"
+                                        : "bg-[#121A22] border-border hover:border-border"
                                         }`}
                                 >
                                     <div className="flex items-start justify-between gap-3 mb-2">
-                                        <h3 className="font-medium text-white line-clamp-1">
+                                        <h3 className="font-medium text-foreground line-clamp-1">
                                             {report.title}
                                         </h3>
                                         <span
@@ -517,12 +517,12 @@ export function BugReportsAdmin() {
                                         </span>
                                     </div>
 
-                                    <p className="text-sm text-gray-500 line-clamp-2 mb-3">
+                                    <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                                         {report.description}
                                     </p>
 
                                     <div className="flex items-center flex-wrap gap-2 text-xs">
-                                        <span className="flex items-center gap-1 px-2 py-1 rounded bg-white/5 text-gray-400">
+                                        <span className="flex items-center gap-1 px-2 py-1 rounded bg-secondary text-muted-foreground">
                                             {categoryConfig.icon}
                                             {categoryConfig.label}
                                         </span>
@@ -530,11 +530,11 @@ export function BugReportsAdmin() {
                                             {priorityConfig.icon}
                                             {priorityConfig.label}
                                         </span>
-                                        <span className="text-gray-600">•</span>
-                                        <span className="text-gray-500">
+                                        <span className="text-muted-foreground">•</span>
+                                        <span className="text-muted-foreground">
                                             {report.reporter.displayName || report.reporter.username}
                                         </span>
-                                        <span className="ml-auto text-gray-600">
+                                        <span className="ml-auto text-muted-foreground">
                                             {new Date(report.createdAt).toLocaleDateString("hu-HU")}
                                         </span>
                                     </div>
@@ -545,11 +545,11 @@ export function BugReportsAdmin() {
                 </div>
 
                 {/* Detail Panel */}
-                <div className="bg-[#161722] rounded-xl border border-white/5 p-6">
+                <div className="bg-[#121A22] rounded-xl border border-border p-6">
                     {selectedReport ? (
                         <div className="space-y-6">
                             <div className="flex items-start justify-between gap-3">
-                                <h3 className="text-lg font-bold text-white">
+                                <h3 className="text-lg font-bold text-foreground">
                                     {selectedReport.title}
                                 </h3>
                                 <button
@@ -562,7 +562,7 @@ export function BugReportsAdmin() {
 
                             {/* Reporter */}
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-black/40 flex items-center justify-center overflow-hidden border border-white/10">
+                                <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center overflow-hidden border border-border">
                                     {selectedReport.reporter.avatarUrl ? (
                                         <img
                                             src={selectedReport.reporter.avatarUrl}
@@ -570,16 +570,16 @@ export function BugReportsAdmin() {
                                             className="w-full h-full object-cover"
                                         />
                                     ) : (
-                                        <span className="text-sm font-bold text-gray-500">
+                                        <span className="text-sm font-bold text-muted-foreground">
                                             {selectedReport.reporter.username.charAt(0).toUpperCase()}
                                         </span>
                                     )}
                                 </div>
                                 <div>
-                                    <p className="text-sm font-medium text-white">
+                                    <p className="text-sm font-medium text-foreground">
                                         {selectedReport.reporter.displayName || selectedReport.reporter.username}
                                     </p>
-                                    <p className="text-xs text-gray-500">
+                                    <p className="text-xs text-muted-foreground">
                                         {new Date(selectedReport.createdAt).toLocaleString("hu-HU")}
                                     </p>
                                 </div>
@@ -587,10 +587,10 @@ export function BugReportsAdmin() {
 
                             {/* Description */}
                             <div>
-                                <label className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">
+                                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
                                     Leírás
                                 </label>
-                                <p className="text-sm text-gray-300 bg-black/20 rounded-lg p-3">
+                                <p className="text-sm text-gray-300 bg-secondary rounded-lg p-3">
                                     {selectedReport.description}
                                 </p>
                             </div>
@@ -598,7 +598,7 @@ export function BugReportsAdmin() {
                             {/* Image */}
                             {selectedReport.imageUrl && (
                                 <div>
-                                    <label className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">
+                                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
                                         Képernyőkép
                                     </label>
                                     <a
@@ -610,10 +610,10 @@ export function BugReportsAdmin() {
                                         <img
                                             src={selectedReport.imageUrl}
                                             alt="Screenshot"
-                                            className="rounded-lg max-h-48 object-cover border border-white/10"
+                                            className="rounded-lg max-h-48 object-cover border border-border"
                                         />
-                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
-                                            <ExternalLink size={24} className="text-white" />
+                                        <div className="absolute inset-0 bg-secondary opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                                            <ExternalLink size={24} className="text-foreground" />
                                         </div>
                                     </a>
                                 </div>
@@ -621,7 +621,7 @@ export function BugReportsAdmin() {
 
                             {/* Status Change */}
                             <div>
-                                <label className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">
+                                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
                                     Státusz módosítása
                                 </label>
                                 <div className="grid grid-cols-2 gap-2">
@@ -632,7 +632,7 @@ export function BugReportsAdmin() {
                                             disabled={isUpdating || selectedReport.status === status.value}
                                             className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all ${selectedReport.status === status.value
                                                 ? status.color
-                                                : "border-white/10 text-gray-500 hover:border-white/20 hover:text-white"
+                                                : "border-border text-muted-foreground hover:border-border hover:text-foreground"
                                                 } disabled:opacity-50`}
                                         >
                                             {status.icon}
@@ -659,20 +659,20 @@ export function BugReportsAdmin() {
 
                             {/* Admin Note */}
                             <div>
-                                <label className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">
+                                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
                                     Admin megjegyzés
                                 </label>
                                 <textarea
                                     value={adminNote}
                                     onChange={(e) => setAdminNote(e.target.value)}
                                     rows={3}
-                                    className="w-full px-3 py-2 bg-black/20 border border-white/10 rounded-lg text-white placeholder-gray-600 text-sm focus:outline-none focus:border-primary/50 resize-none"
+                                    className="w-full px-3 py-2 bg-secondary border border-border rounded-lg text-foreground placeholder-gray-600 text-sm focus:outline-none focus:border-primary/50 resize-none"
                                     placeholder="Megjegyzés a felhasználónak..."
                                 />
                                 <button
                                     onClick={handleSaveNote}
                                     disabled={isUpdating || adminNote === (selectedReport.adminNote || "")}
-                                    className="mt-2 w-full flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors text-sm disabled:opacity-50"
+                                    className="mt-2 w-full flex items-center justify-center gap-2 px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary-hover transition-colors text-sm disabled:opacity-50"
                                 >
                                     <MessageSquare size={16} />
                                     Megjegyzés mentése
@@ -682,7 +682,7 @@ export function BugReportsAdmin() {
                     ) : (
                         <div className="h-full flex flex-col items-center justify-center py-12 text-center">
                             <Bug size={48} className="text-gray-700 mb-4" />
-                            <p className="text-gray-500">
+                            <p className="text-muted-foreground">
                                 Válassz ki egy hibajelentést a részletek megtekintéséhez
                             </p>
                         </div>
@@ -705,16 +705,16 @@ export function BugReportsAdmin() {
             {showChangelogModal && selectedReport && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center">
                     <div
-                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                        className="absolute inset-0 bg-secondary backdrop-blur-sm"
                         onClick={() => setShowChangelogModal(false)}
                     />
-                    <div className="relative bg-[#161722] rounded-2xl border border-white/10 p-6 w-full max-w-md shadow-2xl animate-fade-in">
-                        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <div className="relative bg-[#121A22] rounded-2xl border border-border p-6 w-full max-w-md shadow-2xl animate-fade-in">
+                        <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
                             <FileText className="text-green-400" size={20} />
                             Changelog bejegyzés
                         </h3>
 
-                        <p className="text-sm text-gray-400 mb-4">
+                        <p className="text-sm text-muted-foreground mb-4">
                             Az alábbi leírás kerül a changelog-ba PATCH frissítésként:
                         </p>
 
@@ -722,21 +722,21 @@ export function BugReportsAdmin() {
                             type="text"
                             value={changelogDescription}
                             onChange={(e) => setChangelogDescription(e.target.value)}
-                            className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-primary/50 mb-4"
+                            className="w-full px-4 py-3 bg-secondary border border-border rounded-lg text-foreground placeholder-gray-600 focus:outline-none focus:border-primary/50 mb-4"
                             placeholder="🐛 Hiba leírása..."
                         />
 
                         <div className="flex gap-3">
                             <button
                                 onClick={() => setShowChangelogModal(false)}
-                                className="flex-1 px-4 py-2 border border-white/10 text-gray-400 rounded-lg hover:bg-white/5 transition-colors"
+                                className="flex-1 px-4 py-2 border border-border text-muted-foreground rounded-lg hover:bg-secondary transition-colors"
                             >
                                 Mégse
                             </button>
                             <button
                                 onClick={() => handleStatusChange(selectedReport.id, 'RESOLVED', true)}
                                 disabled={isUpdating || !changelogDescription.trim()}
-                                className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                                className="flex-1 px-4 py-2 bg-green-500 text-foreground rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                             >
                                 {isUpdating ? (
                                     <Loader2 size={16} className="animate-spin" />

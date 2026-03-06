@@ -104,12 +104,12 @@ export function NewsEditorSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="sm:max-w-xl w-full overflow-y-auto bg-[#1a1b26] border-l border-white/10 text-white">
+      <SheetContent className="sm:max-w-xl w-full overflow-y-auto bg-[#121A22] border-l border-border text-foreground">
         <SheetHeader>
-          <SheetTitle className="text-white">
+          <SheetTitle className="text-foreground">
             {post ? "Hír szerkesztése" : "Új hír létrehozása"}
           </SheetTitle>
-          <SheetDescription className="text-gray-400">
+          <SheetDescription className="text-muted-foreground">
             {post
               ? "Módosítsd a hír részleteit az alábbi űrlapon."
               : "Töltsd ki az űrlapot az új hír publikálásához."}
@@ -130,7 +130,7 @@ export function NewsEditorSheet({
               value={formData.title}
               onChange={handleChange}
               placeholder="Add meg a hír címét"
-              className="bg-black/20 border-white/10 text-white placeholder:text-gray-500 focus:border-primary/50"
+              className="bg-secondary border-border text-foreground placeholder:text-muted-foreground focus:border-primary/50"
               required
             />
           </div>
@@ -148,7 +148,7 @@ export function NewsEditorSheet({
               value={formData.excerpt}
               onChange={handleChange}
               placeholder="Rövid összefoglaló, ami megjelenik a listában..."
-              className="flex min-h-[80px] w-full rounded-md border border-white/10 bg-black/20 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex min-h-[80px] w-full rounded-md border border-border bg-secondary px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
               rows={3}
             />
           </div>
@@ -166,10 +166,10 @@ export function NewsEditorSheet({
               value={formData.content}
               onChange={handleChange}
               placeholder="A hír tartalma Markdown formátumban..."
-              className="flex min-h-[300px] w-full rounded-md border border-white/10 bg-black/20 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50 font-mono"
+              className="flex min-h-[300px] w-full rounded-md border border-border bg-secondary px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50 font-mono"
               required
             />
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-muted-foreground">
               Tipp: Használj Markdown-t a formázáshoz. (**félkövér**, # címsor,
               stb.)
             </p>
@@ -188,10 +188,10 @@ export function NewsEditorSheet({
               value={formData.coverImage}
               onChange={handleChange}
               placeholder="https://..."
-              className="bg-black/20 border-white/10 text-white placeholder:text-gray-500 focus:border-primary/50"
+              className="bg-secondary border-border text-foreground placeholder:text-muted-foreground focus:border-primary/50"
             />
             {formData.coverImage && (
-              <div className="mt-2 rounded-lg overflow-hidden border border-white/10 h-32 w-full">
+              <div className="mt-2 rounded-lg overflow-hidden border border-border h-32 w-full">
                 <img
                   src={formData.coverImage}
                   alt="Preview"
@@ -209,7 +209,7 @@ export function NewsEditorSheet({
               name="isPublished"
               checked={formData.isPublished}
               onChange={handleCheckboxChange}
-              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary bg-black/20 border-white/10"
+              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary bg-secondary border-border"
             />
             <label
               htmlFor="isPublished"
@@ -224,14 +224,14 @@ export function NewsEditorSheet({
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              className="mr-2 border-white/10 text-gray-300 hover:bg-white/5 hover:text-white bg-transparent"
+              className="mr-2 border-border text-gray-300 hover:bg-secondary hover:text-foreground bg-transparent"
             >
               Mégse
             </Button>
             <Button
               type="submit"
               disabled={loading}
-              className="bg-primary text-white hover:bg-primary/90"
+              className="bg-primary text-foreground hover:bg-primary/90"
             >
               {loading ? "Mentés..." : post ? "Mentés" : "Létrehozás"}
             </Button>

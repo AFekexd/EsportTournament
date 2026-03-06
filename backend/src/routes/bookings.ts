@@ -414,6 +414,42 @@ bookingsRouter.post(
                 }
             }
 
+            // 3.5. Booking Supervisor Validation
+            // Find which hours this booking touches
+            const touchedHours: number[] = [];
+            let currentHour = start.getHours();
+
+            // Start from the beginning of the booking, and for each hour until the end hour (exclusive if minute is 00)
+            const endHourCalculated = end.getMinutes() === 0 ? end.getHours() - 1 : end.getHours();
+            for (let h = currentHour; h <= endHourCalculated; h++) {
+                // handle midnight crossover (though schedule validations likely prevent this anyway)
+                touchedHours.push(h);
+            }
+
+            // Fetch supervisors for the given date and these exact hours
+            const supervisors = await tx.bookingSupervisor.findMany({
+                where: {
+                    date: bookingDate,
+                    hour: { in: touchedHours }
+                }
+            });
+
+            // Map available supervisors
+            const supervisorMap = new Map(supervisors.map(s => [s.hour, s.userId]));
+
+            // Validate each touched hour
+            for (const hour of touchedHours) {
+                const supervisorId = supervisorMap.get(hour);
+
+                if (!supervisorId) {
+                    throw new ApiError(`Erre az időszakra (${hour}:00) még nincs felelős kijelölve, nem lehet foglalni.`, 400, 'NO_SUPERVISOR');
+                }
+
+                if (supervisorId === user.id) {
+                    throw new ApiError(`Te vagy a felelős a(z) ${hour}:00 órában, nem foglalhatsz gépet.`, 400, 'IS_SUPERVISOR');
+                }
+            }
+
             // 4. Check Computer Availability (Race Condition Protection)
             const computerOverlap = await tx.booking.findFirst({
                 where: {

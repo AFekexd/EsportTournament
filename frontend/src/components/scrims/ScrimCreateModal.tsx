@@ -123,16 +123,16 @@ export function ScrimCreateModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#161722] border border-white/10 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-scale-in">
-        <div className="flex items-center justify-between p-6 border-b border-white/5 bg-white/5">
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-fade-in">
+      <div className="bg-[#121A22] border border-border rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-scale-in">
+        <div className="flex items-center justify-between p-6 border-b border-border bg-secondary">
+          <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
             <Swords className="text-primary" size={20} />
             Új Gyakorló Meccs (Scrim)
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors"
+            className="p-2 hover:bg-secondary/80 rounded-lg text-muted-foreground hover:text-foreground transition-colors"
           >
             <X size={20} />
           </button>
@@ -141,7 +141,7 @@ export function ScrimCreateModal({
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Team Selection */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-400 flex items-center gap-2">
+            <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Users size={16} />
               Válaszd ki a csapatod
             </label>
@@ -151,8 +151,8 @@ export function ScrimCreateModal({
                   <label
                     key={team.id}
                     className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${formData.teamId === team.id
-                      ? "bg-primary/20 border-primary text-white"
-                      : "bg-black/20 border-white/5 text-gray-400 hover:bg-white/5"
+                      ? "bg-primary/20 border-primary text-foreground"
+                      : "bg-secondary border-border text-muted-foreground hover:bg-secondary"
                       }`}
                   >
                     <input
@@ -166,7 +166,7 @@ export function ScrimCreateModal({
                       className="hidden"
                     />
                     <span className="font-bold flex-1">{team.name}</span>
-                    <span className="text-xs uppercase px-2 py-0.5 bg-black/40 rounded text-gray-500">
+                    <span className="text-xs uppercase px-2 py-0.5 bg-secondary rounded text-muted-foreground">
                       {team.currentUserRole || "OWNER"}
                     </span>
                   </label>
@@ -181,7 +181,7 @@ export function ScrimCreateModal({
 
           {/* Game Selection */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-400 flex items-center gap-2">
+            <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Gamepad2 size={16} />
               Játék
             </label>
@@ -190,7 +190,7 @@ export function ScrimCreateModal({
               onChange={(e) =>
                 setFormData({ ...formData, gameId: e.target.value })
               }
-              className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary/50 appearance-none"
+              className="w-full bg-secondary border border-border rounded-xl p-3 text-foreground focus:outline-none focus:border-primary/50 appearance-none"
             >
               <option value="">Válassz játékot...</option>
               {games.map((game) => (
@@ -204,7 +204,7 @@ export function ScrimCreateModal({
           {/* Date & Time */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-400 flex items-center gap-2">
+              <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 <Calendar size={16} />
                 Időpont
               </label>
@@ -214,12 +214,12 @@ export function ScrimCreateModal({
                 onChange={(e) =>
                   setFormData({ ...formData, scheduledAt: e.target.value })
                 }
-                className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary/50 [color-scheme:dark]"
+                className="w-full bg-secondary border border-border rounded-xl p-3 text-foreground focus:outline-none focus:border-primary/50 [color-scheme:dark]"
                 min={new Date().toISOString().slice(0, 16)}
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-400 flex items-center gap-2">
+              <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 <Clock size={16} />
                 Időtartam (perc)
               </label>
@@ -235,14 +235,14 @@ export function ScrimCreateModal({
                     durationMinutes: parseInt(e.target.value),
                   })
                 }
-                className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary/50"
+                className="w-full bg-secondary border border-border rounded-xl p-3 text-foreground focus:outline-none focus:border-primary/50"
               />
             </div>
           </div>
 
           {/* Notes */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-400 flex items-center gap-2">
+            <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <MessageSquare size={16} />
               Megjegyzés (pl. rank elvárás)
             </label>
@@ -251,7 +251,7 @@ export function ScrimCreateModal({
               onChange={(e) =>
                 setFormData({ ...formData, notes: e.target.value })
               }
-              className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary/50 min-h-[80px] resize-none"
+              className="w-full bg-secondary border border-border rounded-xl p-3 text-foreground focus:outline-none focus:border-primary/50 min-h-[80px] resize-none"
               placeholder="Pl. Gold/Plat rank, BO3..."
             />
           </div>
@@ -260,14 +260,14 @@ export function ScrimCreateModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 hover:text-white transition-colors"
+              className="px-5 py-2.5 rounded-xl hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
             >
               Mégse
             </button>
             <button
               type="submit"
               disabled={loading || !formData.teamId}
-              className="px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20"
+              className="px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-foreground font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20"
             >
               {loading ? "Létrehozás..." : "Meccs kiírása"}
             </button>

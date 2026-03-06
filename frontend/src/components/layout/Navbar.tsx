@@ -29,9 +29,9 @@ const getRoleIcon = (role: string) => {
     case "ADMIN":
       return <Crown size={12} className="text-yellow-400" />;
     case "MODERATOR":
-      return <Shield size={12} className="text-blue-400" />;
+      return <Shield size={12} className="text-primary" />;
     case "ORGANIZER":
-      return <Star size={12} className="text-purple-400" />;
+      return <Star size={12} className="text-primary" />;
     default:
       return null;
   }
@@ -42,9 +42,9 @@ const getRoleColor = (role: string) => {
     case "ADMIN":
       return "bg-yellow-500/20 text-yellow-300 border-yellow-500/30";
     case "MODERATOR":
-      return "bg-blue-500/20 text-blue-300 border-blue-500/30";
+      return "bg-primary/30 text-blue-300 border-primary/20";
     case "ORGANIZER":
-      return "bg-purple-500/20 text-purple-300 border-purple-500/30";
+      return "bg-primary/30 text-purple-300 border-primary/20";
     default:
       return "bg-gray-500/20 text-gray-300 border-gray-500/30";
   }
@@ -150,10 +150,10 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 w-full">
-      <div className="relative flex h-16 items-center justify-between border-b border-white/5 bg-background/60 px-4 md:px-6 backdrop-blur-xl supports-[backdrop-filter]:bg-background/20">
+      <div className="relative flex h-16 items-center justify-between border-b border-border bg-background/60 px-4 md:px-6 backdrop-blur-xl supports-[backdrop-filter]:bg-background/20">
         <div className="flex items-center gap-4">
           <button
-            className={`flex md:hidden h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-white/10 hover:text-white`}
+            className={`flex md:hidden h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-secondary/80 hover:text-foreground`}
             onClick={() => dispatch(toggleSidebar())}
             aria-label={isOpen ? "Collapse sidebar" : "Expand sidebar"}
           >
@@ -164,7 +164,7 @@ export function Navbar() {
         <div className="flex items-center gap-4">
           <button
             onClick={() => dispatch(toggleSearch())}
-            className="flex h-9 w-9 items-center justify-center rounded-full text-gray-400 transition-all hover:bg-white/10 hover:text-white"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-all hover:bg-secondary/80 hover:text-foreground"
             aria-label="Search (Ctrl+K)"
             title="Keresés (Ctrl+K)"
           >
@@ -188,13 +188,13 @@ export function Navbar() {
           </button>
 
           {isLoading ? (
-            <div className="h-9 w-24 animate-pulse rounded-full bg-white/5" />
+            <div className="h-9 w-24 animate-pulse rounded-full bg-secondary" />
           ) : isAuthenticated && user ? (
             <>
               <div className="relative" ref={notificationRef}>
                 <button
                   onClick={handleNotificationClick}
-                  className="group relative flex h-9 w-9 items-center justify-center rounded-full border border-white/5 bg-white/5 transition-all hover:border-primary/50 hover:bg-primary/10 hover:text-primary"
+                  className="group relative flex h-9 w-9 items-center justify-center rounded-full border border-border bg-secondary transition-all hover:border-primary/50 hover:bg-primary/10 hover:text-primary"
                   aria-label="Notifications"
                 >
                   <Bell
@@ -202,7 +202,7 @@ export function Navbar() {
                     className="text-muted-foreground transition-colors group-hover:text-primary"
                   />
                   {unreadCount > 0 && (
-                    <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-[0_0_10px_rgba(139,92,246,0.5)]">
+                    <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-foreground shadow-[0_0_10px_rgba(139,92,246,0.5)]">
                       {unreadCount > 9 ? "9+" : unreadCount}
                     </span>
                   )}
@@ -210,13 +210,13 @@ export function Navbar() {
 
                 {/* Notification Dropdown */}
                 {showNotifications && (
-                  <div className="fixed inset-x-4 top-20 z-50 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 w-auto sm:w-80 rounded-xl border border-white/10 bg-[#1a1b26] shadow-xl shadow-black/50 overflow-hidden animate-in slide-in-from-top-2 duration-200">
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-white/5">
-                      <h3 className="font-semibold text-white">Értesítések</h3>
+                  <div className="fixed inset-x-4 top-20 z-50 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 w-auto sm:w-80 rounded-xl border border-border bg-[#121A22] shadow-xl shadow-black/50 overflow-hidden animate-in slide-in-from-top-2 duration-200">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+                      <h3 className="font-semibold text-foreground">Értesítések</h3>
                       {notifications.length > 0 && (
                         <button
                           onClick={handleDeleteAll}
-                          className="text-gray-400 hover:text-red-400 transition-colors p-2 rounded-md hover:bg-white/5"
+                          className="text-muted-foreground hover:text-red-400 transition-colors p-2 rounded-md hover:bg-secondary"
                           title="Összes törlése"
                         >
                           <Trash2 size={16} />
@@ -226,7 +226,7 @@ export function Navbar() {
 
                     <div className="max-h-[300px] overflow-y-auto">
                       {notificationsLoading ? (
-                        <div className="p-4 text-center text-gray-400 text-sm">
+                        <div className="p-4 text-center text-muted-foreground text-sm">
                           Betöltés...
                         </div>
                       ) : notifications.length > 0 ? (
@@ -234,7 +234,7 @@ export function Navbar() {
                           {notifications.slice(0, 5).map((notification) => (
                             <div
                               key={notification.id}
-                              className={`relative group transition-colors hover:bg-white/5 ${!notification.read ? "bg-primary/5" : ""
+                              className={`relative group transition-colors hover:bg-secondary ${!notification.read ? "bg-primary/5" : ""
                                 }`}
                             >
                               <Link
@@ -257,8 +257,8 @@ export function Navbar() {
                                   <div className="flex-1 min-w-0">
                                     <p
                                       className={`text-sm font-semibold mb-0.5 ${!notification.read
-                                        ? "text-white"
-                                        : "text-gray-400"
+                                        ? "text-foreground"
+                                        : "text-muted-foreground"
                                         }`}
                                     >
                                       {notification.title}
@@ -266,12 +266,12 @@ export function Navbar() {
                                     <p
                                       className={`text-sm ${!notification.read
                                         ? "text-gray-300"
-                                        : "text-gray-500"
+                                        : "text-muted-foreground"
                                         } pr-6 break-words`}
                                     >
                                       {formatNotificationMessage(notification.message)}
                                     </p>
-                                    <p className="text-xs text-gray-500 mt-1">
+                                    <p className="text-xs text-muted-foreground mt-1">
                                       {new Date(
                                         notification.createdAt,
                                       ).toLocaleString("hu-HU", {
@@ -288,7 +288,7 @@ export function Navbar() {
                                 onClick={(e) =>
                                   handleDeleteOne(e, notification.id)
                                 }
-                                className="absolute right-2 top-3 p-1.5 rounded-full text-gray-500 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 hover:text-red-400 transition-all z-10"
+                                className="absolute right-2 top-3 p-1.5 rounded-full text-muted-foreground opacity-0 group-hover:opacity-100 hover:bg-red-500/10 hover:text-red-400 transition-all z-10"
                                 title="Törlés"
                               >
                                 <Trash2 size={14} />
@@ -297,7 +297,7 @@ export function Navbar() {
                           ))}
                         </div>
                       ) : (
-                        <div className="p-8 text-center text-gray-500 text-sm">
+                        <div className="p-8 text-center text-muted-foreground text-sm">
                           Nincs új értesítés
                         </div>
                       )}
@@ -305,7 +305,7 @@ export function Navbar() {
                     <Link
                       to="/notifications"
                       onClick={() => setShowNotifications(false)}
-                      className="block w-full border-t border-white/5 bg-white/5 px-4 py-2 text-center text-xs font-medium text-primary transition-colors hover:bg-white/10"
+                      className="block w-full border-t border-border bg-secondary px-4 py-2 text-center text-xs font-medium text-primary transition-colors hover:bg-secondary/80"
                     >
                       Összes megtekintése
                     </Link>
@@ -343,7 +343,7 @@ export function Navbar() {
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-zinc-900 font-bold text-white">
+                        <div className="flex h-full w-full items-center justify-center bg-zinc-900 font-bold text-foreground">
                           {(user.displayName || user.username)
                             .charAt(0)
                             .toUpperCase()}
@@ -353,7 +353,7 @@ export function Navbar() {
                   </div>
                 </Link>
                 <button
-                  className="flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-all hover:bg-white/10 hover:text-destructive"
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-all hover:bg-secondary/80 hover:text-destructive"
                   onClick={logout}
                   aria-label="Logout"
                 >
@@ -363,7 +363,7 @@ export function Navbar() {
             </>
           ) : (
             <button
-              className="inline-flex h-9 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-accent px-5 py-2 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:scale-105 hover:shadow-primary/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+              className="inline-flex h-9 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-accent px-5 py-2 text-sm font-bold text-foreground shadow-lg shadow-primary/20 transition-all hover:scale-105 hover:shadow-primary/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
               onClick={login}
             >
               <LogIn size={16} />

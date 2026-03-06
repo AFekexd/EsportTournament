@@ -152,35 +152,35 @@ export const AdminIncidents = () => {
   return (
     <div className="space-y-8 pb-20">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div className="bg-[#161722] border border-white/5 rounded-2xl p-6">
-          <h3 className="text-sm font-medium text-gray-400 mb-2">
+        <div className="bg-[#121A22] border border-border rounded-2xl p-6">
+          <h3 className="text-sm font-medium text-muted-foreground mb-2">
             Nyitott Ügyek
           </h3>
-          <div className="text-3xl font-bold text-white">
+          <div className="text-3xl font-bold text-foreground">
             {incidents.filter((i) => i.status === "OPEN").length}
           </div>
         </div>
-        <div className="bg-[#161722] border border-white/5 rounded-2xl p-6">
-          <h3 className="text-sm font-medium text-gray-400 mb-2">
+        <div className="bg-[#121A22] border border-border rounded-2xl p-6">
+          <h3 className="text-sm font-medium text-muted-foreground mb-2">
             Folyamatban
           </h3>
-          <div className="text-3xl font-bold text-white">
+          <div className="text-3xl font-bold text-foreground">
             {incidents.filter((i) => i.status === "IN_PROGRESS").length}
           </div>
         </div>
 
         {/* Settings */}
-        <div className="lg:col-span-2 bg-[#161722] border border-blue-500/20 rounded-2xl p-6 relative">
+        <div className="lg:col-span-2 bg-[#121A22] border border-primary/20 rounded-2xl p-6 relative">
           <div className="relative z-10 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div>
-              <h3 className="flex items-center gap-2 text-sm font-medium text-blue-400 mb-1">
+              <h3 className="flex items-center gap-2 text-sm font-medium text-primary mb-1">
                 <Settings className="w-4 h-4" /> Értesítési Beállítások
               </h3>
-              <div className="text-white font-medium">
+              <div className="text-foreground font-medium">
                 {handler ? (
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-400">Kezelő:</span>
-                    <div className="flex items-center gap-2 bg-white/10 px-2 py-1 rounded-lg">
+                    <span className="text-muted-foreground">Kezelő:</span>
+                    <div className="flex items-center gap-2 bg-secondary/80 px-2 py-1 rounded-lg">
                       {handler.avatarUrl && (
                         <img
                           src={handler.avatarUrl}
@@ -191,7 +191,7 @@ export const AdminIncidents = () => {
                     </div>
                   </div>
                 ) : (
-                  <span className="text-gray-400">
+                  <span className="text-muted-foreground">
                     Minden admin értesítést kap (Broadcast)
                   </span>
                 )}
@@ -201,7 +201,7 @@ export const AdminIncidents = () => {
               {handler && (
                 <button
                   onClick={() => handleSetHandler(null)}
-                  className="px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm text-white transition-colors"
+                  className="px-3 py-1.5 bg-secondary hover:bg-secondary/80 border border-border rounded-lg text-sm text-foreground transition-colors"
                 >
                   Visszaállítás mindenkire
                 </button>
@@ -209,7 +209,7 @@ export const AdminIncidents = () => {
               <div className="relative">
                 <button
                   onClick={() => setShowSelector(!showSelector)}
-                  className="px-3 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 rounded-lg text-sm text-blue-400 transition-colors"
+                  className="px-3 py-1.5 bg-primary/20 hover:bg-primary/30 border border-primary/20 rounded-lg text-sm text-primary transition-colors"
                 >
                   Váltás...
                 </button>
@@ -223,8 +223,8 @@ export const AdminIncidents = () => {
                 )}
 
                 {showSelector && (
-                  <div className="absolute right-0 top-full mt-2 w-64 bg-[#1f212e] border border-white/10 rounded-xl shadow-xl p-3 z-50 animate-in fade-in zoom-in-95 duration-200">
-                    <p className="text-xs text-gray-500 mb-2">
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-[#1f212e] border border-border rounded-xl shadow-xl p-3 z-50 animate-in fade-in zoom-in-95 duration-200">
+                    <p className="text-xs text-muted-foreground mb-2">
                       Válassz kezelőt (Adminok):
                     </p>
                     <div className="max-h-48 overflow-y-auto space-y-1">
@@ -232,27 +232,27 @@ export const AdminIncidents = () => {
                         <button
                           key={admin.id}
                           onClick={() => handleSetHandler(admin.id)}
-                          className="w-full flex items-center gap-2 p-2 hover:bg-white/5 rounded-lg text-left transition-colors"
+                          className="w-full flex items-center gap-2 p-2 hover:bg-secondary rounded-lg text-left transition-colors"
                         >
-                          <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center overflow-hidden flex-shrink-0">
+                          <div className="w-6 h-6 rounded-full bg-secondary/80 flex items-center justify-center overflow-hidden flex-shrink-0">
                             {admin.avatarUrl ? (
                               <img
                                 src={admin.avatarUrl}
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <User size={12} className="text-gray-400" />
+                              <User size={12} className="text-muted-foreground" />
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="text-xs text-white font-medium truncate">
+                            <div className="text-xs text-foreground font-medium truncate">
                               {admin.displayName || admin.username}
                             </div>
                           </div>
                         </button>
                       ))}
                       {admins.length === 0 && (
-                        <div className="text-xs text-gray-500 text-center py-2">
+                        <div className="text-xs text-muted-foreground text-center py-2">
                           Nincs elérhető admin
                         </div>
                       )}
@@ -265,16 +265,16 @@ export const AdminIncidents = () => {
         </div>
       </div>
 
-      <div className="bg-[#161722] border border-white/5 rounded-2xl overflow-hidden">
-        <div className="p-6 border-b border-white/5">
-          <h2 className="text-xl font-bold text-white">
+      <div className="bg-[#121A22] border border-border rounded-2xl overflow-hidden">
+        <div className="p-6 border-b border-border">
+          <h2 className="text-xl font-bold text-foreground">
             Bejelentett Incidensek
           </h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-white/5 border-b border-white/5 text-gray-400 text-xs uppercase">
+              <tr className="bg-secondary border-b border-border text-muted-foreground text-xs uppercase">
                 <th className="p-4">Dátum</th>
                 <th className="p-4">Prioritás</th>
                 <th className="p-4">Tárgy</th>
@@ -287,13 +287,13 @@ export const AdminIncidents = () => {
             <tbody className="divide-y divide-white/5">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="p-8 text-center text-gray-500">
+                  <td colSpan={7} className="p-8 text-center text-muted-foreground">
                     <Loader2 className="animate-spin mx-auto" />
                   </td>
                 </tr>
               ) : incidents.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-8 text-center text-gray-500">
+                  <td colSpan={7} className="p-8 text-center text-muted-foreground">
                     Nincs megjeleníthető adat.
                   </td>
                 </tr>
@@ -301,9 +301,9 @@ export const AdminIncidents = () => {
                 incidents.map((incident) => (
                   <tr
                     key={incident.id}
-                    className="hover:bg-white/5 transition-colors"
+                    className="hover:bg-secondary transition-colors"
                   >
-                    <td className="p-4 text-sm text-gray-400">
+                    <td className="p-4 text-sm text-muted-foreground">
                       {new Date(incident.createdAt).toLocaleDateString()} <br />
                       {new Date(incident.createdAt).toLocaleTimeString([], {
                         hour: "2-digit",
@@ -312,33 +312,32 @@ export const AdminIncidents = () => {
                     </td>
                     <td className="p-4">
                       <span
-                        className={`px-2 py-1 rounded text-xs font-bold ${
-                          incident.priority === "CRITICAL"
+                        className={`px-2 py-1 rounded text-xs font-bold ${incident.priority === "CRITICAL"
                             ? "bg-red-500/20 text-red-500"
                             : incident.priority === "HIGH"
                               ? "bg-orange-500/20 text-orange-500"
                               : incident.priority === "MEDIUM"
                                 ? "bg-yellow-500/20 text-yellow-500"
                                 : "bg-green-500/20 text-green-500"
-                        }`}
+                          }`}
                       >
                         {incident.priority}
                       </span>
                     </td>
                     <td className="p-4">
-                      <div className="font-medium text-white">
+                      <div className="font-medium text-foreground">
                         {incident.title}
                       </div>
-                      <div className="text-xs text-gray-500 truncate max-w-[200px]">
+                      <div className="text-xs text-muted-foreground truncate max-w-[200px]">
                         {incident.description}
                       </div>
                     </td>
-                    <td className="p-4 text-sm text-gray-400">
+                    <td className="p-4 text-sm text-muted-foreground">
                       {incident.computer?.name || "-"}
                     </td>
                     <td className="p-4">
                       <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center overflow-hidden">
+                        <div className="w-6 h-6 rounded-full bg-secondary/80 flex items-center justify-center overflow-hidden">
                           {incident.reporter.avatarUrl ? (
                             <img
                               src={incident.reporter.avatarUrl}
@@ -356,15 +355,14 @@ export const AdminIncidents = () => {
                     </td>
                     <td className="p-4">
                       <span
-                        className={`px-2 py-1 rounded text-xs font-bold ${
-                          incident.status === "OPEN"
-                            ? "bg-red-500 text-white"
+                        className={`px-2 py-1 rounded text-xs font-bold ${incident.status === "OPEN"
+                            ? "bg-red-500 text-foreground"
                             : incident.status === "IN_PROGRESS"
-                              ? "bg-blue-500 text-white"
+                              ? "bg-blue-500 text-foreground"
                               : incident.status === "RESOLVED"
-                                ? "bg-green-500 text-white"
+                                ? "bg-green-500 text-foreground"
                                 : "bg-gray-700 text-gray-300"
-                        }`}
+                          }`}
                       >
                         {incident.status}
                       </span>
@@ -376,7 +374,7 @@ export const AdminIncidents = () => {
                           setManageStatus(incident.status);
                           setManageNote(incident.resolutionNote || "");
                         }}
-                        className="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-xs font-medium text-white transition-colors"
+                        className="px-3 py-1.5 bg-secondary hover:bg-secondary/80 rounded-lg text-xs font-medium text-foreground transition-colors"
                       >
                         Kezelés
                       </button>
@@ -391,29 +389,29 @@ export const AdminIncidents = () => {
 
       {/* Manage Modal (Custom implementation since Dialog is missing) */}
       {selectedIncident && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in">
-          <div className="bg-[#161722] border border-white/10 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
-            <div className="p-6 border-b border-white/5 flex justify-between items-center">
-              <h3 className="text-xl font-bold text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 animate-in fade-in">
+          <div className="bg-[#121A22] border border-border rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
+            <div className="p-6 border-b border-border flex justify-between items-center">
+              <h3 className="text-xl font-bold text-foreground">
                 Incidens Kezelése
               </h3>
               <button
                 onClick={() => setSelectedIncident(null)}
-                className="text-gray-400 hover:text-white"
+                className="text-muted-foreground hover:text-foreground"
               >
                 <XCircle />
               </button>
             </div>
             <div className="p-6 space-y-4">
-              <div className="bg-white/5 p-4 rounded-xl border border-white/5">
+              <div className="bg-secondary p-4 rounded-xl border border-border">
                 <div className="text-sm text-gray-300 mb-2 font-medium">
                   {selectedIncident.reporter.displayName} üzenete:
                 </div>
-                <p className="text-gray-400 italic">
+                <p className="text-muted-foreground italic">
                   "{selectedIncident.description}"
                 </p>
                 {selectedIncident.computer && (
-                  <div className="mt-2 text-xs flex items-center gap-1 text-blue-400">
+                  <div className="mt-2 text-xs flex items-center gap-1 text-primary">
                     <Monitor size={12} /> {selectedIncident.computer.name}
                   </div>
                 )}
@@ -424,7 +422,7 @@ export const AdminIncidents = () => {
                   Státusz
                 </label>
                 <select
-                  className="w-full px-4 py-3 bg-black/20 border border-white/10 rounded-xl text-white outline-none focus:border-purple-500/50"
+                  className="w-full px-4 py-3 bg-secondary border border-border rounded-xl text-foreground outline-none focus:border-purple-500/50"
                   value={manageStatus}
                   onChange={(e) => setManageStatus(e.target.value)}
                 >
@@ -448,24 +446,24 @@ export const AdminIncidents = () => {
                   Megjegyzés / Válasz
                 </label>
                 <textarea
-                  className="w-full px-4 py-3 bg-black/20 border border-white/10 rounded-xl text-white outline-none focus:border-purple-500/50 resize-none h-32"
+                  className="w-full px-4 py-3 bg-secondary border border-border rounded-xl text-foreground outline-none focus:border-purple-500/50 resize-none h-32"
                   placeholder="Üzenet a felhasználónak..."
                   value={manageNote}
                   onChange={(e) => setManageNote(e.target.value)}
                 />
               </div>
             </div>
-            <div className="p-6 border-t border-white/5 flex justify-end gap-3 bg-black/20">
+            <div className="p-6 border-t border-border flex justify-end gap-3 bg-secondary">
               <button
                 onClick={() => setSelectedIncident(null)}
-                className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+                className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors"
               >
                 Mégse
               </button>
               <button
                 onClick={handleUpdate}
                 disabled={updating}
-                className="px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-xl font-medium hover:brightness-110 shadow-lg shadow-purple-500/20 disabled:opacity-50 flex items-center gap-2"
+                className="px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-foreground rounded-xl font-medium hover:brightness-110 shadow-lg shadow-purple-500/20 disabled:opacity-50 flex items-center gap-2"
               >
                 {updating ? (
                   <Loader2 className="animate-spin" size={16} />

@@ -70,6 +70,7 @@ export const ModelName = {
   Log: 'Log',
   Waitlist: 'Waitlist',
   BookingSchedule: 'BookingSchedule',
+  BookingSupervisor: 'BookingSupervisor',
   ClientVersion: 'ClientVersion',
   ChangeRequest: 'ChangeRequest',
   Changelog: 'Changelog',
@@ -429,6 +430,17 @@ export const BookingScheduleScalarFieldEnum = {
 } as const
 
 export type BookingScheduleScalarFieldEnum = (typeof BookingScheduleScalarFieldEnum)[keyof typeof BookingScheduleScalarFieldEnum]
+
+
+export const BookingSupervisorScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  hour: 'hour',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type BookingSupervisorScalarFieldEnum = (typeof BookingSupervisorScalarFieldEnum)[keyof typeof BookingSupervisorScalarFieldEnum]
 
 
 export const ClientVersionScalarFieldEnum = {

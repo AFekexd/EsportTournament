@@ -52,7 +52,7 @@ const statusLabels: Record<
 > = {
   DRAFT: {
     label: "Tervezet",
-    class: "bg-gray-500/20 text-gray-400 border-gray-500/50",
+    class: "bg-gray-500/20 text-muted-foreground border-gray-500/50",
     icon: Clock,
   },
   REGISTRATION: {
@@ -67,7 +67,7 @@ const statusLabels: Record<
   },
   COMPLETED: {
     label: "Befejezett",
-    class: "bg-blue-500/20 text-blue-400 border-blue-500/50",
+    class: "bg-primary/30 text-primary border-blue-500/50",
     icon: Trophy,
   },
   CANCELLED: {
@@ -447,7 +447,7 @@ export function TournamentDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-gray-400 animate-pulse">Betöltés...</p>
+        <p className="text-muted-foreground animate-pulse">Betöltés...</p>
       </div>
     );
   }
@@ -497,15 +497,15 @@ export function TournamentDetailPage() {
               className="w-full h-full object-cover filter brightness-[0.4] group-hover:brightness-[0.45] transition-all duration-700"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-[#0f1016] to-[#1a1b26]" />
+            <div className="w-full h-full bg-gradient-to-br from-card to-background" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0f1016] via-[#0f1016]/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-card via-background to-transparent" />
         </div>
 
         <div className="container mx-auto px-4 h-full relative flex flex-col justify-end pb-8">
           <Link
             to="/tournaments"
-            className="absolute top-8 left-4 md:left-4 inline-flex items-center gap-2 text-white/70 hover:text-white bg-black/40 hover:bg-black/60 backdrop-blur-md px-3 py-2 md:px-4 md:py-2 rounded-full border border-white/5 transition-all text-sm font-medium z-20"
+            className="absolute top-8 left-4 md:left-4 inline-flex items-center gap-2 text-white/70 hover:text-foreground bg-secondary hover:bg-secondary backdrop-blur-md px-3 py-2 md:px-4 md:py-2 rounded-full border border-border transition-all text-sm font-medium z-20"
           >
             <ArrowLeft size={16} />
             <span className="hidden md:inline">Vissza a versenyekhez</span>
@@ -518,7 +518,7 @@ export function TournamentDetailPage() {
             {user?.role === "ADMIN" && (
               <Button
                 onClick={() => setShowStatusModal(true)}
-                className="bg-black/40 hover:bg-black/60 border border-white/10 text-white font-medium h-10 w-10 p-0 rounded-full backdrop-blur-md transition-all"
+                className="bg-secondary hover:bg-secondary border border-border text-foreground font-medium h-10 w-10 p-0 rounded-full backdrop-blur-md transition-all"
                 title="Státusz módosítása"
               >
                 <Edit2 size={16} />
@@ -531,7 +531,7 @@ export function TournamentDetailPage() {
                 navigator.clipboard.writeText(shareUrl);
                 toast.success("Link másolva!");
               }}
-              className="bg-black/40 hover:bg-black/60 border border-white/10 text-white font-medium h-10 w-10 p-0 rounded-full backdrop-blur-md transition-all"
+              className="bg-secondary hover:bg-secondary border border-border text-foreground font-medium h-10 w-10 p-0 rounded-full backdrop-blur-md transition-all"
               title="Megosztás"
             >
               <Share2 size={16} />
@@ -574,7 +574,7 @@ export function TournamentDetailPage() {
               <div className="flex flex-wrap items-center gap-3">
                 <span
                   className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md shadow-lg ${statusLabels[currentTournament.status]?.class ||
-                    "bg-gray-500/20 text-gray-400 border-gray-500/50"
+                    "bg-gray-500/20 text-muted-foreground border-gray-500/50"
                     }`}
                 >
                   <StatusIcon size={14} />
@@ -583,12 +583,12 @@ export function TournamentDetailPage() {
                 </span>
 
                 {currentTournament.game && (
-                  <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-white border border-white/10 backdrop-blur-md shadow-lg">
+                  <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-secondary/80 text-foreground border border-border backdrop-blur-md shadow-lg">
                     {currentTournament.game.name}
                   </span>
                 )}
 
-                <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 backdrop-blur-md shadow-lg">
+                <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-primary/30 text-indigo-300 border border-primary/20 backdrop-blur-md shadow-lg">
                   <Users size={14} />
                   {requiredTeamSize}v{requiredTeamSize}
                 </span>
@@ -605,7 +605,7 @@ export function TournamentDetailPage() {
               </div>
 
               <div>
-                <h1 className="text-3xl md:text-6xl font-black text-white leading-tight drop-shadow-2xl tracking-tight mb-4">
+                <h1 className="text-3xl md:text-6xl font-black text-foreground leading-tight drop-shadow-2xl tracking-tight mb-4">
                   {currentTournament.name}
                 </h1>
 
@@ -642,7 +642,7 @@ export function TournamentDetailPage() {
                   !isAlreadyRegistered && (
                     <Button
                       onClick={() => setShowRegisterModal(true)}
-                      className="bg-primary hover:bg-primary-hover text-white font-bold px-8 py-2.5 rounded-xl shadow-lg shadow-primary/20 hover:scale-105 transition-all w-full sm:w-auto"
+                      className="bg-primary hover:bg-primary-hover text-foreground font-bold px-8 py-2.5 rounded-xl shadow-lg shadow-primary/20 hover:scale-105 transition-all w-full sm:w-auto"
                     >
                       <UserPlus size={18} className="mr-2" />
                       Nevezés
@@ -673,7 +673,7 @@ export function TournamentDetailPage() {
       {/* Stream Section */}
       {currentTournament.streamUrl && (
         <div className="container mx-auto px-4 mb-4 animate-fade-in-up">
-          <div className="relative w-full pt-[56.25%] bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-primary/10">
+          <div className="relative w-full pt-[56.25%] bg-black rounded-2xl overflow-hidden border border-border shadow-2xl shadow-primary/10">
             {/* Twitch */}
             {currentTournament.streamUrl.includes("twitch.tv") && (
               <iframe
@@ -709,13 +709,13 @@ export function TournamentDetailPage() {
               !currentTournament.streamUrl.includes("youtube.com") &&
               !currentTournament.streamUrl.includes("youtu.be") &&
               !currentTournament.streamUrl.includes("tiktok.com") && (
-                <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-gray-400 gap-4">
+                <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-muted-foreground gap-4">
                   <p>Ismeretlen stream szolgáltató</p>
                   <a
                     href={currentTournament.streamUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                    className="px-6 py-2 bg-primary text-foreground rounded-lg hover:bg-primary/90 transition-colors"
                   >
                     Megnyitás új lapon
                   </a>
@@ -729,15 +729,15 @@ export function TournamentDetailPage() {
         {/* Stats Grid */}
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <div className="bg-[#1a1b26] p-6 rounded-xl border border-white/5 shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group">
+          <div className="bg-[#121A22] p-6 rounded-xl border border-border shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group">
             <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
               <Trophy size={24} />
             </div>
             <div>
-              <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-1">
                 Formátum
               </p>
-              <p className="text-lg font-bold text-white">
+              <p className="text-lg font-bold text-foreground">
                 {currentTournament.format === "SINGLE_ELIMINATION"
                   ? "Egyenes kieséses"
                   : currentTournament.format === "DOUBLE_ELIMINATION"
@@ -749,15 +749,15 @@ export function TournamentDetailPage() {
             </div>
           </div>
 
-          <div className="bg-[#1a1b26] p-6 rounded-xl border border-white/5 shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group">
+          <div className="bg-[#121A22] p-6 rounded-xl border border-border shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group">
             <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
               <Clock size={24} />
             </div>
             <div>
-              <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-1">
                 Jelentkezési határidő
               </p>
-              <p className="text-lg font-bold text-white">
+              <p className="text-lg font-bold text-foreground">
                 {regDeadline.toLocaleString("hu-HU", {
                   year: "numeric",
                   month: "long",
@@ -770,15 +770,15 @@ export function TournamentDetailPage() {
           </div>
 
           {currentTournament.endDate && (
-            <div className="bg-[#1a1b26] p-6 rounded-xl border border-white/5 shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group">
+            <div className="bg-[#121A22] p-6 rounded-xl border border-border shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group">
               <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
                 <Calendar size={24} />
               </div>
               <div>
-                <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-1">
                   Befejezés
                 </p>
-                <p className="text-lg font-bold text-white">
+                <p className="text-lg font-bold text-foreground">
                   {new Date(currentTournament.endDate).toLocaleString("hu-HU", {
                     year: "numeric",
                     month: "long",
@@ -792,15 +792,15 @@ export function TournamentDetailPage() {
           )}
 
           {(currentTournament as any).prizePool && (
-            <div className="bg-[#1a1b26] p-6 rounded-xl border border-white/5 shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group">
+            <div className="bg-[#121A22] p-6 rounded-xl border border-border shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group">
               <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
                 <Award size={24} />
               </div>
               <div>
-                <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-1">
                   Díjazás
                 </p>
-                <p className="text-lg font-bold text-white">
+                <p className="text-lg font-bold text-foreground">
                   {(currentTournament as any).prizePool}
                 </p>
               </div>
@@ -811,17 +811,17 @@ export function TournamentDetailPage() {
           {(currentTournament.game?.rules ||
             currentTournament.game?.rulesPdfUrl) && (
               <div
-                className={`bg-[#1a1b26] p-6 rounded-xl border border-white/5 shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group cursor-pointer`}
+                className={`bg-[#121A22] p-6 rounded-xl border border-border shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group cursor-pointer`}
                 onClick={() => setShowViewRulesModal(true)}
               >
                 <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
                   <ScrollText size={24} />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-1">
                     Szabályzat
                   </p>
-                  <p className="text-lg font-bold text-white flex items-center gap-2">
+                  <p className="text-lg font-bold text-foreground flex items-center gap-2">
                     Megtekintés
                     <ArrowRight
                       size={16}
@@ -835,11 +835,11 @@ export function TournamentDetailPage() {
 
         {/* Tabs */}
         <div className="flex justify-center mb-8">
-          <div className="bg-[#1a1b26] p-1 rounded-full border border-white/5 inline-flex overflow-x-auto max-w-full">
+          <div className="bg-[#121A22] p-1 rounded-full border border-border inline-flex overflow-x-auto max-w-full">
             <button
               className={`px-4 md:px-8 py-2 rounded-full text-sm font-bold transition-all ${activeTab === "info"
                 ? "bg-primary text-black shadow-lg"
-                : "text-gray-400 hover:text-white"
+                : "text-muted-foreground hover:text-foreground"
                 }`}
               onClick={() => setActiveTab("info")}
             >
@@ -849,7 +849,7 @@ export function TournamentDetailPage() {
               <button
                 className={`px-4 md:px-8 py-2 rounded-full text-sm font-bold transition-all ${activeTab === "qualifier"
                   ? "bg-primary text-black shadow-lg"
-                  : "text-gray-400 hover:text-white"
+                  : "text-muted-foreground hover:text-foreground"
                   }`}
                 onClick={() => setActiveTab("qualifier")}
               >
@@ -859,7 +859,7 @@ export function TournamentDetailPage() {
             <button
               className={`px-4 md:px-8 py-2 rounded-full text-sm font-bold transition-all ${activeTab === "bracket"
                 ? "bg-primary text-black shadow-lg"
-                : "text-gray-400 hover:text-white"
+                : "text-muted-foreground hover:text-foreground"
                 }`}
               onClick={() => setActiveTab("bracket")}
             >
@@ -873,8 +873,8 @@ export function TournamentDetailPage() {
           <div className="space-y-8">
             {/* Description Section */}
             {currentTournament.description && (
-              <div className="bg-[#1a1b26] p-6 rounded-xl border border-white/5 shadow-lg">
-                <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <div className="bg-[#121A22] p-6 rounded-xl border border-border shadow-lg">
+                <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                   <Info size={20} className="text-primary" />
                   Leírás
                 </h2>
@@ -886,15 +886,15 @@ export function TournamentDetailPage() {
               </div>
             )}
             {/* Participants Section */}
-            <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden">
-              <div className="p-6 border-b border-white/5 flex justify-between items-center">
-                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+            <div className="bg-[#121A22] rounded-xl border border-border overflow-hidden">
+              <div className="p-6 border-b border-border flex justify-between items-center">
+                <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                   <Users size={20} className="text-primary" />
                   {currentTournament.game?.teamSize === 1
                     ? "Regisztrált játékosok"
                     : "Regisztrált résztvevők"}
                 </h2>
-                <span className="bg-white/5 text-gray-400 text-xs px-2 py-1 rounded">
+                <span className="bg-secondary text-muted-foreground text-xs px-2 py-1 rounded">
                   {currentTournament.entries?.length || 0} résztvevő
                 </span>
               </div>
@@ -904,7 +904,7 @@ export function TournamentDetailPage() {
                   currentTournament.entries.length > 0 ? (
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="bg-white/5 border-b border-white/10 text-xs text-gray-400 uppercase tracking-wider">
+                      <tr className="bg-secondary border-b border-border text-xs text-muted-foreground uppercase tracking-wider">
                         <th className="px-4 md:px-6 py-4 font-medium w-20">#</th>
                         <th className="px-4 md:px-6 py-4 font-medium">Résztvevő</th>
                         {(user?.role === "ADMIN" ||
@@ -932,9 +932,9 @@ export function TournamentDetailPage() {
                         return (
                           <tr
                             key={entry.id}
-                            className="group hover:bg-white/5 transition-colors"
+                            className="group hover:bg-secondary transition-colors"
                           >
-                            <td className="px-4 md:px-6 py-4 text-gray-500 font-mono text-sm">
+                            <td className="px-4 md:px-6 py-4 text-muted-foreground font-mono text-sm">
                               #{index + 1}
                             </td>
                             <td className="px-4 md:px-6 py-4">
@@ -942,7 +942,7 @@ export function TournamentDetailPage() {
                                 to={link}
                                 className="flex items-center gap-3 group/link"
                               >
-                                <div className="w-10 h-10 shrink-0 rounded-lg bg-black/30 flex items-center justify-center border border-white/5 overflow-hidden text-primary group-hover/link:border-primary/30 transition-colors">
+                                <div className="w-10 h-10 shrink-0 rounded-lg bg-secondary flex items-center justify-center border border-border overflow-hidden text-primary group-hover/link:border-primary/30 transition-colors">
                                   {avatar ? (
                                     <img
                                       src={avatar}
@@ -955,7 +955,7 @@ export function TournamentDetailPage() {
                                     </span>
                                   )}
                                 </div>
-                                <span className="font-medium text-white group-hover/link:text-primary transition-colors">
+                                <span className="font-medium text-foreground group-hover/link:text-primary transition-colors">
                                   {name}
                                 </span>
                               </Link>
@@ -970,7 +970,7 @@ export function TournamentDetailPage() {
                                       e.stopPropagation();
                                       handleUnregister(entry);
                                     }}
-                                    className="p-2 bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-400 rounded-lg transition-colors md:opacity-0 group-hover:md:opacity-100"
+                                    className="p-2 bg-secondary hover:bg-red-500/20 text-muted-foreground hover:text-red-400 rounded-lg transition-colors md:opacity-0 group-hover:md:opacity-100"
                                     title="Regisztráció törlése"
                                   >
                                     <Trash2 size={16} />
@@ -983,7 +983,7 @@ export function TournamentDetailPage() {
                     </tbody>
                   </table>
                 ) : (
-                  <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+                  <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
                     <Users size={48} className="mb-4 opacity-50" />
                     <p>Még nincsenek regisztrált résztvevők</p>
                   </div>
@@ -996,15 +996,15 @@ export function TournamentDetailPage() {
         {activeTab === "qualifier" && currentTournament.hasQualifier && (
           <div className="space-y-8">
             {/* Qualifier Settings */}
-            <div className="bg-[#1a1b26] p-6 rounded-xl border border-white/5 shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group">
+            <div className="bg-[#121A22] p-6 rounded-xl border border-border shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group">
               <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
                 <Shield size={24} />
               </div>
               <div>
-                <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-1">
                   Selejtező
                 </p>
-                <p className="text-lg font-bold text-white">
+                <p className="text-lg font-bold text-foreground">
                   {currentTournament.qualifierMatches} meccs / min.{" "}
                   {currentTournament.qualifierMinPoints} pont
                 </p>
@@ -1012,9 +1012,9 @@ export function TournamentDetailPage() {
             </div>
 
             {/* Qualifier Results */}
-            <div className="bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden">
-              <div className="p-6 border-b border-white/5 flex justify-between items-center">
-                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+            <div className="bg-[#121A22] rounded-xl border border-border overflow-hidden">
+              <div className="p-6 border-b border-border flex justify-between items-center">
+                <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                   <Award size={20} className="text-primary" />
                   Eredmények
                 </h2>
@@ -1022,7 +1022,7 @@ export function TournamentDetailPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-white/10 text-xs text-gray-400 uppercase tracking-wider">
+                    <tr className="border-b border-border text-xs text-muted-foreground uppercase tracking-wider">
                       <th className="px-4 md:px-6 py-4 font-medium">Kiemelés</th>
                       <th className="px-4 md:px-6 py-4 font-medium">Résztvevő</th>
                       <th className="px-4 md:px-6 py-4 font-medium">Mérkőzések</th>
@@ -1060,7 +1060,7 @@ export function TournamentDetailPage() {
                         const avatar =
                           entry.user?.avatarUrl || entry.team?.logoUrl;
 
-                        let rowClass = "hover:bg-white/5";
+                        let rowClass = "hover:bg-secondary";
                         if (isQualified)
                           rowClass =
                             "bg-green-500/10 hover:bg-green-500/20 border-l-2 border-l-green-500";
@@ -1074,13 +1074,13 @@ export function TournamentDetailPage() {
                             className={`group transition-colors ${rowClass}`}
                           >
                             <td className="px-4 md:px-6 py-4">
-                              <span className="font-mono text-gray-500 bg-white/5 px-2 py-1 rounded">
+                              <span className="font-mono text-muted-foreground bg-secondary px-2 py-1 rounded">
                                 #{entry.seed}
                               </span>
                             </td>
                             <td className="px-4 md:px-6 py-4">
                               <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 shrink-0 rounded bg-gray-800 flex items-center justify-center border border-white/10 overflow-hidden text-xs font-bold text-gray-400">
+                                <div className="w-8 h-8 shrink-0 rounded bg-gray-800 flex items-center justify-center border border-border overflow-hidden text-xs font-bold text-muted-foreground">
                                   {avatar ? (
                                     <img
                                       src={avatar}
@@ -1094,12 +1094,12 @@ export function TournamentDetailPage() {
                                 {entry.user ? (
                                   <Link
                                     to={`/profile/${entry.user.id}`}
-                                    className="font-medium text-white hover:text-primary transition-colors"
+                                    className="font-medium text-foreground hover:text-primary transition-colors"
                                   >
                                     {name}
                                   </Link>
                                 ) : (
-                                  <span className="font-medium text-white">
+                                  <span className="font-medium text-foreground">
                                     {name}
                                   </span>
                                 )}
@@ -1116,7 +1116,7 @@ export function TournamentDetailPage() {
                                       matches: parseInt(e.target.value),
                                     })
                                   }
-                                  className="bg-black/50 border border-white/20 rounded px-3 py-1 text-white text-sm w-20 focus:outline-none focus:border-primary"
+                                  className="bg-secondary border border-border rounded px-3 py-1 text-foreground text-sm w-20 focus:outline-none focus:border-primary"
                                   onClick={(e) => e.stopPropagation()}
                                 />
                               ) : (
@@ -1124,11 +1124,11 @@ export function TournamentDetailPage() {
                                   className={
                                     currentMatches >= targetMatches
                                       ? "text-green-400 font-bold"
-                                      : "text-gray-400"
+                                      : "text-muted-foreground"
                                   }
                                 >
                                   {currentMatches}{" "}
-                                  <span className="text-gray-600 text-xs font-normal">
+                                  <span className="text-muted-foreground text-xs font-normal">
                                     / {targetMatches}
                                   </span>
                                 </span>
@@ -1145,7 +1145,7 @@ export function TournamentDetailPage() {
                                       points: parseInt(e.target.value),
                                     })
                                   }
-                                  className="bg-black/50 border border-white/20 rounded px-3 py-1 text-white text-sm w-20 focus:outline-none focus:border-primary"
+                                  className="bg-secondary border border-border rounded px-3 py-1 text-foreground text-sm w-20 focus:outline-none focus:border-primary"
                                   onClick={(e) => e.stopPropagation()}
                                 />
                               ) : (
@@ -1155,11 +1155,11 @@ export function TournamentDetailPage() {
                                       ? "text-green-400 font-bold"
                                       : isFailed
                                         ? "text-red-400 font-bold"
-                                        : "text-gray-400"
+                                        : "text-muted-foreground"
                                   }
                                 >
                                   {currentPoints}{" "}
-                                  <span className="text-gray-600 text-xs font-normal">
+                                  <span className="text-muted-foreground text-xs font-normal">
                                     / {targetPoints}
                                   </span>
                                 </span>
@@ -1187,7 +1187,7 @@ export function TournamentDetailPage() {
                                       e.stopPropagation();
                                       handleEditEntry(entry);
                                     }}
-                                    className="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded transition-colors inline-flex opacity-0 group-hover:opacity-100"
+                                    className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary/80 rounded transition-colors inline-flex opacity-0 group-hover:opacity-100"
                                     title="Szerkesztés"
                                   >
                                     <Edit2 size={16} />
@@ -1206,11 +1206,11 @@ export function TournamentDetailPage() {
 
         {activeTab === "bracket" && (
           <div
-            className={`bg-[#1a1b26] rounded-xl border border-white/5 overflow-hidden shadow-2xl ${isFullscreen ? "fixed inset-0 z-50 rounded-none" : "relative"
+            className={`bg-[#121A22] rounded-xl border border-border overflow-hidden shadow-2xl ${isFullscreen ? "fixed inset-0 z-50 rounded-none" : "relative"
               }`}
           >
-            <div className="p-4 border-b border-white/5 flex justify-between items-center bg-black/20">
-              <h2 className="text-lg font-bold text-white flex items-center gap-2">
+            <div className="p-4 border-b border-border flex justify-between items-center bg-secondary">
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
                 <Trophy size={18} className="text-primary" />
                 Bracket
               </h2>
@@ -1256,7 +1256,7 @@ export function TournamentDetailPage() {
                           Újragenerálás
                         </button>
                         <button
-                          className="btn btn-error btn-sm text-white"
+                          className="btn btn-error btn-sm text-foreground"
                           onClick={handleDeleteBracket}
                           title="Ágrajz törlése"
                         >
@@ -1267,7 +1267,7 @@ export function TournamentDetailPage() {
                   </>
                 )}
                 <button
-                  className="btn btn-ghost btn-sm text-gray-400 hover:text-white"
+                  className="btn btn-ghost btn-sm text-muted-foreground hover:text-foreground"
                   onClick={toggleFullscreen}
                   title={isFullscreen ? "Kilépés" : "Teljes képernyő"}
                 >
@@ -1287,12 +1287,12 @@ export function TournamentDetailPage() {
             >
               {/* Loading Overlay */}
               {updateLoading && (
-                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-50 flex flex-col items-center justify-center">
+                <div className="absolute inset-0 bg-secondary backdrop-blur-sm z-50 flex flex-col items-center justify-center">
                   <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-                  <p className="text-white font-semibold text-lg">
+                  <p className="text-foreground font-semibold text-lg">
                     Frissítés...
                   </p>
-                  <p className="text-gray-400 text-sm mt-1">
+                  <p className="text-muted-foreground text-sm mt-1">
                     Kérjük várjon, a bracket frissül
                   </p>
                 </div>
@@ -1307,20 +1307,20 @@ export function TournamentDetailPage() {
 
         {showRegisterModal && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4"
             onClick={() => setShowRegisterModal(false)}
           >
             <div
-              className="bg-[#0f1016]/95 backdrop-blur-xl rounded-2xl border border-white/10 shadow-[0_0_50px_-12px_rgba(124,58,237,0.25)] w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+              className="bg-[#121A22]/95 backdrop-blur-xl rounded-2xl border border-border shadow-[0_0_50px_-12px_rgba(124,58,237,0.25)] w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="p-6 border-b border-white/10 flex justify-between items-center bg-gradient-to-r from-primary/10 to-transparent">
-                <h2 className="text-xl font-bold text-white flex items-center gap-3">
+              <div className="p-6 border-b border-border flex justify-between items-center bg-gradient-to-r from-primary/10 to-transparent">
+                <h2 className="text-xl font-bold text-foreground flex items-center gap-3">
                   <UserPlus className="text-primary" size={24} />
                   Csapat regisztrálása
                 </h2>
                 <button
-                  className="text-gray-400 hover:text-white hover:bg-white/10 p-2 rounded-full transition-colors"
+                  className="text-muted-foreground hover:text-foreground hover:bg-secondary/80 p-2 rounded-full transition-colors"
                   onClick={() => setShowRegisterModal(false)}
                 >
                   <X size={20} />
@@ -1328,10 +1328,10 @@ export function TournamentDetailPage() {
               </div>
               <div className="p-6 overflow-y-auto max-h-[70vh]">
                 {(user?.role === "ADMIN" || user?.role === "ORGANIZER") && (
-                  <div className="mb-6 bg-blue-500/10 border border-blue-500/20 p-4 rounded-lg">
+                  <div className="mb-6 bg-primary/20 border border-primary/20 p-4 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
-                      <Shield size={16} className="text-blue-400" />
-                      <span className="text-sm font-bold text-blue-400">
+                      <Shield size={16} className="text-primary" />
+                      <span className="text-sm font-bold text-primary">
                         Adminisztrátori mód
                       </span>
                     </div>
@@ -1342,7 +1342,7 @@ export function TournamentDetailPage() {
                           <input
                             type="text"
                             placeholder="Felhasználó keresése..."
-                            className="w-full bg-black/40 border border-white/10 rounded px-3 py-2 text-white/90 text-sm focus:outline-none focus:border-blue-500/50"
+                            className="w-full bg-secondary border border-border rounded px-3 py-2 text-white/90 text-sm focus:outline-none focus:border-blue-500/50"
                             value={userSearchQuery}
                             onChange={async (e) => {
                               const val = e.target.value;
@@ -1367,7 +1367,7 @@ export function TournamentDetailPage() {
                           />
                           {searchedUsers.length > 0 &&
                             userSearchQuery.length >= 2 && (
-                              <div className="max-h-40 overflow-y-auto bg-black/40 rounded border border-white/5">
+                              <div className="max-h-40 overflow-y-auto bg-secondary rounded border border-border">
                                 {searchedUsers.map((u: any) => (
                                   <div
                                     key={u.id}
@@ -1378,13 +1378,13 @@ export function TournamentDetailPage() {
                                       );
                                       setSearchedUsers([]);
                                     }}
-                                    className={`p-2 hover:bg-white/5 cursor-pointer flex items-center justify-between text-sm ${targetUserId === u.id
-                                      ? "bg-blue-500/20 text-blue-200"
+                                    className={`p-2 hover:bg-secondary cursor-pointer flex items-center justify-between text-sm ${targetUserId === u.id
+                                      ? "bg-primary/30 text-blue-200"
                                       : "text-gray-300"
                                       }`}
                                   >
                                     <span>{u.displayName || u.username}</span>
-                                    <span className="text-xs text-gray-500">
+                                    <span className="text-xs text-muted-foreground">
                                       {u.username}
                                     </span>
                                   </div>
@@ -1402,7 +1402,7 @@ export function TournamentDetailPage() {
                                   setTargetUserId(null);
                                   setUserSearchQuery("");
                                 }}
-                                className="hover:text-white"
+                                className="hover:text-foreground"
                               >
                                 <X size={12} />
                               </button>
@@ -1415,7 +1415,7 @@ export function TournamentDetailPage() {
                           <input
                             type="text"
                             placeholder="Csapat keresése név alapján..."
-                            className="w-full bg-black/40 border border-white/10 rounded px-3 py-2 text-white/90 text-sm focus:outline-none focus:border-blue-500/50"
+                            className="w-full bg-secondary border border-border rounded px-3 py-2 text-white/90 text-sm focus:outline-none focus:border-blue-500/50"
                             value={teamSearchQuery}
                             onChange={(e) => {
                               setTeamSearchQuery(e.target.value);
@@ -1428,7 +1428,7 @@ export function TournamentDetailPage() {
                           />
                           {searchedTeams.length > 0 &&
                             teamSearchQuery.length >= 2 && (
-                              <div className="max-h-40 overflow-y-auto bg-black/40 rounded border border-white/5">
+                              <div className="max-h-40 overflow-y-auto bg-secondary rounded border border-border">
                                 {searchedTeams.map((team) => (
                                   <div
                                     key={team.id}
@@ -1436,13 +1436,13 @@ export function TournamentDetailPage() {
                                       setSelectedTeamId(team.id);
                                       setTeamSearchQuery(""); // Hide results but keep selection
                                     }}
-                                    className={`p-2 hover:bg-white/5 cursor-pointer flex items-center justify-between text-sm ${selectedTeamId === team.id
-                                      ? "bg-blue-500/20 text-blue-200"
+                                    className={`p-2 hover:bg-secondary cursor-pointer flex items-center justify-between text-sm ${selectedTeamId === team.id
+                                      ? "bg-primary/30 text-blue-200"
                                       : "text-gray-300"
                                       }`}
                                   >
                                     <span>{team.name}</span>
-                                    <span className="text-xs text-gray-500">
+                                    <span className="text-xs text-muted-foreground">
                                       {team.members?.length} tag
                                     </span>
                                   </div>
@@ -1467,20 +1467,20 @@ export function TournamentDetailPage() {
                     <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 border border-primary/20">
                       <UserPlus size={32} className="text-primary" />
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-2">
+                    <h3 className="text-xl font-bold text-foreground mb-2">
                       {targetUserId
                         ? "Versenyző regisztrálása"
                         : "Regisztráció egyéni versenyzőként"}
                     </h3>
-                    <p className="text-gray-400 mb-6">
+                    <p className="text-muted-foreground mb-6">
                       {targetUserId
                         ? `A kiválasztott felhasználó: ${userSearchQuery}`
                         : "Mivel ez egy 1v1 verseny, a saját felhasználóddal fogsz regisztrálni:"}
                     </p>
 
                     {!targetUserId && (
-                      <div className="bg-[#1a1b26] p-4 rounded-xl border border-white/10 flex items-center gap-4 max-w-sm mx-auto">
-                        <div className="w-12 h-12 rounded-lg bg-black/30 border border-white/5 overflow-hidden">
+                      <div className="bg-[#121A22] p-4 rounded-xl border border-border flex items-center gap-4 max-w-sm mx-auto">
+                        <div className="w-12 h-12 rounded-lg bg-secondary border border-border overflow-hidden">
                           {user?.avatarUrl ? (
                             <img
                               src={user.avatarUrl}
@@ -1488,16 +1488,16 @@ export function TournamentDetailPage() {
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-lg font-bold text-gray-500">
+                            <div className="w-full h-full flex items-center justify-center text-lg font-bold text-muted-foreground">
                               {user?.username?.charAt(0).toUpperCase()}
                             </div>
                           )}
                         </div>
                         <div className="text-left">
-                          <p className="text-white font-bold">
+                          <p className="text-foreground font-bold">
                             {user?.displayName || user?.username}
                           </p>
-                          <p className="text-gray-500 text-sm">
+                          <p className="text-muted-foreground text-sm">
                             ELO: {user?.elo || 1000}
                           </p>
                         </div>
@@ -1511,11 +1511,11 @@ export function TournamentDetailPage() {
                     </p>
                     {/* ... existing team select ... */}
                     <select
-                      className="w-full bg-[#1a1b26] border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-inner transition-all appearance-none cursor-pointer hover:border-white/20"
+                      className="w-full bg-[#121A22] border border-border rounded-xl px-4 py-3.5 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-inner transition-all appearance-none cursor-pointer hover:border-border"
                       value={selectedTeamId}
                       onChange={(e) => setSelectedTeamId(e.target.value)}
                     >
-                      <option value="" className="bg-[#1a1b26]">
+                      <option value="" className="bg-[#121A22]">
                         Válassz csapatot...
                       </option>
                       {myTeams
@@ -1524,7 +1524,7 @@ export function TournamentDetailPage() {
                           <option
                             key={team.id}
                             value={team.id}
-                            className="bg-[#1a1b26]"
+                            className="bg-[#121A22]"
                           >
                             {team.name} ({team.elo} ELO)
                           </option>
@@ -1535,7 +1535,7 @@ export function TournamentDetailPage() {
                       <div className="animate-in fade-in slide-in-from-top-4 duration-300 mt-6">
                         {/* ... members selection ... */}
                         <div className="flex justify-between items-center mb-3">
-                          <label className="text-sm font-medium text-gray-400">
+                          <label className="text-sm font-medium text-muted-foreground">
                             Válaszd ki a versenyzőket
                           </label>
                           <span
@@ -1579,7 +1579,7 @@ export function TournamentDetailPage() {
                                   relative p-3 rounded-lg border-2 cursor-pointer transition-all duration-300 flex items-center gap-4 group overflow-hidden
                                   ${isSelected
                                     ? "bg-primary/5 border-primary shadow-[0_0_20px_rgba(var(--primary-rgb),0.2)]"
-                                    : "bg-black/20 border-white/5 hover:border-white/20 hover:bg-white/5"
+                                    : "bg-secondary border-border hover:border-border hover:bg-secondary"
                                   }
                                   ${!isSelected && isFull
                                     ? "opacity-30 grayscale cursor-not-allowed border-transparent"
@@ -1610,7 +1610,7 @@ export function TournamentDetailPage() {
                                 </div>
 
                                 <div
-                                  className={`relative w-10 h-10 rounded-lg overflow-hidden border border-white/10 transition-transform duration-300 flex-shrink-0 ${isSelected ? "ring-2 ring-primary/50" : ""
+                                  className={`relative w-10 h-10 rounded-lg overflow-hidden border border-border transition-transform duration-300 flex-shrink-0 ${isSelected ? "ring-2 ring-primary/50" : ""
                                     }`}
                                 >
                                   {member.user.avatarUrl ? (
@@ -1620,7 +1620,7 @@ export function TournamentDetailPage() {
                                       className="w-full h-full object-cover"
                                     />
                                   ) : (
-                                    <div className="w-full h-full bg-gray-800 flex items-center justify-center text-sm font-bold text-gray-400">
+                                    <div className="w-full h-full bg-gray-800 flex items-center justify-center text-sm font-bold text-muted-foreground">
                                       {member.user.username
                                         .charAt(0)
                                         .toUpperCase()}
@@ -1631,14 +1631,14 @@ export function TournamentDetailPage() {
                                 <div className="overflow-hidden z-10">
                                   <p
                                     className={`text-sm font-bold truncate transition-colors ${isSelected
-                                      ? "text-white"
-                                      : "text-gray-300 group-hover:text-white"
+                                      ? "text-foreground"
+                                      : "text-gray-300 group-hover:text-foreground"
                                       }`}
                                   >
                                     {member.user.displayName ||
                                       member.user.username}
                                   </p>
-                                  <p className="text-xs text-gray-500 truncate font-mono">
+                                  <p className="text-xs text-muted-foreground truncate font-mono">
                                     @{member.user.username}
                                   </p>
                                 </div>
@@ -1651,23 +1651,23 @@ export function TournamentDetailPage() {
                   </>
                 )}
               </div>
-              <div className="p-6 border-t border-white/10 flex justify-end gap-3 bg-[#0f1016]/50 backdrop-blur-sm">
+              <div className="p-6 border-t border-border flex justify-end gap-3 bg-[#121A22]/50 backdrop-blur-sm">
                 <button
-                  className="px-6 py-2.5 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                  className="px-6 py-2.5 rounded-xl text-sm font-medium text-gray-300 hover:text-foreground hover:bg-secondary transition-colors"
                   onClick={() => setShowRegisterModal(false)}
                 >
                   Mégse
                 </button>
                 <button
                   className={`
-                    group relative px-8 py-2.5 rounded-xl text-sm font-bold text-white shadow-lg transition-all duration-300
+                    group relative px-8 py-2.5 rounded-xl text-sm font-bold text-foreground shadow-lg transition-all duration-300
                     ${(requiredTeamSize > 1 &&
                       (!selectedTeamId ||
                         selectedMemberIds.length !== requiredTeamSize)) ||
                       (requiredTeamSize === 1 &&
                         targetUserId &&
                         !userSearchQuery)
-                      ? "bg-gray-800 text-gray-500 cursor-not-allowed shadow-none"
+                      ? "bg-gray-800 text-muted-foreground cursor-not-allowed shadow-none"
                       : "bg-gradient-to-r from-primary to-purple-600 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] hover:-translate-y-0.5"
                     }
                 `}

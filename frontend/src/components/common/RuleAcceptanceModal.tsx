@@ -23,23 +23,23 @@ export function RuleAcceptanceModal({
   const [accepted, setAccepted] = useState(false);
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div
-        className={`bg-[#1a1b26] rounded-2xl w-full max-w-[95vw] md:max-w-[1400px] border border-white/10 shadow-[0_0_50px_-12px_rgba(var(--primary-rgb),0.25)] overflow-hidden animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh] md:max-h-[85vh]`}
+        className={`bg-[#121A22] rounded-2xl w-full max-w-[95vw] md:max-w-[1400px] border border-border shadow-[0_0_50px_-12px_rgba(var(--primary-rgb),0.25)] overflow-hidden animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh] md:max-h-[85vh]`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="shrink-0 bg-[#1a1b26] border-b border-white/10 p-4 md:p-6 flex items-center justify-between z-10 w-full">
+        <div className="shrink-0 bg-[#121A22] border-b border-border p-4 md:p-6 flex items-center justify-between z-10 w-full">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-primary/10 rounded-lg text-primary">
               <ScrollText size={24} />
             </div>
             <div>
-              <h2 className="text-lg md:text-xl font-bold text-white break-words">
+              <h2 className="text-lg md:text-xl font-bold text-foreground break-words">
                 {viewOnly ? "Játékszabályzat" : "Szabályzat elfogadása"}
               </h2>
               {gameName && (
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   {gameName} játékszabályzat
                 </p>
               )}
@@ -47,7 +47,7 @@ export function RuleAcceptanceModal({
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white shrink-0"
+            className="p-2 hover:bg-secondary/80 rounded-lg transition-colors text-muted-foreground hover:text-foreground shrink-0"
           >
             <X size={20} />
           </button>
@@ -57,7 +57,7 @@ export function RuleAcceptanceModal({
         <div className="p-4 md:p-6 overflow-y-auto custom-scrollbar flex-1 min-h-0">
           <div className="prose prose-invert max-w-none">
             {!viewOnly && (
-              <div className="bg-black/30 p-4 rounded-xl border border-white/5 mb-4">
+              <div className="bg-secondary p-4 rounded-xl border border-border mb-4">
                 <div className="flex items-start gap-3">
                   <Shield
                     className="text-yellow-500 shrink-0 mt-0.5"
@@ -73,7 +73,7 @@ export function RuleAcceptanceModal({
             )}
 
             {rulesPdfUrl ? (
-              <div className="w-full h-[60vh] md:h-[75vh] border border-white/10 rounded-xl overflow-hidden bg-white/5">
+              <div className="w-full h-[60vh] md:h-[75vh] border border-border rounded-xl overflow-hidden bg-secondary">
                 <iframe
                   src={rulesPdfUrl}
                   className="w-full h-full"
@@ -90,7 +90,7 @@ export function RuleAcceptanceModal({
         </div>
 
         {/* Footer */}
-        <div className="shrink-0 p-4 md:p-6 border-t border-white/10 bg-[#0f1016]/50 backdrop-blur-sm">
+        <div className="shrink-0 p-4 md:p-6 border-t border-border bg-[#121A22]/50 backdrop-blur-sm">
           {!viewOnly ? (
             <>
               <div
@@ -112,8 +112,8 @@ export function RuleAcceptanceModal({
                 </div>
                 <span
                   className={`text-sm select-none transition-colors ${accepted
-                    ? "text-white"
-                    : "text-gray-400 group-hover:text-gray-300"
+                    ? "text-foreground"
+                    : "text-muted-foreground group-hover:text-gray-300"
                     }`}
                 >
                   Elolvastam és elfogadom a játékszabályzatot
@@ -123,13 +123,13 @@ export function RuleAcceptanceModal({
               <div className="flex flex-col-reverse md:flex-row gap-3">
                 <Button
                   variant="ghost"
-                  className="flex-1 text-gray-400 hover:text-white hover:bg-white/5"
+                  className="flex-1 text-muted-foreground hover:text-foreground hover:bg-secondary"
                   onClick={onClose}
                 >
                   Mégse
                 </Button>
                 <Button
-                  className="flex-1 bg-primary hover:bg-primary/90 text-white font-bold whitespace-normal h-auto py-3 md:py-2"
+                  className="flex-1 bg-primary hover:bg-primary/90 text-foreground font-bold whitespace-normal h-auto py-3 md:py-2"
                   onClick={onAccept}
                   disabled={!accepted}
                 >
@@ -140,7 +140,7 @@ export function RuleAcceptanceModal({
           ) : (
             <div className="flex justify-end">
               <Button
-                className="bg-primary hover:bg-primary/90 text-white font-bold px-8 w-full md:w-auto"
+                className="bg-primary hover:bg-primary/90 text-foreground font-bold px-8 w-full md:w-auto"
                 onClick={onClose}
               >
                 Bezárás

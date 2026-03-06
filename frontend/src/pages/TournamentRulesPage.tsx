@@ -25,7 +25,7 @@ export function TournamentRulesPage() {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh]">
                 <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-                <p className="text-gray-400 animate-pulse">Betöltés...</p>
+                <p className="text-muted-foreground animate-pulse">Betöltés...</p>
             </div>
         );
     }
@@ -33,7 +33,7 @@ export function TournamentRulesPage() {
     if (!currentTournament) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-                <h2 className="text-2xl font-bold text-white mb-2">Verseny nem található</h2>
+                <h2 className="text-2xl font-bold text-foreground mb-2">Verseny nem található</h2>
                 <Link to="/tournaments" className="text-primary hover:underline">
                     Vissza a versenyekhez
                 </Link>
@@ -51,17 +51,17 @@ export function TournamentRulesPage() {
                 <div className="mb-8">
                     <Link
                         to={`/tournaments/${id}`}
-                        className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-4"
+                        className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-4"
                     >
                         <ArrowLeft size={20} />
                         Vissza a versenyhez
                     </Link>
-                    <h1 className="text-3xl font-bold text-white">{currentTournament.name}</h1>
+                    <h1 className="text-3xl font-bold text-foreground">{currentTournament.name}</h1>
                 </div>
-                <div className="bg-[#1a1b26] p-8 rounded-xl border border-white/5 text-center">
-                    <Shield className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                    <h2 className="text-xl font-bold text-white mb-2">Nincs elérhető szabályzat</h2>
-                    <p className="text-gray-400">Ehhez a versenyhez/játékhoz nincs feltöltve szabályzat.</p>
+                <div className="bg-[#121A22] p-8 rounded-xl border border-border text-center">
+                    <Shield className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                    <h2 className="text-xl font-bold text-foreground mb-2">Nincs elérhető szabályzat</h2>
+                    <p className="text-muted-foreground">Ehhez a versenyhez/játékhoz nincs feltöltve szabályzat.</p>
                 </div>
             </div>
         );
@@ -73,7 +73,7 @@ export function TournamentRulesPage() {
             <div className="mb-8">
                 <Link
                     to={`/tournaments/${id}`}
-                    className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-4"
+                    className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-4"
                 >
                     <ArrowLeft size={20} />
                     Vissza a versenyhez
@@ -83,8 +83,8 @@ export function TournamentRulesPage() {
                         <ScrollText size={32} />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold text-white">Játékszabályzat</h1>
-                        <p className="text-gray-400 text-lg">
+                        <h1 className="text-3xl font-bold text-foreground">Játékszabályzat</h1>
+                        <p className="text-muted-foreground text-lg">
                             {gameName ? `${gameName} - ` : ""}{currentTournament.name}
                         </p>
                     </div>
@@ -92,9 +92,9 @@ export function TournamentRulesPage() {
             </div>
 
             {/* Content */}
-            <div className="bg-[#1a1b26] rounded-2xl border border-white/10 shadow-xl overflow-hidden">
+            <div className="bg-[#121A22] rounded-2xl border border-border shadow-xl overflow-hidden">
                 {rulesPdfUrl ? (
-                    <div className="w-full h-[80vh] bg-white/5">
+                    <div className="w-full h-[80vh] bg-secondary">
                         <iframe
                             src={rulesPdfUrl}
                             className="w-full h-full"

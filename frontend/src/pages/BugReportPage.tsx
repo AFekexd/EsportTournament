@@ -53,9 +53,9 @@ const priorities = [
 
 const statusConfig: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
     PENDING: { label: "Függőben", icon: <Clock size={16} />, color: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20" },
-    IN_PROGRESS: { label: "Folyamatban", icon: <Loader2 size={16} className="animate-spin" />, color: "text-blue-400 bg-blue-400/10 border-blue-400/20" },
+    IN_PROGRESS: { label: "Folyamatban", icon: <Loader2 size={16} className="animate-spin" />, color: "text-primary bg-primary/20 border-primary/20" },
     RESOLVED: { label: "Megoldva", icon: <CheckCircle size={16} />, color: "text-green-400 bg-green-400/10 border-green-400/20" },
-    CLOSED: { label: "Lezárva", icon: <XCircle size={16} />, color: "text-gray-400 bg-gray-400/10 border-gray-400/20" },
+    CLOSED: { label: "Lezárva", icon: <XCircle size={16} />, color: "text-muted-foreground bg-gray-400/10 border-gray-400/20" },
 };
 
 export function BugReportPage() {
@@ -139,13 +139,13 @@ export function BugReportPage() {
         return (
             <div className="container mx-auto px-4 py-8">
                 <div className="flex flex-col items-center justify-center py-20 glass-card rounded-2xl">
-                    <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6 neon-border">
-                        <Lock size={40} className="text-gray-500" />
+                    <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mb-6 neon-border">
+                        <Lock size={40} className="text-muted-foreground" />
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-2 text-glow">
+                    <h3 className="text-xl font-bold text-foreground mb-2 text-glow">
                         Nem vagy bejelentkezve
                     </h3>
-                    <p className="text-gray-400">
+                    <p className="text-muted-foreground">
                         Jelentkezz be a hibajelentés beküldéséhez.
                     </p>
                 </div>
@@ -161,7 +161,7 @@ export function BugReportPage() {
                 <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-red-300 to-red-500 bg-clip-text text-transparent mb-6 text-glow">
                     Hibajelentés
                 </h1>
-                <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                     Találtál hibát? Segíts nekünk jobbá tenni a platformot!
                 </p>
             </div>
@@ -177,8 +177,8 @@ export function BugReportPage() {
                             <Bug size={24} className="text-red-400" />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-bold text-white">Új Hibajelentés</h2>
-                            <p className="text-sm text-gray-400">Írd le részletesen a hibát</p>
+                            <h2 className="text-2xl font-bold text-foreground">Új Hibajelentés</h2>
+                            <p className="text-sm text-muted-foreground">Írd le részletesen a hibát</p>
                         </div>
                     </div>
 
@@ -197,10 +197,10 @@ export function BugReportPage() {
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                                 maxLength={100}
-                                className="w-full px-5 py-4 bg-[#0a0a0f]/50 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all"
+                                className="w-full px-5 py-4 bg-[#0a0a0f]/50 border border-border rounded-xl text-foreground placeholder-gray-600 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all"
                                 placeholder="pl. A profilkép nem töltődik be"
                             />
-                            <div className="text-xs text-gray-500 text-right mr-1">
+                            <div className="text-xs text-muted-foreground text-right mr-1">
                                 {title.length}/100
                             </div>
                         </div>
@@ -218,7 +218,7 @@ export function BugReportPage() {
                                         onClick={() => setCategory(cat.value)}
                                         className={`flex items-center gap-2 px-4 py-3 rounded-xl border transition-all ${category === cat.value
                                             ? "bg-red-500/20 border-red-500/50 text-red-400"
-                                            : "bg-[#0a0a0f]/50 border-white/10 text-gray-400 hover:border-white/20"
+                                            : "bg-[#0a0a0f]/50 border-border text-muted-foreground hover:border-border"
                                             }`}
                                     >
                                         {cat.icon}
@@ -240,8 +240,8 @@ export function BugReportPage() {
                                         type="button"
                                         onClick={() => setPriority(p.value)}
                                         className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border transition-all ${priority === p.value
-                                            ? `bg-white/5 border-white/20 ${p.color}`
-                                            : "bg-[#0a0a0f]/50 border-white/10 text-gray-500 hover:border-white/20"
+                                            ? `bg-secondary border-border ${p.color}`
+                                            : "bg-[#0a0a0f]/50 border-border text-muted-foreground hover:border-border"
                                             }`}
                                     >
                                         {p.icon}
@@ -265,10 +265,10 @@ export function BugReportPage() {
                                 onChange={(e) => setDescription(e.target.value)}
                                 rows={5}
                                 maxLength={2000}
-                                className="w-full px-5 py-4 bg-[#0a0a0f]/50 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all resize-none"
+                                className="w-full px-5 py-4 bg-[#0a0a0f]/50 border border-border rounded-xl text-foreground placeholder-gray-600 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all resize-none"
                                 placeholder="Írd le részletesen, mit tapasztaltál, milyen lépések után jelentkezett a hiba..."
                             />
-                            <div className="text-xs text-gray-500 text-right mr-1">
+                            <div className="text-xs text-muted-foreground text-right mr-1">
                                 {description.length}/2000
                             </div>
                         </div>
@@ -295,7 +295,7 @@ export function BugReportPage() {
                         <button
                             onClick={handleSubmit}
                             disabled={isSubmitting}
-                            className="w-full flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-bold text-lg transition-all bg-gradient-to-r from-red-500 to-orange-500 hover:brightness-110 text-white shadow-lg shadow-red-500/25 transform hover:-translate-y-1 disabled:opacity-75 disabled:cursor-wait"
+                            className="w-full flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-bold text-lg transition-all bg-gradient-to-r from-red-500 to-orange-500 hover:brightness-110 text-foreground shadow-lg shadow-red-500/25 transform hover:-translate-y-1 disabled:opacity-75 disabled:cursor-wait"
                         >
                             {isSubmitting ? (
                                 <>
@@ -322,8 +322,8 @@ export function BugReportPage() {
                             <AlertTriangle size={24} className="text-primary" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-white">Korábbi Bejelentéseim</h2>
-                            <p className="text-sm text-gray-400">
+                            <h2 className="text-xl font-bold text-foreground">Korábbi Bejelentéseim</h2>
+                            <p className="text-sm text-muted-foreground">
                                 {myReports.length} bejelentés
                             </p>
                         </div>
@@ -335,10 +335,10 @@ export function BugReportPage() {
                         </div>
                     ) : myReports.length === 0 ? (
                         <div className="text-center py-12">
-                            <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Bug size={32} className="text-gray-600" />
+                            <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Bug size={32} className="text-muted-foreground" />
                             </div>
-                            <p className="text-gray-400">Még nincs bejelentésed</p>
+                            <p className="text-muted-foreground">Még nincs bejelentésed</p>
                         </div>
                     ) : (
                         <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
@@ -348,10 +348,10 @@ export function BugReportPage() {
                                 return (
                                     <div
                                         key={report.id}
-                                        className="p-4 bg-[#0a0a0f]/50 border border-white/5 rounded-xl hover:border-white/10 transition-all"
+                                        className="p-4 bg-[#0a0a0f]/50 border border-border rounded-xl hover:border-border transition-all"
                                     >
                                         <div className="flex items-start justify-between gap-4 mb-2">
-                                            <h3 className="font-medium text-white line-clamp-1">
+                                            <h3 className="font-medium text-foreground line-clamp-1">
                                                 {report.title}
                                             </h3>
                                             <span
@@ -361,10 +361,10 @@ export function BugReportPage() {
                                                 {status.label}
                                             </span>
                                         </div>
-                                        <p className="text-sm text-gray-500 line-clamp-2 mb-3">
+                                        <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                                             {report.description}
                                         </p>
-                                        <div className="flex items-center gap-3 text-xs text-gray-600">
+                                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
                                             <span className="flex items-center gap-1">
                                                 {categories.find((c) => c.value === report.category)?.icon}
                                                 {categories.find((c) => c.value === report.category)?.label}
@@ -381,7 +381,7 @@ export function BugReportPage() {
                                         </div>
                                         {report.adminNote && (
                                             <div className="mt-3 p-3 bg-primary/5 border border-primary/10 rounded-lg">
-                                                <p className="text-xs text-gray-400 mb-1">Admin válasz:</p>
+                                                <p className="text-xs text-muted-foreground mb-1">Admin válasz:</p>
                                                 <p className="text-sm text-gray-300">{report.adminNote}</p>
                                             </div>
                                         )}

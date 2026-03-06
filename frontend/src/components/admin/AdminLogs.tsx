@@ -174,9 +174,9 @@ export function AdminLogs() {
       case "WARN":
         return <AlertTriangle className="text-yellow-500" size={16} />;
       case "LOGIN":
-        return <Shield className="text-blue-500" size={16} />;
+        return <Shield className="text-primary" size={16} />;
       case "LOGOUT":
-        return <LogOut className="text-gray-400" size={16} />;
+        return <LogOut className="text-muted-foreground" size={16} />;
       case "LOCK":
         return <Lock className="text-red-500" size={16} />;
       case "UNLOCK":
@@ -192,7 +192,7 @@ export function AdminLogs() {
           />
         );
       case "COMPETITION_MODE":
-        return <Swords className="text-purple-500" size={16} />;
+        return <Swords className="text-primary" size={16} />;
       case "PASSWORD_RESET":
         return <Key className="text-yellow-500" size={16} />;
       case "TOURNAMENT_CREATE":
@@ -206,7 +206,7 @@ export function AdminLogs() {
       case "GAME_UPDATE":
       case "TEAM_UPDATE":
       case "USER_PROFILE_UPDATE":
-        return <Edit className="text-blue-400" size={16} />;
+        return <Edit className="text-primary" size={16} />;
       case "TOURNAMENT_DELETE":
       case "GAME_DELETE":
       case "USER_DELETE":
@@ -216,7 +216,7 @@ export function AdminLogs() {
       case "BOOKING_DELETE":
         return <Trash2 className="text-red-500" size={16} />;
       case "USER_ROLE_UPDATE":
-        return <Shield className="text-purple-500" size={16} />;
+        return <Shield className="text-primary" size={16} />;
       case "TEAM_JOIN":
       case "TEAM_LEAVE":
       case "TEAM_KICK":
@@ -225,15 +225,15 @@ export function AdminLogs() {
         return <CalendarIcon className="text-green-500" size={16} />;
       case "WAITLIST_JOIN":
       case "WAITLIST_LEAVE":
-        return <ListTodo className="text-blue-400" size={16} />;
+        return <ListTodo className="text-primary" size={16} />;
       case "MATCH_RESULT_UPDATE":
         return <Swords className="text-amber-500" size={16} />;
       default:
         if (type.startsWith("TOURNAMENT"))
           return <Trophy className="text-amber-500" size={16} />;
         if (type.startsWith("GAME"))
-          return <Gamepad2 className="text-purple-500" size={16} />;
-        return <Info className="text-gray-400" size={16} />;
+          return <Gamepad2 className="text-primary" size={16} />;
+        return <Info className="text-muted-foreground" size={16} />;
     }
   };
 
@@ -273,14 +273,14 @@ export function AdminLogs() {
       case "USER_PROFILE_UPDATE":
       case "TEAM_UPDATE":
       case "WAITLIST_JOIN":
-        return "bg-blue-500/10 border-blue-500/20 text-blue-500";
+        return "bg-primary/20 border-primary/20 text-primary";
       case "COMPETITION_MODE":
       case "USER_ROLE_UPDATE":
       case "MATCH_RESULT_UPDATE":
-        return "bg-purple-500/10 border-purple-500/20 text-purple-500";
+        return "bg-primary/20 border-primary/20 text-primary";
       case "LOGOUT":
       default:
-        return "bg-gray-500/10 border-gray-500/20 text-gray-400";
+        return "bg-gray-500/10 border-gray-500/20 text-muted-foreground";
     }
   };
 
@@ -298,15 +298,15 @@ export function AdminLogs() {
   return (
     <div className="container mx-auto p-4 max-w-[1600px] animate-fade-in space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/5 pb-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-border pb-6">
         <div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+          <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
               <Info size={20} />
             </div>
             Rendszer Napló
           </h2>
-          <p className="text-sm text-gray-400 mt-1 ml-13">
+          <p className="text-sm text-muted-foreground mt-1 ml-13">
             Részletes audit napló és rendszertevékenységek
           </p>
         </div>
@@ -340,24 +340,24 @@ export function AdminLogs() {
       />
 
       {/* Main Table Container */}
-      <div className="bg-[#1a1b26] border border-white/10 rounded-xl overflow-hidden shadow-xl flex flex-col h-[calc(100vh-320px)]">
+      <div className="bg-[#121A22] border border-border rounded-xl overflow-hidden shadow-xl flex flex-col h-[calc(100vh-320px)]">
         <div className="overflow-auto flex-1 custom-scrollbar">
           <table className="w-full text-left border-collapse relative">
-            <thead className="bg-[#13141c] sticky top-0 z-10 shadow-sm">
-              <tr className="text-xs uppercase tracking-wider text-gray-500 font-semibold">
-                <th className="p-4 w-12 border-b border-white/5"></th>
-                <th className="p-4 w-48 border-b border-white/5">Időpont</th>
-                <th className="p-4 w-40 border-b border-white/5">Típus</th>
-                <th className="p-4 border-b border-white/5">Üzenet</th>
-                <th className="p-4 w-48 border-b border-white/5">Végrehajtó</th>
-                <th className="p-4 w-48 border-b border-white/5">Érintett</th>
+            <thead className="bg-[#121A22] sticky top-0 z-10 shadow-sm">
+              <tr className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
+                <th className="p-4 w-12 border-b border-border"></th>
+                <th className="p-4 w-48 border-b border-border">Időpont</th>
+                <th className="p-4 w-40 border-b border-border">Típus</th>
+                <th className="p-4 border-b border-border">Üzenet</th>
+                <th className="p-4 w-48 border-b border-border">Végrehajtó</th>
+                <th className="p-4 w-48 border-b border-border">Érintett</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
               {loading ? (
                 <tr>
                   <td colSpan={6} className="p-20 text-center">
-                    <div className="flex flex-col items-center gap-3 text-gray-500">
+                    <div className="flex flex-col items-center gap-3 text-muted-foreground">
                       <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
                       <span>Napló betöltése...</span>
                     </div>
@@ -366,7 +366,7 @@ export function AdminLogs() {
               ) : logs.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="p-20 text-center">
-                    <div className="flex flex-col items-center gap-3 text-gray-500 opacity-50">
+                    <div className="flex flex-col items-center gap-3 text-muted-foreground opacity-50">
                       <Info size={40} />
                       <span>Nincs találat a keresési feltételekre</span>
                     </div>
@@ -377,25 +377,23 @@ export function AdminLogs() {
                   <>
                     <tr
                       key={log.id}
-                      className={`group transition-colors text-sm cursor-pointer ${
-                        expandedLogId === log.id
+                      className={`group transition-colors text-sm cursor-pointer ${expandedLogId === log.id
                           ? "bg-white/[0.03]"
                           : "hover:bg-white/[0.02]"
-                      }`}
+                        }`}
                       onClick={() =>
                         setExpandedLogId(
                           expandedLogId === log.id ? null : log.id,
                         )
                       }
                     >
-                      <td className="p-4 text-gray-600">
+                      <td className="p-4 text-muted-foreground">
                         {log.metadata ? (
                           <div
-                            className={`transition-transform duration-200 ${
-                              expandedLogId === log.id
+                            className={`transition-transform duration-200 ${expandedLogId === log.id
                                 ? "rotate-90 text-primary"
                                 : ""
-                            }`}
+                              }`}
                           >
                             <Filter size={12} className="opacity-0" />{" "}
                             {/* Spacer hack */}
@@ -410,7 +408,7 @@ export function AdminLogs() {
                           </div>
                         ) : null}
                       </td>
-                      <td className="p-4 text-gray-400 font-mono text-xs whitespace-nowrap">
+                      <td className="p-4 text-muted-foreground font-mono text-xs whitespace-nowrap">
                         {format(
                           new Date(log.createdAt),
                           "yyyy. MM. dd. HH:mm:ss",
@@ -431,7 +429,7 @@ export function AdminLogs() {
                         <div className="flex items-center gap-2">
                           <span>{log.message}</span>
                           {log.computer && (
-                            <span className="text-[10px] bg-white/5 px-1.5 py-0.5 rounded border border-white/10 text-gray-400 whitespace-nowrap">
+                            <span className="text-[10px] bg-secondary px-1.5 py-0.5 rounded border border-border text-muted-foreground whitespace-nowrap">
                               {log.computer.name}
                             </span>
                           )}
@@ -447,7 +445,7 @@ export function AdminLogs() {
                               navigate(`/profile/${log.admin!.id}`);
                             }}
                           >
-                            <div className="w-6 h-6 rounded-full bg-indigo-500/20 flex items-center justify-center text-[10px] font-bold text-indigo-400 border border-indigo-500/30">
+                            <div className="w-6 h-6 rounded-full bg-primary/30 flex items-center justify-center text-[10px] font-bold text-primary border border-primary/20">
                               {log.admin.avatarUrl ? (
                                 <img
                                   src={log.admin.avatarUrl}
@@ -459,7 +457,7 @@ export function AdminLogs() {
                                   .toUpperCase()
                               )}
                             </div>
-                            <span className="text-gray-400 text-xs font-medium group-hover/user:text-white transition-colors truncate max-w-[120px] hover:underline">
+                            <span className="text-muted-foreground text-xs font-medium group-hover/user:text-foreground transition-colors truncate max-w-[120px] hover:underline">
                               {log.admin.displayName || log.admin.username}
                             </span>
                           </div>
@@ -476,10 +474,10 @@ export function AdminLogs() {
                                 setFilterUserId(log.user!.id);
                                 setPage(1);
                               }}
-                              className="flex items-center gap-2 group/user hover:bg-white/5 px-2 py-1 -ml-2 rounded-lg transition-colors text-left"
+                              className="flex items-center gap-2 group/user hover:bg-secondary px-2 py-1 -ml-2 rounded-lg transition-colors text-left"
                               title="Kattints a szűréshez erre a felhasználóra"
                             >
-                              <div className="w-6 h-6 rounded-full bg-gray-800 flex items-center justify-center text-[10px] font-bold text-gray-400 border border-white/10">
+                              <div className="w-6 h-6 rounded-full bg-gray-800 flex items-center justify-center text-[10px] font-bold text-muted-foreground border border-border">
                                 {log.user.avatarUrl ? (
                                   <img
                                     src={log.user.avatarUrl}
@@ -491,7 +489,7 @@ export function AdminLogs() {
                                     .toUpperCase()
                                 )}
                               </div>
-                              <span className="text-gray-400 text-xs font-medium group-hover/user:text-white transition-colors truncate max-w-[100px]">
+                              <span className="text-muted-foreground text-xs font-medium group-hover/user:text-foreground transition-colors truncate max-w-[100px]">
                                 {log.user.displayName || log.user.username}
                               </span>
                             </button>
@@ -501,22 +499,22 @@ export function AdminLogs() {
                                 e.stopPropagation();
                                 navigate(`/profile/${log.user!.id}`);
                               }}
-                              className="p-1 text-gray-500 hover:text-primary hover:bg-white/5 rounded-md transition-colors"
+                              className="p-1 text-muted-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors"
                               title="Profil megtekintése"
                             >
                               <ExternalLink size={12} />
                             </button>
                           </div>
                         ) : (
-                          <span className="text-gray-600 italic text-xs">
+                          <span className="text-muted-foreground italic text-xs">
                             Rendszer
                           </span>
                         )}
                       </td>
                     </tr>
                     {expandedLogId === log.id && log.metadata && (
-                      <tr className="bg-[#161722]">
-                        <td colSpan={6} className="p-0 border-b border-white/5">
+                      <tr className="bg-[#121A22]">
+                        <td colSpan={6} className="p-0 border-b border-border">
                           <div className="p-4 pl-16 grid gap-2 animate-fade-in">
                             <LogMetadataViewer
                               data={log.metadata}
@@ -534,8 +532,8 @@ export function AdminLogs() {
         </div>
 
         {/* Footer / Pagination */}
-        <div className="bg-[#13141c] border-t border-white/5 p-4 flex items-center justify-between">
-          <div className="text-xs text-gray-500">
+        <div className="bg-[#121A22] border-t border-border p-4 flex items-center justify-between">
+          <div className="text-xs text-muted-foreground">
             Összesen {totalPages * 50} bejegyzés (becsült)
           </div>
 
@@ -543,17 +541,17 @@ export function AdminLogs() {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="px-3 py-1.5 rounded-lg bg-secondary hover:bg-secondary/80 text-xs disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             >
               Előző
             </button>
-            <span className="text-xs font-medium bg-black/40 px-3 py-1.5 rounded-lg border border-white/5">
+            <span className="text-xs font-medium bg-secondary px-3 py-1.5 rounded-lg border border-border">
               {page} / {totalPages}
             </span>
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="px-3 py-1.5 rounded-lg bg-secondary hover:bg-secondary/80 text-xs disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             >
               Következő
             </button>

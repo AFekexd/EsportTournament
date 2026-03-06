@@ -183,12 +183,12 @@ export function Sidebar() {
       />
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex h-screen flex-col border-r border-white/5 bg-background/95 backdrop-blur-xl transition-all duration-300 ease-in-out ${isOpen
+        className={`fixed inset-y-0 left-0 z-50 flex h-screen flex-col border-r border-border bg-background/95 backdrop-blur-xl transition-all duration-300 ease-in-out ${isOpen
           ? "w-full md:w-64 translate-x-0"
           : "-translate-x-full md:w-20 md:translate-x-0"
           }`}
       >
-        <div className="flex h-16 items-center border-b border-white/5 px-4">
+        <div className="flex h-16 items-center border-b border-border px-4">
           {isOpen && (
             <Link
               to="/"
@@ -198,13 +198,13 @@ export function Sidebar() {
                 src="/esportlogo.png"
                 className="md:w-15 md:h-15 w-12 h-12"
               />
-              <span className="text-xl tracking-tight text-white font-black tracking-tighter drop-shadow-[0_0_10px_rgba(139,92,246,0.3)]">
+              <span className="text-xl tracking-tight text-foreground font-black tracking-tighter drop-shadow-[0_0_10px_rgba(139,92,246,0.3)]">
                 EsportHub
               </span>
             </Link>
           )}
           <button
-            className={`ml-auto flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-white/10 hover:text-white ${!isOpen && "mx-auto"
+            className={`ml-auto flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-secondary/80 hover:text-foreground ${!isOpen && "mx-auto"
               }`}
             onClick={() => dispatch(toggleSidebar())}
             aria-label={isOpen ? "Collapse sidebar" : "Expand sidebar"}
@@ -227,8 +227,8 @@ export function Sidebar() {
                     }
                   }}
                   className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive(item.to)
-                    ? "bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
-                    : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                    ? "bg-primary/20 text-foreground shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
+                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                     } ${!isOpen && "justify-center px-0"}`}
                   title={!isOpen ? item.label : undefined}
                 >
@@ -247,7 +247,7 @@ export function Sidebar() {
           </div>
 
           {isAuthenticated && (
-            <div className="border-t border-white/5 pt-5">
+            <div className="border-t border-border pt-5">
               <div className="mb-8 px-3">
                 <div className="space-y-1">
                   {adminItems.filter(canView).map((item) => (
@@ -260,8 +260,8 @@ export function Sidebar() {
                         }
                       }}
                       className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive(item.to)
-                        ? "bg-primary/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
-                        : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                        ? "bg-primary/20 text-foreground shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
+                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                         } ${!isOpen && "justify-center px-0"}`}
                       title={!isOpen ? item.label : undefined}
                     >
@@ -275,14 +275,14 @@ export function Sidebar() {
                           {item.icon}
                         </span>
                         {!isOpen && (item as any).badge && requestCount > 0 && (
-                          <span className="absolute -top-1 -right-1 block h-3 w-3 rounded-full bg-red-500 ring-2 ring-[#0f1016]" />
+                          <span className="absolute -top-1 -right-1 block h-3 w-3 rounded-full bg-red-500 ring-2 ring-border" />
                         )}
                       </div>
                       {isOpen && (
                         <div className="flex items-center justify-between flex-1">
                           <span>{item.label}</span>
                           {(item as any).badge && requestCount > 0 && (
-                            <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                            <span className="bg-red-500 text-foreground text-[10px] font-bold px-2 py-0.5 rounded-full">
                               {requestCount}
                             </span>
                           )}
@@ -298,13 +298,13 @@ export function Sidebar() {
           {/* Mobile User Profile Section */}
           {isAuthenticated && user && (
             <div
-              className={`mt-auto mb-2 border-t border-white/5 pt-4 md:hidden ${isOpen ? "mx-3" : "hidden"}`}
+              className={`mt-auto mb-2 border-t border-border pt-4 md:hidden ${isOpen ? "mx-3" : "hidden"}`}
             >
               <Link
                 to="/profile"
-                className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors"
+                className="flex items-center gap-3 p-2 rounded-lg hover:bg-secondary transition-colors"
               >
-                <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border border-white/10">
+                <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border border-border">
                   {user.avatarUrl ? (
                     <img
                       src={user.avatarUrl}
@@ -312,7 +312,7 @@ export function Sidebar() {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-zinc-800 text-sm font-bold text-white">
+                    <div className="flex h-full w-full items-center justify-center bg-zinc-800 text-sm font-bold text-foreground">
                       {(user.displayName || user.username)
                         .charAt(0)
                         .toUpperCase()}
@@ -320,10 +320,10 @@ export function Sidebar() {
                   )}
                 </div>
                 <div className="flex flex-col overflow-hidden">
-                  <span className="truncate text-sm font-medium text-white">
+                  <span className="truncate text-sm font-medium text-foreground">
                     {user.displayName || user.username}
                   </span>
-                  <span className="truncate text-xs text-gray-400">
+                  <span className="truncate text-xs text-muted-foreground">
                     {user.role}
                   </span>
                 </div>
@@ -333,7 +333,7 @@ export function Sidebar() {
 
           {/* Version Footer */}
           <div
-            className={`border-t border-white/5 transition-all duration-300 ${isOpen
+            className={`border-t border-border transition-all duration-300 ${isOpen
               ? "mx-3 px-6 pb-6 pt-4"
               : "mx-0 px-2 py-4 flex justify-center"
               }`}
@@ -351,15 +351,15 @@ export function Sidebar() {
                   }`}
               >
                 <span
-                  className={`text-xs font-medium text-gray-500 group-hover:text-white transition-colors ${!isOpen && "hidden"
+                  className={`text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors ${!isOpen && "hidden"
                     }`}
                 >
                   Verzió:{" "}
                 </span>
                 <span
                   className={`font-mono transition-colors ${isOpen
-                    ? "text-gray-400"
-                    : "text-[10px] text-gray-500 group-hover:text-white"
+                    ? "text-muted-foreground"
+                    : "text-[10px] text-muted-foreground group-hover:text-foreground"
                     }`}
                 >
                   v{appVersion}

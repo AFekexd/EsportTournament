@@ -28,94 +28,94 @@
 }
 
 :root {
-  /* Modern Gaming Dark Mode Palette - Lighter & More Vibrant */
-  --background: 240 10% 10%;
-  /* Slightly lighter base */
-  --foreground: 0 0% 98%;
+  /* Modern EsportTournament Palette */
+  --background: 208 86% 13%;
+  /* #052440 */
+  --foreground: 60 7% 93%;
+  /* #EFEFED */
 
-  --card: 240 10% 15%;
-  /* Much lighter cards */
-  --card-foreground: 0 0% 98%;
+  --card: 211 33% 27%;
+  /* #2E445C */
+  --card-foreground: 60 7% 93%;
 
-  --popover: 240 10% 15%;
-  /* Lighter */
-  --popover-foreground: 0 0% 98%;
+  --popover: 211 33% 27%;
+  --popover-foreground: 60 7% 93%;
 
-  --primary: 270 100% 65%;
-  /* Electric Purple */
-  --primary-foreground: 0 0% 100%;
+  --primary: 202 61% 76%;
+  /* #9DCCE8 */
+  --primary-foreground: 208 86% 13%;
 
-  --secondary: 240 5% 22%;
-  /* Lighter */
-  --secondary-foreground: 0 0% 98%;
+  --secondary: 214 16% 38%;
+  /* #525F70 */
+  --secondary-foreground: 60 7% 93%;
 
-  --muted: 240 5% 22%;
-  /* Lighter */
-  --muted-foreground: 240 5% 70%;
+  --muted: 214 16% 38%;
+  /* #525F70 */
+  --muted-foreground: 208 39% 41%;
+  /* #406C93 */
 
-  --accent: 180 100% 55%;
-  /* Cyan Neon */
-  --accent-foreground: 240 10% 8%;
+  --accent: 205 58% 76%;
+  /* #9DC8E8 */
+  --accent-foreground: 208 86% 13%;
 
   --destructive: 0 100% 55%;
-  /* Neon Red */
   --destructive-foreground: 0 0% 98%;
 
-  --neon-pink: 320 100% 65%;
-  --neon-blue: 210 100% 65%;
+  --neon-pink: 205 58% 76%;
+  /* Replaced with #9DC8E8 to match palette */
+  --neon-blue: 202 61% 76%;
+  /* Replaced with #9DCCE8 */
 
-  --border: 240 5% 28%;
-  /* Lighter borders */
-  --input: 240 5% 28%;
-  /* Lighter inputs */
-  --ring: 270 100% 65%;
+  --border: 214 16% 38%;
+  /* #525F70 */
+  --input: 214 16% 38%;
+  --ring: 202 61% 76%;
 
   --radius: 0.75rem;
 
   /* Legacy color variables for unmigrated pages */
-  --color-bg-primary: hsl(240, 10%, 8%);
-  --color-bg-secondary: hsl(240, 10%, 14%);
-  --color-bg-tertiary: hsl(240, 8%, 18%);
-  --color-bg-elevated: hsl(240, 8%, 20%);
+  --color-bg-primary: hsl(208, 86%, 13%);
+  --color-bg-secondary: hsl(211, 33%, 27%);
+  --color-bg-tertiary: hsl(214, 16%, 38%);
+  --color-bg-elevated: hsl(208, 39%, 41%);
+  /* using #406C93 for slightly elevated */
 
-  --color-border: hsl(240, 8%, 22%);
-  --color-border-light: hsl(240, 8%, 30%);
+  --color-border: hsl(214, 16%, 38%);
+  --color-border-light: hsl(208, 39%, 41%);
 
-  --color-text-primary: hsl(0, 0%, 98%);
-  --color-text-secondary: hsl(240, 5%, 85%);
-  --color-text-muted: hsl(240, 5%, 65%);
+  --color-text-primary: hsl(60, 7%, 93%);
+  --color-text-secondary: hsl(202, 61%, 85%);
+  /* slightly lighter than #9DCCE8 */
+  --color-text-muted: hsl(208, 39%, 60%);
 
-  --color-primary: hsl(270, 100%, 65%);
-  --color-primary-hover: hsl(270, 100%, 70%);
-  --color-primary-glow: hsla(270, 100%, 65%, 0.15);
+  --color-primary: hsl(202, 61%, 76%);
+  --color-primary-hover: hsl(205, 58%, 76%);
+  --color-primary-glow: hsla(202, 61%, 76%, 0.15);
 
-  --color-accent: hsl(180, 100%, 55%);
-  --color-accent-hover: hsl(180, 100%, 60%);
+  --color-accent: hsl(205, 58%, 76%);
+  --color-accent-hover: hsl(205, 58%, 85%);
 
-  --neon-cyan: hsl(180, 100%, 55%);
-  --neon-purple: hsl(270, 100%, 65%);
+  --neon-cyan: hsl(202, 61%, 76%);
+  --neon-purple: hsl(205, 58%, 76%);
 
   --color-success: hsl(142, 76%, 36%);
   --color-warning: hsl(38, 92%, 50%);
   --color-error: hsl(0, 72%, 51%);
   --color-error-hover: hsl(0, 72%, 56%);
 
-  --gradient-primary: linear-gradient(
-    135deg,
-    var(--color-primary),
-    var(--neon-pink)
-  );
-  --gradient-accent: linear-gradient(
-    135deg,
-    var(--neon-cyan),
-    var(--color-accent)
-  );
+  --gradient-primary: linear-gradient(135deg,
+      var(--color-primary),
+      var(--color-accent));
+  --gradient-accent: linear-gradient(135deg,
+      var(--neon-cyan),
+      var(--color-primary));
 
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  --shadow-glow-primary: 0 0 20px hsla(270, 100%, 65%, 0.3);
-  --shadow-glow-accent: 0 0 20px hsla(180, 100%, 55%, 0.3);
+  --shadow-sm: 0 1px 2px 0 hsl(var(--background) / 0.05);
+  --shadow-md: 0 4px 6px -1px hsl(var(--background) / 0.1);
+  --shadow-lg: 0 10px 15px -3px hsl(var(--background) / 0.2);
+  /* Deepened for dark bg */
+  --shadow-glow-primary: 0 0 20px hsla(202, 61%, 76%, 0.3);
+  --shadow-glow-accent: 0 0 20px hsla(205, 58%, 76%, 0.3);
 
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
@@ -141,7 +141,7 @@
   }
 
   .glass-card {
-    @apply bg-card/40 backdrop-blur-xl border border-white/5 shadow-xl transition-all duration-300;
+    @apply bg-[#121A22]/40 backdrop-blur-xl border border-white/5 shadow-xl transition-all duration-300;
   }
 
   .glass-card:hover {
@@ -304,11 +304,9 @@ a:hover {
 .page-title {
   font-size: 2.5rem;
   font-weight: 700;
-  background: linear-gradient(
-    135deg,
-    hsl(var(--accent)),
-    hsl(var(--neon-pink))
-  );
+  background: linear-gradient(135deg,
+      hsl(var(--accent)),
+      hsl(var(--neon-pink)));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -589,6 +587,7 @@ select {
 }
 
 @media (max-width: 640px) {
+
   .grid-4,
   .grid-3,
   .grid-2 {
@@ -685,6 +684,7 @@ select {
 }
 
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 1;
@@ -696,6 +696,7 @@ select {
 }
 
 @keyframes glow {
+
   0%,
   100% {
     box-shadow: 0 0 5px var(--color-primary-glow);
@@ -726,12 +727,10 @@ select {
 
 /* Skeleton loading */
 .skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--color-bg-tertiary) 25%,
-    var(--color-bg-elevated) 50%,
-    var(--color-bg-tertiary) 75%
-  );
+  background: linear-gradient(90deg,
+      var(--color-bg-tertiary) 25%,
+      var(--color-bg-elevated) 50%,
+      var(--color-bg-tertiary) 75%);
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s infinite;
   border-radius: var(--radius-md);
@@ -757,7 +756,7 @@ select {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: hsl(var(--background) / 0.7);
   display: flex;
   justify-content: center;
   align-items: center;

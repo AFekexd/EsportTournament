@@ -107,7 +107,7 @@ export function GameDetailPage() {
       <div className="grid md:grid-cols-2 gap-8 mb-8">
         <div className="relative group">
           {currentGame.imageUrl ? (
-            <div className="w-full aspect-video rounded-xl overflow-hidden shadow-2xl border border-white/10 relative">
+            <div className="w-full aspect-video rounded-xl overflow-hidden shadow-2xl border border-border relative">
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
               <img
                 src={currentGame.imageUrl}
@@ -116,8 +116,8 @@ export function GameDetailPage() {
               />
             </div>
           ) : (
-            <div className="w-full aspect-video rounded-xl bg-gray-800 flex items-center justify-center border border-white/10">
-              <Gamepad2 size={64} className="text-gray-600" />
+            <div className="w-full aspect-video rounded-xl bg-gray-800 flex items-center justify-center border border-border">
+              <Gamepad2 size={64} className="text-muted-foreground" />
             </div>
           )}
         </div>
@@ -135,7 +135,7 @@ export function GameDetailPage() {
           </div>
 
           <div className="flex flex-wrap gap-4">
-            <div className="flex items-center gap-3 bg-white/5 px-4 py-3 rounded-lg border border-white/10 backdrop-blur-sm">
+            <div className="flex items-center gap-3 bg-secondary px-4 py-3 rounded-lg border border-border backdrop-blur-sm">
               <div className="p-2 bg-accent/20 rounded-md">
                 <Trophy size={20} className="text-accent" />
               </div>
@@ -143,7 +143,7 @@ export function GameDetailPage() {
                 <span className="block text-xs text-uppercase text-muted font-semibold tracking-wider">
                   Versenyek
                 </span>
-                <span className="font-bold text-white">
+                <span className="font-bold text-foreground">
                   {currentGame._count?.tournaments || 0} darab
                 </span>
               </div>

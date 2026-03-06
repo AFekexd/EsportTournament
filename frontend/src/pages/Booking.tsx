@@ -19,6 +19,8 @@ import {
   fetchSchedules,
   fetchBookingsForDate,
   fetchWeeklyBookings,
+  fetchSupervisorsForDate,
+  fetchSupervisorsForWeek,
   createBooking,
   deleteBooking,
   setSelectedDate,
@@ -41,6 +43,7 @@ export function BookingPage() {
     computers,
     bookings,
     schedules,
+    supervisors,
     selectedDate,
     selectedWeekStart,
     viewMode,
@@ -94,8 +97,10 @@ export function BookingPage() {
     if (activeTab === "booking") {
       if (viewMode === "weekly") {
         dispatch(fetchWeeklyBookings(selectedWeekStart));
+        dispatch(fetchSupervisorsForWeek(selectedWeekStart));
       } else {
         dispatch(fetchBookingsForDate(selectedDate));
+        dispatch(fetchSupervisorsForDate(selectedDate));
       }
     }
   }, [dispatch, activeTab, viewMode, selectedDate, selectedWeekStart]);
@@ -193,17 +198,17 @@ export function BookingPage() {
         <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-white via-primary-100 to-gray-400 bg-clip-text text-transparent mb-2 md:mb-4">
           Gépfoglalás
         </h1>
-        <p className="text-sm md:text-lg text-gray-400 max-w-2xl mx-auto mb-4 md:mb-2">
+        <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto mb-4 md:mb-2">
           Foglalj helyet a gaming szobában és élvezd a legjobb játékélményt!
         </p>
 
-        <p className="text-xs md:text-sm !text-gray-400 max-w-2xl mx-auto mb-2 md:mb-2 italic">
+        <p className="text-xs md:text-sm !text-muted-foreground max-w-2xl mx-auto mb-2 md:mb-2 italic">
           Note: Bejelentkezni csak Felhasználónév és Jelszó segítségével
           lehetséges!
         </p>
 
         {user && (
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-[#1a1b26] border border-white/10 rounded-full text-xs md:text-sm font-medium text-white shadow-lg">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-[#121A22] border border-border rounded-full text-xs md:text-sm font-medium text-foreground shadow-lg">
             <Clock size={14} className="md:w-4 md:h-4 text-primary" />
             <span>
               Időegyenleg:{" "}
@@ -216,12 +221,12 @@ export function BookingPage() {
       </div>
 
       {/* Main Tabs */}
-      <div className="mb-6 md:mb-8 border-b border-white/10 overflow-x-auto">
+      <div className="mb-6 md:mb-8 border-b border-border overflow-x-auto">
         <div className="flex gap-4 md:gap-8 min-w-max">
           <button
             className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${activeTab === "booking"
               ? "border-primary text-primary"
-              : "border-transparent text-gray-400 hover:text-gray-300"
+              : "border-transparent text-muted-foreground hover:text-gray-300"
               }`}
             onClick={() => setActiveTab("booking")}
           >
@@ -231,7 +236,7 @@ export function BookingPage() {
           <button
             className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${activeTab === "my-bookings"
               ? "border-primary text-primary"
-              : "border-transparent text-gray-400 hover:text-gray-300"
+              : "border-transparent text-muted-foreground hover:text-gray-300"
               }`}
             onClick={() => setActiveTab("my-bookings")}
           >
@@ -256,11 +261,11 @@ export function BookingPage() {
           {/* View Toggle */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <div className="flex gap-4 w-full md:w-auto">
-              <div className="flex bg-[#1a1b26] p-1 rounded-xl border border-white/5 w-full md:w-auto">
+              <div className="flex bg-[#121A22] p-1 rounded-xl border border-border w-full md:w-auto">
                 <button
                   className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${viewMode === "daily"
-                    ? "bg-[#0f1015] text-white shadow-lg"
-                    : "text-gray-400 hover:text-gray-300"
+                    ? "bg-[#121A22] text-foreground shadow-lg"
+                    : "text-muted-foreground hover:text-gray-300"
                     }`}
                   onClick={() => dispatch(setViewMode("daily"))}
                 >
@@ -269,8 +274,8 @@ export function BookingPage() {
                 </button>
                 <button
                   className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${viewMode === "weekly"
-                    ? "bg-[#0f1015] text-white shadow-lg"
-                    : "text-gray-400 hover:text-gray-300"
+                    ? "bg-[#121A22] text-foreground shadow-lg"
+                    : "text-muted-foreground hover:text-gray-300"
                     }`}
                   onClick={() => dispatch(setViewMode("weekly"))}
                 >
@@ -280,14 +285,14 @@ export function BookingPage() {
               </div>
 
               <button
-                className="flex md:hidden items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium transition-all text-sm bg-[#1a1b26] border border-white/5 text-primary hover:bg-white/5"
+                className="flex md:hidden items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium transition-all text-sm bg-[#121A22] border border-border text-primary hover:bg-secondary"
                 onClick={() => setShowMapModal(true)}
               >
                 <Map size={18} />
               </button>
 
               <button
-                className="hidden md:flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium transition-all bg-[#1a1b26] border border-white/5 text-primary hover:bg-white/5 hover:text-white"
+                className="hidden md:flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium transition-all bg-[#121A22] border border-border text-primary hover:bg-secondary hover:text-foreground"
                 onClick={() => setShowMapModal(true)}
               >
                 <Map size={18} />
@@ -296,7 +301,7 @@ export function BookingPage() {
             </div>
 
             {viewMode === "daily" && (
-              <div className="text-xs text-gray-500 flex items-center gap-2">
+              <div className="text-xs text-muted-foreground flex items-center gap-2">
                 <Calendar size={14} className="text-primary" />
                 <span>{formatDate(selectedDate)}</span>
               </div>
@@ -334,6 +339,7 @@ export function BookingPage() {
                 bookings={bookings}
                 schedules={schedules}
                 computers={computers}
+                supervisors={supervisors}
               />
 
               {/* Step 3: Computer Selection */}
@@ -369,19 +375,19 @@ export function BookingPage() {
       {/* Booking Create Modal */}
       {showBookingModal && selectedComputer && selectedStartHour !== null && (
         <div
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
           onClick={() => setShowBookingModal(false)}
         >
           <div
-            className="bg-[#1a1b26] rounded-2xl p-8 w-full max-w-md border border-white/10 shadow-2xl"
+            className="bg-[#121A22] rounded-2xl p-8 w-full max-w-md border border-border shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="flex items-center gap-3 text-2xl font-bold text-white mb-6">
+            <h2 className="flex items-center gap-3 text-2xl font-bold text-foreground mb-6">
               <Plus size={24} className="text-primary" />
               Új foglalás
             </h2>
 
-            <div className="flex flex-col gap-4 mb-6 p-4 bg-[#0f1015] rounded-xl">
+            <div className="flex flex-col gap-4 mb-6 p-4 bg-[#121A22] rounded-xl">
               <div className="flex items-center gap-3 text-gray-300">
                 <Monitor size={18} className="text-primary" />
                 <span>{selectedComputer.name}</span>
@@ -400,7 +406,7 @@ export function BookingPage() {
             </div>
 
             <div className="mb-6">
-              <label className="block mb-3 font-medium text-white">
+              <label className="block mb-3 font-medium text-foreground">
                 Időtartam:
               </label>
               <div className="grid grid-cols-4 gap-3">
@@ -408,8 +414,8 @@ export function BookingPage() {
                   <button
                     key={mins}
                     className={`py-3 px-2 rounded-lg border-2 font-medium transition-all ${selectedDuration === mins
-                      ? "bg-primary border-primary text-white shadow-lg shadow-primary/20"
-                      : "bg-[#0f1015] border-white/10 text-gray-400 hover:border-primary/50 hover:text-gray-300"
+                      ? "bg-primary border-primary text-foreground shadow-lg shadow-primary/20"
+                      : "bg-[#121A22] border-border text-muted-foreground hover:border-primary/50 hover:text-gray-300"
                       }`}
                     onClick={() => setSelectedDuration(mins)}
                   >
@@ -421,7 +427,7 @@ export function BookingPage() {
 
             <div className="mb-6 p-4 bg-primary/10 border border-primary/20 rounded-xl space-y-3">
               <div className="text-center">
-                <strong className="text-white block mb-1">
+                <strong className="text-foreground block mb-1">
                   Foglalás időtartama:
                 </strong>
                 <span className="text-primary font-semibold text-lg">
@@ -442,11 +448,11 @@ export function BookingPage() {
 
               {user && (
                 <div className="pt-3 border-t border-primary/20 flex flex-col gap-1 text-sm">
-                  <div className="flex justify-between text-gray-400">
+                  <div className="flex justify-between text-muted-foreground">
                     <span>Jelenlegi egyenleg:</span>
                     <span>{formatBalance(user.timeBalanceSeconds)}</span>
                   </div>
-                  <div className="flex justify-between font-medium text-white">
+                  <div className="flex justify-between font-medium text-foreground">
                     <span>Foglalás után:</span>
                     <span
                       className={
@@ -474,13 +480,13 @@ export function BookingPage() {
 
             <div className="flex gap-4">
               <button
-                className="flex-1 px-6 py-3 bg-[#0f1015] hover:bg-[#1a1b26] border border-white/10 text-white rounded-xl font-semibold transition-all"
+                className="flex-1 px-6 py-3 bg-[#121A22] hover:bg-[#121A22] border border-border text-foreground rounded-xl font-semibold transition-all"
                 onClick={() => setShowBookingModal(false)}
               >
                 Mégse
               </button>
               <button
-                className="flex-1 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-6 py-3 bg-primary hover:bg-primary/90 text-foreground rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={handleBooking}
                 disabled={isLoading || isBalanceInsufficient}
               >
