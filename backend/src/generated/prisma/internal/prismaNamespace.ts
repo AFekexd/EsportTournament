@@ -2929,6 +2929,8 @@ export const UserScalarFieldEnum = {
   role: 'role',
   elo: 'elo',
   timeBalanceSeconds: 'timeBalanceSeconds',
+  isBannedFromBooking: 'isBannedFromBooking',
+  lastGradeAverage: 'lastGradeAverage',
   emailNotifications: 'emailNotifications',
   emailPrefTournaments: 'emailPrefTournaments',
   emailPrefMatches: 'emailPrefMatches',
@@ -3554,6 +3556,20 @@ export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
  * Reference to a field of type 'DateTime'
  */
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -3886,20 +3902,6 @@ export type EnumIncidentPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'IncidentPriority[]'
  */
 export type ListEnumIncidentPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IncidentPriority[]'>
-    
-
-
-/**
- * Reference to a field of type 'Float'
- */
-export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-/**
- * Reference to a field of type 'Float[]'
- */
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**

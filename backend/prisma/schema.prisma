@@ -111,6 +111,8 @@ model User {
   role                  Role      @default(STUDENT)
   elo                   Int       @default(1000)
   timeBalanceSeconds    Int       @default(0) // Kiosk time balance
+  isBannedFromBooking   Boolean   @default(false) // Banned due to failing grades
+  lastGradeAverage      Float?    // Stored from the latest XLS upload
   // Granular email preferences
   emailNotifications    Boolean   @default(true) // Master toggle (legacy, kept for compatibility)
   emailPrefTournaments  Boolean   @default(true) // Tournament announcements & invites
@@ -552,7 +554,7 @@ model BookingSupervisor {
   user      User     @relation("BookingSupervisorUser", fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
-  @@unique([date, hour])
+  @@unique([date, hour, userId])
   @@index([date])
   @@index([userId])
 }

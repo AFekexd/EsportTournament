@@ -11,7 +11,7 @@ import {
 import { useAuth } from "../../hooks/useAuth";
 import { format } from "date-fns";
 import "./WeeklyCalendar.css";
-import { assignSupervisor } from "../../store/slices/bookingsSlice";
+import { assignSupervisor, removeSupervisor } from "../../store/slices/bookingsSlice";
 import { toast } from "sonner";
 
 interface WeeklyCalendarProps {
@@ -223,7 +223,7 @@ export function WeeklyCalendar({
                 <div className="grid-cell time-cell bg-yellow-500/10 text-yellow-500">{hour}:00</div>
                 {weekDays.map((day) => {
                   const isActive = isScheduleActive(day.date.getDay(), hour, 0);
-                  const supervisor = supervisors.find(s => {
+                  const hourSupervisors = supervisors.filter(s => {
                     return new Date(s.date).toDateString() === new Date(day.dateStr).toDateString() && s.hour === hour;
                   });
 
@@ -235,22 +235,23 @@ export function WeeklyCalendar({
                   const now = new Date();
                   const isPast = slotTime < now;
 
-                  const canSupervise = isActive && !isPast && !supervisor;
-                  const isMySupervision = user && supervisor?.userId === user.id;
+                  const isMySupervision = user && hourSupervisors.some(s => s.userId === user.id);
+                  const canSupervise = isActive && !isPast && !isMySupervision;
 
                   return (
                     <div
                       key={`sup-${day.dateStr}-${hour}`}
-                      className={`grid-cell slot-cell h-8 border-b-0 flex items-center justify-center
+                      className={`grid-cell slot-cell h-8 border-b-0 flex items-center justify-center relative group
                         ${!isActive ? 'inactive' : isPast ? 'past inactive' : ''}
-                        ${isMySupervision ? 'bg-yellow-500/20 text-yellow-500' : supervisor ? 'bg-card/50 text-muted-foreground' : ''}
+                        ${isMySupervision ? 'bg-yellow-500/20 text-yellow-500' : hourSupervisors.length > 0 ? 'bg-card/50 text-muted-foreground' : ''}
                       `}
                     >
-                      {supervisor ? (
-                        <span className="text-xs font-medium px-1 truncate w-full text-center" title={supervisor.user?.displayName || supervisor.user?.username}>
-                          {isMySupervision ? "Én" : (supervisor.user?.displayName || supervisor.user?.username)}
+                      {hourSupervisors.length > 0 && (
+                        <span className={`text-[10px] font-medium px-1 truncate w-full text-center ${((canSupervise && user) || (isMySupervision && !isPast)) ? 'group-hover:hidden' : ''}`} title={hourSupervisors.map(s => s.user?.displayName || s.user?.username).join(', ')}>
+                          {hourSupervisors.map(s => s.userId === user?.id ? "Én" : (s.user?.displayName || s.user?.username?.split(' ')[0])).join(', ')}
                         </span>
-                      ) : (canSupervise && user && user.role !== "ADMIN") ? (
+                      )}
+                      {(canSupervise && user) && (
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -262,11 +263,28 @@ export function WeeklyCalendar({
                               .then(() => toast.success("Sikeresen vállaltad a felelősséget!"))
                               .catch((err) => toast.error(err.message || "Hiba történt a felelősség vállalásakor"));
                           }}
-                          className="w-full h-full text-[10px] font-bold text-yellow-500/70 hover:text-yellow-500 hover:bg-yellow-500/10 transition-colors uppercase tracking-wider"
+                          className={`w-full h-full text-[10px] font-bold text-yellow-500/70 hover:text-yellow-500 hover:bg-yellow-500/10 transition-colors uppercase tracking-wider ${hourSupervisors.length > 0 ? 'hidden group-hover:block absolute inset-0 bg-background/90' : ''}`}
                         >
                           Jelentkezem
                         </button>
-                      ) : null}
+                      )}
+                      {(isMySupervision && !isPast) && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const myAssignment = hourSupervisors.find(s => s.userId === user?.id);
+                            if (myAssignment) {
+                              dispatch(removeSupervisor(myAssignment.id))
+                                .unwrap()
+                                .then(() => toast.success("Sikeresen lemondtad a felelősséget!"))
+                                .catch((err) => toast.error(err.message || "Hiba történt a lemondás során"));
+                            }
+                          }}
+                          className="w-full h-full text-[10px] font-bold text-red-500/70 hover:text-red-500 hover:bg-red-500/10 transition-colors uppercase tracking-wider hidden group-hover:block absolute inset-0 bg-background/90"
+                        >
+                          Lemondás
+                        </button>
+                      )}
                     </div>
                   );
                 })}
@@ -315,11 +333,11 @@ export function WeeklyCalendar({
                       const isOwn = booking?.userId === user?.id;
 
                       // Supervisor check
-                      const supervisor = supervisors.find(s => {
+                      const hourSupervisors = supervisors.filter(s => {
                         return new Date(s.date).toDateString() === new Date(day.dateStr).toDateString() && s.hour === hour;
                       });
-                      const needsSupervisor = !supervisor;
-                      const isMySupervision = supervisor && user && supervisor.userId === user.id;
+                      const needsSupervisor = hourSupervisors.length === 0;
+                      const isMySupervision = user && hourSupervisors.some(s => s.userId === user.id);
 
                       let cellClass = "grid-cell slot-cell h-8"; // Reduced height for granular view
                       if (!isActive) cellClass += " inactive";
@@ -398,11 +416,11 @@ export function WeeklyCalendar({
                       const isOwn = booking?.userId === user?.id;
 
                       // Supervisor check (supervisors apply per hour)
-                      const supervisor = supervisors.find(s => {
+                      const hourSupervisors = supervisors.filter(s => {
                         return new Date(s.date).toDateString() === new Date(day.dateStr).toDateString() && s.hour === hour;
                       });
-                      const needsSupervisor = !supervisor;
-                      const isMySupervision = supervisor && user && supervisor.userId === user.id;
+                      const needsSupervisor = hourSupervisors.length === 0;
+                      const isMySupervision = user && hourSupervisors.some(s => s.userId === user.id);
 
                       let cellClass =
                         "grid-cell slot-cell h-8 border-t border-border"; // subtle border

@@ -133,6 +133,8 @@ app.use('/api/kiosk', kioskRouter);
 app.use('/api/admin/kiosk', adminKioskRouter);
 app.use('/api/admin/email', adminEmailRouter);
 app.use('/api/admin/discord', adminDiscordRouter);
+import { adminStudentsRouter } from './routes/admin-students.js';
+app.use('/api/admin/students', adminStudentsRouter);
 app.use('/api/client/update', clientUpdateRouter);
 import unsubscribeRouter from './routes/unsubscribe.js';
 app.use('/api/unsubscribe', unsubscribeRouter);

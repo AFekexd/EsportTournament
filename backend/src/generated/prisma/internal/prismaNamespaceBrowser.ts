@@ -114,6 +114,8 @@ export const UserScalarFieldEnum = {
   role: 'role',
   elo: 'elo',
   timeBalanceSeconds: 'timeBalanceSeconds',
+  isBannedFromBooking: 'isBannedFromBooking',
+  lastGradeAverage: 'lastGradeAverage',
   emailNotifications: 'emailNotifications',
   emailPrefTournaments: 'emailPrefTournaments',
   emailPrefMatches: 'emailPrefMatches',

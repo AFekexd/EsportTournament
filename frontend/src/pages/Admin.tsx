@@ -16,6 +16,7 @@ import {
   MessageSquare,
   Bug,
   AlertTriangle,
+  BookText,
 } from "lucide-react";
 import { ConfirmationModal } from "../components/common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
@@ -97,6 +98,11 @@ const AdminIncidents = lazy(() =>
     default: module.AdminIncidents,
   })),
 );
+const GradesUploadAdmin = lazy(() =>
+  import("../components/admin/GradesUploadAdmin").then((module) => ({
+    default: module.GradesUploadAdmin,
+  })),
+);
 import "./Admin.css";
 import { authService } from "../lib/auth-service";
 import type { Game, Tournament } from "../types";
@@ -135,6 +141,7 @@ export function AdminPage() {
     | "announcements"
     | "bugreports"
     | "incidents"
+    | "grades"
   >("overview");
   const [stats, setStats] = useState({
     activeTournaments: 0,
@@ -321,6 +328,7 @@ export function AdminPage() {
     { id: "announcements", label: "Bejelentések", icon: MessageSquare },
     { id: "bugreports", label: "Hibajelentések", icon: Bug },
     { id: "incidents", label: "Incidensek", icon: AlertTriangle },
+    { id: "grades", label: "Tanulmányi eredmények", icon: BookText },
     ...(canManageComputers
       ? [
         { id: "bookings", label: "Gépfoglalás", icon: Calendar },
@@ -766,6 +774,12 @@ export function AdminPage() {
             </div>
           )}
 
+          {activeTab === "grades" && (
+            <div className="animate-fade-in">
+              <GradesUploadAdmin />
+            </div>
+          )}
+
           {activeTab === "tournaments" && (
             <div className="animate-fade-in">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
@@ -924,8 +938,8 @@ export function AdminPage() {
                         key={page}
                         onClick={() => setTournamentPage(page)}
                         className={`px-3 py-1 rounded-lg text-sm transition-colors ${tournamentPagination.page === page
-                            ? "bg-primary text-foreground"
-                            : "bg-secondary text-muted-foreground hover:bg-secondary/80"
+                          ? "bg-primary text-foreground"
+                          : "bg-secondary text-muted-foreground hover:bg-secondary/80"
                           }`}
                       >
                         {page}

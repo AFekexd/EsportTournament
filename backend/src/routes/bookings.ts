@@ -279,6 +279,11 @@ bookingsRouter.post(
             throw new ApiError('A számítógép nem található vagy inaktív', 404, 'COMPUTER_NOT_FOUND');
         }
 
+        // Banned from booking check
+        if (user.isBannedFromBooking) {
+            throw new ApiError('A gépfoglalás jelenleg nem engedélyezett számodra (tanulmányi okokból letiltva).', 403, 'USER_IS_BANNED');
+        }
+
         // Parse dates
         const bookingDate = new Date(date);
         const start = new Date(startTime);
@@ -434,19 +439,24 @@ bookingsRouter.post(
                 }
             });
 
-            // Map available supervisors
-            const supervisorMap = new Map(supervisors.map(s => [s.hour, s.userId]));
+            // Map available supervisors to arrays
+            const supervisorMap = new Map<number, string[]>();
+            supervisors.forEach(s => {
+                const existing = supervisorMap.get(s.hour) || [];
+                existing.push(s.userId);
+                supervisorMap.set(s.hour, existing);
+            });
 
             // Validate each touched hour
             for (const hour of touchedHours) {
-                const supervisorId = supervisorMap.get(hour);
+                const supervisorIds = supervisorMap.get(hour);
 
-                if (!supervisorId) {
+                if (!supervisorIds || supervisorIds.length === 0) {
                     throw new ApiError(`Erre az időszakra (${hour}:00) még nincs felelős kijelölve, nem lehet foglalni.`, 400, 'NO_SUPERVISOR');
                 }
 
-                if (supervisorId === user.id) {
-                    throw new ApiError(`Te vagy a felelős a(z) ${hour}:00 órában, nem foglalhatsz gépet.`, 400, 'IS_SUPERVISOR');
+                if (supervisorIds.includes(user.id)) {
+                    throw new ApiError(`Te vagy a(z egyik) felelős a(z) ${hour}:00 órában, nem foglalhatsz gépet.`, 400, 'IS_SUPERVISOR');
                 }
             }
 

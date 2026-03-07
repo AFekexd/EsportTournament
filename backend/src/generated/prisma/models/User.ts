@@ -29,6 +29,7 @@ export type AggregateUser = {
 export type UserAvgAggregateOutputType = {
   elo: number | null
   timeBalanceSeconds: number | null
+  lastGradeAverage: number | null
   steamLevel: number | null
   perfectGamesCount: number | null
   steamTotalGames: number | null
@@ -38,6 +39,7 @@ export type UserAvgAggregateOutputType = {
 export type UserSumAggregateOutputType = {
   elo: number | null
   timeBalanceSeconds: number | null
+  lastGradeAverage: number | null
   steamLevel: number | null
   perfectGamesCount: number | null
   steamTotalGames: number | null
@@ -56,6 +58,8 @@ export type UserMinAggregateOutputType = {
   role: $Enums.Role | null
   elo: number | null
   timeBalanceSeconds: number | null
+  isBannedFromBooking: boolean | null
+  lastGradeAverage: number | null
   emailNotifications: boolean | null
   emailPrefTournaments: boolean | null
   emailPrefMatches: boolean | null
@@ -96,6 +100,8 @@ export type UserMaxAggregateOutputType = {
   role: $Enums.Role | null
   elo: number | null
   timeBalanceSeconds: number | null
+  isBannedFromBooking: boolean | null
+  lastGradeAverage: number | null
   emailNotifications: boolean | null
   emailPrefTournaments: boolean | null
   emailPrefMatches: boolean | null
@@ -136,6 +142,8 @@ export type UserCountAggregateOutputType = {
   role: number
   elo: number
   timeBalanceSeconds: number
+  isBannedFromBooking: number
+  lastGradeAverage: number
   emailNotifications: number
   emailPrefTournaments: number
   emailPrefMatches: number
@@ -172,6 +180,7 @@ export type UserCountAggregateOutputType = {
 export type UserAvgAggregateInputType = {
   elo?: true
   timeBalanceSeconds?: true
+  lastGradeAverage?: true
   steamLevel?: true
   perfectGamesCount?: true
   steamTotalGames?: true
@@ -181,6 +190,7 @@ export type UserAvgAggregateInputType = {
 export type UserSumAggregateInputType = {
   elo?: true
   timeBalanceSeconds?: true
+  lastGradeAverage?: true
   steamLevel?: true
   perfectGamesCount?: true
   steamTotalGames?: true
@@ -199,6 +209,8 @@ export type UserMinAggregateInputType = {
   role?: true
   elo?: true
   timeBalanceSeconds?: true
+  isBannedFromBooking?: true
+  lastGradeAverage?: true
   emailNotifications?: true
   emailPrefTournaments?: true
   emailPrefMatches?: true
@@ -239,6 +251,8 @@ export type UserMaxAggregateInputType = {
   role?: true
   elo?: true
   timeBalanceSeconds?: true
+  isBannedFromBooking?: true
+  lastGradeAverage?: true
   emailNotifications?: true
   emailPrefTournaments?: true
   emailPrefMatches?: true
@@ -279,6 +293,8 @@ export type UserCountAggregateInputType = {
   role?: true
   elo?: true
   timeBalanceSeconds?: true
+  isBannedFromBooking?: true
+  lastGradeAverage?: true
   emailNotifications?: true
   emailPrefTournaments?: true
   emailPrefMatches?: true
@@ -409,6 +425,8 @@ export type UserGroupByOutputType = {
   role: $Enums.Role
   elo: number
   timeBalanceSeconds: number
+  isBannedFromBooking: boolean
+  lastGradeAverage: number | null
   emailNotifications: boolean
   emailPrefTournaments: boolean
   emailPrefMatches: boolean
@@ -475,6 +493,8 @@ export type UserWhereInput = {
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   elo?: Prisma.IntFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntFilter<"User"> | number
+  isBannedFromBooking?: Prisma.BoolFilter<"User"> | boolean
+  lastGradeAverage?: Prisma.FloatNullableFilter<"User"> | number | null
   emailNotifications?: Prisma.BoolFilter<"User"> | boolean
   emailPrefTournaments?: Prisma.BoolFilter<"User"> | boolean
   emailPrefMatches?: Prisma.BoolFilter<"User"> | boolean
@@ -545,6 +565,8 @@ export type UserOrderByWithRelationInput = {
   role?: Prisma.SortOrder
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
+  isBannedFromBooking?: Prisma.SortOrder
+  lastGradeAverage?: Prisma.SortOrderInput | Prisma.SortOrder
   emailNotifications?: Prisma.SortOrder
   emailPrefTournaments?: Prisma.SortOrder
   emailPrefMatches?: Prisma.SortOrder
@@ -618,6 +640,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   elo?: Prisma.IntFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntFilter<"User"> | number
+  isBannedFromBooking?: Prisma.BoolFilter<"User"> | boolean
+  lastGradeAverage?: Prisma.FloatNullableFilter<"User"> | number | null
   emailNotifications?: Prisma.BoolFilter<"User"> | boolean
   emailPrefTournaments?: Prisma.BoolFilter<"User"> | boolean
   emailPrefMatches?: Prisma.BoolFilter<"User"> | boolean
@@ -688,6 +712,8 @@ export type UserOrderByWithAggregationInput = {
   role?: Prisma.SortOrder
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
+  isBannedFromBooking?: Prisma.SortOrder
+  lastGradeAverage?: Prisma.SortOrderInput | Prisma.SortOrder
   emailNotifications?: Prisma.SortOrder
   emailPrefTournaments?: Prisma.SortOrder
   emailPrefMatches?: Prisma.SortOrder
@@ -739,6 +765,8 @@ export type UserScalarWhereWithAggregatesInput = {
   role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
   elo?: Prisma.IntWithAggregatesFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntWithAggregatesFilter<"User"> | number
+  isBannedFromBooking?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  lastGradeAverage?: Prisma.FloatNullableWithAggregatesFilter<"User"> | number | null
   emailNotifications?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   emailPrefTournaments?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   emailPrefMatches?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
@@ -782,6 +810,8 @@ export type UserCreateInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -851,6 +881,8 @@ export type UserUncheckedCreateInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -920,6 +952,8 @@ export type UserUpdateInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -989,6 +1023,8 @@ export type UserUncheckedUpdateInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1058,6 +1094,8 @@ export type UserCreateManyInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -1101,6 +1139,8 @@ export type UserUpdateManyMutationInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1143,6 +1183,8 @@ export type UserUncheckedUpdateManyInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1186,6 +1228,8 @@ export type UserCountOrderByAggregateInput = {
   role?: Prisma.SortOrder
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
+  isBannedFromBooking?: Prisma.SortOrder
+  lastGradeAverage?: Prisma.SortOrder
   emailNotifications?: Prisma.SortOrder
   emailPrefTournaments?: Prisma.SortOrder
   emailPrefMatches?: Prisma.SortOrder
@@ -1220,6 +1264,7 @@ export type UserCountOrderByAggregateInput = {
 export type UserAvgOrderByAggregateInput = {
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
+  lastGradeAverage?: Prisma.SortOrder
   steamLevel?: Prisma.SortOrder
   perfectGamesCount?: Prisma.SortOrder
   steamTotalGames?: Prisma.SortOrder
@@ -1238,6 +1283,8 @@ export type UserMaxOrderByAggregateInput = {
   role?: Prisma.SortOrder
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
+  isBannedFromBooking?: Prisma.SortOrder
+  lastGradeAverage?: Prisma.SortOrder
   emailNotifications?: Prisma.SortOrder
   emailPrefTournaments?: Prisma.SortOrder
   emailPrefMatches?: Prisma.SortOrder
@@ -1278,6 +1325,8 @@ export type UserMinOrderByAggregateInput = {
   role?: Prisma.SortOrder
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
+  isBannedFromBooking?: Prisma.SortOrder
+  lastGradeAverage?: Prisma.SortOrder
   emailNotifications?: Prisma.SortOrder
   emailPrefTournaments?: Prisma.SortOrder
   emailPrefMatches?: Prisma.SortOrder
@@ -1309,6 +1358,7 @@ export type UserMinOrderByAggregateInput = {
 export type UserSumOrderByAggregateInput = {
   elo?: Prisma.SortOrder
   timeBalanceSeconds?: Prisma.SortOrder
+  lastGradeAverage?: Prisma.SortOrder
   steamLevel?: Prisma.SortOrder
   perfectGamesCount?: Prisma.SortOrder
   steamTotalGames?: Prisma.SortOrder
@@ -1357,6 +1407,14 @@ export type IntFieldUpdateOperationsInput = {
 
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
+}
+
+export type NullableFloatFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type NullableIntFieldUpdateOperationsInput = {
@@ -1831,6 +1889,8 @@ export type UserCreateWithoutOwnedTeamsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -1899,6 +1959,8 @@ export type UserUncheckedCreateWithoutOwnedTeamsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -1983,6 +2045,8 @@ export type UserUpdateWithoutOwnedTeamsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2051,6 +2115,8 @@ export type UserUncheckedUpdateWithoutOwnedTeamsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2119,6 +2185,8 @@ export type UserCreateWithoutTeamMembershipsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -2187,6 +2255,8 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -2271,6 +2341,8 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2339,6 +2411,8 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2407,6 +2481,8 @@ export type UserCreateWithoutFavoriteGameInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -2475,6 +2551,8 @@ export type UserUncheckedCreateWithoutFavoriteGameInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -2572,6 +2650,8 @@ export type UserScalarWhereInput = {
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   elo?: Prisma.IntFilter<"User"> | number
   timeBalanceSeconds?: Prisma.IntFilter<"User"> | number
+  isBannedFromBooking?: Prisma.BoolFilter<"User"> | boolean
+  lastGradeAverage?: Prisma.FloatNullableFilter<"User"> | number | null
   emailNotifications?: Prisma.BoolFilter<"User"> | boolean
   emailPrefTournaments?: Prisma.BoolFilter<"User"> | boolean
   emailPrefMatches?: Prisma.BoolFilter<"User"> | boolean
@@ -2615,6 +2695,8 @@ export type UserCreateWithoutTournamentEntriesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -2683,6 +2765,8 @@ export type UserUncheckedCreateWithoutTournamentEntriesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -2756,6 +2840,8 @@ export type UserCreateWithoutParticipatingEntriesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -2824,6 +2910,8 @@ export type UserUncheckedCreateWithoutParticipatingEntriesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -2908,6 +2996,8 @@ export type UserUpdateWithoutTournamentEntriesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2976,6 +3066,8 @@ export type UserUncheckedUpdateWithoutTournamentEntriesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3060,6 +3152,8 @@ export type UserCreateWithoutHomeMatchesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -3128,6 +3222,8 @@ export type UserUncheckedCreateWithoutHomeMatchesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -3201,6 +3297,8 @@ export type UserCreateWithoutAwayMatchesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -3269,6 +3367,8 @@ export type UserUncheckedCreateWithoutAwayMatchesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -3342,6 +3442,8 @@ export type UserCreateWithoutWonMatchesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -3410,6 +3512,8 @@ export type UserUncheckedCreateWithoutWonMatchesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -3494,6 +3598,8 @@ export type UserUpdateWithoutHomeMatchesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3562,6 +3668,8 @@ export type UserUncheckedUpdateWithoutHomeMatchesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3641,6 +3749,8 @@ export type UserUpdateWithoutAwayMatchesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3709,6 +3819,8 @@ export type UserUncheckedUpdateWithoutAwayMatchesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3788,6 +3900,8 @@ export type UserUpdateWithoutWonMatchesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3856,6 +3970,8 @@ export type UserUncheckedUpdateWithoutWonMatchesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3924,6 +4040,8 @@ export type UserCreateWithoutGameStatsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -3992,6 +4110,8 @@ export type UserUncheckedCreateWithoutGameStatsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -4076,6 +4196,8 @@ export type UserUpdateWithoutGameStatsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4144,6 +4266,8 @@ export type UserUncheckedUpdateWithoutGameStatsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4212,6 +4336,8 @@ export type UserCreateWithoutRanksInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -4280,6 +4406,8 @@ export type UserUncheckedCreateWithoutRanksInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -4364,6 +4492,8 @@ export type UserUpdateWithoutRanksInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4432,6 +4562,8 @@ export type UserUncheckedUpdateWithoutRanksInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4500,6 +4632,8 @@ export type UserCreateWithoutNotificationsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -4568,6 +4702,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -4652,6 +4788,8 @@ export type UserUpdateWithoutNotificationsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4720,6 +4858,8 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4788,6 +4928,8 @@ export type UserCreateWithoutDiscordSettingsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -4856,6 +4998,8 @@ export type UserUncheckedCreateWithoutDiscordSettingsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -4940,6 +5084,8 @@ export type UserUpdateWithoutDiscordSettingsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5008,6 +5154,8 @@ export type UserUncheckedUpdateWithoutDiscordSettingsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5076,6 +5224,8 @@ export type UserCreateWithoutBookingsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -5144,6 +5294,8 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -5228,6 +5380,8 @@ export type UserUpdateWithoutBookingsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5296,6 +5450,8 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5364,6 +5520,8 @@ export type UserCreateWithoutSessionsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -5432,6 +5590,8 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -5516,6 +5676,8 @@ export type UserUpdateWithoutSessionsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5584,6 +5746,8 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5652,6 +5816,8 @@ export type UserCreateWithoutLogsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -5720,6 +5886,8 @@ export type UserUncheckedCreateWithoutLogsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -5793,6 +5961,8 @@ export type UserCreateWithoutAdminLogsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -5861,6 +6031,8 @@ export type UserUncheckedCreateWithoutAdminLogsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -5945,6 +6117,8 @@ export type UserUpdateWithoutLogsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6013,6 +6187,8 @@ export type UserUncheckedUpdateWithoutLogsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6092,6 +6268,8 @@ export type UserUpdateWithoutAdminLogsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6160,6 +6338,8 @@ export type UserUncheckedUpdateWithoutAdminLogsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6228,6 +6408,8 @@ export type UserCreateWithoutWaitlistEntriesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -6296,6 +6478,8 @@ export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -6380,6 +6564,8 @@ export type UserUpdateWithoutWaitlistEntriesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6448,6 +6634,8 @@ export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6516,6 +6704,8 @@ export type UserCreateWithoutSupervisingHoursInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -6584,6 +6774,8 @@ export type UserUncheckedCreateWithoutSupervisingHoursInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -6668,6 +6860,8 @@ export type UserUpdateWithoutSupervisingHoursInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6736,6 +6930,8 @@ export type UserUncheckedUpdateWithoutSupervisingHoursInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6804,6 +7000,8 @@ export type UserCreateWithoutChangeRequestsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -6872,6 +7070,8 @@ export type UserUncheckedCreateWithoutChangeRequestsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -6956,6 +7156,8 @@ export type UserUpdateWithoutChangeRequestsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -7024,6 +7226,8 @@ export type UserUncheckedUpdateWithoutChangeRequestsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -7092,6 +7296,8 @@ export type UserCreateWithoutAuthoredChangelogsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -7160,6 +7366,8 @@ export type UserUncheckedCreateWithoutAuthoredChangelogsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -7244,6 +7452,8 @@ export type UserUpdateWithoutAuthoredChangelogsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -7312,6 +7522,8 @@ export type UserUncheckedUpdateWithoutAuthoredChangelogsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -7380,6 +7592,8 @@ export type UserCreateWithoutDiscordLogsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -7448,6 +7662,8 @@ export type UserUncheckedCreateWithoutDiscordLogsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -7532,6 +7748,8 @@ export type UserUpdateWithoutDiscordLogsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -7600,6 +7818,8 @@ export type UserUncheckedUpdateWithoutDiscordLogsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -7668,6 +7888,8 @@ export type UserCreateWithoutMatchCheckInsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -7736,6 +7958,8 @@ export type UserUncheckedCreateWithoutMatchCheckInsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -7820,6 +8044,8 @@ export type UserUpdateWithoutMatchCheckInsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -7888,6 +8114,8 @@ export type UserUncheckedUpdateWithoutMatchCheckInsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -7956,6 +8184,8 @@ export type UserCreateWithoutMatchPredictionsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -8024,6 +8254,8 @@ export type UserUncheckedCreateWithoutMatchPredictionsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -8108,6 +8340,8 @@ export type UserUpdateWithoutMatchPredictionsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -8176,6 +8410,8 @@ export type UserUncheckedUpdateWithoutMatchPredictionsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -8244,6 +8480,8 @@ export type UserCreateWithoutPostsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -8312,6 +8550,8 @@ export type UserUncheckedCreateWithoutPostsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -8396,6 +8636,8 @@ export type UserUpdateWithoutPostsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -8464,6 +8706,8 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -8532,6 +8776,8 @@ export type UserCreateWithoutBugReportsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -8600,6 +8846,8 @@ export type UserUncheckedCreateWithoutBugReportsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -8684,6 +8932,8 @@ export type UserUpdateWithoutBugReportsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -8752,6 +9002,8 @@ export type UserUncheckedUpdateWithoutBugReportsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -8820,6 +9072,8 @@ export type UserCreateWithoutBugReportNotificationInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -8888,6 +9142,8 @@ export type UserUncheckedCreateWithoutBugReportNotificationInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -8972,6 +9228,8 @@ export type UserUpdateWithoutBugReportNotificationInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -9040,6 +9298,8 @@ export type UserUncheckedUpdateWithoutBugReportNotificationInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -9108,6 +9368,8 @@ export type UserCreateWithoutIncidentsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -9176,6 +9438,8 @@ export type UserUncheckedCreateWithoutIncidentsInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -9260,6 +9524,8 @@ export type UserUpdateWithoutIncidentsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -9328,6 +9594,8 @@ export type UserUncheckedUpdateWithoutIncidentsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -9396,6 +9664,8 @@ export type UserCreateManyFavoriteGameInput = {
   role?: $Enums.Role
   elo?: number
   timeBalanceSeconds?: number
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: number | null
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -9438,6 +9708,8 @@ export type UserUpdateWithoutFavoriteGameInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -9506,6 +9778,8 @@ export type UserUncheckedUpdateWithoutFavoriteGameInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -9574,6 +9848,8 @@ export type UserUncheckedUpdateManyWithoutFavoriteGameInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -9616,6 +9892,8 @@ export type UserUpdateWithoutParticipatingEntriesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -9684,6 +9962,8 @@ export type UserUncheckedUpdateWithoutParticipatingEntriesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -9752,6 +10032,8 @@ export type UserUncheckedUpdateManyWithoutParticipatingEntriesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   elo?: Prisma.IntFieldUpdateOperationsInput | number
   timeBalanceSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  isBannedFromBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastGradeAverage?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefTournaments?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailPrefMatches?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -10033,6 +10315,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   role?: boolean
   elo?: boolean
   timeBalanceSeconds?: boolean
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: boolean
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -10104,6 +10388,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   role?: boolean
   elo?: boolean
   timeBalanceSeconds?: boolean
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: boolean
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -10148,6 +10434,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   role?: boolean
   elo?: boolean
   timeBalanceSeconds?: boolean
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: boolean
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -10192,6 +10480,8 @@ export type UserSelectScalar = {
   role?: boolean
   elo?: boolean
   timeBalanceSeconds?: boolean
+  isBannedFromBooking?: boolean
+  lastGradeAverage?: boolean
   emailNotifications?: boolean
   emailPrefTournaments?: boolean
   emailPrefMatches?: boolean
@@ -10223,7 +10513,7 @@ export type UserSelectScalar = {
   tosAcceptedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "keycloakId" | "email" | "username" | "displayName" | "avatarUrl" | "omId" | "discordId" | "role" | "elo" | "timeBalanceSeconds" | "emailNotifications" | "emailPrefTournaments" | "emailPrefMatches" | "emailPrefBookings" | "emailPrefSystem" | "emailPrefWeeklyDigest" | "discordDmTournaments" | "discordDmMatches" | "discordDmReminders" | "discordDmResults" | "discordDmSystem" | "steamId" | "steamAvatar" | "steamUrl" | "steamLevel" | "steamPersonaname" | "steamCreatedAt" | "perfectGamesCount" | "steamTotalGames" | "steamTotalPlaytime" | "steamRecentGames" | "steamTopGames" | "steamSyncStatus" | "createdAt" | "updatedAt" | "lastLogoutAt" | "achievements" | "favoriteGameId" | "tosAcceptedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "keycloakId" | "email" | "username" | "displayName" | "avatarUrl" | "omId" | "discordId" | "role" | "elo" | "timeBalanceSeconds" | "isBannedFromBooking" | "lastGradeAverage" | "emailNotifications" | "emailPrefTournaments" | "emailPrefMatches" | "emailPrefBookings" | "emailPrefSystem" | "emailPrefWeeklyDigest" | "discordDmTournaments" | "discordDmMatches" | "discordDmReminders" | "discordDmResults" | "discordDmSystem" | "steamId" | "steamAvatar" | "steamUrl" | "steamLevel" | "steamPersonaname" | "steamCreatedAt" | "perfectGamesCount" | "steamTotalGames" | "steamTotalPlaytime" | "steamRecentGames" | "steamTopGames" | "steamSyncStatus" | "createdAt" | "updatedAt" | "lastLogoutAt" | "achievements" | "favoriteGameId" | "tosAcceptedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
   ownedTeams?: boolean | Prisma.User$ownedTeamsArgs<ExtArgs>
@@ -10304,6 +10594,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     role: $Enums.Role
     elo: number
     timeBalanceSeconds: number
+    isBannedFromBooking: boolean
+    lastGradeAverage: number | null
     emailNotifications: boolean
     emailPrefTournaments: boolean
     emailPrefMatches: boolean
@@ -10794,6 +11086,8 @@ export interface UserFieldRefs {
   readonly role: Prisma.FieldRef<"User", 'Role'>
   readonly elo: Prisma.FieldRef<"User", 'Int'>
   readonly timeBalanceSeconds: Prisma.FieldRef<"User", 'Int'>
+  readonly isBannedFromBooking: Prisma.FieldRef<"User", 'Boolean'>
+  readonly lastGradeAverage: Prisma.FieldRef<"User", 'Float'>
   readonly emailNotifications: Prisma.FieldRef<"User", 'Boolean'>
   readonly emailPrefTournaments: Prisma.FieldRef<"User", 'Boolean'>
   readonly emailPrefMatches: Prisma.FieldRef<"User", 'Boolean'>

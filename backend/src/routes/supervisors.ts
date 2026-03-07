@@ -112,20 +112,16 @@ supervisorsRouter.post(
 
         const supervisor = await prisma.$transaction(async (tx) => {
             // Check if already assigned
-            const existing = await tx.bookingSupervisor.findUnique({
+            const existing = await tx.bookingSupervisor.findFirst({
                 where: {
-                    date_hour: {
-                        date: parsedDate,
-                        hour,
-                    }
+                    date: parsedDate,
+                    hour,
+                    userId: user.id
                 }
             });
 
             if (existing) {
-                if (existing.userId === user.id) {
-                    throw new ApiError('Már te vagy a felelős ebben az órában.', 400, 'ALREADY_SUPERVISOR');
-                }
-                throw new ApiError('Már van felelős erre az órára.', 400, 'SUPERVISOR_EXISTS');
+                throw new ApiError('Már te vagy a felelős ebben az órában.', 400, 'ALREADY_SUPERVISOR');
             }
 
             // Optional: User cannot be supervisor if they already have a booking overlapping this hour
