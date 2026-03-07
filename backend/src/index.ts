@@ -40,9 +40,15 @@ import { adminEmailRouter } from './routes/admin-email.js';
 import { adminDiscordRouter } from './routes/admin-discord.js';
 import { digestService } from './services/digestService.js';
 import { matchReminderService } from './services/matchReminderService.js';
-
-
-
+import { supervisorsRouter } from './routes/supervisors.js';
+import { incidentsRouter } from './routes/incidents.js';
+import { adminSettingsRouter } from './routes/adminSettings.js';
+import { changelogRouter } from './routes/changelog.js';
+import { bugReportsRouter } from './routes/bugReports.js';
+import { bugReportSettingsRouter } from './routes/bugReportSettings.js';
+import unsubscribeRouter from './routes/unsubscribe.js';
+// ...
+import { adminStudentsRouter } from './routes/admin-students.js';
 // CORS origins from environment variable or default
 const corsOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(',')
@@ -112,18 +118,14 @@ app.use('/api/notifications', notificationsRouter);
 app.use('/api/leaderboards', leaderboardsRouter);
 app.use('/api/discord', discordRouter);
 app.use('/api/bookings', bookingsRouter);
-import { supervisorsRouter } from './routes/supervisors.js';
+
 app.use('/api/supervisors', supervisorsRouter);
 app.use('/api/logs', logsRouter);
 app.use('/api/steam', steamRouter);
-import { changelogRouter } from './routes/changelog.js';
-
-// ...
 
 app.use('/api/change-requests', changeRequestsRouter);
 app.use('/api/changelog', changelogRouter);
-import { bugReportsRouter } from './routes/bugReports.js';
-import { bugReportSettingsRouter } from './routes/bugReportSettings.js';
+
 app.use('/api/bug-reports', bugReportsRouter);
 app.use('/api/bug-report-settings', bugReportSettingsRouter);
 app.use('/share', shareRouter);
@@ -133,15 +135,14 @@ app.use('/api/kiosk', kioskRouter);
 app.use('/api/admin/kiosk', adminKioskRouter);
 app.use('/api/admin/email', adminEmailRouter);
 app.use('/api/admin/discord', adminDiscordRouter);
-import { adminStudentsRouter } from './routes/admin-students.js';
+
 app.use('/api/admin/students', adminStudentsRouter);
 app.use('/api/client/update', clientUpdateRouter);
-import unsubscribeRouter from './routes/unsubscribe.js';
+
 app.use('/api/unsubscribe', unsubscribeRouter);
 
 // Incident Routes
-import { incidentsRouter } from './routes/incidents.js';
-import { adminSettingsRouter } from './routes/adminSettings.js';
+
 app.use('/api/incidents', incidentsRouter);
 app.use('/api/admin/settings', adminSettingsRouter);
 

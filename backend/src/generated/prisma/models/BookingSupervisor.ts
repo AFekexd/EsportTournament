@@ -230,7 +230,7 @@ export type BookingSupervisorOrderByWithRelationInput = {
 
 export type BookingSupervisorWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  date_hour_userId?: Prisma.BookingSupervisorDateHourUserIdCompoundUniqueInput
+  date_hour?: Prisma.BookingSupervisorDateHourCompoundUniqueInput
   AND?: Prisma.BookingSupervisorWhereInput | Prisma.BookingSupervisorWhereInput[]
   OR?: Prisma.BookingSupervisorWhereInput[]
   NOT?: Prisma.BookingSupervisorWhereInput | Prisma.BookingSupervisorWhereInput[]
@@ -239,7 +239,7 @@ export type BookingSupervisorWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"BookingSupervisor"> | string
   createdAt?: Prisma.DateTimeFilter<"BookingSupervisor"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id" | "date_hour_userId">
+}, "id" | "date_hour">
 
 export type BookingSupervisorOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -330,10 +330,9 @@ export type BookingSupervisorOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type BookingSupervisorDateHourUserIdCompoundUniqueInput = {
+export type BookingSupervisorDateHourCompoundUniqueInput = {
   date: Date | string
   hour: number
-  userId: string
 }
 
 export type BookingSupervisorCountOrderByAggregateInput = {

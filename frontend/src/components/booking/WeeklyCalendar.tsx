@@ -236,18 +236,19 @@ export function WeeklyCalendar({
                   const isPast = slotTime < now;
 
                   const isMySupervision = user && hourSupervisors.some(s => s.userId === user.id);
-                  const canSupervise = isActive && !isPast && !isMySupervision;
+                  const hasSupervisor = hourSupervisors.length > 0;
+                  const canSupervise = isActive && !isPast && !hasSupervisor;
 
                   return (
                     <div
                       key={`sup-${day.dateStr}-${hour}`}
                       className={`grid-cell slot-cell h-8 border-b-0 flex items-center justify-center relative group
                         ${!isActive ? 'inactive' : isPast ? 'past inactive' : ''}
-                        ${isMySupervision ? 'bg-yellow-500/20 text-yellow-500' : hourSupervisors.length > 0 ? 'bg-card/50 text-muted-foreground' : ''}
+                        ${isMySupervision ? 'bg-yellow-500/20 text-yellow-500' : hasSupervisor ? 'bg-card/50 text-muted-foreground' : ''}
                       `}
                     >
-                      {hourSupervisors.length > 0 && (
-                        <span className={`text-[10px] font-medium px-1 truncate w-full text-center ${((canSupervise && user) || (isMySupervision && !isPast)) ? 'group-hover:hidden' : ''}`} title={hourSupervisors.map(s => s.user?.displayName || s.user?.username).join(', ')}>
+                      {hasSupervisor && (
+                        <span className={`text-[10px] font-medium px-1 truncate w-full text-center ${(isMySupervision && !isPast) ? 'group-hover:hidden' : ''}`} title={hourSupervisors.map(s => s.user?.displayName || s.user?.username).join(', ')}>
                           {hourSupervisors.map(s => s.userId === user?.id ? "Én" : (s.user?.displayName || s.user?.username?.split(' ')[0])).join(', ')}
                         </span>
                       )}
@@ -263,7 +264,7 @@ export function WeeklyCalendar({
                               .then(() => toast.success("Sikeresen vállaltad a felelősséget!"))
                               .catch((err) => toast.error(err.message || "Hiba történt a felelősség vállalásakor"));
                           }}
-                          className={`w-full h-full text-[10px] font-bold text-yellow-500/70 hover:text-yellow-500 hover:bg-yellow-500/10 transition-colors uppercase tracking-wider ${hourSupervisors.length > 0 ? 'hidden group-hover:block absolute inset-0 bg-background/90' : ''}`}
+                          className="w-full h-full text-[10px] font-bold text-yellow-500/70 hover:text-yellow-500 hover:bg-yellow-500/10 transition-colors uppercase tracking-wider"
                         >
                           Jelentkezem
                         </button>

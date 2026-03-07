@@ -115,13 +115,15 @@ supervisorsRouter.post(
             const existing = await tx.bookingSupervisor.findFirst({
                 where: {
                     date: parsedDate,
-                    hour,
-                    userId: user.id
+                    hour
                 }
             });
 
             if (existing) {
-                throw new ApiError('Már te vagy a felelős ebben az órában.', 400, 'ALREADY_SUPERVISOR');
+                if (existing.userId === user.id) {
+                    throw new ApiError('Már te vagy a felelős ebben az órában.', 400, 'ALREADY_SUPERVISOR');
+                }
+                throw new ApiError('Erre az időpontra már van felelős.', 400, 'SLOT_TAKEN');
             }
 
             // Optional: User cannot be supervisor if they already have a booking overlapping this hour
