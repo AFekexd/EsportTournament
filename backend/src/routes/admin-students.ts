@@ -95,10 +95,49 @@ adminStudentsRouter.post(
                 const averageVal = findColumn(row, ['átlag', 'atlag', 'tanulmányi', 'eredmény']);
                 const failsVal = findColumn(row, ['bukás', 'bukas', 'elégtelen', 'elegtelen']);
 
-                const average = parseFloat(String(averageVal).replace(',', '.'));
-                const fails = parseInt(String(failsVal), 10);
+                let averageStr = String(averageVal || '').replace(',', '.').trim();
+                let average = parseFloat(averageStr);
 
-                const isFailing = !isNaN(fails) ? fails > 0 : false;
+                let isFailing = false;
+
+                // Explicit fail column check
+                if (failsVal !== undefined) {
+                    const fails = parseInt(String(failsVal), 10);
+                    if (!isNaN(fails) && fails > 0) {
+                        isFailing = true;
+                    }
+                }
+
+                // If average is not explicitly provided or we want to check subjects, let's look at other columns
+                let totalScore = 0;
+                let numSubjects = 0;
+                let hasSubjectGrades = false;
+
+                const ignoredColumns = ['om', 'azonosító', 'azonosito', 'név', 'nev', 'átlag', 'atlag', 'tanulmányi', 'eredmény', 'bukás', 'bukas', 'elégtelen', 'elegtelen', 'osztály', 'osztaly'];
+
+                for (const key of Object.keys(row as any)) {
+                    const isIgnored = ignoredColumns.some(ignored => key.toLowerCase().includes(ignored));
+                    if (!isIgnored) {
+                        const valStr = String((row as any)[key] || '').replace(',', '.').trim();
+                        const val = parseFloat(valStr);
+
+                        // We assume anything that looks like a valid number between 1 and 5 is a grade
+                        if (!isNaN(val) && val >= 1 && val <= 5) {
+                            hasSubjectGrades = true;
+                            totalScore += val;
+                            numSubjects++;
+
+                            if (val < 2.0) {
+                                isFailing = true;
+                            }
+                        }
+                    }
+                }
+
+                if (isNaN(average) && hasSubjectGrades && numSubjects > 0) {
+                    average = totalScore / numSubjects;
+                }
+
                 const newTimeToAdd = !isNaN(average) && !isFailing ? calculateTimeBalanceSeconds(average) : 0;
 
                 await tx.user.update({
@@ -107,7 +146,7 @@ adminStudentsRouter.post(
                         isBannedFromBooking: isFailing,
                         lastGradeAverage: !isNaN(average) ? average : null,
                         timeBalanceSeconds: {
-                            increment: newTimeToAdd // Add new time to existing time (or we can overwrite, assuming increment is better)
+                            increment: newTimeToAdd
                         }
                     }
                 });

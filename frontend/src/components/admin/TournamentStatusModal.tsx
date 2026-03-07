@@ -111,7 +111,7 @@ export function TournamentStatusModal({
                   onClick={() => setSelectedStatus(option.value)}
                   className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 group
                                         ${selectedStatus === option.value
-                      ? "border-primary bg-primary/10 shadow-[0_0_20px_rgba(139,92,246,0.1)]"
+                      ? "border-primary bg-primary/10 shadow-[0_0_15px_hsla(var(--primary),0.1)]"
                       : "border-border bg-[#121A22] hover:border-border hover:bg-[#121A22]"
                     }`}
                 >
@@ -129,8 +129,8 @@ export function TournamentStatusModal({
                   <div className="flex flex-col">
                     <span
                       className={`font-bold transition-colors ${selectedStatus === option.value
-                          ? "text-foreground"
-                          : "text-gray-300 group-hover:text-foreground"
+                        ? "text-foreground"
+                        : "text-gray-300 group-hover:text-foreground"
                         }`}
                     >
                       {option.label}
@@ -156,15 +156,15 @@ export function TournamentStatusModal({
               {/* User Notifications */}
               <div
                 className={`p-4 rounded-xl border transition-all duration-200 ${notifyUsers
-                    ? "bg-primary/5 border-primary/30"
-                    : "bg-[#121A22] border-border"
+                  ? "bg-primary/5 border-primary/30"
+                  : "bg-[#121A22] border-border"
                   }`}
               >
                 <label className="flex items-start gap-4 cursor-pointer">
                   <div
                     className={`p-2 rounded-lg transition-colors ${notifyUsers
-                        ? "bg-primary/20 text-primary"
-                        : "bg-secondary text-muted-foreground"
+                      ? "bg-primary/20 text-primary"
+                      : "bg-secondary text-muted-foreground"
                       }`}
                   >
                     <Bell size={20} />
@@ -195,15 +195,15 @@ export function TournamentStatusModal({
               {/* Discord Notifications */}
               <div
                 className={`p-4 rounded-xl border transition-all duration-200 ${notifyDiscord
-                    ? "bg-[#5865F2]/10 border-[#5865F2]/30"
-                    : "bg-[#121A22] border-border"
+                  ? "bg-[#5865F2]/10 border-[#5865F2]/30"
+                  : "bg-[#121A22] border-border"
                   }`}
               >
                 <label className="flex items-start gap-4 cursor-pointer">
                   <div
                     className={`p-2 rounded-lg transition-colors ${notifyDiscord
-                        ? "bg-[#5865F2]/20 text-[#5865F2]"
-                        : "bg-secondary text-muted-foreground"
+                      ? "bg-[#5865F2]/20 text-[#5865F2]"
+                      : "bg-secondary text-muted-foreground"
                       }`}
                   >
                     <MessageSquare size={20} />

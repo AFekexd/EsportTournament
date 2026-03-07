@@ -145,7 +145,7 @@ export function MyBookings() {
           return (
             <div
               key={booking.id}
-              className="group relative bg-[#121A22] rounded-xl border border-border p-5 hover:border-primary/50 transition-all duration-300 hover:shadow-[0_0_20px_-5px_rgba(139,92,246,0.15)] flex flex-col"
+              className="group relative bg-[#121A22] rounded-xl border border-border p-5 hover:border-primary/50 transition-all duration-300 hover:shadow-[0_0_15px_-5px_hsla(var(--primary),0.12)] flex flex-col"
             >
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-3">

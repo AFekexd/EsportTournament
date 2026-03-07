@@ -50,7 +50,7 @@ export function RankSelector({
                 className={`
           flex items-center gap-3 px-4 py-2.5 rounded-xl border text-sm transition-all duration-300 min-w-[140px] justify-between
           ${isOpen
-                        ? "bg-[#121A22] border-primary text-foreground shadow-[0_0_15px_rgba(139,92,246,0.3)]"
+                        ? "bg-[#121A22] border-primary text-foreground shadow-[0_0_12px_hsla(var(--primary),0.2)]"
                         : "bg-[#121A22] border-border text-gray-300 hover:bg-[#121A22] hover:border-border hover:text-foreground"
                     }
           ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
@@ -121,7 +121,7 @@ export function RankSelector({
                                         <span className="text-[10px] opacity-60 font-mono">{rank.value} MM</span>
                                     </div>
                                     {isSelected && (
-                                        <div className="ml-auto bg-primary text-foreground rounded-full p-0.5 shadow-[0_0_10px_rgba(139,92,246,0.5)]">
+                                        <div className="ml-auto bg-primary text-foreground rounded-full p-0.5 shadow-[0_0_8px_hsla(var(--primary),0.35)]">
                                             <Check size={12} strokeWidth={3} />
                                         </div>
                                     )}

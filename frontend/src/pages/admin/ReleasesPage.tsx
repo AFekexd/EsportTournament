@@ -150,8 +150,8 @@ export default function ReleasesPage() {
                         setCustomVersion("");
                       }}
                       className={`px-3 py-2 rounded-lg text-sm font-bold border transition-all ${releaseType === type && !customVersion
-                          ? "bg-primary text-foreground border-primary"
-                          : "bg-secondary text-muted-foreground border-border hover:bg-secondary/80"
+                        ? "bg-primary text-foreground border-primary"
+                        : "bg-secondary text-muted-foreground border-border hover:bg-secondary/80"
                         }`}
                     >
                       {type}
@@ -217,7 +217,7 @@ export default function ReleasesPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-primary hover:bg-primary/90 text-foreground font-bold py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:shadow-[0_0_25px_rgba(139,92,246,0.5)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full bg-primary hover:bg-primary/90 text-foreground font-bold py-3 rounded-xl transition-all shadow-[0_0_15px_hsla(var(--primary),0.2)] hover:shadow-[0_0_20px_hsla(var(--primary),0.35)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {submitting ? (
                   <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
@@ -261,10 +261,10 @@ export default function ReleasesPage() {
                           </span>
                           <span
                             className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${release.type === "MAJOR"
-                                ? "bg-red-500/20 text-red-400"
-                                : release.type === "MINOR"
-                                  ? "bg-primary/30 text-primary"
-                                  : "bg-gray-500/20 text-muted-foreground"
+                              ? "bg-red-500/20 text-red-400"
+                              : release.type === "MINOR"
+                                ? "bg-primary/30 text-primary"
+                                : "bg-gray-500/20 text-muted-foreground"
                               }`}
                           >
                             {release.type}

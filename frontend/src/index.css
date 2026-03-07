@@ -28,78 +28,76 @@
 }
 
 :root {
-  /* Modern EsportTournament Palette */
-  --background: 208 86% 13%;
-  /* #052440 */
-  --foreground: 60 7% 93%;
-  /* #EFEFED */
+  /* Modern EsportTournament Palette — Muted Navy */
+  --background: 215 28% 10%;
+  /* ~#121824 — deep muted navy */
+  --foreground: 210 10% 92%;
+  /* ~#E6E9EC — cool off-white */
 
-  --card: 211 33% 27%;
-  /* #2E445C */
-  --card-foreground: 60 7% 93%;
+  --card: 215 22% 16%;
+  /* ~#1F2937 — subtle card surface */
+  --card-foreground: 210 10% 92%;
 
-  --popover: 211 33% 27%;
-  --popover-foreground: 60 7% 93%;
+  --popover: 215 22% 16%;
+  --popover-foreground: 210 10% 92%;
 
-  --primary: 202 61% 76%;
-  /* #9DCCE8 */
-  --primary-foreground: 208 86% 13%;
+  --primary: 205 45% 62%;
+  /* ~#6FA8C9 — desaturated steel-blue */
+  --primary-foreground: 215 28% 10%;
 
-  --secondary: 214 16% 38%;
-  /* #525F70 */
-  --secondary-foreground: 60 7% 93%;
+  --secondary: 215 18% 22%;
+  /* ~#2D3545 — dark surface */
+  --secondary-foreground: 210 10% 92%;
 
-  --muted: 214 16% 38%;
-  /* #525F70 */
-  --muted-foreground: 208 39% 41%;
-  /* #406C93 */
+  --muted: 215 18% 22%;
+  /* ~#2D3545 */
+  --muted-foreground: 210 20% 55%;
+  /* ~#7089A0 — brighter for readability */
 
-  --accent: 205 58% 76%;
-  /* #9DC8E8 */
-  --accent-foreground: 208 86% 13%;
+  --accent: 205 40% 58%;
+  /* ~#6499B8 — softer accent */
+  --accent-foreground: 215 28% 10%;
 
-  --destructive: 0 100% 55%;
+  --destructive: 0 85% 55%;
   --destructive-foreground: 0 0% 98%;
 
-  --neon-pink: 205 58% 76%;
-  /* Replaced with #9DC8E8 to match palette */
-  --neon-blue: 202 61% 76%;
-  /* Replaced with #9DCCE8 */
+  --neon-pink: 205 40% 58%;
+  /* Matched to accent */
+  --neon-blue: 205 45% 62%;
+  /* Matched to primary */
 
-  --border: 214 16% 38%;
-  /* #525F70 */
-  --input: 214 16% 38%;
-  --ring: 202 61% 76%;
+  --border: 215 15% 24%;
+  /* ~#333D4A — subtle border */
+  --input: 215 15% 24%;
+  --ring: 205 45% 62%;
 
   --radius: 0.75rem;
 
   /* Legacy color variables for unmigrated pages */
-  --color-bg-primary: hsl(208, 86%, 13%);
-  --color-bg-secondary: hsl(211, 33%, 27%);
-  --color-bg-tertiary: hsl(214, 16%, 38%);
-  --color-bg-elevated: hsl(208, 39%, 41%);
-  /* using #406C93 for slightly elevated */
+  --color-bg-primary: hsl(215, 28%, 10%);
+  --color-bg-secondary: hsl(215, 22%, 16%);
+  --color-bg-tertiary: hsl(215, 18%, 22%);
+  --color-bg-elevated: hsl(215, 15%, 28%);
 
-  --color-border: hsl(214, 16%, 38%);
-  --color-border-light: hsl(208, 39%, 41%);
+  --color-border: hsl(215, 15%, 24%);
+  --color-border-light: hsl(210, 18%, 32%);
 
-  --color-text-primary: hsl(60, 7%, 93%);
-  --color-text-secondary: hsl(202, 61%, 85%);
-  /* slightly lighter than #9DCCE8 */
-  --color-text-muted: hsl(208, 39%, 60%);
+  --color-text-primary: hsl(210, 10%, 92%);
+  --color-text-secondary: hsl(210, 18%, 78%);
+  --color-text-muted: hsl(210, 15%, 50%);
 
-  --color-primary: hsl(202, 61%, 76%);
-  --color-primary-hover: hsl(205, 58%, 76%);
-  --color-primary-glow: hsla(202, 61%, 76%, 0.15);
+  --color-primary: hsl(205, 45%, 62%);
+  --color-primary-hover: hsl(205, 50%, 68%);
+  --color-primary-glow: hsla(205, 45%, 62%, 0.15);
 
-  --color-accent: hsl(205, 58%, 76%);
-  --color-accent-hover: hsl(205, 58%, 85%);
+  --color-accent: hsl(205, 40%, 58%);
+  --color-accent-hover: hsl(205, 45%, 68%);
 
-  --neon-cyan: hsl(202, 61%, 76%);
-  --neon-purple: hsl(205, 58%, 76%);
+  --neon-cyan: hsl(205, 45%, 62%);
+  --neon-purple: hsl(205, 40%, 58%);
 
-  --color-success: hsl(142, 76%, 36%);
-  --color-warning: hsl(38, 92%, 50%);
+  --color-success: hsl(142, 70%, 38%);
+  --color-warning: hsl(38, 85%, 50%);
   --color-error: hsl(0, 72%, 51%);
   --color-error-hover: hsl(0, 72%, 56%);
 
@@ -112,10 +110,9 @@
 
   --shadow-sm: 0 1px 2px 0 hsl(var(--background) / 0.05);
   --shadow-md: 0 4px 6px -1px hsl(var(--background) / 0.1);
-  --shadow-lg: 0 10px 15px -3px hsl(var(--background) / 0.2);
-  /* Deepened for dark bg */
-  --shadow-glow-primary: 0 0 20px hsla(202, 61%, 76%, 0.3);
-  --shadow-glow-accent: 0 0 20px hsla(205, 58%, 76%, 0.3);
+  --shadow-lg: 0 10px 15px -3px hsl(var(--background) / 0.25);
+  --shadow-glow-primary: 0 0 20px hsla(205, 45%, 62%, 0.2);
+  --shadow-glow-accent: 0 0 20px hsla(205, 40%, 58%, 0.2);
 
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
@@ -145,8 +142,8 @@
   }
 
   .glass-card:hover {
-    box-shadow: 0 0 25px -5px hsla(var(--primary), 0.3);
-    border-color: hsla(var(--primary), 0.5);
+    box-shadow: 0 0 20px -5px hsla(var(--primary), 0.2);
+    border-color: hsla(var(--primary), 0.4);
   }
 
   .text-glow {

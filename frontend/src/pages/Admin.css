@@ -1,138 +1,97 @@
-.admin-page {
+/* ============================================
+   ADMIN DASHBOARD — MODERN STYLES
+   ============================================ */
 
+/* ---------- Stat Cards ---------- */
+.admin-stat-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    background: hsla(215, 22%, 16%, 0.65);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+    animation: adminStatSlideUp 0.45s ease-out both;
+}
+
+.admin-stat-card:hover {
+    border-color: rgba(255, 255, 255, 0.10);
+    box-shadow:
+        0 0 20px -8px hsla(205, 45%, 62%, 0.15),
+        0 8px 24px -12px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+.admin-stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 0.75rem;
+    flex-shrink: 0;
+}
+
+@keyframes adminStatSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---------- Tab Pills ---------- */
+.admin-tab-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    white-space: nowrap;
+    border-radius: 9999px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: hsl(208, 39%, 60%);
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.admin-tab-pill:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: hsl(60, 7%, 93%);
+}
+
+.admin-tab-pill--active {
+    background: linear-gradient(135deg,
+            hsla(205, 45%, 62%, 0.12),
+            hsla(205, 40%, 58%, 0.08));
+    border-color: hsla(205, 45%, 62%, 0.25);
+    color: hsl(205, 45%, 80%);
+    box-shadow: 0 0 12px -4px hsla(205, 45%, 62%, 0.2);
+}
+
+.admin-tab-pill--active:hover {
+    background: linear-gradient(135deg,
+            hsla(205, 45%, 62%, 0.16),
+            hsla(205, 40%, 58%, 0.12));
+}
+
+/* ---------- Legacy / shared admin styles ---------- */
+.admin-page {
     max-width: 1600px;
     margin: 0 auto;
 }
 
 .page-header {
     margin-bottom: 2rem;
-
-}
-
-.page-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
-
-    -webkit-background-clip: text;
-
-    background-clip: text;
-    margin-bottom: 0.5rem;
-}
-
-.page-subtitle {
-    color: var(--text-muted);
-    font-size: 1.1rem;
-}
-
-.admin-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.stat-card {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.5rem;
-    position: relative;
-}
-
-.stat-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-}
-
-.stat-content {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.stat-value {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-.stat-label {
-    color: var(--text-muted);
-    font-size: 0.875rem;
-}
-
-.stat-change {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    padding: 0.25rem 0.5rem;
-    border-radius: 6px;
-}
-
-.stat-change.positive {
-    color: var(--success);
-    background: rgba(34, 197, 94, 0.1);
-}
-
-.stat-change.negative {
-    color: var(--error);
-    background: rgba(239, 68, 68, 0.1);
-}
-
-.stat-change.neutral {
-    color: var(--text-muted);
-    background: var(--bg-secondary);
-}
-
-.admin-container {
-    display: grid;
-    grid-template-columns: 250px 1fr;
-    gap: 2rem;
-}
-
-.admin-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.admin-tab {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1rem;
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1rem;
-    text-align: left;
-}
-
-.admin-tab:hover {
-    border-color: var(--neon-cyan);
-    color: var(--text-primary);
-}
-
-.admin-tab.active {
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(236, 72, 153, 0.1));
-    border-color: var(--neon-cyan);
-    color: var(--text-primary);
-}
-
-.admin-content {
-    padding: 2rem;
 }
 
 .admin-section {
@@ -144,7 +103,7 @@
 .section-title {
     font-size: 1.75rem;
     font-weight: 700;
-    color: var(--text-primary);
+    color: var(--color-text-primary);
 }
 
 .alert {
@@ -158,7 +117,7 @@
 .alert-info {
     background: rgba(6, 182, 212, 0.1);
     border-color: var(--neon-cyan);
-    color: var(--text-primary);
+    color: var(--color-text-primary);
 }
 
 .alert h3 {
@@ -169,35 +128,7 @@
 
 .alert p {
     font-size: 0.875rem;
-    color: var(--text-muted);
-}
-
-.chart-placeholder {
-    padding: 2rem;
-    text-align: center;
-}
-
-.chart-placeholder h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-}
-
-.chart-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    padding: 2rem;
-}
-
-.chart-icon {
-    color: var(--text-muted);
-}
-
-.chart-content p {
-    color: var(--text-muted);
+    color: var(--color-text-muted);
 }
 
 .admin-table {
@@ -212,20 +143,20 @@
 .admin-table th {
     text-align: left;
     padding: 1rem;
-    background: var(--bg-secondary);
-    color: var(--text-primary);
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
     font-weight: 600;
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--color-border);
 }
 
 .admin-table td {
     padding: 1rem;
-    border-bottom: 1px solid var(--border-color);
-    color: var(--text-primary);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-primary);
 }
 
 .admin-table tr:hover {
-    background: var(--bg-secondary);
+    background: var(--color-bg-secondary);
 }
 
 .btn-small {
@@ -253,11 +184,11 @@
 .game-admin-card h3 {
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--color-text-primary);
 }
 
 .game-admin-card p {
-    color: var(--text-muted);
+    color: var(--color-text-muted);
     font-size: 0.875rem;
 }
 
@@ -266,7 +197,7 @@
     gap: 1rem;
     margin: 0.5rem 0;
     font-size: 0.875rem;
-    color: var(--text-muted);
+    color: var(--color-text-muted);
 }
 
 .empty-state {
@@ -275,18 +206,18 @@
 }
 
 .empty-icon {
-    color: var(--text-muted);
+    color: var(--color-text-muted);
     margin-bottom: 1rem;
 }
 
 .empty-state h3 {
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
-    color: var(--text-primary);
+    color: var(--color-text-primary);
 }
 
 .empty-state p {
-    color: var(--text-muted);
+    color: var(--color-text-muted);
 }
 
 /* Booking Schedule Management */
@@ -296,7 +227,7 @@
     gap: 0.5rem;
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--color-text-primary);
 }
 
 .mb-1 {
@@ -305,8 +236,8 @@
 
 .alert-warning {
     background: rgba(234, 179, 8, 0.1);
-    border-color: var(--warning);
-    color: var(--text-primary);
+    border-color: var(--color-warning);
+    color: var(--color-text-primary);
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
@@ -319,8 +250,8 @@
 
 .alert-success {
     background: rgba(34, 197, 94, 0.1);
-    border-color: var(--success);
-    color: var(--text-primary);
+    border-color: var(--color-success);
+    color: var(--color-text-primary);
     align-items: center;
 }
 
@@ -344,15 +275,12 @@
 .form-group label {
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--text-muted);
+    color: var(--color-text-muted);
 }
 
 .form-group select,
 .form-group input[type="number"] {
     padding: 0.75rem 1rem;
-
-
-
     font-size: 1rem;
     min-width: 120px;
 }
@@ -360,7 +288,7 @@
 .form-group select:focus,
 .form-group input[type="number"]:focus {
     outline: none;
-    border-color: var(--accent-primary);
+    border-color: var(--color-primary);
 }
 
 .schedule-list {
@@ -383,48 +311,29 @@
 }
 
 .schedule-info strong {
-    color: var(--text-primary);
+    color: var(--color-text-primary);
     min-width: 100px;
 }
 
 .schedule-info span {
-    color: var(--text-muted);
+    color: var(--color-text-muted);
 }
 
 .btn-danger {
     background: rgba(239, 68, 68, 0.1);
     border: 1px solid rgba(239, 68, 68, 0.3);
-    color: var(--error);
+    color: var(--color-error);
 }
 
 .btn-danger:hover {
     background: rgba(239, 68, 68, 0.2);
-    border-color: var(--error);
+    border-color: var(--color-error);
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
-    .admin-container {
-        grid-template-columns: 1fr;
-    }
-
-    .admin-sidebar {
-        flex-direction: row;
-        overflow-x: auto;
-    }
-
-    .admin-tab {
-        white-space: nowrap;
-    }
-}
-
+/* ---------- Responsive ---------- */
 @media (max-width: 768px) {
     .admin-page {
         padding: 1rem;
-    }
-
-    .admin-stats {
-        grid-template-columns: repeat(2, 1fr);
     }
 
     .games-grid {

@@ -202,7 +202,7 @@ export function Navbar() {
                     className="text-muted-foreground transition-colors group-hover:text-primary"
                   />
                   {unreadCount > 0 && (
-                    <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-foreground shadow-[0_0_10px_rgba(139,92,246,0.5)]">
+                    <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-foreground shadow-[0_0_8px_hsla(var(--primary),0.4)]">
                       {unreadCount > 9 ? "9+" : unreadCount}
                     </span>
                   )}
@@ -363,7 +363,7 @@ export function Navbar() {
             </>
           ) : (
             <button
-              className="inline-flex h-9 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-accent px-5 py-2 text-sm font-bold text-foreground shadow-lg shadow-primary/20 transition-all hover:scale-105 hover:shadow-primary/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+              className="inline-flex h-9 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-accent px-5 py-2 text-sm font-bold text-foreground shadow-lg shadow-primary/20 transition-all hover:scale-105 hover:shadow-primary/30 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
               onClick={login}
             >
               <LogIn size={16} />

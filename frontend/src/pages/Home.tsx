@@ -94,7 +94,7 @@ export function HomePage() {
         <div className="absolute left-1/2 bottom-0 -z-10 h-64 w-64 rounded-full bg-accent/20 blur-[100px]" />
 
         <div className="flex flex-col gap-8 p-10 ">
-          <div className="w-fit rounded-full border border-primary/50 bg-primary/10 px-4 py-1.5 backdrop-blur-md shadow-[0_0_15px_rgba(139,92,246,0.3)]">
+          <div className="w-fit rounded-full border border-primary/50 bg-primary/10 px-4 py-1.5 backdrop-blur-md shadow-[0_0_12px_hsla(var(--primary),0.2)]">
             <div className="flex items-center gap-2 text-sm font-bold text-primary tracking-wide">
               <Zap className="h-4 w-4 fill-primary animate-pulse" />
               <span>ISKOLAI ESPORT PLATFORM</span>
@@ -141,7 +141,7 @@ export function HomePage() {
                 <Button
                   size="lg"
                   onClick={login}
-                  className="rounded-full bg-gradient-to-r from-primary to-[hsl(var(--neon-pink))] text-base font-bold text-foreground shadow-[0_0_20px_rgba(139,92,246,0.5)] transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(139,92,246,0.7)] border-none"
+                  className="rounded-full bg-gradient-to-r from-primary to-[hsl(var(--neon-pink))] text-base font-bold text-foreground shadow-[0_0_15px_hsla(var(--primary),0.3)] transition-all hover:scale-105 hover:shadow-[0_0_25px_hsla(var(--primary),0.5)] border-none"
                 >
                   Csatlakozás Most
                 </Button>
@@ -300,11 +300,11 @@ export function HomePage() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="glass-card group relative overflow-hidden rounded-3xl p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(139,92,246,0.2)] border border-border hover:border-primary/50 cursor-pointer"
+              className="glass-card group relative overflow-hidden rounded-3xl p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_0_25px_hsla(var(--primary),0.15)] border border-border hover:border-primary/50 cursor-pointer"
             >
               <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br from-primary/30 to-transparent blur-2xl transition-all group-hover:scale-150 group-hover:bg-primary/40" />
 
-              <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary text-foreground shadow-inner ring-1 ring-white/10 transition-colors group-hover:bg-primary group-hover:text-foreground group-hover:shadow-[0_0_15px_rgba(139,92,246,0.5)]">
+              <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary text-foreground shadow-inner ring-1 ring-white/10 transition-colors group-hover:bg-primary group-hover:text-foreground group-hover:shadow-[0_0_12px_hsla(var(--primary),0.35)]">
                 {feature.icon}
               </div>
               <h3 className="mb-3 text-xl font-bold text-foreground group-hover:text-primary transition-colors">

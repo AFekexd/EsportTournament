@@ -199,7 +199,7 @@ export function Sidebar() {
                 alt="EsportHub"
                 className="md:w-15 md:h-15 w-12 h-12"
               />
-              <span className="text-xl tracking-tight text-foreground font-black tracking-tighter drop-shadow-[0_0_10px_rgba(139,92,246,0.3)]">
+              <span className="text-xl tracking-tight text-foreground font-black tracking-tighter">
                 EsportHub
               </span>
             </Link>
@@ -228,14 +228,14 @@ export function Sidebar() {
                     }
                   }}
                   className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive(item.to)
-                    ? "bg-primary/20 text-foreground shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
+                    ? "bg-primary/20 text-foreground shadow-[0_0_12px_hsla(var(--primary),0.2)] border border-primary/30"
                     : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                     } ${!isOpen && "justify-center px-0"}`}
                   title={!isOpen ? item.label : undefined}
                 >
                   <span
                     className={`transition-transform duration-200 group-hover:scale-110 ${isActive(item.to)
-                      ? "text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]"
+                      ? "text-primary drop-shadow-[0_0_6px_hsla(var(--primary),0.5)]"
                       : ""
                       }`}
                   >
@@ -261,7 +261,7 @@ export function Sidebar() {
                         }
                       }}
                       className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive(item.to)
-                        ? "bg-primary/20 text-foreground shadow-[0_0_15px_rgba(139,92,246,0.3)] border border-primary/30"
+                        ? "bg-primary/20 text-foreground shadow-[0_0_12px_hsla(var(--primary),0.2)] border border-primary/30"
                         : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                         } ${!isOpen && "justify-center px-0"}`}
                       title={!isOpen ? item.label : undefined}
@@ -269,7 +269,7 @@ export function Sidebar() {
                       <div className="relative">
                         <span
                           className={`transition-transform duration-200 group-hover:scale-110 ${isActive(item.to)
-                            ? "text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]"
+                            ? "text-primary drop-shadow-[0_0_6px_hsla(var(--primary),0.5)]"
                             : ""
                             }`}
                         >
@@ -368,7 +368,7 @@ export function Sidebar() {
               </div>
               {hasUpdate && (
                 <span
-                  className={`bg-primary/20 text-primary font-bold rounded-full animate-pulse shadow-[0_0_10px_rgba(139,92,246,0.3)] ${isOpen
+                  className={`bg-primary/20 text-primary font-bold rounded-full animate-pulse shadow-[0_0_10px_hsla(var(--primary),0.25)] ${isOpen
                     ? "text-[10px] px-2 py-0.5"
                     : "text-[8px] px-1.5 py-0.5 mt-1"
                     }`}

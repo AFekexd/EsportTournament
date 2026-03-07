@@ -339,97 +339,69 @@ export function AdminPage() {
 
   return (
     <div className="min-h-screen animate-fade-in pb-20">
-      {/* Header Section */}
-      <div className="mb-0">
-        <h1 className="text-3xl font-black bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent mb-2">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] bg-clip-text text-transparent">
           Menedzsment Dashboard
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-sm text-muted-foreground mt-1">
           Rendszer kezelés és statisztikák áttekintése
         </p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 my-8">
-        <div className="relative group overflow-hidden rounded-2xl bg-[#121A22] border border-border p-6 hover:border-primary/50 transition-all duration-300">
-          <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <div className="relative flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-4 md:gap-0">
-            <div>
-              <p className="text-muted-foreground text-sm font-medium mb-1">
-                Felhasználók
-              </p>
-              <h3 className="text-3xl font-bold text-foreground">{totalUsers}</h3>
-            </div>
-            <div className="p-3 rounded-xl bg-violet-500/10 text-violet-400">
-              <Users size={24} />
-            </div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="admin-stat-card" style={{ animationDelay: '0ms' }}>
+          <div className="admin-stat-icon bg-cyan-500/15 text-cyan-400">
+            <Users size={22} />
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Felhasználók</p>
+            <p className="text-2xl font-bold text-foreground">{totalUsers}</p>
           </div>
         </div>
-
-        <div className="relative group overflow-hidden rounded-2xl bg-[#121A22] border border-border p-6 hover:border-blue-500/50 transition-all duration-300">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <div className="relative flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-4 md:gap-0">
-            <div>
-              <p className="text-muted-foreground text-sm font-medium mb-1">
-                Versenyek
-              </p>
-              <h3 className="text-3xl font-bold text-foreground">
-                {totalTournaments}
-              </h3>
-            </div>
-            <div className="p-3 rounded-xl bg-primary/20 text-primary">
-              <Trophy size={24} />
-            </div>
+        <div className="admin-stat-card" style={{ animationDelay: '60ms' }}>
+          <div className="admin-stat-icon bg-yellow-500/15 text-yellow-400">
+            <Trophy size={22} />
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Versenyek</p>
+            <p className="text-2xl font-bold text-foreground">{totalTournaments}</p>
           </div>
         </div>
-
-        <div className="relative group overflow-hidden rounded-2xl bg-[#121A22] border border-border p-6 hover:border-emerald-500/50 transition-all duration-300">
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <div className="relative flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-4 md:gap-0">
-            <div>
-              <p className="text-muted-foreground text-sm font-medium mb-1">
-                Csapatok
-              </p>
-              <h3 className="text-3xl font-bold text-foreground">{totalTeams}</h3>
-            </div>
-            <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
-              <Users size={24} />
-            </div>
+        <div className="admin-stat-card" style={{ animationDelay: '120ms' }}>
+          <div className="admin-stat-icon bg-emerald-500/15 text-emerald-400">
+            <Shield size={22} />
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Csapatok</p>
+            <p className="text-2xl font-bold text-foreground">{totalTeams}</p>
           </div>
         </div>
-
-        <div className="relative group overflow-hidden rounded-2xl bg-[#121A22] border border-border p-6 hover:border-pink-500/50 transition-all duration-300">
-          <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <div className="relative flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-4 md:gap-0">
-            <div>
-              <p className="text-muted-foreground text-sm font-medium mb-1">
-                Játékok
-              </p>
-              <h3 className="text-3xl font-bold text-foreground">{games.length}</h3>
-            </div>
-            <div className="p-3 rounded-xl bg-pink-500/10 text-pink-400">
-              <Gamepad2 size={24} />
-            </div>
+        <div className="admin-stat-card" style={{ animationDelay: '180ms' }}>
+          <div className="admin-stat-icon bg-pink-500/15 text-pink-400">
+            <Gamepad2 size={22} />
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Játékok</p>
+            <p className="text-2xl font-bold text-foreground">{games.length}</p>
           </div>
         </div>
       </div>
 
       {/* Horizontal Tabs Navigation */}
-      <div className="flex overflow-x-auto pb-4 mb-6 gap-2 no-scrollbar">
+      <div className="flex flex-wrap gap-2 mb-6 pb-4 border-b border-white/5 overflow-x-auto">
         {tabs.map((tab) => {
-          const Icon = tab.icon;
           const isActive = activeTab === tab.id;
+          const Icon = tab.icon;
           return (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap
-                                ${isActive
-                  ? "bg-primary text-foreground shadow-[0_0_20px_rgba(139,92,246,0.3)]"
-                  : "bg-[#121A22] border border-border text-muted-foreground hover:text-foreground hover:bg-secondary"
+              className={`admin-tab-pill ${isActive ? "admin-tab-pill--active" : ""
                 }`}
             >
-              <Icon size={18} />
+              <Icon size={16} />
               {tab.label}
             </button>
           );
@@ -437,7 +409,7 @@ export function AdminPage() {
       </div>
 
       {/* Main Content Area */}
-      <div className="bg-[#121A22] border border-border rounded-2xl p-6 min-h-[500px]">
+      <div className="bg-[#0a1929]/60 backdrop-blur-lg border border-white/5 rounded-2xl p-6 min-h-[500px] shadow-xl">
         <Suspense
           fallback={
             <div className="flex items-center justify-center h-[400px]">
@@ -656,7 +628,7 @@ export function AdminPage() {
                   games.map((game) => (
                     <div
                       key={game.id}
-                      className="group flex flex-col bg-[#121A22] rounded-2xl overflow-hidden border border-border hover:border-primary/50 hover:shadow-[0_0_20px_rgba(139,92,246,0.1)] transition-all duration-300"
+                      className="group flex flex-col bg-[#121A22] rounded-2xl overflow-hidden border border-border hover:border-primary/50 hover:shadow-[0_0_15px_hsla(var(--primary),0.1)] transition-all duration-300"
                     >
                       {/* Image & Overlay */}
                       <div className="relative w-full aspect-video overflow-hidden bg-gray-900">

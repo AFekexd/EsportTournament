@@ -112,7 +112,7 @@ model User {
   elo                   Int       @default(1000)
   timeBalanceSeconds    Int       @default(0) // Kiosk time balance
   isBannedFromBooking   Boolean   @default(false) // Banned due to failing grades
-  lastGradeAverage      Float?    // Stored from the latest XLS upload
+  lastGradeAverage      Float? // Stored from the latest XLS upload
   // Granular email preferences
   emailNotifications    Boolean   @default(true) // Master toggle (legacy, kept for compatibility)
   emailPrefTournaments  Boolean   @default(true) // Tournament announcements & invites
@@ -143,19 +143,19 @@ model User {
   lastLogoutAt          DateTime? // For token invalidation
 
   teamMemberships      TeamMember[]
-  ownedTeams           Team[]            @relation("TeamOwner")
+  ownedTeams           Team[]              @relation("TeamOwner")
   notifications        Notification[]
   gameStats            GameStats[]
   tournamentEntries    TournamentEntry[] // For solo tournament registration
-  participatingEntries TournamentEntry[] @relation("TournamentParticipants") // For team tournament participation
+  participatingEntries TournamentEntry[]   @relation("TournamentParticipants") // For team tournament participation
   discordSettings      DiscordSettings?
   bookings             Booking[] // Computer bookings
   supervisingHours     BookingSupervisor[] @relation("BookingSupervisorUser") // Hourly responsibilities
   waitlistEntries      Waitlist[] // Waitlist entries
   // Match relations for solo tournaments
-  homeMatches          Match[]           @relation("HomeUser")
-  awayMatches          Match[]           @relation("AwayUser")
-  wonMatches           Match[]           @relation("WinnerUser")
+  homeMatches          Match[]             @relation("HomeUser")
+  awayMatches          Match[]             @relation("AwayUser")
+  wonMatches           Match[]             @relation("WinnerUser")
 
   // Kiosk relations
   sessions  Session[]
@@ -549,7 +549,7 @@ model BookingSchedule {
 model BookingSupervisor {
   id        String   @id @default(uuid())
   date      DateTime @db.Date // The date of the shift
-  hour      Int      // 0-23
+  hour      Int // 0-23
   userId    String
   user      User     @relation("BookingSupervisorUser", fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())

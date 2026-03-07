@@ -495,7 +495,7 @@ function PromoSlide() {
       <div className="flex w-full max-w-6xl justify-center gap-20">
         {/* Website QR */}
         <div className="flex flex-1 flex-col items-center rounded-3xl bg-[#121A22]/80 p-12 border border-border shadow-2xl backdrop-blur-md">
-          <div className="mb-8 rounded-2xl bg-white p-4 shadow-[0_0_50px_rgba(139,92,246,0.3)]">
+          <div className="mb-8 rounded-2xl bg-white p-4 shadow-[0_0_40px_hsla(var(--primary),0.2)]">
             {/* Generate a QR code for the website using an external service or placeholder */}
             <img
               src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://esport.pollak.info&color=000000&bgcolor=ffffff"
