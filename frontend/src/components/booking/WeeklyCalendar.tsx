@@ -103,7 +103,7 @@ export function WeeklyCalendar({
       const slotStart = new Date(dateStr);
       slotStart.setHours(hour, minute, 0, 0);
       const slotEnd = new Date(slotStart);
-      slotEnd.setMinutes(slotStart.getMinutes() + 30);
+      slotEnd.setMinutes(slotStart.getMinutes() + 60);
 
       // Check strictly if booking COVERS this slot
       // We accept if BookingStart <= SlotStart AND BookingEnd > SlotStart (meaning it covers at least some of it, but usually fully)
@@ -290,13 +290,6 @@ export function WeeklyCalendar({
                   );
                 })}
               </div>
-              {/* Visual filler for the :30 half-hour row so the grid aligns */}
-              <div className="time-row">
-                <div className="grid-cell time-cell bg-yellow-500/10 border-t border-border/50"></div>
-                {weekDays.map(day => (
-                  <div key={`sup-filler-${day.dateStr}-${hour}`} className="grid-cell slot-cell h-8 border-t border-border/50 bg-card/20 pointer-events-none"></div>
-                ))}
-              </div>
             </div>
           ))}
         </div>
@@ -340,7 +333,7 @@ export function WeeklyCalendar({
                       const needsSupervisor = hourSupervisors.length === 0;
                       const isMySupervision = user && hourSupervisors.some(s => s.userId === user.id);
 
-                      let cellClass = "grid-cell slot-cell h-8"; // Reduced height for granular view
+                      let cellClass = "grid-cell slot-cell";
                       if (!isActive) cellClass += " inactive";
                       else if (booking)
                         cellClass += isOwn ? " own-booking" : " booked";
@@ -380,7 +373,7 @@ export function WeeklyCalendar({
                                     ? "Nincs jelen felelős"
                                     : isMySupervision
                                       ? "Te vagy a felelős, nem foglalhatsz"
-                                      : "Szabad (1. félidő)"
+                                      : "Szabad"
                           }
                         >
                           {booking && (
@@ -393,89 +386,6 @@ export function WeeklyCalendar({
                     })}
                   </div>
 
-                  {/* Render :30 slot */}
-                  <div className="time-row">
-                    <div className="grid-cell time-cell text-xs text-muted-foreground">
-                      {hour}:30
-                    </div>
-                    {weekDays.map((day) => {
-                      const booking = getBookingForSlot(
-                        computer.id,
-                        day.dateStr,
-                        hour,
-                        30
-                      );
-                      const isActive = isScheduleActive(
-                        day.date.getDay(),
-                        hour,
-                        30
-                      );
-                      const slotTime = new Date(day.dateStr);
-                      slotTime.setHours(hour, 30, 0, 0);
-                      const now = new Date();
-                      const isPast = slotTime < now && !booking;
-                      const isOwn = booking?.userId === user?.id;
-
-                      // Supervisor check (supervisors apply per hour)
-                      const hourSupervisors = supervisors.filter(s => {
-                        return new Date(s.date).toDateString() === new Date(day.dateStr).toDateString() && s.hour === hour;
-                      });
-                      const needsSupervisor = hourSupervisors.length === 0;
-                      const isMySupervision = user && hourSupervisors.some(s => s.userId === user.id);
-
-                      let cellClass =
-                        "grid-cell slot-cell h-8 border-t border-border"; // subtle border
-                      if (!isActive) cellClass += " inactive";
-                      else if (booking)
-                        cellClass += isOwn ? " own-booking" : " booked";
-                      else if (isPast) cellClass += " past inactive";
-                      else {
-                        cellClass += " available";
-                        if (needsSupervisor) cellClass += " opacity-60";
-                        else if (isMySupervision) cellClass += " opacity-60";
-                      }
-
-                      return (
-                        <div
-                          key={`${day.dateStr}-${hour}-30`}
-                          className={cellClass}
-                          onClick={() => {
-                            if (booking && onBookingClick) {
-                              onBookingClick(booking);
-                            } else if (
-                              !booking &&
-                              isActive &&
-                              !isPast &&
-                              onSlotClick
-                            ) {
-                              onSlotClick(computer, day.dateStr, hour, 30);
-                            }
-                          }}
-                          title={
-                            booking
-                              ? `Foglalta: ${booking.user?.displayName ||
-                              booking.user?.username
-                              }`
-                              : !isActive
-                                ? "Nem elérhető"
-                                : isPast
-                                  ? "Múltbeli időpont"
-                                  : needsSupervisor
-                                    ? "Nincs jelen felelős"
-                                    : isMySupervision
-                                      ? "Te vagy a felelős, nem foglalhatsz"
-                                      : "Szabad (2. félidő)"
-                          }
-                        >
-                          {booking && (
-                            <span className="booking-indicator text-xs">
-                              {isOwn ? "✓" : "●"}
-                            </span>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
                 </div>
               ))}
             </div>

@@ -300,8 +300,8 @@ bookingsRouter.post(
 
         // Validate duration
         const duration = end.getTime() - start.getTime();
-        if (duration < 1800000) {
-            throw new ApiError('A minimális foglalási idő 30 perc', 400, 'DURATION_TOO_SHORT');
+        if (duration < 3600000) {
+            throw new ApiError('A minimális foglalási idő 1 óra', 400, 'DURATION_TOO_SHORT');
         }
         if (duration > 7200000) {
             throw new ApiError('A maximális foglalási idő 2 óra', 400, 'DURATION_TOO_LONG');

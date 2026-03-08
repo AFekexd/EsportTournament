@@ -409,8 +409,8 @@ export function BookingPage() {
               <label className="block mb-3 font-medium text-foreground">
                 Időtartam:
               </label>
-              <div className="grid grid-cols-4 gap-3">
-                {[30, 60, 90, 120].map((mins) => (
+              <div className="grid grid-cols-2 gap-3">
+                {[60, 120].map((mins) => (
                   <button
                     key={mins}
                     className={`py-3 px-2 rounded-lg border-2 font-medium transition-all ${selectedDuration === mins
