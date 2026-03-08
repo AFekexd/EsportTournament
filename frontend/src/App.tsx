@@ -90,7 +90,7 @@ function AppContent() {
   const loadingContent = (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="flex flex-col items-center gap-6">
-        <PuffLoader color="#8b5cf6" size={60} />
+        <PuffLoader color="#ffffffff" size={60} />
         <span className="font-bold uppercase tracking-widest text-muted-foreground group-hover:text-foreground transition-colors text-lg">
           Betöltés...
         </span>

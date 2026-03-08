@@ -11,6 +11,7 @@ import {
   List,
   Map,
 } from "lucide-react";
+import { toast } from "sonner";
 import { ConfirmationModal } from "../components/common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import { useAuth } from "../hooks/useAuth";
@@ -113,8 +114,7 @@ export function BookingPage() {
     dateStr?: string,
   ) => {
     if (!isAuthenticated) {
-      setBookingError("Jelentkezz be a foglaláshoz!");
-      // Optional: Redirect to login or show login modal
+      toast.error("Jelentkezz be a foglaláshoz!");
       return;
     }
 
@@ -125,8 +125,8 @@ export function BookingPage() {
     setSelectedComputer(computer);
     setSelectedStartHour(hour);
     setSelectedStartMinute(minute);
-    setShowBookingModal(true);
     setBookingError(null);
+    setShowBookingModal(true);
   };
 
   const handleBooking = async () => {
@@ -159,10 +159,10 @@ export function BookingPage() {
       } else {
         dispatch(fetchBookingsForDate(selectedDate));
       }
-    } catch (err) {
-      setBookingError(
-        err instanceof Error ? err.message : "Sikertelen foglalás",
-      );
+    } catch (err: any) {
+      // Show error inline in the modal
+      const message = err?.message || (typeof err === 'string' ? err : 'Sikertelen foglalás');
+      setBookingError(message);
     }
   };
 
@@ -247,10 +247,10 @@ export function BookingPage() {
       </div>
 
       {/* Error Display */}
-      {(error || bookingError) && (
+      {error && (
         <div className="mb-6 flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm md:text-base">
           <AlertCircle size={20} className="flex-shrink-0" />
-          <span>{error || bookingError}</span>
+          <span>{error}</span>
         </div>
       )}
 
@@ -472,9 +472,9 @@ export function BookingPage() {
             </div>
 
             {bookingError && (
-              <div className="flex items-center gap-2 text-red-400 bg-red-500/10 border border-red-500/20 p-3 rounded-lg mb-6">
-                <AlertCircle size={16} />
-                <span className="text-sm">{bookingError}</span>
+              <div className="mb-4 flex items-start gap-3 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm animate-in fade-in slide-in-from-top-2 duration-200">
+                <AlertCircle size={18} className="flex-shrink-0 mt-0.5" />
+                <span>{bookingError}</span>
               </div>
             )}
 

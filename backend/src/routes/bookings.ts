@@ -420,13 +420,13 @@ bookingsRouter.post(
             }
 
             // 3.5. Booking Supervisor Validation
-            // Find which hours this booking touches
+            // Find which hours this booking touches (use Hungary timezone hours, same as supervisor records)
             const touchedHours: number[] = [];
-            let currentHour = start.getHours();
+            const supervisorStartHour = localStart.getHours();
 
             // Start from the beginning of the booking, and for each hour until the end hour (exclusive if minute is 00)
-            const endHourCalculated = end.getMinutes() === 0 ? end.getHours() - 1 : end.getHours();
-            for (let h = currentHour; h <= endHourCalculated; h++) {
+            const supervisorEndHour = localEnd.getMinutes() === 0 ? localEnd.getHours() - 1 : localEnd.getHours();
+            for (let h = supervisorStartHour; h <= supervisorEndHour; h++) {
                 // handle midnight crossover (though schedule validations likely prevent this anyway)
                 touchedHours.push(h);
             }
