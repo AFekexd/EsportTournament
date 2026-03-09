@@ -15,7 +15,7 @@ interface User {
   email: string;
   displayName: string | null;
   avatarUrl: string | null;
-  role: "ADMIN" | "ORGANIZER" | "MODERATOR" | "TEACHER" | "STUDENT";
+  role: "ADMIN" | "ORGANIZER" | "MODERATOR" | "TEACHER" | "STUDENT" | "DOK";
   elo: number;
   timeBalanceSeconds: number;
   omId: string | null;
@@ -177,6 +177,10 @@ export function UserManagement() {
       MODERATOR: {
         class: "bg-primary/30 text-primary border-primary/20",
         label: "Moderátor",
+      },
+      DOK: {
+        class: "bg-orange-500/20 text-orange-400 border-orange-500/30",
+        label: "DÖK",
       },
       STUDENT: {
         class: "bg-gray-500/20 text-muted-foreground border-gray-500/30",
@@ -371,6 +375,7 @@ export function UserManagement() {
               <option value="ORGANIZER">Szervező</option>
               <option value="TEACHER">Tanár</option>
               <option value="MODERATOR">Moderátor</option>
+              <option value="DOK">DÖK</option>
               <option value="STUDENT">Diák</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground">

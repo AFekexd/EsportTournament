@@ -3239,9 +3239,11 @@ export type WaitlistScalarFieldEnum = (typeof WaitlistScalarFieldEnum)[keyof typ
 export const BookingScheduleScalarFieldEnum = {
   id: 'id',
   dayOfWeek: 'dayOfWeek',
+  specificDate: 'specificDate',
   startHour: 'startHour',
   endHour: 'endHour',
   isActive: 'isActive',
+  isOpenForBooking: 'isOpenForBooking',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

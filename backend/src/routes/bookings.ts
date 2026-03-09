@@ -144,7 +144,7 @@ bookingsRouter.get(
     asyncHandler(async (_req: AuthenticatedRequest, res: Response) => {
         const schedules = await prisma.bookingSchedule.findMany({
             where: { isActive: true },
-            orderBy: [{ dayOfWeek: 'asc' }, { startHour: 'asc' }],
+            orderBy: [{ specificDate: 'asc' }, { dayOfWeek: 'asc' }, { startHour: 'asc' }],
         });
 
         res.json({ success: true, data: schedules });
@@ -164,14 +164,24 @@ bookingsRouter.post(
             throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
-        const { dayOfWeek, startHour, endHour } = req.body;
+        const { dayOfWeek, specificDate, startHour, endHour, isOpenForBooking } = req.body;
 
-        if (dayOfWeek === undefined || startHour === undefined || endHour === undefined) {
-            throw new ApiError('A nap, kezdőóra és végóra kötelező', 400, 'MISSING_FIELDS');
+        if ((dayOfWeek === undefined && !specificDate) || startHour === undefined || endHour === undefined) {
+            throw new ApiError('A nap vagy konkrét dátum, valamint a kezdőóra és végóra kötelező', 400, 'MISSING_FIELDS');
         }
 
-        if (dayOfWeek < 0 || dayOfWeek > 6) {
+        if (dayOfWeek !== undefined && dayOfWeek !== null && (dayOfWeek < 0 || dayOfWeek > 6)) {
             throw new ApiError('A napnak 0 és 6 között kell lennie', 400, 'INVALID_DAY');
+        }
+
+        let parsedDate: Date | null = null;
+        if (specificDate) {
+            parsedDate = new Date(specificDate);
+            if (isNaN(parsedDate.getTime())) {
+                throw new ApiError('Érvénytelen dátum formátum', 400, 'INVALID_DATE');
+            }
+            // Normalize specific date to 00:00:00 so it matches Prisma db.Date accurately
+            parsedDate.setHours(0, 0, 0, 0);
         }
 
         if (startHour < 0 || startHour > 23 || endHour < 0 || endHour > 23) {
@@ -183,12 +193,48 @@ bookingsRouter.post(
         }
 
         const schedule = await prisma.bookingSchedule.create({
-            data: { dayOfWeek, startHour, endHour },
+            data: {
+                dayOfWeek: parsedDate ? null : dayOfWeek,
+                specificDate: parsedDate,
+                startHour,
+                endHour,
+                isOpenForBooking: isOpenForBooking !== undefined ? isOpenForBooking : true
+            },
         });
 
         await logSystemActivity('SCHEDULE_CREATE', `Booking schedule created by ${user.username}`, { adminId: user.id });
 
         res.status(201).json({ success: true, data: schedule });
+    })
+);
+
+// Update booking schedule (admin only)
+bookingsRouter.patch(
+    '/schedules/:id',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user || user.role !== 'ADMIN') {
+            throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
+        }
+
+        const { isOpenForBooking } = req.body;
+
+        if (isOpenForBooking === undefined) {
+            throw new ApiError('Az isOpenForBooking megadása kötelező', 400, 'MISSING_FIELDS');
+        }
+
+        const schedule = await prisma.bookingSchedule.update({
+            where: { id: req.params.id },
+            data: { isOpenForBooking },
+        });
+
+        await logSystemActivity('SCHEDULE_UPDATE', `Booking schedule ID ${req.params.id} updated by ${user.username}`, { adminId: user.id });
+
+        res.json({ success: true, data: schedule });
     })
 );
 
@@ -333,17 +379,30 @@ bookingsRouter.post(
             effectiveEndHour = 24;
         }
 
-        const schedule = await prisma.bookingSchedule.findFirst({
+        const schedules = await prisma.bookingSchedule.findMany({
             where: {
-                dayOfWeek,
                 isActive: true,
                 startHour: { lte: startHour },
                 endHour: { gte: effectiveEndHour },
+                OR: [
+                    { specificDate: bookingDate },
+                    { dayOfWeek: dayOfWeek, specificDate: null }
+                ]
             },
         });
 
+        // specificDate overrides dayOfWeek
+        let schedule = schedules.find(s => s.specificDate !== null);
+        if (!schedule) {
+            schedule = schedules.find(s => s.dayOfWeek === dayOfWeek);
+        }
+
         if (!schedule) {
             throw new ApiError('Nincs elérhető foglalási időpont', 400, 'NO_SCHEDULE');
+        }
+
+        if (!schedule.isOpenForBooking) {
+            throw new ApiError('Erre az időszakra a terem zárva van a gépfoglalások elől (csak ügyelet).', 403, 'NOT_OPEN_FOR_BOOKING');
         }
 
         // EXECUTE TRANSACTION

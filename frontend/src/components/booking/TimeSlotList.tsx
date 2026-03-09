@@ -1,9 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Clock, Users, ChevronRight, AlertCircle, Shield, ShieldAlert, ShieldCheck } from 'lucide-react';
 import type { Computer, Booking, BookingSchedule, BookingSupervisor } from '../../store/slices/bookingsSlice';
 import { useAuth } from '../../hooks/useAuth';
-import { useAppDispatch } from '../../hooks/useRedux';
-import { assignSupervisor, removeSupervisor } from '../../store/slices/bookingsSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
+import { assignSupervisor, removeSupervisor, fetchEligibleSupervisors } from '../../store/slices/bookingsSlice';
 
 interface TimeSlotListProps {
     selectedDate: string;
@@ -34,10 +34,23 @@ export function TimeSlotList({
     supervisors,
 }: TimeSlotListProps) {
     const dayOfWeek = new Date(selectedDate).getDay();
-    const todaySchedule = schedules.find(s => s.dayOfWeek === dayOfWeek && s.isActive);
+    const specificSchedule = schedules.find(s => s.specificDate && s.specificDate.startsWith(selectedDate) && s.isActive);
+    const daySchedule = schedules.find(s => s.dayOfWeek === dayOfWeek && s.isActive);
+    const todaySchedule = specificSchedule || daySchedule;
     const { user } = useAuth();
     const dispatch = useAppDispatch();
+    const { eligibleSupervisors } = useAppSelector(state => state.bookings);
     const [isAssigning, setIsAssigning] = useState<number | null>(null);
+
+    // Track which user the admin wants to assign per hour
+    // Key: hour, Value: userId (or undefined/empty string for "Magam")
+    const [targetAssignments, setTargetAssignments] = useState<Record<number, string>>({});
+
+    useEffect(() => {
+        if (user && user.role === 'ADMIN') {
+            dispatch(fetchEligibleSupervisors());
+        }
+    }, [user, dispatch]);
 
     const timeSlots = useMemo((): TimeSlotInfo[] => {
         if (!todaySchedule) return [];
@@ -110,15 +123,26 @@ export function TimeSlotList({
         );
     }
 
+    const handleTargetChange = (hour: number, userId: string) => {
+        setTargetAssignments(prev => ({
+            ...prev,
+            [hour]: userId
+        }));
+    };
+
     const handleAssignSupervisor = async (hour: number, e: React.MouseEvent) => {
         e.stopPropagation();
         if (!user) return;
         try {
             setIsAssigning(hour);
-            await dispatch(assignSupervisor({ date: selectedDate, hour })).unwrap();
+            const targetUserId = targetAssignments[hour] || undefined;
+            await dispatch(assignSupervisor({ date: selectedDate, hour, targetUserId })).unwrap();
+            // Reset selection after success
+            if (targetUserId) {
+                setTargetAssignments(prev => ({ ...prev, [hour]: '' }));
+            }
         } catch (error) {
             console.error("Failed to assign supervisor:", error);
-            // Optionally, we could show a toast here.
         } finally {
             setIsAssigning(null);
         }
@@ -136,6 +160,8 @@ export function TimeSlotList({
             setIsAssigning(null);
         }
     };
+
+    const isAdmin = user?.role === 'ADMIN';
 
     const getSlotConfig = (slot: TimeSlotInfo) => {
         if (slot.isPast) {
@@ -177,6 +203,19 @@ export function TimeSlotList({
             };
         }
 
+        if (!todaySchedule.isOpenForBooking) {
+            return {
+                bg: 'bg-indigo-500/10 hover:bg-indigo-500/20',
+                border: 'border-indigo-500/30',
+                text: 'text-indigo-400',
+                badge: 'bg-indigo-500/20 text-indigo-400',
+                label: 'Zárva (Csak Ügyelet)',
+                disabled: true,
+                // Admin might want to relieve someone else's duty
+                isOtherSupervision: true,
+            };
+        }
+
         if (slot.isSelected) {
             return {
                 bg: 'bg-primary/20',
@@ -185,6 +224,7 @@ export function TimeSlotList({
                 badge: 'bg-primary/30 text-primary',
                 label: 'Kiválasztva',
                 disabled: false,
+                isOtherSupervision: true,
             };
         }
         if (slot.freeCount === 0) {
@@ -195,6 +235,7 @@ export function TimeSlotList({
                 badge: 'bg-red-500/20 text-red-400',
                 label: 'Tele',
                 disabled: true,
+                isOtherSupervision: true,
             };
         }
         if (slot.freeCount <= 2) {
@@ -205,6 +246,7 @@ export function TimeSlotList({
                 badge: 'bg-yellow-500/20 text-yellow-400',
                 label: 'Kevés hely',
                 disabled: false,
+                isOtherSupervision: true,
             };
         }
         return {
@@ -214,6 +256,7 @@ export function TimeSlotList({
             badge: 'bg-green-500/20 text-green-400',
             label: 'Elérhető',
             disabled: false,
+            isOtherSupervision: true,
         };
     };
 
@@ -243,14 +286,24 @@ export function TimeSlotList({
                         <span className="w-2 h-2 rounded-full bg-teal-500" />
                         Ügyeleted
                     </span>
-                    <span className="flex items-center gap-1.5 text-green-400">
-                        <span className="w-2 h-2 rounded-full bg-green-500" />
-                        Szabad
-                    </span>
-                    <span className="flex items-center gap-1.5 text-red-400">
-                        <span className="w-2 h-2 rounded-full bg-red-500" />
-                        Tele
-                    </span>
+                    {!todaySchedule.isOpenForBooking && (
+                        <span className="flex items-center gap-1.5 text-indigo-400">
+                            <span className="w-2 h-2 rounded-full bg-indigo-500" />
+                            Csak Ügyelet
+                        </span>
+                    )}
+                    {todaySchedule.isOpenForBooking && (
+                        <>
+                            <span className="flex items-center gap-1.5 text-green-400">
+                                <span className="w-2 h-2 rounded-full bg-green-500" />
+                                Szabad
+                            </span>
+                            <span className="flex items-center gap-1.5 text-red-400">
+                                <span className="w-2 h-2 rounded-full bg-red-500" />
+                                Tele
+                            </span>
+                        </>
+                    )}
                 </div>
             </div>
 
@@ -265,16 +318,16 @@ export function TimeSlotList({
                                 onClick={() => !config.disabled && onSelectHour(slot.hour)}
                                 disabled={config.disabled}
                                 className={`
-                                    w-full relative p-4 rounded-xl border-2 transition-all duration-200 text-left
+                                    w-full relative p-4 rounded-xl border-2 transition-all duration-200 text-left cursor-default
                                     ${config.bg} ${config.border}
-                                    ${!config.disabled ? 'cursor-pointer hover:scale-102 hover:shadow-lg' : 'cursor-not-allowed'}
+                                    ${!config.disabled ? 'cursor-pointer hover:scale-102 hover:shadow-lg' : 'cursor-default'}
                                     ${slot.isSelected ? 'ring-2 ring-primary/50 shadow-lg shadow-primary/10' : ''}
                                 `}
                             >
                                 {/* Time Header */}
-                                <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center justify-between mb-3 pointer-events-none">
                                     <span className={`text-xl font-bold ${slot.isSelected ? 'text-foreground' : config.text}`}>
-                                        {slot.hour}:00
+                                        {slot.hour}:00 - {slot.hour + 1}:00
                                     </span>
                                     {slot.isSelected && (
                                         <ChevronRight size={18} className="text-primary" />
@@ -282,7 +335,7 @@ export function TimeSlotList({
                                 </div>
 
                                 {/* Availability info */}
-                                <div className="flex items-center gap-2 mb-2">
+                                <div className="flex items-center gap-2 mb-2 pointer-events-none">
                                     <Users size={14} className={config.text} />
                                     <div className={`flex-1 text-left text-sm font-medium ${config.text}`}>
                                         {slot.freeCount}/{slot.totalCount} gép szabad
@@ -290,7 +343,7 @@ export function TimeSlotList({
                                 </div>
 
                                 {/* Progress bar */}
-                                <div className="h-1.5 bg-secondary rounded-full overflow-hidden mb-3">
+                                <div className="h-1.5 bg-secondary rounded-full overflow-hidden mb-3 pointer-events-none">
                                     <div
                                         className={`h-full rounded-full transition-all ${slot.freeCount === 0 ? 'bg-red-500' :
                                             slot.freeCount <= 2 ? 'bg-yellow-500' :
@@ -301,7 +354,7 @@ export function TimeSlotList({
                                 </div>
 
                                 {/* Status label */}
-                                <div className={`flex items-center justify-between mt-2 text-xs font-medium ${config.text}`}>
+                                <div className={`flex items-center justify-between mt-2 text-xs font-medium ${config.text} pointer-events-none`}>
                                     <span className="uppercase tracking-wider">
                                         {slot.isPast ? 'Lejárt' : config.label}
                                     </span>
@@ -318,24 +371,44 @@ export function TimeSlotList({
 
                             {/* Supervisor Action Overlay */}
                             {user && !slot.isPast && config.needsSupervisor && (
-                                <div className="absolute inset-x-0 bottom-0 translate-y-full pt-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity z-10">
-                                    <button
-                                        onClick={(e) => handleAssignSupervisor(slot.hour, e)}
-                                        disabled={isAssigning === slot.hour}
-                                        className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-indigo-600 hover:bg-indigo-500 text-foreground text-xs font-semibold rounded-lg shadow-lg border border-indigo-400/50 transition-colors"
-                                    >
-                                        {isAssigning === slot.hour ? (
-                                            <span className="animate-spin w-4 h-4 border-2 border-border border-t-white rounded-full" />
-                                        ) : (
-                                            <Shield size={14} />
+                                <div className="absolute inset-x-0 bottom-0 translate-y-full pt-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity z-20">
+                                    <div className="bg-card border border-border shadow-xl rounded-lg overflow-hidden flex flex-col">
+                                        {isAdmin && (
+                                            <div className="px-2 py-1.5 border-b border-border bg-muted/30">
+                                                <select
+                                                    className="w-full bg-background border border-input rounded text-xs px-2 py-1 focus:ring-1 focus:ring-primary focus:outline-none"
+                                                    value={targetAssignments[slot.hour] || ''}
+                                                    onChange={(e) => handleTargetChange(slot.hour, e.target.value)}
+                                                >
+                                                    <option value="">Felelős vagyok (Magam)</option>
+                                                    <optgroup label="Egyéb Felelős Kijelölése">
+                                                        {eligibleSupervisors.filter(s => s.id !== user.id).map(s => (
+                                                            <option key={s.id} value={s.id}>
+                                                                {s.displayName || s.username} ({s.role})
+                                                            </option>
+                                                        ))}
+                                                    </optgroup>
+                                                </select>
+                                            </div>
                                         )}
-                                        Felelősséget vállalok
-                                    </button>
+                                        <button
+                                            onClick={(e) => handleAssignSupervisor(slot.hour, e)}
+                                            disabled={isAssigning === slot.hour}
+                                            className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-indigo-600 hover:bg-indigo-500 text-foreground text-xs font-semibold transition-colors"
+                                        >
+                                            {isAssigning === slot.hour ? (
+                                                <span className="animate-spin w-4 h-4 border-2 border-border border-t-white rounded-full" />
+                                            ) : (
+                                                <Shield size={14} />
+                                            )}
+                                            {targetAssignments[slot.hour] ? 'Kijelölés mentése' : 'Felelősséget vállalok'}
+                                        </button>
+                                    </div>
                                 </div>
                             )}
 
-                            {user && !slot.isPast && config.isMySupervision && slot.supervisor && (
-                                <div className="absolute inset-x-0 bottom-0 translate-y-full pt-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity z-10">
+                            {user && !slot.isPast && (config.isMySupervision || (isAdmin && slot.supervisor)) && slot.supervisor && (
+                                <div className="absolute inset-x-0 bottom-0 translate-y-full pt-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity z-20">
                                     <button
                                         onClick={(e) => handleRemoveSupervisor(slot.supervisor!.id, slot.hour, e)}
                                         disabled={isAssigning === slot.hour}
@@ -346,7 +419,7 @@ export function TimeSlotList({
                                         ) : (
                                             <ShieldAlert size={14} />
                                         )}
-                                        Lemondás
+                                        {config.isMySupervision ? 'Lemondás' : 'Felelős eltávolítása'}
                                     </button>
                                 </div>
                             )}

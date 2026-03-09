@@ -27,14 +27,16 @@ export const RoleChangeModal: React.FC<RoleChangeModalProps> = ({
   // Define role hierarchy: Higher number = Higher Rank
   const roleHierarchy: Record<string, number> = {
     STUDENT: 0,
-    MODERATOR: 1,
-    TEACHER: 2,
-    ORGANIZER: 3,
-    ADMIN: 4,
+    DOK: 1,
+    MODERATOR: 2,
+    TEACHER: 3,
+    ORGANIZER: 4,
+    ADMIN: 5,
   };
 
   const roleLabels: Record<string, string> = {
     STUDENT: "Diák",
+    DOK: "DÖK",
     MODERATOR: "Moderátor",
     TEACHER: "Tanár",
     ORGANIZER: "Szervező",
@@ -80,11 +82,11 @@ export const RoleChangeModal: React.FC<RoleChangeModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
       <div
-        className="bg-[#121A22] rounded-xl border border-border shadow-2xl w-full max-w-md overflow-hidden"
+        className="bg-[#121A22] rounded-xl border border-border shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-border flex justify-between items-center bg-gradient-to-r from-primary/10 to-transparent">
+        <div className="p-6 border-b border-border flex justify-between items-center bg-gradient-to-r from-primary/10 to-transparent shrink-0">
           <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
             <Shield className="text-primary" size={24} />
             Szerepkör módosítása
@@ -98,7 +100,7 @@ export const RoleChangeModal: React.FC<RoleChangeModalProps> = ({
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-6 overflow-y-auto">
           <div className="flex items-center gap-4 mb-6 bg-secondary p-4 rounded-lg border border-border">
             <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center border border-border text-xl font-bold text-muted-foreground">
               {(user.displayName || user.username).charAt(0).toUpperCase()}
@@ -116,7 +118,7 @@ export const RoleChangeModal: React.FC<RoleChangeModalProps> = ({
               Válassz új szerepkört
             </label>
             <div className="grid grid-cols-1 gap-2">
-              {["STUDENT", "MODERATOR", "TEACHER", "ORGANIZER", "ADMIN"].map(
+              {["STUDENT", "DOK", "MODERATOR", "TEACHER", "ORGANIZER", "ADMIN"].map(
                 (role) => {
                   const isAllowed = canSelectRole(role);
                   const isSelected = selectedRole === role;
@@ -138,13 +140,15 @@ export const RoleChangeModal: React.FC<RoleChangeModalProps> = ({
                       <div className="flex items-center gap-3">
                         <div
                           className={`w-2 h-2 rounded-full ${role === "ADMIN"
-                              ? "bg-red-500"
-                              : role === "ORGANIZER"
-                                ? "bg-purple-500"
-                                : role === "TEACHER"
-                                  ? "bg-green-500"
-                                  : role === "MODERATOR"
-                                    ? "bg-blue-500"
+                            ? "bg-red-500"
+                            : role === "ORGANIZER"
+                              ? "bg-purple-500"
+                              : role === "TEACHER"
+                                ? "bg-green-500"
+                                : role === "MODERATOR"
+                                  ? "bg-blue-500"
+                                  : role === "DOK"
+                                    ? "bg-orange-500"
                                     : "bg-gray-500"
                             }`}
                         />
@@ -178,7 +182,7 @@ export const RoleChangeModal: React.FC<RoleChangeModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-border flex justify-end gap-3 bg-secondary">
+        <div className="p-6 border-t border-border flex justify-end gap-3 bg-secondary shrink-0">
           <button
             className="btn btn-secondary"
             onClick={onClose}

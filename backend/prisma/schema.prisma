@@ -20,6 +20,7 @@ enum Role {
   MODERATOR
   TEACHER
   STUDENT
+  DOK
 }
 
 enum TeamRole {
@@ -536,13 +537,15 @@ model Waitlist {
 
 // Admin preset az elérhető időpontokhoz
 model BookingSchedule {
-  id        String   @id @default(uuid())
-  dayOfWeek Int // 0=Vasárnap, 1=Hétfő, ... 5=Péntek, 6=Szombat
-  startHour Int // 0-23
-  endHour   Int // 0-23
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String    @id @default(uuid())
+  dayOfWeek        Int?      // 0=Vasárnap, 1=Hétfő, ... 5=Péntek, 6=Szombat
+  specificDate     DateTime? @db.Date // Kifejezett dátum, ha nem ismétlődő
+  startHour        Int       // 0-23
+  endHour          Int       // 0-23
+  isActive         Boolean   @default(true)
+  isOpenForBooking Boolean   @default(true) // Ha false, a diákok nem foglalhatnak be, de ügyelet lehet
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 }
 
 // Felelős (ügyeletes) egy adott napra és órára

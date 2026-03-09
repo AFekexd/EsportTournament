@@ -47,10 +47,14 @@ export interface Booking {
 
 export interface BookingSchedule {
     id: string;
-    dayOfWeek: number;
+    dayOfWeek: number | null; // 0=Sunday, 1=Monday... null if specificDate
+    specificDate?: string | null; // ISO string for specific date overrides
     startHour: number;
     endHour: number;
     isActive: boolean;
+    isOpenForBooking: boolean;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export interface WaitlistEntry {
@@ -83,6 +87,13 @@ export interface BookingSupervisor {
     createdAt: string;
 }
 
+export interface EligibleSupervisor {
+    id: string;
+    username: string;
+    displayName: string | null;
+    role: string;
+}
+
 interface BookingsState {
     computers: Computer[];
     bookings: Booking[];
@@ -99,6 +110,7 @@ interface BookingsState {
     };
     myWaitlist: WaitlistEntry[];
     stats: BookingStats | null;
+    eligibleSupervisors: EligibleSupervisor[];
     selectedDate: string;
     selectedWeekStart: string;
     viewMode: 'daily' | 'weekly';
@@ -129,6 +141,7 @@ const initialState: BookingsState = {
     },
     schedules: [],
     supervisors: [],
+    eligibleSupervisors: [],
     myBookings: [],
     myWaitlist: [],
     stats: null,
@@ -230,6 +243,30 @@ export const deleteSchedule = createAsyncThunk(
         const data = await response.json();
         if (!data.success) throw new Error(data.error?.message || 'Failed to delete schedule');
         return id;
+    }
+);
+
+export const updateSchedule = createAsyncThunk(
+    'bookings/updateSchedule',
+    async (
+        { id, isOpenForBooking }: { id: string; isOpenForBooking: boolean },
+        { getState }
+    ) => {
+        const state = getState() as RootState;
+        const token = getToken(state);
+        if (!token) throw new Error('Nincs bejelentkezve!');
+
+        const response = await fetch(`${API_URL}/bookings/schedules/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ isOpenForBooking }),
+        });
+        const data = await response.json();
+        if (!data.success) throw new Error(data.error?.message || 'Failed to update schedule');
+        return data.data as BookingSchedule;
     }
 );
 
@@ -357,9 +394,25 @@ export const fetchSupervisorsForWeek = createAsyncThunk(
     }
 );
 
+export const fetchEligibleSupervisors = createAsyncThunk(
+    'bookings/fetchEligibleSupervisors',
+    async (_, { getState }) => {
+        const state = getState() as RootState;
+        const token = getToken(state);
+        if (!token) throw new Error('Nincs bejelentkezve!');
+
+        const response = await fetch(`${API_URL}/supervisors/eligible`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await response.json();
+        if (!data.success) throw new Error(data.error?.message || 'Failed to fetch eligible supervisors');
+        return data.data as EligibleSupervisor[];
+    }
+);
+
 export const assignSupervisor = createAsyncThunk(
     'bookings/assignSupervisor',
-    async (assignmentData: { date: string; hour: number }, { getState }) => {
+    async (assignmentData: { date: string; hour: number; targetUserId?: string }, { getState }) => {
         const state = getState() as RootState;
         const token = getToken(state);
         if (!token) throw new Error('Nincs bejelentkezve!');
@@ -606,6 +659,10 @@ const bookingsSlice = createSlice({
             })
             .addCase(createSchedule.fulfilled, (state, action) => {
                 state.schedules.push(action.payload);
+            })
+            .addCase(updateSchedule.fulfilled, (state, action) => {
+                const index = state.schedules.findIndex((s) => s.id === action.payload.id);
+                if (index !== -1) state.schedules[index] = action.payload;
             })
             .addCase(deleteSchedule.fulfilled, (state, action) => {
                 state.schedules = state.schedules.filter((s) => s.id !== action.payload);

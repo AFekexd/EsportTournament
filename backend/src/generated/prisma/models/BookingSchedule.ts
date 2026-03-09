@@ -41,9 +41,11 @@ export type BookingScheduleSumAggregateOutputType = {
 export type BookingScheduleMinAggregateOutputType = {
   id: string | null
   dayOfWeek: number | null
+  specificDate: Date | null
   startHour: number | null
   endHour: number | null
   isActive: boolean | null
+  isOpenForBooking: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -51,9 +53,11 @@ export type BookingScheduleMinAggregateOutputType = {
 export type BookingScheduleMaxAggregateOutputType = {
   id: string | null
   dayOfWeek: number | null
+  specificDate: Date | null
   startHour: number | null
   endHour: number | null
   isActive: boolean | null
+  isOpenForBooking: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -61,9 +65,11 @@ export type BookingScheduleMaxAggregateOutputType = {
 export type BookingScheduleCountAggregateOutputType = {
   id: number
   dayOfWeek: number
+  specificDate: number
   startHour: number
   endHour: number
   isActive: number
+  isOpenForBooking: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -85,9 +91,11 @@ export type BookingScheduleSumAggregateInputType = {
 export type BookingScheduleMinAggregateInputType = {
   id?: true
   dayOfWeek?: true
+  specificDate?: true
   startHour?: true
   endHour?: true
   isActive?: true
+  isOpenForBooking?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -95,9 +103,11 @@ export type BookingScheduleMinAggregateInputType = {
 export type BookingScheduleMaxAggregateInputType = {
   id?: true
   dayOfWeek?: true
+  specificDate?: true
   startHour?: true
   endHour?: true
   isActive?: true
+  isOpenForBooking?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -105,9 +115,11 @@ export type BookingScheduleMaxAggregateInputType = {
 export type BookingScheduleCountAggregateInputType = {
   id?: true
   dayOfWeek?: true
+  specificDate?: true
   startHour?: true
   endHour?: true
   isActive?: true
+  isOpenForBooking?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -201,10 +213,12 @@ export type BookingScheduleGroupByArgs<ExtArgs extends runtime.Types.Extensions.
 
 export type BookingScheduleGroupByOutputType = {
   id: string
-  dayOfWeek: number
+  dayOfWeek: number | null
+  specificDate: Date | null
   startHour: number
   endHour: number
   isActive: boolean
+  isOpenForBooking: boolean
   createdAt: Date
   updatedAt: Date
   _count: BookingScheduleCountAggregateOutputType | null
@@ -234,20 +248,24 @@ export type BookingScheduleWhereInput = {
   OR?: Prisma.BookingScheduleWhereInput[]
   NOT?: Prisma.BookingScheduleWhereInput | Prisma.BookingScheduleWhereInput[]
   id?: Prisma.StringFilter<"BookingSchedule"> | string
-  dayOfWeek?: Prisma.IntFilter<"BookingSchedule"> | number
+  dayOfWeek?: Prisma.IntNullableFilter<"BookingSchedule"> | number | null
+  specificDate?: Prisma.DateTimeNullableFilter<"BookingSchedule"> | Date | string | null
   startHour?: Prisma.IntFilter<"BookingSchedule"> | number
   endHour?: Prisma.IntFilter<"BookingSchedule"> | number
   isActive?: Prisma.BoolFilter<"BookingSchedule"> | boolean
+  isOpenForBooking?: Prisma.BoolFilter<"BookingSchedule"> | boolean
   createdAt?: Prisma.DateTimeFilter<"BookingSchedule"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BookingSchedule"> | Date | string
 }
 
 export type BookingScheduleOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  dayOfWeek?: Prisma.SortOrder
+  dayOfWeek?: Prisma.SortOrderInput | Prisma.SortOrder
+  specificDate?: Prisma.SortOrderInput | Prisma.SortOrder
   startHour?: Prisma.SortOrder
   endHour?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  isOpenForBooking?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -257,20 +275,24 @@ export type BookingScheduleWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.BookingScheduleWhereInput | Prisma.BookingScheduleWhereInput[]
   OR?: Prisma.BookingScheduleWhereInput[]
   NOT?: Prisma.BookingScheduleWhereInput | Prisma.BookingScheduleWhereInput[]
-  dayOfWeek?: Prisma.IntFilter<"BookingSchedule"> | number
+  dayOfWeek?: Prisma.IntNullableFilter<"BookingSchedule"> | number | null
+  specificDate?: Prisma.DateTimeNullableFilter<"BookingSchedule"> | Date | string | null
   startHour?: Prisma.IntFilter<"BookingSchedule"> | number
   endHour?: Prisma.IntFilter<"BookingSchedule"> | number
   isActive?: Prisma.BoolFilter<"BookingSchedule"> | boolean
+  isOpenForBooking?: Prisma.BoolFilter<"BookingSchedule"> | boolean
   createdAt?: Prisma.DateTimeFilter<"BookingSchedule"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BookingSchedule"> | Date | string
 }, "id">
 
 export type BookingScheduleOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  dayOfWeek?: Prisma.SortOrder
+  dayOfWeek?: Prisma.SortOrderInput | Prisma.SortOrder
+  specificDate?: Prisma.SortOrderInput | Prisma.SortOrder
   startHour?: Prisma.SortOrder
   endHour?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  isOpenForBooking?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BookingScheduleCountOrderByAggregateInput
@@ -285,80 +307,96 @@ export type BookingScheduleScalarWhereWithAggregatesInput = {
   OR?: Prisma.BookingScheduleScalarWhereWithAggregatesInput[]
   NOT?: Prisma.BookingScheduleScalarWhereWithAggregatesInput | Prisma.BookingScheduleScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"BookingSchedule"> | string
-  dayOfWeek?: Prisma.IntWithAggregatesFilter<"BookingSchedule"> | number
+  dayOfWeek?: Prisma.IntNullableWithAggregatesFilter<"BookingSchedule"> | number | null
+  specificDate?: Prisma.DateTimeNullableWithAggregatesFilter<"BookingSchedule"> | Date | string | null
   startHour?: Prisma.IntWithAggregatesFilter<"BookingSchedule"> | number
   endHour?: Prisma.IntWithAggregatesFilter<"BookingSchedule"> | number
   isActive?: Prisma.BoolWithAggregatesFilter<"BookingSchedule"> | boolean
+  isOpenForBooking?: Prisma.BoolWithAggregatesFilter<"BookingSchedule"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BookingSchedule"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"BookingSchedule"> | Date | string
 }
 
 export type BookingScheduleCreateInput = {
   id?: string
-  dayOfWeek: number
+  dayOfWeek?: number | null
+  specificDate?: Date | string | null
   startHour: number
   endHour: number
   isActive?: boolean
+  isOpenForBooking?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type BookingScheduleUncheckedCreateInput = {
   id?: string
-  dayOfWeek: number
+  dayOfWeek?: number | null
+  specificDate?: Date | string | null
   startHour: number
   endHour: number
   isActive?: boolean
+  isOpenForBooking?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type BookingScheduleUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  dayOfWeek?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  specificDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startHour?: Prisma.IntFieldUpdateOperationsInput | number
   endHour?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOpenForBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BookingScheduleUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  dayOfWeek?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  specificDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startHour?: Prisma.IntFieldUpdateOperationsInput | number
   endHour?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOpenForBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BookingScheduleCreateManyInput = {
   id?: string
-  dayOfWeek: number
+  dayOfWeek?: number | null
+  specificDate?: Date | string | null
   startHour: number
   endHour: number
   isActive?: boolean
+  isOpenForBooking?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type BookingScheduleUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  dayOfWeek?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  specificDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startHour?: Prisma.IntFieldUpdateOperationsInput | number
   endHour?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOpenForBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BookingScheduleUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  dayOfWeek?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  specificDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startHour?: Prisma.IntFieldUpdateOperationsInput | number
   endHour?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOpenForBooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -366,9 +404,11 @@ export type BookingScheduleUncheckedUpdateManyInput = {
 export type BookingScheduleCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   dayOfWeek?: Prisma.SortOrder
+  specificDate?: Prisma.SortOrder
   startHour?: Prisma.SortOrder
   endHour?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  isOpenForBooking?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -382,9 +422,11 @@ export type BookingScheduleAvgOrderByAggregateInput = {
 export type BookingScheduleMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   dayOfWeek?: Prisma.SortOrder
+  specificDate?: Prisma.SortOrder
   startHour?: Prisma.SortOrder
   endHour?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  isOpenForBooking?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -392,9 +434,11 @@ export type BookingScheduleMaxOrderByAggregateInput = {
 export type BookingScheduleMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   dayOfWeek?: Prisma.SortOrder
+  specificDate?: Prisma.SortOrder
   startHour?: Prisma.SortOrder
   endHour?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  isOpenForBooking?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -410,9 +454,11 @@ export type BookingScheduleSumOrderByAggregateInput = {
 export type BookingScheduleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   dayOfWeek?: boolean
+  specificDate?: boolean
   startHour?: boolean
   endHour?: boolean
   isActive?: boolean
+  isOpenForBooking?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["bookingSchedule"]>
@@ -420,9 +466,11 @@ export type BookingScheduleSelect<ExtArgs extends runtime.Types.Extensions.Inter
 export type BookingScheduleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   dayOfWeek?: boolean
+  specificDate?: boolean
   startHour?: boolean
   endHour?: boolean
   isActive?: boolean
+  isOpenForBooking?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["bookingSchedule"]>
@@ -430,9 +478,11 @@ export type BookingScheduleSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
 export type BookingScheduleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   dayOfWeek?: boolean
+  specificDate?: boolean
   startHour?: boolean
   endHour?: boolean
   isActive?: boolean
+  isOpenForBooking?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["bookingSchedule"]>
@@ -440,24 +490,28 @@ export type BookingScheduleSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
 export type BookingScheduleSelectScalar = {
   id?: boolean
   dayOfWeek?: boolean
+  specificDate?: boolean
   startHour?: boolean
   endHour?: boolean
   isActive?: boolean
+  isOpenForBooking?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BookingScheduleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "dayOfWeek" | "startHour" | "endHour" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["bookingSchedule"]>
+export type BookingScheduleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "dayOfWeek" | "specificDate" | "startHour" | "endHour" | "isActive" | "isOpenForBooking" | "createdAt" | "updatedAt", ExtArgs["result"]["bookingSchedule"]>
 
 export type $BookingSchedulePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "BookingSchedule"
   objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    dayOfWeek: number
+    dayOfWeek: number | null
+    specificDate: Date | null
     startHour: number
     endHour: number
     isActive: boolean
+    isOpenForBooking: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["bookingSchedule"]>
@@ -885,9 +939,11 @@ export interface Prisma__BookingScheduleClient<T, Null = never, ExtArgs extends 
 export interface BookingScheduleFieldRefs {
   readonly id: Prisma.FieldRef<"BookingSchedule", 'String'>
   readonly dayOfWeek: Prisma.FieldRef<"BookingSchedule", 'Int'>
+  readonly specificDate: Prisma.FieldRef<"BookingSchedule", 'DateTime'>
   readonly startHour: Prisma.FieldRef<"BookingSchedule", 'Int'>
   readonly endHour: Prisma.FieldRef<"BookingSchedule", 'Int'>
   readonly isActive: Prisma.FieldRef<"BookingSchedule", 'Boolean'>
+  readonly isOpenForBooking: Prisma.FieldRef<"BookingSchedule", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"BookingSchedule", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"BookingSchedule", 'DateTime'>
 }

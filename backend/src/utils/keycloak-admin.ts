@@ -79,7 +79,7 @@ export async function syncUserRole(keycloakUserId: string, newRole: string) {
     try {
         // 2. Get Available Realm Roles to map names to IDs
         // We only care about the roles we manage
-        const managedRoles = ['ADMIN', 'ORGANIZER', 'MODERATOR', 'TEACHER'];
+        const managedRoles = ['ADMIN', 'ORGANIZER', 'MODERATOR', 'TEACHER', 'DOK'];
 
         // Fetch only roles we might need (optimization: could cache this)
         // Keycloak API: GET /roles

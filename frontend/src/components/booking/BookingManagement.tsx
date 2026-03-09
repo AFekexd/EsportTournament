@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import {
   createSchedule,
   deleteSchedule,
+  updateSchedule,
   fetchSchedules,
   fetchComputers,
 } from "../../store/slices/bookingsSlice";
@@ -41,10 +42,19 @@ export function BookingManagement() {
     dispatch(fetchComputers());
   }, [dispatch]);
 
-  const [newSchedule, setNewSchedule] = useState({
+  const [newScheduleType, setNewScheduleType] = useState<"recurring" | "specific">("recurring");
+  const [newSchedule, setNewSchedule] = useState<{
+    dayOfWeek?: number;
+    specificDate?: string;
+    startHour: number;
+    endHour: number;
+    isOpenForBooking: boolean;
+  }>({
     dayOfWeek: 5,
+    specificDate: "",
     startHour: 14,
     endHour: 18,
+    isOpenForBooking: true,
   });
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
@@ -133,26 +143,67 @@ export function BookingManagement() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Nap</label>
-                    <select
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                      value={newSchedule.dayOfWeek}
-                      onChange={(e) =>
-                        setNewSchedule({
-                          ...newSchedule,
-                          dayOfWeek: parseInt(e.target.value),
-                        })
-                      }
-                    >
-                      <option value={1}>Hétfő</option>
-                      <option value={2}>Kedd</option>
-                      <option value={3}>Szerda</option>
-                      <option value={4}>Csütörtök</option>
-                      <option value={5}>Péntek</option>
-                      <option value={6}>Szombat</option>
-                      <option value={0}>Vasárnap</option>
-                    </select>
+                  <div className="space-y-4">
+                    <div className="flex gap-4">
+                      <label className="flex items-center gap-2 text-sm">
+                        <input
+                          type="radio"
+                          name="scheduleType"
+                          checked={newScheduleType === "recurring"}
+                          onChange={() => setNewScheduleType("recurring")}
+                          className="text-primary focus:ring-primary"
+                        />
+                        Heti ismétlődő
+                      </label>
+                      <label className="flex items-center gap-2 text-sm">
+                        <input
+                          type="radio"
+                          name="scheduleType"
+                          checked={newScheduleType === "specific"}
+                          onChange={() => setNewScheduleType("specific")}
+                          className="text-primary focus:ring-primary"
+                        />
+                        Eseti dátum
+                      </label>
+                    </div>
+
+                    {newScheduleType === "recurring" ? (
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Nap</label>
+                        <select
+                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                          value={newSchedule.dayOfWeek}
+                          onChange={(e) =>
+                            setNewSchedule({
+                              ...newSchedule,
+                              dayOfWeek: parseInt(e.target.value),
+                            })
+                          }
+                        >
+                          <option value={1}>Hétfő</option>
+                          <option value={2}>Kedd</option>
+                          <option value={3}>Szerda</option>
+                          <option value={4}>Csütörtök</option>
+                          <option value={5}>Péntek</option>
+                          <option value={6}>Szombat</option>
+                          <option value={0}>Vasárnap</option>
+                        </select>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Dátum</label>
+                        <Input
+                          type="date"
+                          value={newSchedule.specificDate}
+                          onChange={(e) =>
+                            setNewSchedule({
+                              ...newSchedule,
+                              specificDate: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    )}
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
@@ -188,9 +239,35 @@ export function BookingManagement() {
                       />
                     </div>
                   </div>
+
+                  <div className="flex items-center gap-2 pt-2">
+                    <input
+                      type="checkbox"
+                      id="isOpenForBooking"
+                      checked={newSchedule.isOpenForBooking}
+                      onChange={(e) =>
+                        setNewSchedule({
+                          ...newSchedule,
+                          isOpenForBooking: e.target.checked
+                        })
+                      }
+                      className="w-4 h-4 text-primary rounded border-gray-600 focus:ring-primary focus:ring-offset-background"
+                    />
+                    <label htmlFor="isOpenForBooking" className="text-sm text-foreground">
+                      Engedélyezem a gépek azonnali foglalását (Máskülönben csak ügyelet választható)
+                    </label>
+                  </div>
+
                   <Button
                     className="w-full mt-2 gap-2"
-                    onClick={() => dispatch(createSchedule(newSchedule))}
+                    onClick={() => {
+                      const payload = {
+                        ...newSchedule,
+                        dayOfWeek: newScheduleType === "recurring" ? newSchedule.dayOfWeek : undefined,
+                        specificDate: newScheduleType === "specific" ? newSchedule.specificDate : undefined,
+                      };
+                      dispatch(createSchedule(payload as any));
+                    }}
                   >
                     <Plus size={16} /> Hozzáadás
                   </Button>
@@ -228,12 +305,27 @@ export function BookingManagement() {
                             className="flex items-center justify-between p-3 rounded-lg bg-muted/40 hover:bg-muted/60 transition-colors border border-transparent hover:border-border"
                           >
                             <div className="flex items-center gap-4">
-                              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
-                                {dayNames[schedule.dayOfWeek].substring(0, 2)}
-                              </div>
+                              {schedule.specificDate ? (
+                                <div className="h-8 w-8 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 font-bold text-sm" title="Eseti dátum">
+                                  {new Date(schedule.specificDate).getDate()}
+                                </div>
+                              ) : (
+                                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+                                  {dayNames[schedule.dayOfWeek ?? 0]?.substring(0, 2)}
+                                </div>
+                              )}
                               <div>
-                                <p className="font-medium text-sm">
-                                  {dayNames[schedule.dayOfWeek]}
+                                <p className="font-medium text-sm flex items-center gap-2">
+                                  {schedule.specificDate ? (
+                                    <span>{new Date(schedule.specificDate).toLocaleDateString("hu-HU")}</span>
+                                  ) : (
+                                    <span>{dayNames[schedule.dayOfWeek ?? 0]}</span>
+                                  )}
+                                  {!schedule.isOpenForBooking && (
+                                    <span className="bg-indigo-500/20 text-indigo-400 text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider font-bold">
+                                      Csak Ügyelet
+                                    </span>
+                                  )}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
                                   {schedule.startHour}:00 - {schedule.endHour}
@@ -241,16 +333,27 @@ export function BookingManagement() {
                                 </p>
                               </div>
                             </div>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="text-muted-foreground hover:text-red-400 hover:bg-red-500/10"
-                              onClick={() =>
-                                dispatch(deleteSchedule(schedule.id))
-                              }
-                            >
-                              <Trash2 size={16} />
-                            </Button>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className={schedule.isOpenForBooking ? "text-green-500 hover:text-green-600 hover:bg-green-500/10" : "text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10"}
+                                onClick={() => dispatch(updateSchedule({ id: schedule.id, isOpenForBooking: !schedule.isOpenForBooking }))}
+                                title={schedule.isOpenForBooking ? "Zárás foglalások elől (Csak ügyelet)" : "Megnyitás foglalásoknak"}
+                              >
+                                {schedule.isOpenForBooking ? "Nyitva" : "Zárva"}
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-muted-foreground hover:text-red-400 hover:bg-red-500/10"
+                                onClick={() =>
+                                  dispatch(deleteSchedule(schedule.id))
+                                }
+                              >
+                                <Trash2 size={16} />
+                              </Button>
+                            </div>
                           </div>
                         );
                       })}

@@ -1,7 +1,19 @@
 import { useEffect } from 'react';
 import { BarChart3, Users, Monitor, Calendar } from 'lucide-react';
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+    AreaChart,
+    Area,
+} from 'recharts';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { fetchBookingStats } from '../../store/slices/bookingsSlice';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export function AdminBookingStats() {
     const dispatch = useAppDispatch();
@@ -19,142 +31,195 @@ export function AdminBookingStats() {
         return <div className="p-8 text-center text-muted-foreground">Nincs elérhető statisztika.</div>;
     }
 
-    const maxDayValue = Math.max(...stats.byDayOfWeek, 1);
-    const dayNames = ['V', 'H', 'K', 'Sze', 'Cs', 'P', 'Szo']; // 0 = Sunday
+    const dayNames = ['Vasárnap', 'Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat'];
 
-    // Prepare hourly data (0-23)
-    const hours = Array.from({ length: 24 }, (_, i) => i);
-    const maxHourValue = Math.max(...Object.values(stats.byHour), 1);
+    // Map day statistics for Recharts
+    const dailyData = stats.byDayOfWeek.map((count, index) => ({
+        name: dayNames[index].substring(0, 3), // e.g. "Vas", "Hét"
+        foglalás: count,
+    }));
+
+    // Map hourly data for Recharts
+    const hourlyData = Array.from({ length: 24 }, (_, i) => ({
+        name: `${i}:00`,
+        foglalás: stats.byHour[i] || 0,
+    }));
+
+    const averageComputerUsage = stats.computerUtilization.length
+        ? Math.round(stats.computerUtilization.reduce((acc, curr) => acc + curr.bookings, 0) / stats.computerUtilization.length)
+        : 0;
 
     return (
-        <div className="p-6 bg-secondary rounded-lg border border-border">
-            <h3 className="flex items-center gap-3 text-xl mb-8 text-foreground">
-                <BarChart3 size={24} />
-                Foglalási Statisztikák (Elmúlt 30 nap)
+        <div className="space-y-6 animate-fade-in">
+            <h3 className="flex items-center gap-3 text-2xl font-bold tracking-tight text-foreground">
+                <BarChart3 className="text-primary" size={28} />
+                Áttekintés (Elmúlt 30 nap)
             </h3>
 
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-6 mb-8">
-                <div className="bg-muted/50 p-6 rounded-md border border-border flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full flex items-center justify-center bg-blue-500/15 text-primary">
-                        <Calendar size={24} />
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-sm text-muted-foreground">Összes foglalás</span>
-                        <span className="text-2xl font-bold text-foreground">{stats.totalBookings}</span>
-                    </div>
-                </div>
+            {/* Top Stat Cards */}
+            <div className="grid gap-4 md:grid-cols-3">
+                <Card className="bg-card/50 backdrop-blur-sm border-primary/20 hover:border-primary/40 transition-colors shadow-sm">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Összes foglalás</CardTitle>
+                        <div className="h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+                            <Calendar className="h-4 w-4 text-blue-500" />
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-3xl font-bold">{stats.totalBookings}</div>
+                    </CardContent>
+                </Card>
 
-                <div className="bg-muted/50 p-6 rounded-md border border-border flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full flex items-center justify-center bg-green-500/15 text-green-500">
-                        <Users size={24} />
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-sm text-muted-foreground">Aktív felhasználók</span>
-                        <span className="text-2xl font-bold text-foreground">{stats.topUsers.length}</span>
-                    </div>
-                </div>
+                <Card className="bg-card/50 backdrop-blur-sm border-primary/20 hover:border-primary/40 transition-colors shadow-sm">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Aktív felhasználók</CardTitle>
+                        <div className="h-8 w-8 rounded-full bg-green-500/10 flex items-center justify-center">
+                            <Users className="h-4 w-4 text-green-500" />
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-3xl font-bold">{stats.topUsers.length}</div>
+                    </CardContent>
+                </Card>
 
-                <div className="bg-muted/50 p-6 rounded-md border border-border flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full flex items-center justify-center bg-primary/15 text-primary">
-                        <Monitor size={24} />
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-sm text-muted-foreground">Átlagos géphasználat</span>
-                        <span className="text-2xl font-bold text-foreground">
-                            {Math.round(stats.computerUtilization.reduce((acc, curr) => acc + curr.bookings, 0) / (stats.computerUtilization.length || 1))}
-                        </span>
-                    </div>
-                </div>
+                <Card className="bg-card/50 backdrop-blur-sm border-primary/20 hover:border-primary/40 transition-colors shadow-sm">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Lefoglalt gépek átlaga</CardTitle>
+                        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <Monitor className="h-4 w-4 text-primary" />
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-3xl font-bold">{averageComputerUsage}</div>
+                    </CardContent>
+                </Card>
             </div>
 
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6 mb-8">
-                {/* Daily Distribution */}
-                <div className="bg-muted/50 p-6 rounded-md border border-border">
-                    <h4 className="mb-6 text-base text-secondary-foreground">Napi eloszlás</h4>
-                    <div className="flex justify-between items-end h-[200px] pb-6 border-b border-border">
-                        {stats.byDayOfWeek.map((count, index) => (
-                            <div key={index} className="flex flex-col items-center h-full justify-end flex-1">
-                                <div
-                                    className="w-[60%] bg-primary rounded-t min-h-[4px] relative transition-all duration-300 hover:bg-primary/80 group"
-                                    style={{ height: `${(count / maxDayValue) * 100}%` }}
-                                    title={`${count} foglalás`}
-                                >
-                                    <span className="absolute bottom-full left-1/2 -translate-x-1/2 bg-black text-foreground px-1.5 py-0.5 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap mb-1">{count}</span>
-                                </div>
-                                <span className="mt-2 text-xs text-muted-foreground">{dayNames[index]}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+            {/* Charts Section */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+                {/* Napi eloszlás Chart (Bar) */}
+                <Card className="lg:col-span-2 bg-card/50 backdrop-blur-sm shadow-sm border border-border/50">
+                    <CardHeader>
+                        <CardTitle>Napi eloszlás</CardTitle>
+                    </CardHeader>
+                    <CardContent className="pl-2">
+                        <div className="h-[250px] w-full">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={dailyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" opacity={0.4} />
+                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} dy={10} />
+                                    <YAxis axisLine={false} tickLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
+                                    <Tooltip
+                                        cursor={{ fill: 'hsl(var(--muted)/0.5)' }}
+                                        contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '8px', color: 'hsl(var(--foreground))' }}
+                                        itemStyle={{ color: 'hsl(var(--primary))' }}
+                                    />
+                                    <Bar dataKey="foglalás" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </CardContent>
+                </Card>
 
-                {/* Hourly Distribution */}
-                <div className="bg-muted/50 p-6 rounded-md border border-border">
-                    <h4 className="mb-6 text-base text-secondary-foreground">Óránkénti eloszlás</h4>
-                    <div className="flex justify-around items-end h-[200px] pb-6 border-b border-border gap-0.5">
-                        {hours.map((hour) => {
-                            const count = stats.byHour[hour] || 0;
-                            return (
-                                <div key={hour} className="flex flex-col items-center h-full justify-end flex-1">
-                                    <div
-                                        className="w-[60%] bg-primary rounded-t min-h-[4px] transition-all duration-300 hover:bg-primary/80"
-                                        style={{ height: `${(count / maxHourValue) * 100}%` }}
-                                        title={`${hour}:00 - ${count} foglalás`}
-                                    ></div>
-                                    {hour % 3 === 0 && <span className="mt-2 text-xs text-muted-foreground">{hour}</span>}
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
+                {/* Óránkénti eloszlás Chart (Area) */}
+                <Card className="lg:col-span-3 bg-card/50 backdrop-blur-sm shadow-sm border border-border/50">
+                    <CardHeader>
+                        <CardTitle>Óránkénti terhelés</CardTitle>
+                    </CardHeader>
+                    <CardContent className="pl-2">
+                        <div className="h-[250px] w-full">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={hourlyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                    <defs>
+                                        <linearGradient id="colorFoglalasi" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                                            <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" opacity={0.4} />
+                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} dy={10} minTickGap={20} />
+                                    <YAxis axisLine={false} tickLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '8px', color: 'hsl(var(--foreground))' }}
+                                        itemStyle={{ color: 'hsl(var(--primary))' }}
+                                    />
+                                    <Area type="monotone" dataKey="foglalás" stroke="hsl(var(--primary))" strokeWidth={3} fillOpacity={1} fill="url(#colorFoglalasi)" />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
 
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6">
+            {/* Lists Section */}
+            <div className="grid gap-4 md:grid-cols-2">
                 {/* Top Users */}
-                <div className="bg-muted/50 p-6 rounded-md border border-border">
-                    <h4 className="mb-6 text-base text-secondary-foreground flex items-center gap-2">
-                        <Users size={18} />
-                        Top Felhasználók
-                    </h4>
-                    <div>
-                        {stats.topUsers.slice(0, 5).map((item, idx) => (
-                            <div key={idx} className="flex items-center py-3 border-b border-border last:border-b-0">
-                                <div className="w-8 font-semibold text-primary">{idx + 1}.</div>
-                                <div className="flex-1 font-medium">
-                                    <span>{item.user?.displayName || item.user?.username || 'Ismeretlen'}</span>
-                                </div>
-                                <span className="bg-secondary px-2 py-1 rounded-full text-xs text-muted-foreground">{item.count} foglalás</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Computer Utilization */}
-                <div className="bg-muted/50 p-6 rounded-md border border-border">
-                    <h4 className="mb-6 text-base text-secondary-foreground flex items-center gap-2">
-                        <Monitor size={18} />
-                        Gép kihasználtság
-                    </h4>
-                    <div className="flex flex-col gap-4">
-                        {stats.computerUtilization
-                            .slice()
-                            .sort((a, b) => b.bookings - a.bookings)
-                            .slice(0, 5)
-                            .map((item) => (
-                                <div key={item.computer.id}>
-                                    <div className="flex justify-between text-sm mb-1">
-                                        <span className="font-medium">{item.computer.name}</span>
-                                        <span className="text-muted-foreground">{item.bookings} foglalás</span>
+                <Card className="bg-card/50 backdrop-blur-sm shadow-sm border border-border/50">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Users size={18} className="text-primary" />
+                            Top Felhasználók
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-4">
+                            {stats.topUsers.slice(0, 5).map((item, idx) => (
+                                <div key={idx} className="flex items-center justify-between group">
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm shadow-sm group-hover:scale-110 transition-transform">
+                                            {idx + 1}
+                                        </div>
+                                        <span className="font-medium text-foreground">
+                                            {item.user?.displayName || item.user?.username || 'Ismeretlen'}
+                                        </span>
                                     </div>
-                                    <div className="h-2 bg-secondary rounded overflow-hidden">
-                                        <div
-                                            className="h-full bg-primary rounded"
-                                            style={{ width: `${(item.bookings / (stats.totalBookings || 1)) * 100}%` }}
-                                        ></div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-sm font-semibold text-primary">{item.count}</span>
+                                        <span className="text-xs text-muted-foreground uppercase tracking-wide">foglalás</span>
                                     </div>
                                 </div>
                             ))}
-                    </div>
-                </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Computer Utilization */}
+                <Card className="bg-card/50 backdrop-blur-sm shadow-sm border border-border/50">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Monitor size={18} className="text-primary" />
+                            Gép Kihasználtság
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-5">
+                            {stats.computerUtilization
+                                .slice()
+                                .sort((a, b) => b.bookings - a.bookings)
+                                .slice(0, 5)
+                                .map((item) => {
+                                    const percent = Math.min(100, Math.round((item.bookings / (stats.totalBookings || 1)) * 100));
+                                    return (
+                                        <div key={item.computer.id} className="space-y-1.5">
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="font-medium flex items-center gap-2">
+                                                    <div className="w-2 h-2 rounded-full bg-primary/70" />
+                                                    {item.computer.name}
+                                                </span>
+                                                <span className="text-muted-foreground font-medium">{item.bookings} db</span>
+                                            </div>
+                                            <div className="h-2 w-full bg-secondary overflow-hidden rounded-full">
+                                                <div
+                                                    className="h-full bg-primary rounded-full transition-all duration-1000 ease-out"
+                                                    style={{ width: `${percent}%` }}
+                                                />
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );

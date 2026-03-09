@@ -11,7 +11,7 @@ interface DayCalendarStripProps {
   computersCount: number;
 }
 
-type SaturationLevel = 'free' | 'limited' | 'full' | 'closed';
+type SaturationLevel = 'free' | 'limited' | 'full' | 'supervisor_only' | 'closed';
 
 interface DayInfo {
   date: string;
@@ -46,7 +46,9 @@ export function DayCalendarStrip({
       const dayOfWeek = date.getDay();
 
       // Find schedule for this day
-      const schedule = schedules.find(s => s.dayOfWeek === dayOfWeek && s.isActive);
+      const specificSchedule = schedules.find(s => s.specificDate && s.specificDate.startsWith(dateStr) && s.isActive);
+      const daySchedule = schedules.find(s => s.dayOfWeek === dayOfWeek && s.isActive);
+      const schedule = specificSchedule || daySchedule;
 
       // Calculate saturation - need to fetch bookings for each day
       let saturation: SaturationLevel = 'closed';
@@ -72,7 +74,9 @@ export function DayCalendarStrip({
 
         saturationPercent = totalSlots > 0 ? Math.min(100, (bookedSlots / totalSlots) * 100) : 0;
 
-        if (saturationPercent >= 80) {
+        if (!schedule.isOpenForBooking) {
+          saturation = 'supervisor_only';
+        } else if (saturationPercent >= 80) {
           saturation = 'full';
         } else if (saturationPercent >= 50) {
           saturation = 'limited';
@@ -116,6 +120,12 @@ export function DayCalendarStrip({
         text: 'text-red-400',
         label: 'Tele',
       },
+      supervisor_only: {
+        bg: isSelected ? 'bg-indigo-500/30' : 'bg-indigo-500/10',
+        border: isSelected ? 'border-indigo-400' : 'border-indigo-500/30',
+        text: 'text-indigo-400',
+        label: 'Ügyelet',
+      },
       closed: {
         bg: 'bg-gray-800/50',
         border: 'border-gray-700/30',
@@ -149,6 +159,10 @@ export function DayCalendarStrip({
           <span className="flex items-center gap-2 bg-yellow-500/10 px-3 py-1.5 rounded-lg">
             <span className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
             <span className="text-yellow-400 font-medium">Korlátozott</span>
+          </span>
+          <span className="flex items-center gap-2 bg-indigo-500/10 px-3 py-1.5 rounded-lg">
+            <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
+            <span className="text-indigo-400 font-medium">Csak Ügyelet</span>
           </span>
           <span className="flex items-center gap-2 bg-red-500/10 px-3 py-1.5 rounded-lg">
             <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
@@ -212,8 +226,9 @@ export function DayCalendarStrip({
               <div className={`w-2 h-2 rounded-full mx-auto ${day.saturation === 'free' ? 'bg-green-500' :
                 day.saturation === 'limited' ? 'bg-yellow-500' :
                   day.saturation === 'full' ? 'bg-red-500' :
-                    'bg-gray-600'
-                }`} />
+                    day.saturation === 'supervisor_only' ? 'bg-indigo-500' :
+                      'bg-gray-600'
+                }`} title={styles.label} />
             </button>
           );
         })}

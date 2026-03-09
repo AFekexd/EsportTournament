@@ -6,6 +6,7 @@ export const DISCORD_ROLE_MAP: Record<Role, string> = {
     [Role.MODERATOR]: 'Moderátor',
     [Role.TEACHER]: 'Tanár',
     [Role.STUDENT]: 'Diák',
+    [Role.DOK]: 'DÖK',
 };
 
 // Optional: Roles that verified users should ALWAYS have

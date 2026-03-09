@@ -1,4 +1,4 @@
-import { Router, Response } from 'express';
+import { RequestHandler, Router, Response } from 'express';
 import { authenticate, AuthenticatedRequest, optionalAuth } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import prisma from '../lib/prisma.js';
@@ -6,6 +6,7 @@ import { logSystemActivity } from '../services/logService.js';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc.js';
 import timezone from 'dayjs/plugin/timezone.js';
+import { UserRole } from '../utils/enums.js';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -14,6 +15,38 @@ export const supervisorsRouter: Router = Router();
 
 // Helper to get local date string regardless of server time
 const toLocalDateStr = (date: Date) => dayjs(date).tz('Europe/Budapest').format('YYYY-MM-DD');
+
+// Get all eligible supervisors (Admin only)
+supervisorsRouter.get(
+    '/eligible',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user || user.role !== 'ADMIN') {
+            throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
+        }
+
+        const eligibleUsers = await prisma.user.findMany({
+            where: {
+                role: {
+                    in: ['ADMIN', 'ORGANIZER', 'MODERATOR', 'DOK', 'TEACHER']
+                }
+            },
+            select: {
+                id: true,
+                username: true,
+                displayName: true,
+                role: true
+            },
+            orderBy: { username: 'asc' }
+        });
+
+        res.json({ success: true, data: eligibleUsers });
+    })
+);
 
 // Get supervisors for a specific date
 supervisorsRouter.get(
@@ -87,10 +120,34 @@ supervisorsRouter.post(
             throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
-        const { date, hour } = req.body;
+        const { date, hour, targetUserId } = req.body;
 
         if (!date || hour === undefined) {
             throw new ApiError('Dátum és óra kötelező', 400, 'MISSING_FIELDS');
+        }
+
+        let actualUserId = user.id;
+
+        // If targetUserId is provided, check admin perms
+        if (targetUserId && targetUserId !== user.id) {
+            if (user.role !== 'ADMIN') {
+                throw new ApiError('Csak adminisztrátor jelölhet ki másik felelőst.', 403, 'FORBIDDEN');
+            }
+
+            // Verify target user exists and has correct role
+            const targetUser = await prisma.user.findUnique({
+                where: { id: targetUserId }
+            });
+
+            if (!targetUser) {
+                throw new ApiError('A kijelölt felhasználó nem található.', 404, 'NOT_FOUND');
+            }
+
+            if (!['ADMIN', 'ORGANIZER', 'MODERATOR', 'DOK', 'TEACHER'].includes(targetUser.role)) {
+                throw new ApiError('A kijelölt felhasználó nem rendelkezik ügyeleti jogosultsággal.', 400, 'INVALID_ROLE');
+            }
+
+            actualUserId = targetUser.id;
         }
 
         const parsedDate = new Date(date);
@@ -120,8 +177,8 @@ supervisorsRouter.post(
             });
 
             if (existing) {
-                if (existing.userId === user.id) {
-                    throw new ApiError('Már te vagy a felelős ebben az órában.', 400, 'ALREADY_SUPERVISOR');
+                if (existing.userId === actualUserId) {
+                    throw new ApiError(actualUserId === user.id ? 'Már te vagy a felelős ebben az órában.' : 'A felhasználó már be van osztva erre az órára.', 400, 'ALREADY_SUPERVISOR');
                 }
                 throw new ApiError('Erre az időpontra már van felelős.', 400, 'SLOT_TAKEN');
             }
@@ -132,7 +189,7 @@ supervisorsRouter.post(
 
             const existingBooking = await tx.booking.findFirst({
                 where: {
-                    userId: user.id,
+                    userId: actualUserId,
                     date: parsedDate,
                     startTime: { lt: endOfHour },
                     endTime: { gt: startOfHour },
@@ -140,14 +197,14 @@ supervisorsRouter.post(
             });
 
             if (existingBooking) {
-                throw new ApiError('Nem lehetsz felelős, mert már van gépfoglalásod ebben az órában.', 400, 'HAS_BOOKING');
+                throw new ApiError(actualUserId === user.id ? 'Nem lehetsz felelős, mert már van gépfoglalásod ebben az órában.' : 'A kiválasztott felhasználó nem lehet felelős, mert gépfoglalása van.', 400, 'HAS_BOOKING');
             }
 
             return await tx.bookingSupervisor.create({
                 data: {
                     date: parsedDate,
                     hour,
-                    userId: user.id,
+                    userId: actualUserId,
                 },
                 include: {
                     user: { select: { id: true, username: true, displayName: true } }
@@ -157,8 +214,8 @@ supervisorsRouter.post(
 
         await logSystemActivity(
             'SUPERVISOR_ASSIGNED',
-            `User ${user.username} assigned as supervisor for ${parsedDate.toISOString().split('T')[0]} ${hour}:00`,
-            { userId: user.id, metadata: { date: parsedDate, hour } }
+            `User ${actualUserId === user.id ? user.username : 'target assigned'} as supervisor for ${parsedDate.toISOString().split('T')[0]} ${hour}:00`,
+            { userId: user.id, metadata: { date: parsedDate, hour, targetUserId: actualUserId } }
         );
 
         res.status(201).json({ success: true, data: supervisor });
