@@ -104,9 +104,26 @@ adminKioskRouter.post('/users/:id/add-time', authenticate, requireRole('ADMIN', 
 
 // Add bulk time to users
 adminKioskRouter.post('/users/bulk-time', authenticate, requireRole('ADMIN', 'TEACHER'), async (req: any, res: any) => {
-    const { userIds, action, seconds, reason } = req.body;
+    const { userIds, action, seconds, reason, selectAll, filters } = req.body;
 
-    if (!Array.isArray(userIds) || userIds.length === 0) {
+    let targetUserIds = userIds || [];
+
+    if (selectAll) {
+        const where: any = {};
+        if (filters?.role && filters.role !== 'ALL') {
+            where.role = filters.role;
+        }
+        if (filters?.search) {
+            where.OR = [
+                { username: { contains: String(filters.search), mode: 'insensitive' } },
+                { displayName: { contains: String(filters.search), mode: 'insensitive' } },
+            ];
+        }
+        const matches = await prisma.user.findMany({ where, select: { id: true } });
+        targetUserIds = matches.map(m => m.id);
+    }
+
+    if (!Array.isArray(targetUserIds) || targetUserIds.length === 0) {
         return res.status(400).json({ error: 'Nincs kijelölt felhasználó' });
     }
 

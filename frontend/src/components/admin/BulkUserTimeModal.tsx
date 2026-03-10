@@ -7,6 +7,11 @@ import { API_URL } from "../../config";
 interface BulkUserTimeModalProps {
     userIds: string[];
     userCount: number;
+    selectAll?: boolean;
+    filters?: {
+        role: string;
+        search: string;
+    };
     onClose: () => void;
     onSuccess: () => void;
 }
@@ -14,6 +19,8 @@ interface BulkUserTimeModalProps {
 export const BulkUserTimeModal: React.FC<BulkUserTimeModalProps> = ({
     userIds,
     userCount,
+    selectAll,
+    filters,
     onClose,
     onSuccess,
 }) => {
@@ -29,7 +36,7 @@ export const BulkUserTimeModal: React.FC<BulkUserTimeModalProps> = ({
             return;
         }
 
-        if (userIds.length === 0) {
+        if (!selectAll && userIds.length === 0) {
             toast.error("Nincs kijelölt felhasználó!");
             return;
         }
@@ -47,6 +54,8 @@ export const BulkUserTimeModal: React.FC<BulkUserTimeModalProps> = ({
                 },
                 body: JSON.stringify({
                     userIds,
+                    selectAll,
+                    filters,
                     action: mode,
                     seconds: amount * 60,
                     reason

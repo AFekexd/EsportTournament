@@ -48,6 +48,7 @@ export function UserManagement() {
   // Bulk actions state
   const [selectedUserIds, setSelectedUserIds] = useState<Set<string>>(new Set());
   const [isBulkTimeModalOpen, setIsBulkTimeModalOpen] = useState(false);
+  const [isSelectAllGlobal, setIsSelectAllGlobal] = useState(false);
 
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
@@ -153,13 +154,16 @@ export function UserManagement() {
     fetchUsers();
     // Clear selections when page changes to avoid confusion
     setSelectedUserIds(new Set());
+    setIsSelectAllGlobal(false);
   }, [page, sortConfig]);
 
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked && users.length > 0) {
       setSelectedUserIds(new Set(users.map(u => u.id)));
+      setIsSelectAllGlobal(false);
     } else {
       setSelectedUserIds(new Set());
+      setIsSelectAllGlobal(false);
     }
   };
 
@@ -167,6 +171,7 @@ export function UserManagement() {
     const newSelected = new Set(selectedUserIds);
     if (newSelected.has(userId)) {
       newSelected.delete(userId);
+      setIsSelectAllGlobal(false);
     } else {
       newSelected.add(userId);
     }
@@ -503,22 +508,44 @@ export function UserManagement() {
 
       {/* Bulk Actions */}
       {selectedUserIds.size > 0 && (
-        <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="text-foreground flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary">
-              {selectedUserIds.size}
+        <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 mb-6 flex flex-col gap-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="text-foreground flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary">
+                {isSelectAllGlobal ? totalUsers : selectedUserIds.size}
+              </div>
+              <span>felhasználó kiválasztva</span>
             </div>
-            <span>felhasználó kiválasztva</span>
+            <div className="flex gap-3 w-full sm:w-auto">
+              <button
+                onClick={() => setIsBulkTimeModalOpen(true)}
+                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-all text-sm font-medium"
+              >
+                <Clock size={16} />
+                Tömeges Időkeret Módosítás
+              </button>
+            </div>
           </div>
-          <div className="flex gap-3 w-full sm:w-auto">
-            <button
-              onClick={() => setIsBulkTimeModalOpen(true)}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-all text-sm font-medium"
-            >
-              <Clock size={16} />
-              Tömeges Időkeret Módosítás
-            </button>
-          </div>
+
+          {selectedUserIds.size === users.length && totalUsers > users.length && (
+            <div className="text-center text-sm py-2 border-t border-primary/10 mt-2">
+              {!isSelectAllGlobal ? (
+                <>
+                  <span className="text-muted-foreground mr-2">Ezen az oldalon lévő mind a(z) {users.length} felhasználó ki van választva.</span>
+                  <button onClick={() => setIsSelectAllGlobal(true)} className="text-primary hover:underline font-medium">
+                    Az összes ({totalUsers}) felhasználó kiválasztása
+                  </button>
+                </>
+              ) : (
+                <>
+                  <span className="text-primary font-medium mr-2">A(z) összes ({totalUsers}) felhasználó ki van választva.</span>
+                  <button onClick={() => { setSelectedUserIds(new Set()); setIsSelectAllGlobal(false); }} className="text-muted-foreground hover:underline">
+                    Kijelölés törlése
+                  </button>
+                </>
+              )}
+            </div>
+          )}
         </div>
       )}
 
@@ -793,11 +820,14 @@ export function UserManagement() {
       {isBulkTimeModalOpen && (
         <BulkUserTimeModal
           userIds={Array.from(selectedUserIds)}
-          userCount={selectedUserIds.size}
+          userCount={isSelectAllGlobal ? totalUsers : selectedUserIds.size}
+          selectAll={isSelectAllGlobal}
+          filters={{ role: selectedRole, search: searchTerm }}
           onClose={() => setIsBulkTimeModalOpen(false)}
           onSuccess={() => {
             fetchUsers();
             setSelectedUserIds(new Set()); // Clear selection after success
+            setIsSelectAllGlobal(false);
           }}
         />
       )}
