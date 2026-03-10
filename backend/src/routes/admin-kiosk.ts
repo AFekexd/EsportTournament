@@ -140,7 +140,7 @@ adminKioskRouter.post('/users/bulk-time', authenticate, requireRole('ADMIN', 'TE
         const notificationsToSend: any[] = [];
 
         await prisma.$transaction(async (tx) => {
-            for (const id of userIds) {
+            for (const id of targetUserIds) {
                 const user = await tx.user.findUnique({ where: { id } });
                 if (!user) continue;
 
