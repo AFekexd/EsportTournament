@@ -102,6 +102,87 @@ adminKioskRouter.post('/users/:id/add-time', authenticate, requireRole('ADMIN', 
     }
 });
 
+// Add bulk time to users
+adminKioskRouter.post('/users/bulk-time', authenticate, requireRole('ADMIN', 'TEACHER'), async (req: any, res: any) => {
+    const { userIds, action, seconds, reason } = req.body;
+
+    if (!Array.isArray(userIds) || userIds.length === 0) {
+        return res.status(400).json({ error: 'Nincs kijelölt felhasználó' });
+    }
+
+    if (!reason || typeof reason !== 'string' || reason.trim().length === 0) {
+        return res.status(400).json({ error: 'Indoklás megadása kötelező' });
+    }
+
+    if (!['ADD', 'REMOVE', 'ZERO'].includes(action)) {
+        return res.status(400).json({ error: 'Érvénytelen művelet' });
+    }
+
+    try {
+        const adminUser = await prisma.user.findUnique({ where: { keycloakId: req.user!.sub } });
+
+        await prisma.$transaction(async (tx) => {
+            for (const id of userIds) {
+                const user = await tx.user.findUnique({ where: { id } });
+                if (!user) continue;
+
+                let timeData: any = {};
+                let secondsNum = 0;
+
+                if (action === 'ZERO') {
+                    timeData = { timeBalanceSeconds: 0 };
+                    secondsNum = -user.timeBalanceSeconds;
+                } else {
+                    secondsNum = action === 'ADD' ? Number(seconds) : -Number(seconds);
+                    timeData = { timeBalanceSeconds: { increment: secondsNum } };
+                }
+
+                const updatedUser = await tx.user.update({
+                    where: { id },
+                    data: timeData
+                });
+
+                const logType = action === 'ZERO' ? 'SET_TIME' : (secondsNum >= 0 ? 'ADD_TIME' : 'REMOVE_TIME');
+                const actionMsg = action === 'ZERO'
+                    ? 'Zeroed time balance for user'
+                    : `${secondsNum >= 0 ? 'Added' : 'Removed'} ${Math.abs(secondsNum)} seconds ${secondsNum >= 0 ? 'to' : 'from'} user`;
+
+                await tx.log.create({
+                    data: {
+                        type: logType,
+                        message: `${actionMsg} ${user.username}. Reason: ${reason}`,
+                        userId: user.id,
+                        adminId: adminUser?.id
+                    }
+                });
+
+                if (action === 'ZERO') {
+                    await notificationService.notifySystem(
+                        user.id,
+                        'Időkeret lenullázva',
+                        `Az időkeretedet lenullázták az adminisztrátorok. Indoklás: ${reason}`,
+                        '/profile'
+                    );
+                } else {
+                    await notificationService.notifyTimeBalanceUpdate(
+                        user.id,
+                        secondsNum,
+                        updatedUser.timeBalanceSeconds,
+                        reason
+                    );
+                }
+            }
+        }, {
+            timeout: 10000 // Increased timeout for bulk actions
+        });
+
+        res.json({ success: true, message: 'Felhasználók időkerete sikeresen frissítve' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to update users' });
+    }
+});
+
 // Toggle Competition Mode
 adminKioskRouter.post('/machines/:id/competition-mode', authenticate, requireRole('ADMIN'), async (req: any, res: any) => {
     const { id } = req.params;

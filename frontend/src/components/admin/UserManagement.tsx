@@ -6,6 +6,7 @@ import { authService } from "../../lib/auth-service";
 import { RoleChangeModal } from "./RoleChangeModal";
 import { UserTimeModal } from "./UserTimeModal";
 import { UserEditModal } from "./UserEditModal";
+import { BulkUserTimeModal } from "./BulkUserTimeModal";
 import { ConfirmationModal } from "../common/ConfirmationModal";
 import { API_URL } from "../../config";
 
@@ -43,6 +44,10 @@ export function UserManagement() {
   const [roleModalUser, setRoleModalUser] = useState<User | null>(null);
   const [timeModalUser, setTimeModalUser] = useState<User | null>(null);
   const [editModalUser, setEditModalUser] = useState<User | null>(null);
+
+  // Bulk actions state
+  const [selectedUserIds, setSelectedUserIds] = useState<Set<string>>(new Set());
+  const [isBulkTimeModalOpen, setIsBulkTimeModalOpen] = useState(false);
 
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
@@ -146,7 +151,27 @@ export function UserManagement() {
   // Refetch when page or sort changes
   useEffect(() => {
     fetchUsers();
+    // Clear selections when page changes to avoid confusion
+    setSelectedUserIds(new Set());
   }, [page, sortConfig]);
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked && users.length > 0) {
+      setSelectedUserIds(new Set(users.map(u => u.id)));
+    } else {
+      setSelectedUserIds(new Set());
+    }
+  };
+
+  const handleSelectUser = (userId: string) => {
+    const newSelected = new Set(selectedUserIds);
+    if (newSelected.has(userId)) {
+      newSelected.delete(userId);
+    } else {
+      newSelected.add(userId);
+    }
+    setSelectedUserIds(newSelected);
+  };
 
   const handleSort = (key: string) => {
     setSortConfig((current) => ({
@@ -476,11 +501,40 @@ export function UserManagement() {
         </div>
       </div>
 
+      {/* Bulk Actions */}
+      {selectedUserIds.size > 0 && (
+        <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="text-foreground flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary">
+              {selectedUserIds.size}
+            </div>
+            <span>felhasználó kiválasztva</span>
+          </div>
+          <div className="flex gap-3 w-full sm:w-auto">
+            <button
+              onClick={() => setIsBulkTimeModalOpen(true)}
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-all text-sm font-medium"
+            >
+              <Clock size={16} />
+              Tömeges Időkeret Módosítás
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Users Table */}
       <div className="admin-table-container overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-border text-muted text-sm uppercase">
+              <th className="p-3 w-10 text-center">
+                <input
+                  type="checkbox"
+                  className="rounded border-border bg-[#121A22] text-primary focus:ring-primary/50 cursor-pointer w-4 h-4"
+                  checked={filteredUsers.length > 0 && selectedUserIds.size === filteredUsers.length}
+                  onChange={handleSelectAll}
+                />
+              </th>
               <th
                 className="p-3 cursor-pointer hover:text-foreground transition-colors"
                 onClick={() => handleSort('username')}
@@ -535,7 +589,7 @@ export function UserManagement() {
           <tbody>
             {filteredUsers.length === 0 ? (
               <tr>
-                <td colSpan={8} className="text-center p-8 text-muted">
+                <td colSpan={9} className="text-center p-8 text-muted">
                   {searchTerm || selectedRole !== "ALL"
                     ? "Nincs találat a szűrési feltételeknek megfelelően"
                     : "Még nincs felhasználó"}
@@ -545,8 +599,17 @@ export function UserManagement() {
               filteredUsers.map((user) => (
                 <tr
                   key={user.id}
-                  className="border-b border-border hover:bg-secondary transition-colors"
+                  className={`border-b border-border transition-colors ${selectedUserIds.has(user.id) ? "bg-primary/5" : "hover:bg-secondary"
+                    }`}
                 >
+                  <td className="p-3 text-center">
+                    <input
+                      type="checkbox"
+                      className="rounded border-border bg-[#121A22] text-primary focus:ring-primary/50 cursor-pointer w-4 h-4"
+                      checked={selectedUserIds.has(user.id)}
+                      onChange={() => handleSelectUser(user.id)}
+                    />
+                  </td>
                   <td className="p-3">
                     <Link
                       to={`/profile/${user.id}`}
@@ -723,6 +786,18 @@ export function UserManagement() {
           onClose={() => setEditModalUser(null)}
           onSuccess={() => {
             fetchUsers(); // Refresh to show new name/avatar
+          }}
+        />
+      )}
+
+      {isBulkTimeModalOpen && (
+        <BulkUserTimeModal
+          userIds={Array.from(selectedUserIds)}
+          userCount={selectedUserIds.size}
+          onClose={() => setIsBulkTimeModalOpen(false)}
+          onSuccess={() => {
+            fetchUsers();
+            setSelectedUserIds(new Set()); // Clear selection after success
           }}
         />
       )}
