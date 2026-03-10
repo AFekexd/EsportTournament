@@ -172,7 +172,7 @@ export function DayCalendarStrip({
       </div>
 
       {/* Day cards */}
-      <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 pt-3">
+      <div className="flex gap-3 overflow-x-auto touch-pan-x touch-pan-y pb-2 -mx-1 px-1 pt-3">
         {days.map((day) => {
           const styles = getSaturationStyles(day.saturation, day.isSelected);
           const isDisabled = day.saturation === 'closed';

@@ -221,7 +221,7 @@ export function BookingPage() {
       </div>
 
       {/* Main Tabs */}
-      <div className="mb-6 md:mb-8 border-b border-border overflow-x-auto">
+      <div className="mb-6 md:mb-8 border-b border-border overflow-x-auto touch-pan-x touch-pan-y">
         <div className="flex gap-4 md:gap-8 min-w-max">
           <button
             className={`flex items-center gap-2 px-1 py-3 border-b-2 font-medium transition-colors relative text-sm md:text-base ${activeTab === "booking"
@@ -309,7 +309,7 @@ export function BookingPage() {
           </div>
 
           {viewMode === "weekly" ? (
-            <div className="overflow-x-auto pb-4">
+            <div className="overflow-x-auto touch-pan-x touch-pan-y pb-4">
               <WeeklyCalendar
                 onSlotClick={(computer, date, hour, minute) =>
                   openCreateModal(computer, hour, minute, date)

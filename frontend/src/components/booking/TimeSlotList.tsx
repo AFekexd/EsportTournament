@@ -369,50 +369,48 @@ export function TimeSlotList({
                                 </div>
                             </button>
 
-                            {/* Supervisor Action Overlay */}
+                            {/* Supervisor Action Inline */}
                             {user && !slot.isPast && config.needsSupervisor && (
-                                <div className="absolute inset-x-0 bottom-0 translate-y-full pt-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity z-20">
-                                    <div className="bg-card border border-border shadow-xl rounded-lg overflow-hidden flex flex-col">
-                                        {isAdmin && (
-                                            <div className="px-2 py-1.5 border-b border-border bg-muted/30">
-                                                <select
-                                                    className="w-full bg-background border border-input rounded text-xs px-2 py-1 focus:ring-1 focus:ring-primary focus:outline-none"
-                                                    value={targetAssignments[slot.hour] || ''}
-                                                    onChange={(e) => handleTargetChange(slot.hour, e.target.value)}
-                                                >
-                                                    <option value="">Felelős vagyok (Magam)</option>
-                                                    <optgroup label="Egyéb Felelős Kijelölése">
-                                                        {eligibleSupervisors.filter(s => s.id !== user.id).map(s => (
-                                                            <option key={s.id} value={s.id}>
-                                                                {s.displayName || s.username} ({s.role})
-                                                            </option>
-                                                        ))}
-                                                    </optgroup>
-                                                </select>
-                                            </div>
+                                <div className="mt-2 flex flex-col gap-2">
+                                    {isAdmin && (
+                                        <div className="px-1">
+                                            <select
+                                                className="w-full bg-background border border-input rounded text-xs px-2 py-1.5 focus:ring-1 focus:ring-primary focus:outline-none"
+                                                value={targetAssignments[slot.hour] || ''}
+                                                onChange={(e) => handleTargetChange(slot.hour, e.target.value)}
+                                            >
+                                                <option value="">Felelős vagyok (Magam)</option>
+                                                <optgroup label="Egyéb Felelős Kijelölése">
+                                                    {eligibleSupervisors.filter(s => s.id !== user.id).map(s => (
+                                                        <option key={s.id} value={s.id}>
+                                                            {s.displayName || s.username} ({s.role})
+                                                        </option>
+                                                    ))}
+                                                </optgroup>
+                                            </select>
+                                        </div>
+                                    )}
+                                    <button
+                                        onClick={(e) => handleAssignSupervisor(slot.hour, e)}
+                                        disabled={isAssigning === slot.hour}
+                                        className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-indigo-600/90 hover:bg-indigo-500 text-foreground text-xs font-semibold rounded-lg shadow-sm transition-colors"
+                                    >
+                                        {isAssigning === slot.hour ? (
+                                            <span className="animate-spin w-4 h-4 border-2 border-border border-t-white rounded-full" />
+                                        ) : (
+                                            <Shield size={14} />
                                         )}
-                                        <button
-                                            onClick={(e) => handleAssignSupervisor(slot.hour, e)}
-                                            disabled={isAssigning === slot.hour}
-                                            className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-indigo-600 hover:bg-indigo-500 text-foreground text-xs font-semibold transition-colors"
-                                        >
-                                            {isAssigning === slot.hour ? (
-                                                <span className="animate-spin w-4 h-4 border-2 border-border border-t-white rounded-full" />
-                                            ) : (
-                                                <Shield size={14} />
-                                            )}
-                                            {targetAssignments[slot.hour] ? 'Kijelölés mentése' : 'Felelősséget vállalok'}
-                                        </button>
-                                    </div>
+                                        {targetAssignments[slot.hour] ? 'Kijelölés mentése' : 'Felelősséget vállalok'}
+                                    </button>
                                 </div>
                             )}
 
                             {user && !slot.isPast && (config.isMySupervision || (isAdmin && slot.supervisor)) && slot.supervisor && (
-                                <div className="absolute inset-x-0 bottom-0 translate-y-full pt-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity z-20">
+                                <div className="mt-2">
                                     <button
                                         onClick={(e) => handleRemoveSupervisor(slot.supervisor!.id, slot.hour, e)}
                                         disabled={isAssigning === slot.hour}
-                                        className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-rose-900/80 hover:bg-rose-800 text-rose-200 text-xs font-semibold rounded-lg shadow-lg border border-rose-500/50 transition-colors"
+                                        className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-rose-900/40 hover:bg-rose-800/80 text-rose-200 text-xs font-semibold rounded-lg shadow-sm border border-rose-500/30 transition-colors"
                                     >
                                         {isAssigning === slot.hour ? (
                                             <span className="animate-spin w-4 h-4 border-2 border-rose-200/30 border-t-rose-200 rounded-full" />
