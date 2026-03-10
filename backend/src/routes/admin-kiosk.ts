@@ -137,6 +137,7 @@ adminKioskRouter.post('/users/bulk-time', authenticate, requireRole('ADMIN', 'TE
 
     try {
         const adminUser = await prisma.user.findUnique({ where: { keycloakId: req.user!.sub } });
+        const notificationsToSend: any[] = [];
 
         await prisma.$transaction(async (tx) => {
             for (const id of userIds) {
@@ -173,25 +174,42 @@ adminKioskRouter.post('/users/bulk-time', authenticate, requireRole('ADMIN', 'TE
                     }
                 });
 
-                if (action === 'ZERO') {
+                notificationsToSend.push({
+                    userId: user.id,
+                    action,
+                    secondsNum,
+                    updatedBalance: updatedUser.timeBalanceSeconds,
+                    reason
+                });
+            }
+        }, {
+            timeout: 30000 // Increased timeout, and removed notifications from tx
+        });
+
+        // Send notifications outside the transaction to prevent timeout
+        // Fire and forget or await in chunks. We'll await them but they won't block the DB transaction.
+        Promise.all(notificationsToSend.map(async (n) => {
+            try {
+                if (n.action === 'ZERO') {
                     await notificationService.notifySystem(
-                        user.id,
+                        n.userId,
                         'Időkeret lenullázva',
-                        `Az időkeretedet lenullázták az adminisztrátorok. Indoklás: ${reason}`,
+                        `Az időkeretedet lenullázták az adminisztrátorok. Indoklás: ${n.reason}`,
                         '/profile'
                     );
                 } else {
                     await notificationService.notifyTimeBalanceUpdate(
-                        user.id,
-                        secondsNum,
-                        updatedUser.timeBalanceSeconds,
-                        reason
+                        n.userId,
+                        n.secondsNum,
+                        n.updatedBalance,
+                        n.reason,
+                        true // skipEmail for bulk
                     );
                 }
+            } catch (err) {
+                console.error(`Failed to send notification for ${n.userId}`, err);
             }
-        }, {
-            timeout: 10000 // Increased timeout for bulk actions
-        });
+        })).catch(console.error);
 
         res.json({ success: true, message: 'Felhasználók időkerete sikeresen frissítve' });
     } catch (error) {
