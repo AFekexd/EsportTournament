@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { Clock, Users, ChevronRight, AlertCircle, Shield, ShieldAlert, ShieldCheck } from 'lucide-react';
 import type { Computer, Booking, BookingSchedule, BookingSupervisor } from '../../store/slices/bookingsSlice';
 import { useAuth } from '../../hooks/useAuth';
@@ -41,10 +41,22 @@ export function TimeSlotList({
     const dispatch = useAppDispatch();
     const { eligibleSupervisors } = useAppSelector(state => state.bookings);
     const [isAssigning, setIsAssigning] = useState<number | null>(null);
+    const [openDropdown, setOpenDropdown] = useState<number | null>(null);
+    const dropdownRef = useRef<HTMLDivElement | null>(null);
 
     // Track which user the admin wants to assign per hour
     // Key: hour, Value: userId (or undefined/empty string for "Magam")
     const [targetAssignments, setTargetAssignments] = useState<Record<number, string>>({});
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (openDropdown !== null && dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setOpenDropdown(null);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [openDropdown]);
 
     useEffect(() => {
         if (user && user.role === 'ADMIN') {
@@ -371,32 +383,72 @@ export function TimeSlotList({
 
                             {/* Supervisor Action Inline */}
                             {user && !slot.isPast && config.needsSupervisor && (
-                                <div className="mt-2 flex flex-col gap-2">
+                                <div className="mt-2 flex flex-col gap-2 relative" ref={openDropdown === slot.hour ? dropdownRef : null}>
                                     {isAdmin && (
-                                        <div className="px-1">
-                                            <select
-                                                className="w-full bg-background border border-input rounded text-xs px-2 py-1.5 focus:ring-1 focus:ring-primary focus:outline-none"
-                                                value={targetAssignments[slot.hour] || ''}
-                                                onChange={(e) => handleTargetChange(slot.hour, e.target.value)}
+                                        <div className="px-1 relative">
+                                            <div
+                                                className={`w-full bg-background/50 border ${openDropdown === slot.hour ? 'border-primary' : 'border-border hover:border-primary/50'} rounded-lg text-xs px-3 py-2 cursor-pointer flex items-center justify-between transition-colors`}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setOpenDropdown(openDropdown === slot.hour ? null : slot.hour);
+                                                }}
                                             >
-                                                <option value="">Felelős vagyok (Magam)</option>
-                                                <optgroup label="Egyéb Felelős Kijelölése">
-                                                    {eligibleSupervisors.filter(s => s.id !== user.id).map(s => (
-                                                        <option key={s.id} value={s.id}>
-                                                            {s.displayName || s.username} ({s.role})
-                                                        </option>
-                                                    ))}
-                                                </optgroup>
-                                            </select>
+                                                <span className="text-foreground truncate max-w-[120px]">
+                                                    {targetAssignments[slot.hour]
+                                                        ? eligibleSupervisors.find(s => s.id === targetAssignments[slot.hour])?.displayName || eligibleSupervisors.find(s => s.id === targetAssignments[slot.hour])?.username
+                                                        : 'Felelős vagyok (Magam)'}
+                                                </span>
+                                                <ChevronRight
+                                                    size={14}
+                                                    className={`text-muted-foreground transition-transform duration-200 ${openDropdown === slot.hour ? 'rotate-90 text-primary' : ''}`}
+                                                />
+                                            </div>
+
+                                            {/* Dropdown Options List */}
+                                            {openDropdown === slot.hour && (
+                                                <div className="absolute left-0 right-0 top-full mt-1 bg-[#1A232C] border border-border rounded-lg shadow-xl z-[100] max-h-48 overflow-y-auto overflow-x-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                                                    <div
+                                                        className={`px-3 py-2.5 text-xs font-medium cursor-pointer transition-colors ${!targetAssignments[slot.hour] ? 'bg-primary/20 text-primary border-l-2 border-primary' : 'text-foreground hover:bg-white/5 border-l-2 border-transparent'}`}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleTargetChange(slot.hour, '');
+                                                            setOpenDropdown(null);
+                                                        }}
+                                                    >
+                                                        Felelős vagyok (Magam)
+                                                    </div>
+
+                                                    {eligibleSupervisors.filter(s => s.id !== user.id).length > 0 && (
+                                                        <>
+                                                            <div className="px-3 py-2 text-[10px] font-bold text-muted-foreground/80 uppercase tracking-wider bg-background/50 border-y border-border">
+                                                                Egyéb Felelős Kijelölése
+                                                            </div>
+                                                            {eligibleSupervisors.filter(s => s.id !== user.id).map(s => (
+                                                                <div
+                                                                    key={s.id}
+                                                                    className={`px-3 py-2.5 text-xs font-medium cursor-pointer transition-colors ${targetAssignments[slot.hour] === s.id ? 'bg-primary/20 text-primary border-l-2 border-primary' : 'text-foreground hover:bg-white/5 border-l-2 border-transparent'}`}
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleTargetChange(slot.hour, s.id);
+                                                                        setOpenDropdown(null);
+                                                                    }}
+                                                                >
+                                                                    {s.displayName || s.username} <span className="opacity-50 font-normal">({s.role === 'ADMIN' ? 'Admin' : 'Staff'})</span>
+                                                                </div>
+                                                            ))}
+                                                        </>
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                     <button
                                         onClick={(e) => handleAssignSupervisor(slot.hour, e)}
                                         disabled={isAssigning === slot.hour}
-                                        className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-indigo-600/90 hover:bg-indigo-500 text-foreground text-xs font-semibold rounded-lg shadow-sm transition-colors"
+                                        className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] text-white text-xs font-semibold rounded-lg shadow-sm transition-all duration-200"
                                     >
                                         {isAssigning === slot.hour ? (
-                                            <span className="animate-spin w-4 h-4 border-2 border-border border-t-white rounded-full" />
+                                            <span className="animate-spin w-4 h-4 border-2 border-white/20 border-t-white rounded-full" />
                                         ) : (
                                             <Shield size={14} />
                                         )}
@@ -408,9 +460,15 @@ export function TimeSlotList({
                             {user && !slot.isPast && (config.isMySupervision || (isAdmin && slot.supervisor)) && slot.supervisor && (
                                 <div className="mt-2">
                                     <button
-                                        onClick={(e) => handleRemoveSupervisor(slot.supervisor!.id, slot.hour, e)}
+                                        onClick={(e) => {
+                                            if (window.confirm(config.isMySupervision ? 'Biztosan lemondasz az ügyeletedről?' : 'Biztosan eltávolítod a kijelölt felelőst?')) {
+                                                handleRemoveSupervisor(slot.supervisor!.id, slot.hour, e);
+                                            } else {
+                                                e.stopPropagation();
+                                            }
+                                        }}
                                         disabled={isAssigning === slot.hour}
-                                        className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-rose-900/40 hover:bg-rose-800/80 text-rose-200 text-xs font-semibold rounded-lg shadow-sm border border-rose-500/30 transition-colors"
+                                        className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-rose-900/40 hover:bg-rose-800/80 active:scale-[0.98] text-rose-200 text-xs font-semibold rounded-lg shadow-sm border border-rose-500/30 transition-all duration-200"
                                     >
                                         {isAssigning === slot.hour ? (
                                             <span className="animate-spin w-4 h-4 border-2 border-rose-200/30 border-t-rose-200 rounded-full" />

@@ -757,6 +757,9 @@ const bookingsSlice = createSlice({
                 state.stats = action.payload;
             })
             // Supervisors
+            .addCase(fetchEligibleSupervisors.fulfilled, (state, action) => {
+                state.eligibleSupervisors = action.payload;
+            })
             .addCase(fetchSupervisorsForDate.fulfilled, (state, action) => {
                 state.supervisors = action.payload;
             })
