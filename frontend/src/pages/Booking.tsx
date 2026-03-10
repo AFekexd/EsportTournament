@@ -96,13 +96,23 @@ export function BookingPage() {
 
   useEffect(() => {
     if (activeTab === "booking") {
-      if (viewMode === "weekly") {
-        dispatch(fetchWeeklyBookings(selectedWeekStart));
-        dispatch(fetchSupervisorsForWeek(selectedWeekStart));
-      } else {
-        dispatch(fetchBookingsForDate(selectedDate));
-        dispatch(fetchSupervisorsForDate(selectedDate));
-      }
+      const fetchData = () => {
+        if (viewMode === "weekly") {
+          dispatch(fetchWeeklyBookings(selectedWeekStart));
+          dispatch(fetchSupervisorsForWeek(selectedWeekStart));
+        } else {
+          dispatch(fetchBookingsForDate(selectedDate));
+          dispatch(fetchSupervisorsForDate(selectedDate));
+        }
+      };
+
+      fetchData(); // Initial fetch
+
+      const intervalId = setInterval(() => {
+        fetchData();
+      }, 30000); // Poll every 30 seconds
+
+      return () => clearInterval(intervalId);
     }
   }, [dispatch, activeTab, viewMode, selectedDate, selectedWeekStart]);
 
