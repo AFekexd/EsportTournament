@@ -4,6 +4,7 @@
  */
 
 import { Router, Response } from 'express';
+import crypto from 'crypto';
 import { discordLogService } from '../services/discordLogService.js';
 import { discordService } from '../services/discordService.js';
 import { matchReminderService } from '../services/matchReminderService.js';
@@ -17,6 +18,41 @@ import { announcementTemplate } from '../services/emailTemplates.js';
 
 export const adminDiscordRouter: Router = Router();
 const BOT_RELAY_CHANNEL_ID = '1496789752098328667';
+const DISCORD_WEBHOOK_API_KEY = process.env.DISCORD_WEBHOOK_API_KEY || '';
+
+function safeEqual(a: string, b: string): boolean {
+    const aBuf = Buffer.from(a);
+    const bBuf = Buffer.from(b);
+
+    if (aBuf.length !== bBuf.length) {
+        return false;
+    }
+
+    return crypto.timingSafeEqual(aBuf, bBuf);
+}
+
+function buildRelayMessage(body: any): string {
+    const { text, message, sender } = body || {};
+    const senderName =
+        typeof sender?.name === 'string' && sender.name.trim().length > 0
+            ? sender.name.trim()
+            : 'RENDSZER';
+
+    const messageText =
+        typeof message === 'string' && message.trim().length > 0
+            ? message.trim()
+            : typeof text === 'string' && text.trim().length > 0
+                ? text.trim()
+                : '';
+
+    if (!messageText) {
+        throw new ApiError('A message vagy text mező kötelező', 400, 'MISSING_MESSAGE');
+    }
+
+    return typeof text === 'string' && text.trim().length > 0
+        ? text.trim()
+        : `**${senderName}**: ${messageText}`;
+}
 
 // Middleware to check admin role
 const requireAdmin = asyncHandler(async (req: AuthenticatedRequest, _res: Response, next: Function) => {
@@ -144,33 +180,42 @@ adminDiscordRouter.get(
  * Send announcement to Discord channel
  */
 adminDiscordRouter.post(
+    '/bot-relay-webhook',
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        if (!DISCORD_WEBHOOK_API_KEY) {
+            throw new ApiError('DISCORD_WEBHOOK_API_KEY nincs beállítva', 503, 'WEBHOOK_NOT_CONFIGURED');
+        }
+
+        const apiKey = req.header('x-api-key') || '';
+        if (!apiKey || !safeEqual(apiKey, DISCORD_WEBHOOK_API_KEY)) {
+            throw new ApiError('Érvénytelen webhook API kulcs', 401, 'INVALID_WEBHOOK_KEY');
+        }
+
+        const outgoing = buildRelayMessage(req.body);
+        const sent = await discordService.sendPlainText(BOT_RELAY_CHANNEL_ID, outgoing);
+
+        if (!sent) {
+            throw new ApiError('Nem sikerült Discord üzenetet küldeni', 500, 'DISCORD_SEND_FAILED');
+        }
+
+        res.json({
+            success: true,
+            data: {
+                channelId: BOT_RELAY_CHANNEL_ID,
+                sentMessage: outgoing
+            }
+        });
+    })
+);
+
+adminDiscordRouter.post(
     '/bot-relay',
     authenticate,
     requireAdmin,
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-        const { text, message, sender, channelId } = req.body || {};
+        const { channelId } = req.body || {};
         const targetChannelId = channelId || BOT_RELAY_CHANNEL_ID;
-
-        const senderName =
-            typeof sender?.name === 'string' && sender.name.trim().length > 0
-                ? sender.name.trim()
-                : 'RENDSZER';
-
-        const messageText =
-            typeof message === 'string' && message.trim().length > 0
-                ? message.trim()
-                : typeof text === 'string' && text.trim().length > 0
-                    ? text.trim()
-                    : '';
-
-        if (!messageText) {
-            throw new ApiError('A message vagy text mező kötelező', 400, 'MISSING_MESSAGE');
-        }
-
-        const outgoing =
-            typeof text === 'string' && text.trim().length > 0
-                ? text.trim()
-                : `**${senderName}**: ${messageText}`;
+        const outgoing = buildRelayMessage(req.body);
 
         const sent = await discordService.sendPlainText(targetChannelId, outgoing);
 
