@@ -16,6 +16,7 @@ import { emailService } from '../services/emailService.js';
 import { announcementTemplate } from '../services/emailTemplates.js';
 
 export const adminDiscordRouter: Router = Router();
+const BOT_RELAY_CHANNEL_ID = '1496789752098328667';
 
 // Middleware to check admin role
 const requireAdmin = asyncHandler(async (req: AuthenticatedRequest, _res: Response, next: Function) => {
@@ -142,6 +143,51 @@ adminDiscordRouter.get(
  * POST /api/admin/discord/announce
  * Send announcement to Discord channel
  */
+adminDiscordRouter.post(
+    '/bot-relay',
+    authenticate,
+    requireAdmin,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const { text, message, sender, channelId } = req.body || {};
+        const targetChannelId = channelId || BOT_RELAY_CHANNEL_ID;
+
+        const senderName =
+            typeof sender?.name === 'string' && sender.name.trim().length > 0
+                ? sender.name.trim()
+                : 'RENDSZER';
+
+        const messageText =
+            typeof message === 'string' && message.trim().length > 0
+                ? message.trim()
+                : typeof text === 'string' && text.trim().length > 0
+                    ? text.trim()
+                    : '';
+
+        if (!messageText) {
+            throw new ApiError('A message vagy text mező kötelező', 400, 'MISSING_MESSAGE');
+        }
+
+        const outgoing =
+            typeof text === 'string' && text.trim().length > 0
+                ? text.trim()
+                : `**${senderName}**: ${messageText}`;
+
+        const sent = await discordService.sendPlainText(targetChannelId, outgoing);
+
+        if (!sent) {
+            throw new ApiError('Nem sikerült Discord üzenetet küldeni', 500, 'DISCORD_SEND_FAILED');
+        }
+
+        res.json({
+            success: true,
+            data: {
+                channelId: targetChannelId,
+                sentMessage: outgoing
+            }
+        });
+    })
+);
+
 adminDiscordRouter.post(
     '/announce',
     authenticate,

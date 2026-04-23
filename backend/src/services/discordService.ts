@@ -1098,6 +1098,30 @@ class DiscordService {
         }
     }
 
+    /**
+     * Sends a plain text message to a specific channel
+     */
+    async sendPlainText(channelId: string, text: string): Promise<boolean> {
+        if (!this.isReady) return false;
+
+        try {
+            const channel = await this.client.channels.fetch(channelId);
+            if (!channel || !channel.isTextBased()) {
+                console.warn(`Channel ${channelId} not found or not text-based`);
+                return false;
+            }
+
+            await (channel as TextChannel).send({
+                content: text,
+            });
+
+            return true;
+        } catch (error) {
+            console.error(`Failed to send plain text message to channel ${channelId}:`, error);
+            return false;
+        }
+    }
+
     async searchGuildMembers(query: string): Promise<Array<{ id: string; username: string; displayName: string; avatarUrl: string | null }>> {
         if (!this.isReady) return [];
 
