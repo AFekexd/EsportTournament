@@ -219,77 +219,79 @@ export function WeeklyCalendar({
 
           {timeSlots.map((hour) => (
             <div key={`sup-hour-${hour}`} className="contents">
-              <div className="time-row">
-                <div className="grid-cell time-cell bg-yellow-500/10 text-yellow-500">{hour}:00</div>
-                {weekDays.map((day) => {
-                  const isActive = isScheduleActive(day.date.getDay(), hour, 0);
-                  const hourSupervisors = supervisors.filter(s => {
-                    return new Date(s.date).toDateString() === new Date(day.dateStr).toDateString() && s.hour === hour;
-                  });
+              {[0, 30].map((minute) => (
+                <div key={`sup-${hour}-${minute}`} className="time-row">
+                  <div className="grid-cell time-cell bg-yellow-500/10 text-yellow-500">{hour}:{minute.toString().padStart(2, '0')}</div>
+                  {weekDays.map((day) => {
+                    const isActive = isScheduleActive(day.date.getDay(), hour, minute);
+                    const hourSupervisors = supervisors.filter(s => {
+                      return new Date(s.date).toDateString() === new Date(day.dateStr).toDateString() && s.hour === hour;
+                    });
 
-                  // Parse date string in local timezone
-                  const [year, month, d] = day.dateStr.split('-').map(Number);
-                  const slotTime = new Date();
-                  slotTime.setFullYear(year, month - 1, d);
-                  slotTime.setHours(hour, 0, 0, 0);
-                  const now = new Date();
-                  const isPast = slotTime < now;
+                    // Parse date string in local timezone
+                    const [year, month, d] = day.dateStr.split('-').map(Number);
+                    const slotTime = new Date();
+                    slotTime.setFullYear(year, month - 1, d);
+                    slotTime.setHours(hour, minute, 0, 0);
+                    const now = new Date();
+                    const isPast = slotTime < now;
 
-                  const isMySupervision = user && hourSupervisors.some(s => s.userId === user.id);
-                  const hasSupervisor = hourSupervisors.length > 0;
-                  const canSupervise = isActive && !isPast && !hasSupervisor;
+                    const isMySupervision = user && hourSupervisors.some(s => s.userId === user.id);
+                    const hasSupervisor = hourSupervisors.length > 0;
+                    const canSupervise = minute === 0 && isActive && !isPast && !hasSupervisor;
 
-                  return (
-                    <div
-                      key={`sup-${day.dateStr}-${hour}`}
-                      className={`grid-cell slot-cell h-8 border-b-0 flex items-center justify-center relative group
+                    return (
+                      <div
+                        key={`sup-${day.dateStr}-${hour}-${minute}`}
+                        className={`grid-cell slot-cell h-8 border-b-0 flex items-center justify-center relative group
                         ${!isActive ? 'inactive' : isPast ? 'past inactive' : ''}
                         ${isMySupervision ? 'bg-yellow-500/20 text-yellow-500' : hasSupervisor ? 'bg-card/50 text-muted-foreground' : ''}
                       `}
-                    >
-                      {hasSupervisor && (
-                        <span className={`text-[10px] font-medium px-1 truncate w-full text-center ${(isMySupervision && !isPast) ? 'group-hover:hidden' : ''}`} title={hourSupervisors.map(s => s.user?.displayName || s.user?.username).join(', ')}>
-                          {hourSupervisors.map(s => s.userId === user?.id ? "Én" : (s.user?.displayName || s.user?.username?.split(' ')[0])).join(', ')}
-                        </span>
-                      )}
-                      {(canSupervise && user) && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            dispatch(assignSupervisor({
-                              date: day.dateStr,
-                              hour: hour
-                            }))
-                              .unwrap()
-                              .then(() => toast.success("Sikeresen vállaltad a felelősséget!"))
-                              .catch((err) => toast.error(err.message || "Hiba történt a felelősség vállalásakor"));
-                          }}
-                          className="w-full h-full text-[10px] font-bold text-yellow-500/70 hover:text-yellow-500 hover:bg-yellow-500/10 transition-colors uppercase tracking-wider"
-                        >
-                          Jelentkezem
-                        </button>
-                      )}
-                      {(isMySupervision && !isPast) && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const myAssignment = hourSupervisors.find(s => s.userId === user?.id);
-                            if (myAssignment) {
-                              dispatch(removeSupervisor(myAssignment.id))
+                      >
+                        {hasSupervisor && (
+                          <span className={`text-[10px] font-medium px-1 truncate w-full text-center ${(isMySupervision && !isPast && minute === 0) ? 'group-hover:hidden' : ''}`} title={hourSupervisors.map(s => s.user?.displayName || s.user?.username).join(', ')}>
+                            {hourSupervisors.map(s => s.userId === user?.id ? "Én" : (s.user?.displayName || s.user?.username?.split(' ')[0])).join(', ')}
+                          </span>
+                        )}
+                        {(canSupervise && user) && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              dispatch(assignSupervisor({
+                                date: day.dateStr,
+                                hour: hour
+                              }))
                                 .unwrap()
-                                .then(() => toast.success("Sikeresen lemondtad a felelősséget!"))
-                                .catch((err) => toast.error(err.message || "Hiba történt a lemondás során"));
-                            }
-                          }}
-                          className="w-full h-full text-[10px] font-bold text-red-500/70 hover:text-red-500 hover:bg-red-500/10 transition-colors uppercase tracking-wider hidden group-hover:block absolute inset-0 bg-background/90"
-                        >
-                          Lemondás
-                        </button>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+                                .then(() => toast.success("Sikeresen vállaltad a felelősséget!"))
+                                .catch((err) => toast.error(err.message || "Hiba történt a felelősség vállalásakor"));
+                            }}
+                            className="w-full h-full text-[10px] font-bold text-yellow-500/70 hover:text-yellow-500 hover:bg-yellow-500/10 transition-colors uppercase tracking-wider"
+                          >
+                            Jelentkezem
+                          </button>
+                        )}
+                        {(isMySupervision && !isPast && minute === 0) && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const myAssignment = hourSupervisors.find(s => s.userId === user?.id);
+                              if (myAssignment) {
+                                dispatch(removeSupervisor(myAssignment.id))
+                                  .unwrap()
+                                  .then(() => toast.success("Sikeresen lemondtad a felelősséget!"))
+                                  .catch((err) => toast.error(err.message || "Hiba történt a lemondás során"));
+                              }
+                            }}
+                            className="w-full h-full text-[10px] font-bold text-red-500/70 hover:text-red-500 hover:bg-red-500/10 transition-colors uppercase tracking-wider hidden group-hover:block absolute inset-0 bg-background/90"
+                          >
+                            Lemondás
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
             </div>
           ))}
         </div>
