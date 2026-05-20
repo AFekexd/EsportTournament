@@ -43,15 +43,18 @@ interface DiscordEmbed {
 
 
 
-const registrationMessage = `Ebben a csatornában csak a /om parancsot használd! 
+const registrationMessage = `Ebben a csatornában csak a „Fiók összekapcsolása” gombot használd! 
 Ha még nem regisztráltál, akkor kérlek menj fel a https://esport.pollak.info/ oldalra, és regisztrálj magad! 
-Ha már regisztráltál, akkor kérlek írd be a parancsot a hitelesítéshez.`;
+Ha már regisztráltál, kattints a gombra, és add meg az OM azonosítódat a felugró ablakban.`;
+
+const DEFAULT_VERIFICATION_CHANNEL_ID = '1461056761988382862';
 
 class DiscordService {
     private client: Client;
     private isReady: boolean = false;
     private guildId: string = '';
     private categoryId: string = '';
+    private verificationChannelId: string = DEFAULT_VERIFICATION_CHANNEL_ID;
 
     constructor() {
         this.client = new Client({
@@ -67,7 +70,7 @@ class DiscordService {
     }
 
     private async initialize() {
-        const { DISCORD_BOT_TOKEN, DISCORD_GUILD_ID, DISCORD_CATEGORY_ID } = process.env;
+        const { DISCORD_BOT_TOKEN, DISCORD_GUILD_ID, DISCORD_CATEGORY_ID, DISCORD_VERIFICATION_CHANNEL_ID } = process.env;
 
         if (!DISCORD_BOT_TOKEN || !DISCORD_GUILD_ID) {
             console.warn('⚠️ Discord Bot Token or Guild ID not configured. Discord service disabled.');
@@ -76,6 +79,7 @@ class DiscordService {
 
         this.guildId = DISCORD_GUILD_ID;
         this.categoryId = DISCORD_CATEGORY_ID || '';
+        this.verificationChannelId = DISCORD_VERIFICATION_CHANNEL_ID || DEFAULT_VERIFICATION_CHANNEL_ID;
 
         this.client.once('ready', async () => {
             console.log(`✅ Discord Bot logged in as ${this.client.user?.tag}`);
@@ -83,6 +87,7 @@ class DiscordService {
             this.setupInteractionHandler();
             this.setupGuildMemberAdd();
             this.setupMessageMonitor();
+            await this.ensureVerificationMessage();
 
             // Register Slash Command
             await this.registerCommands(DISCORD_BOT_TOKEN, DISCORD_GUILD_ID);
@@ -292,7 +297,7 @@ class DiscordService {
         this.client.on('guildMemberAdd', async (member) => {
             const welcomeChannel = member.guild.channels.cache.find(c => c.name === 'general' || c.name === 'csevegő' || c.name === 'hirdetmények') as TextChannel;
             if (welcomeChannel) {
-                await welcomeChannel.send(`Üdvözöllek ${member.toString()}! Kérlek igazold magad az OM azonosítóddal a következő paranccsal: \`/om <OM_AZONOSÍTÓ>\`, vagy használd a hitelesítő csatornán lévő gombot!`);
+                await welcomeChannel.send(`Üdvözöllek ${member.toString()}! Kérlek igazold magad az OM azonosítóddal a hitelesítő csatornában található **Fiók összekapcsolása** gombbal.`);
             }
 
             // Auto-assign Guest Roles
@@ -319,7 +324,7 @@ class DiscordService {
     private setupMessageMonitor() {
         this.client.on('messageCreate', async (message: Message) => {
             // Monitor specific channel
-            if (message.channelId === '1461056761988382862') {
+            if (message.channelId === this.verificationChannelId) {
                 if (message.author.bot) return; // Ignore bots
 
                 // Check if user is admin
@@ -345,6 +350,56 @@ class DiscordService {
     }
 
     // Removed message-based setupVerificationHandler
+
+    private createVerificationMessage() {
+        const embed = new EmbedBuilder()
+            .setTitle('🔐 Diák Hitelesítés')
+            .setDescription('A versenyen való részvételhez és a szerveren a megfelelő rangok megkapásához össze kell kapcsolnod a fiókodat az OM azonosítóddal.\n\nKattints az alábbi **"Fiók összekapcsolása"** gombra, majd a felugró ablakban add meg a 11 jegyű OM azonosítódat!')
+            .setColor('#7c3aed' as ColorResolvable)
+            .setFooter({ text: 'Pollak Verification System' });
+
+        const row = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('verify_button')
+                    .setLabel('Fiók összekapcsolása')
+                    .setStyle(ButtonStyle.Primary)
+                    .setEmoji('🆔')
+            );
+
+        return { embed, row };
+    }
+
+    private async ensureVerificationMessage() {
+        try {
+            const channel = await this.client.channels.fetch(this.verificationChannelId);
+            if (!channel || channel.type !== ChannelType.GuildText) {
+                console.warn(`Verification channel not found or not text channel: ${this.verificationChannelId}`);
+                return;
+            }
+
+            const textChannel = channel as TextChannel;
+            const messages = await textChannel.messages.fetch({ limit: 50 });
+            const existing = messages.find(m =>
+                m.author.id === this.client.user?.id &&
+                m.components.some(row =>
+                    'components' in row &&
+                    Array.isArray(row.components) &&
+                    row.components.some(component => 'customId' in component && component.customId === 'verify_button')
+                )
+            );
+
+            if (existing) {
+                return;
+            }
+
+            const { embed, row } = this.createVerificationMessage();
+            await textChannel.send({ embeds: [embed], components: [row] });
+            console.log(`✅ Verification message deployed to #${textChannel.name}`);
+        } catch (error) {
+            console.error('Failed to ensure verification message:', error);
+        }
+    }
 
 
     public async sendMatchProof(
@@ -428,7 +483,7 @@ class DiscordService {
                 )
                 .setImage(`attachment://proof_${matchInfo.matchId}.png`)
                 .setTimestamp()
-                .setFooter({ text: 'EsportHub Versenyrendszer' });
+                .setFooter({ text: 'Pollak Versenyrendszer' });
 
             // Add mentions if available
             let mentions = '';
@@ -456,20 +511,7 @@ class DiscordService {
             return;
         }
 
-        const embed = new EmbedBuilder()
-            .setTitle('🔐 Diák Hitelesítés')
-            .setDescription('A versenyen való részvételhez és a szerveren a megfelelő rangok megkapásához hitelesítened kell magad az OM azonosítóddal.\n\nKattints az alábbi **"Azonosítás"** gombra, és írd be a 11 jegyű oktatási azonosítódat!')
-            .setColor('#7c3aed' as ColorResolvable)
-            .setFooter({ text: 'EsportHub Verification System' });
-
-        const row = new ActionRowBuilder<ButtonBuilder>()
-            .addComponents(
-                new ButtonBuilder()
-                    .setCustomId('verify_button')
-                    .setLabel('Azonosítás')
-                    .setStyle(ButtonStyle.Primary)
-                    .setEmoji('🆔')
-            );
+        const { embed, row } = this.createVerificationMessage();
 
 
         const channel = interaction.channel as TextChannel;
@@ -484,7 +526,7 @@ class DiscordService {
     private async handleVerifyButton(interaction: ButtonInteraction) {
         const modal = new ModalBuilder()
             .setCustomId('verify_modal')
-            .setTitle('Diák Hitelesítés');
+            .setTitle('Fiók összekapcsolása');
 
         const omInput = new TextInputBuilder()
             .setCustomId('om_input')
@@ -1094,6 +1136,30 @@ class DiscordService {
             return true;
         } catch (error) {
             console.error(`Failed to send message to channel ${channelId}:`, error);
+            return false;
+        }
+    }
+
+    /**
+     * Sends a plain text message to a specific channel
+     */
+    async sendPlainText(channelId: string, text: string): Promise<boolean> {
+        if (!this.isReady) return false;
+
+        try {
+            const channel = await this.client.channels.fetch(channelId);
+            if (!channel || !channel.isTextBased()) {
+                console.warn(`Channel ${channelId} not found or not text-based`);
+                return false;
+            }
+
+            await (channel as TextChannel).send({
+                content: text,
+            });
+
+            return true;
+        } catch (error) {
+            console.error(`Failed to send plain text message to channel ${channelId}:`, error);
             return false;
         }
     }
