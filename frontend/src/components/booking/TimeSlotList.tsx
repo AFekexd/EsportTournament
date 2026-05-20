@@ -8,7 +8,8 @@ import { assignSupervisor, removeSupervisor, fetchEligibleSupervisors } from '..
 interface TimeSlotListProps {
     selectedDate: string;
     selectedHour: number | null;
-    onSelectHour: (hour: number) => void;
+    selectedMinute: number;
+    onSelectSlot: (hour: number, minute: number) => void;
     bookings: Booking[];
     schedules: BookingSchedule[];
     computers: Computer[];
@@ -17,6 +18,7 @@ interface TimeSlotListProps {
 
 interface TimeSlotInfo {
     hour: number;
+    minute: number;
     freeCount: number;
     totalCount: number;
     isPast: boolean;
@@ -27,7 +29,8 @@ interface TimeSlotInfo {
 export function TimeSlotList({
     selectedDate,
     selectedHour,
-    onSelectHour,
+    selectedMinute,
+    onSelectSlot,
     bookings,
     schedules,
     computers,
@@ -65,51 +68,55 @@ export function TimeSlotList({
         );
 
         for (let hour = todaySchedule.startHour; hour < todaySchedule.endHour; hour++) {
-            // Only check isPast for today
-            let isPast = false;
-            if (isToday) {
-                const slotEndTime = new Date(selectedDate);
-                slotEndTime.setHours(hour + 1, 0, 0, 0);
-                isPast = slotEndTime <= now;
-            }
+            for (const minute of [0, 30]) {
+                // Only check isPast for today
+                let isPast = false;
+                if (isToday) {
+                    const slotEndTime = new Date(selectedDate);
+                    slotEndTime.setHours(hour, minute, 0, 0);
+                    slotEndTime.setMinutes(slotEndTime.getMinutes() + 30);
+                    isPast = slotEndTime <= now;
+                }
 
-            // Count free computers for this slot
-            let freeCount = availableComputers.length;
+                // Count free computers for this slot
+                let freeCount = availableComputers.length;
 
-            availableComputers.forEach(computer => {
-                const startOfSlot = new Date(selectedDate);
-                startOfSlot.setHours(hour, 0, 0, 0);
-                const endOfSlot = new Date(selectedDate);
-                endOfSlot.setHours(hour + 1, 0, 0, 0);
+                availableComputers.forEach(computer => {
+                    const startOfSlot = new Date(selectedDate);
+                    startOfSlot.setHours(hour, minute, 0, 0);
+                    const endOfSlot = new Date(startOfSlot);
+                    endOfSlot.setMinutes(startOfSlot.getMinutes() + 30);
 
-                const isBooked = bookings.some(b => {
-                    if (b.computerId !== computer.id) return false;
-                    const bookingStart = new Date(b.startTime);
-                    const bookingEnd = new Date(b.endTime);
-                    return bookingStart < endOfSlot && bookingEnd > startOfSlot;
+                    const isBooked = bookings.some(b => {
+                        if (b.computerId !== computer.id) return false;
+                        const bookingStart = new Date(b.startTime);
+                        const bookingEnd = new Date(b.endTime);
+                        return bookingStart < endOfSlot && bookingEnd > startOfSlot;
+                    });
+
+                    if (isBooked) freeCount--;
                 });
 
-                if (isBooked) freeCount--;
-            });
+                // Find supervisor (hour-level responsibility)
+                const supervisor = supervisors.find(s => {
+                    const sDate = new Date(s.date).toDateString();
+                    return sDate === selectedDateObj.toDateString() && s.hour === hour;
+                });
 
-            // Find supervisor
-            const supervisor = supervisors.find(s => {
-                const sDate = new Date(s.date).toDateString();
-                return sDate === selectedDateObj.toDateString() && s.hour === hour;
-            });
-
-            slots.push({
-                hour,
-                freeCount,
-                totalCount: availableComputers.length,
-                isPast,
-                isSelected: hour === selectedHour,
-                supervisor,
-            });
+                slots.push({
+                    hour,
+                    minute,
+                    freeCount,
+                    totalCount: availableComputers.length,
+                    isPast,
+                    isSelected: hour === selectedHour && minute === selectedMinute,
+                    supervisor,
+                });
+            }
         }
 
         return slots;
-    }, [selectedDate, selectedHour, bookings, computers, todaySchedule, supervisors]);
+    }, [selectedDate, selectedHour, selectedMinute, bookings, computers, todaySchedule, supervisors]);
 
     if (!todaySchedule) {
         return (
@@ -313,9 +320,9 @@ export function TimeSlotList({
                     const config = getSlotConfig(slot);
 
                     return (
-                        <div key={slot.hour} className="relative group">
+                        <div key={`${slot.hour}-${slot.minute}`} className="relative group">
                             <button
-                                onClick={() => !config.disabled && onSelectHour(slot.hour)}
+                                onClick={() => !config.disabled && onSelectSlot(slot.hour, slot.minute)}
                                 disabled={config.disabled}
                                 className={`
                                     w-full relative p-4 rounded-xl border-2 transition-all duration-200 text-left cursor-default
@@ -327,7 +334,7 @@ export function TimeSlotList({
                                 {/* Time Header */}
                                 <div className="flex items-center justify-between mb-3 pointer-events-none">
                                     <span className={`text-xl font-bold ${slot.isSelected ? 'text-foreground' : config.text}`}>
-                                        {slot.hour}:00 - {slot.hour + 1}:00
+                                        {slot.hour}:{slot.minute.toString().padStart(2, '0')}
                                     </span>
                                     {slot.isSelected && (
                                         <ChevronRight size={18} className="text-primary" />
@@ -370,7 +377,7 @@ export function TimeSlotList({
                             </button>
 
                             {/* Supervisor Action Inline */}
-                            {user && !slot.isPast && config.needsSupervisor && (
+                            {user && !slot.isPast && slot.minute === 0 && config.needsSupervisor && (
                                 <div className="mt-2 flex flex-col gap-2">
                                     {isAdmin && (
                                         <div className="px-1">
@@ -405,7 +412,7 @@ export function TimeSlotList({
                                 </div>
                             )}
 
-                            {user && !slot.isPast && (config.isMySupervision || (isAdmin && slot.supervisor)) && slot.supervisor && (
+                            {user && !slot.isPast && slot.minute === 0 && (config.isMySupervision || (isAdmin && slot.supervisor)) && slot.supervisor && (
                                 <div className="mt-2">
                                     <button
                                         onClick={(e) => handleRemoveSupervisor(slot.supervisor!.id, slot.hour, e)}

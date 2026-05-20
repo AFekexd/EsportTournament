@@ -335,7 +335,11 @@ export function BookingPage() {
               <TimeSlotList
                 selectedDate={selectedDate}
                 selectedHour={selectedStartHour}
-                onSelectHour={(hour) => setSelectedStartHour(hour)}
+                selectedMinute={selectedStartMinute}
+                onSelectSlot={(hour, minute) => {
+                  setSelectedStartHour(hour);
+                  setSelectedStartMinute(minute);
+                }}
                 bookings={bookings}
                 schedules={schedules}
                 computers={computers}
@@ -348,10 +352,13 @@ export function BookingPage() {
                   <ComputerCardGrid
                     selectedDate={selectedDate}
                     selectedHour={selectedStartHour}
+                    selectedMinute={selectedStartMinute}
                     computers={computers}
                     bookings={bookings}
                     userId={user?.id}
-                    onBook={(computer, hour) => openCreateModal(computer, hour, 0)}
+                    onBook={(computer, hour, minute) =>
+                      openCreateModal(computer, hour, minute)
+                    }
                     onCancelBooking={(booking) => {
                       setConfirmModal({
                         isOpen: true,

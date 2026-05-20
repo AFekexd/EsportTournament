@@ -5,16 +5,18 @@ import type { Computer, Booking } from '../../store/slices/bookingsSlice';
 interface ComputerCardGridProps {
     selectedDate: string;
     selectedHour: number;
+    selectedMinute: number;
     computers: Computer[];
     bookings: Booking[];
     userId?: string;
-    onBook: (computer: Computer, hour: number) => void;
+    onBook: (computer: Computer, hour: number, minute: number) => void;
     onCancelBooking: (booking: Booking) => void;
 }
 
 export function ComputerCardGrid({
     selectedDate,
     selectedHour,
+    selectedMinute,
     computers,
     bookings,
     userId,
@@ -26,9 +28,9 @@ export function ComputerCardGrid({
     const computerStatuses = useMemo(() => {
         return computers.map(computer => {
             const startOfSlot = new Date(selectedDate);
-            startOfSlot.setHours(selectedHour, 0, 0, 0);
-            const endOfSlot = new Date(selectedDate);
-            endOfSlot.setHours(selectedHour + 1, 0, 0, 0);
+            startOfSlot.setHours(selectedHour, selectedMinute, 0, 0);
+            const endOfSlot = new Date(startOfSlot);
+            endOfSlot.setMinutes(startOfSlot.getMinutes() + 30);
 
             const booking = bookings.find(b => {
                 if (b.computerId !== computer.id) return false;
@@ -54,7 +56,7 @@ export function ComputerCardGrid({
                 isAvailable: !isBooked && !isMaintenance && !isOutOfOrder && !isTournament,
             };
         });
-    }, [computers, bookings, selectedDate, selectedHour, userId]);
+    }, [computers, bookings, selectedDate, selectedHour, selectedMinute, userId]);
 
     const getStatusConfig = (status: typeof computerStatuses[0]) => {
         if (status.isOwn) {
@@ -112,7 +114,7 @@ export function ComputerCardGrid({
             <div className="flex items-center gap-2 mb-4">
                 <Monitor size={18} className="text-primary" />
                 <h3 className="text-sm font-medium text-gray-300">
-                    Válassz gépet – {selectedHour}:00
+                    Válassz gépet – {selectedHour}:{selectedMinute.toString().padStart(2, '0')}
                 </h3>
             </div>
 
@@ -193,7 +195,7 @@ export function ComputerCardGrid({
                                             if (status.isOwn && status.booking) {
                                                 onCancelBooking(status.booking);
                                             } else if (status.isAvailable) {
-                                                onBook(status.computer, selectedHour);
+                                                onBook(status.computer, selectedHour, selectedMinute);
                                             }
                                         }}
                                         className={`

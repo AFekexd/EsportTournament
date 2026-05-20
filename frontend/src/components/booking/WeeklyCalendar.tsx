@@ -103,7 +103,7 @@ export function WeeklyCalendar({
       const slotStart = new Date(dateStr);
       slotStart.setHours(hour, minute, 0, 0);
       const slotEnd = new Date(slotStart);
-      slotEnd.setMinutes(slotStart.getMinutes() + 60);
+      slotEnd.setMinutes(slotStart.getMinutes() + 30);
 
       // Check strictly if booking COVERS this slot
       // We accept if BookingStart <= SlotStart AND BookingEnd > SlotStart (meaning it covers at least some of it, but usually fully)
@@ -305,86 +305,87 @@ export function WeeklyCalendar({
 
               {timeSlots.map((hour) => (
                 <div key={hour} className="contents">
-                  {/*  Render :00 slot */}
-                  <div className="time-row">
-                    <div className="grid-cell time-cell">{hour}:00</div>
-                    {weekDays.map((day) => {
-                      const booking = getBookingForSlot(
-                        computer.id,
-                        day.dateStr,
-                        hour,
-                        0
-                      );
-                      const isActive = isScheduleActive(
-                        day.date.getDay(),
-                        hour,
-                        0
-                      );
-                      const slotTime = new Date(day.dateStr);
-                      slotTime.setHours(hour, 0, 0, 0);
-                      const now = new Date();
-                      const isPast = slotTime < now && !booking;
-                      const isOwn = booking?.userId === user?.id;
+                  {[0, 30].map((minute) => (
+                    <div key={`${hour}-${minute}`} className="time-row">
+                      <div className="grid-cell time-cell">{hour}:{minute.toString().padStart(2, '0')}</div>
+                      {weekDays.map((day) => {
+                        const booking = getBookingForSlot(
+                          computer.id,
+                          day.dateStr,
+                          hour,
+                          minute
+                        );
+                        const isActive = isScheduleActive(
+                          day.date.getDay(),
+                          hour,
+                          minute
+                        );
+                        const slotTime = new Date(day.dateStr);
+                        slotTime.setHours(hour, minute, 0, 0);
+                        const now = new Date();
+                        const isPast = slotTime < now && !booking;
+                        const isOwn = booking?.userId === user?.id;
 
-                      // Supervisor check
-                      const hourSupervisors = supervisors.filter(s => {
-                        return new Date(s.date).toDateString() === new Date(day.dateStr).toDateString() && s.hour === hour;
-                      });
-                      const needsSupervisor = hourSupervisors.length === 0;
-                      const isMySupervision = user && hourSupervisors.some(s => s.userId === user.id);
+                        // Supervisor check remains hour-level
+                        const hourSupervisors = supervisors.filter(s => {
+                          return new Date(s.date).toDateString() === new Date(day.dateStr).toDateString() && s.hour === hour;
+                        });
+                        const needsSupervisor = hourSupervisors.length === 0;
+                        const isMySupervision = user && hourSupervisors.some(s => s.userId === user.id);
 
-                      let cellClass = "grid-cell slot-cell";
-                      if (!isActive) cellClass += " inactive";
-                      else if (booking)
-                        cellClass += isOwn ? " own-booking" : " booked";
-                      else if (isPast) cellClass += " past inactive";
-                      else {
-                        cellClass += " available";
-                        if (needsSupervisor) cellClass += " opacity-60";
-                        else if (isMySupervision) cellClass += " opacity-60";
-                      }
+                        let cellClass = "grid-cell slot-cell";
+                        if (!isActive) cellClass += " inactive";
+                        else if (booking)
+                          cellClass += isOwn ? " own-booking" : " booked";
+                        else if (isPast) cellClass += " past inactive";
+                        else {
+                          cellClass += " available";
+                          if (needsSupervisor) cellClass += " opacity-60";
+                          else if (isMySupervision) cellClass += " opacity-60";
+                        }
 
-                      return (
-                        <div
-                          key={`${day.dateStr}-${hour}-00`}
-                          className={cellClass}
-                          onClick={() => {
-                            if (booking && onBookingClick) {
-                              onBookingClick(booking);
-                            } else if (
-                              !booking &&
-                              isActive &&
-                              !isPast &&
-                              onSlotClick
-                            ) {
-                              onSlotClick(computer, day.dateStr, hour, 0);
+                        return (
+                          <div
+                            key={`${day.dateStr}-${hour}-${minute}`}
+                            className={cellClass}
+                            onClick={() => {
+                              if (booking && onBookingClick) {
+                                onBookingClick(booking);
+                              } else if (
+                                !booking &&
+                                isActive &&
+                                !isPast &&
+                                onSlotClick
+                              ) {
+                                onSlotClick(computer, day.dateStr, hour, minute);
+                              }
+                            }}
+                            title={
+                              booking
+                                ? `Foglalta: ${booking.user?.displayName ||
+                                booking.user?.username
+                                }`
+                                : !isActive
+                                  ? "Nem elérhető"
+                                  : isPast
+                                    ? "Múltbeli időpont"
+                                    : needsSupervisor
+                                      ? "Nincs jelen felelős"
+                                      : isMySupervision
+                                        ? "Te vagy a felelős, nem foglalhatsz"
+                                        : "Szabad"
                             }
-                          }}
-                          title={
-                            booking
-                              ? `Foglalta: ${booking.user?.displayName ||
-                              booking.user?.username
-                              }`
-                              : !isActive
-                                ? "Nem elérhető"
-                                : isPast
-                                  ? "Múltbeli időpont"
-                                  : needsSupervisor
-                                    ? "Nincs jelen felelős"
-                                    : isMySupervision
-                                      ? "Te vagy a felelős, nem foglalhatsz"
-                                      : "Szabad"
-                          }
-                        >
-                          {booking && (
-                            <span className="booking-indicator text-xs">
-                              {isOwn ? "✓" : "●"}
-                            </span>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
+                          >
+                            {booking && (
+                              <span className="booking-indicator text-xs">
+                                {isOwn ? "✓" : "●"}
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ))}
 
                 </div>
               ))}

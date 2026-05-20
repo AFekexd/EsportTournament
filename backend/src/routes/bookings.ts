@@ -339,6 +339,15 @@ bookingsRouter.post(
             throw new ApiError('Érvénytelen dátum/idő formátum', 400, 'INVALID_DATE');
         }
 
+        const isHalfHourBoundary = (d: Date) => {
+            const minutes = d.getMinutes();
+            return minutes === 0 || minutes === 30;
+        };
+
+        if (!isHalfHourBoundary(start) || !isHalfHourBoundary(end)) {
+            throw new ApiError('A foglalás kezdése és vége csak egész vagy fél órakor lehet (:00 vagy :30)', 400, 'INVALID_TIME_BOUNDARY');
+        }
+
         // Check if start time is in the past (allow 5 minute grace period)
         if (start.getTime() < Date.now() - 300000) {
             throw new ApiError('A foglalás kezdete nem lehet a múltban', 400, 'PAST_DATE');
@@ -369,21 +378,18 @@ bookingsRouter.post(
         const localEnd = getHungaryDate(end);
 
         const dayOfWeek = localStart.getDay();
-        const startHour = localStart.getHours();
-        const endHour = localEnd.getHours();
+        const startMinutesOfDay = localStart.getHours() * 60 + localStart.getMinutes();
+        let endMinutesOfDay = localEnd.getHours() * 60 + localEnd.getMinutes();
 
         // Special handling for booking ending at midnight (00:00)
         // If localEnd is 00:00, it effectively means 24:00 for the previous day's schedule
-        let effectiveEndHour = endHour;
-        if (effectiveEndHour === 0 && end.getSeconds() === 0 && end.getMinutes() === 0) {
-            effectiveEndHour = 24;
+        if (endMinutesOfDay === 0 && end.getSeconds() === 0 && end.getMinutes() === 0 && end.getTime() > start.getTime()) {
+            endMinutesOfDay = 24 * 60;
         }
 
         const schedules = await prisma.bookingSchedule.findMany({
             where: {
                 isActive: true,
-                startHour: { lte: startHour },
-                endHour: { gte: effectiveEndHour },
                 OR: [
                     { specificDate: bookingDate },
                     { dayOfWeek: dayOfWeek, specificDate: null }
@@ -399,6 +405,13 @@ bookingsRouter.post(
 
         if (!schedule) {
             throw new ApiError('Nincs elérhető foglalási időpont', 400, 'NO_SCHEDULE');
+        }
+
+        const scheduleStartMinutes = schedule.startHour * 60;
+        const scheduleEndMinutes = schedule.endHour * 60;
+
+        if (startMinutesOfDay < scheduleStartMinutes || endMinutesOfDay > scheduleEndMinutes) {
+            throw new ApiError('A foglalás nem fér bele a megadott nyitvatartási időbe', 400, 'NO_SCHEDULE');
         }
 
         if (!schedule.isOpenForBooking) {
