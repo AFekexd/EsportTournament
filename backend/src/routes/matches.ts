@@ -7,13 +7,6 @@ import { upload } from '../middleware/upload.js';
 
 export const matchesRouter: Router = Router();
 
-// ELO calculation constants
-const K_FACTOR = 32;
-
-function calculateEloChange(winnerElo: number, loserElo: number): number {
-    const expectedScore = 1 / (1 + Math.pow(10, (loserElo - winnerElo) / 400));
-    return Math.round(K_FACTOR * (1 - expectedScore));
-}
 
 // Get matches for a specific user
 matchesRouter.get(
@@ -229,44 +222,6 @@ matchesRouter.patch(
             } // logged by organizer/admin (user.id)
         );
 
-        // Update ELO
-        if (isSoloTournament && actualWinnerUserId && match.homeUser && match.awayUser) {
-            // Solo match - update user ELO
-            const winnerUser = actualWinnerUserId === match.homeUserId ? match.homeUser : match.awayUser;
-            const loserUser = actualWinnerUserId === match.homeUserId ? match.awayUser : match.homeUser;
-
-            const eloChange = calculateEloChange(winnerUser.elo, loserUser.elo);
-
-            const updatedWinner = await prisma.user.update({
-                where: { id: winnerUser.id },
-                data: { elo: { increment: eloChange } },
-            });
-
-            // Web-Discord Sync: Elo
-            const { webSyncService } = await import('../services/webSyncService.js');
-            await webSyncService.onEloUpdate(updatedWinner.id, updatedWinner.elo);
-
-            await prisma.user.update({
-                where: { id: loserUser.id },
-                data: { elo: { decrement: eloChange } },
-            });
-        } else if (!isSoloTournament && actualWinnerId && match.homeTeam && match.awayTeam) {
-            // Team match - update team ELO
-            const winnerTeam = actualWinnerId === match.homeTeamId ? match.homeTeam : match.awayTeam;
-            const loserTeam = actualWinnerId === match.homeTeamId ? match.awayTeam : match.homeTeam;
-
-            const eloChange = calculateEloChange(winnerTeam.elo, loserTeam.elo);
-
-            await prisma.team.update({
-                where: { id: winnerTeam.id },
-                data: { elo: { increment: eloChange } },
-            });
-
-            await prisma.team.update({
-                where: { id: loserTeam.id },
-                data: { elo: { decrement: eloChange } },
-            });
-        }
 
         // Web-Discord Sync: Match Result
         const { webSyncService } = await import('../services/webSyncService.js');

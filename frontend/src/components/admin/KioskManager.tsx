@@ -5,7 +5,7 @@ import {
   toggleLock,
   toggleCompetitionMode,
 } from "../../store/slices/kioskSlice";
-import { Monitor, Lock, Unlock, Edit2 } from "lucide-react";
+import { Monitor, Lock, Unlock, Edit2, Trash2, Tv, ExternalLink } from "lucide-react";
 import type { Computer } from "../../types";
 import { ClientVersionList } from "./ClientVersionList";
 import { MachineEditModal } from "./MachineEditModal";
@@ -14,7 +14,6 @@ import { toast } from "sonner";
 import { authService } from "../../lib/auth-service";
 import { API_URL } from "../../config";
 import { ConfirmationModal } from "../common/ConfirmationModal";
-import { Trash2 } from "lucide-react";
 
 export const KioskManager: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -113,10 +112,34 @@ export const KioskManager: React.FC = () => {
 
   return (
     <div className="admin-section">
-      <h2 className="section-title mb-6 flex items-center gap-2">
-        <Monitor className="text-primary" />
-        Gépterem Felügyelet
-      </h2>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <h2 className="section-title flex items-center gap-2 mb-0">
+          <Monitor className="text-primary" />
+          Gépterem Felügyelet
+        </h2>
+        <div className="flex items-center gap-2 flex-wrap">
+          <a
+            href="/tv"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-mono rounded bg-secondary/80 border border-border text-foreground hover:bg-secondary hover:border-primary/50 transition-colors"
+          >
+            <Tv size={14} className="text-primary" />
+            TV Kijelző (Versenyek)
+            <ExternalLink size={12} className="text-muted-foreground" />
+          </a>
+          <a
+            href="/tv2"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-mono rounded bg-secondary/80 border border-border text-foreground hover:bg-secondary hover:border-primary/50 transition-colors"
+          >
+            <Tv size={14} className="text-primary" />
+            TV Kijelző (Toborzás)
+            <ExternalLink size={12} className="text-muted-foreground" />
+          </a>
+        </div>
+      </div>
 
       {isLoading && machines.length === 0 ? (
         <div className="p-12 text-center text-muted-foreground border border-border rounded-lg bg-secondary animate-pulse">

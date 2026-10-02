@@ -141,12 +141,12 @@ export function AdminBookingList() {
                 <div className="flex items-center gap-4 w-full md:w-auto">
                     {/* Search */}
                     <div className="relative w-full md:w-64">
-                        <Search size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground w" />
+                        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
                         <Input
                             placeholder="Keresés (Név, Gép)..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-10 h-9"
+                            className="pl-9 h-9 text-sm"
                         />
                     </div>
 

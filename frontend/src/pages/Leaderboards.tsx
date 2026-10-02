@@ -110,7 +110,7 @@ export function LeaderboardsPage() {
       <div className="mb-10 text-center relative">
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#121824] border border-border/80 rounded text-xs font-mono text-primary font-bold tracking-widest uppercase mb-3">
           <Trophy size={14} className="text-primary" />
-          <span>// TELJESÍTMÉNYRANGSOR // ELO ÉS STATISZTIKA</span>
+          <span>// TELJESÍTMÉNYRANGSOR // GYŐZELMEK ÉS STATISZTIKA</span>
         </div>
         <h1 className="font-display text-4xl md:text-5xl font-extrabold uppercase tracking-wide text-foreground mb-3">
           Hivatalos Ranglisták
@@ -190,6 +190,7 @@ export function LeaderboardsPage() {
                           <img
                             src={player.avatarUrl}
                             alt={player.displayName || player.username}
+                            referrerPolicy="no-referrer"
                             className="w-full h-full object-cover"
                           />
                         ) : (
@@ -288,6 +289,7 @@ export function LeaderboardsPage() {
                                 <img
                                   src={player.avatarUrl}
                                   alt={player.displayName || player.username}
+                                  referrerPolicy="no-referrer"
                                   className="w-full h-full object-cover shrink-0"
                                 />
                               ) : (
@@ -336,6 +338,7 @@ export function LeaderboardsPage() {
                                 <img
                                   src={team.logoUrl}
                                   alt={team.name}
+                                  referrerPolicy="no-referrer"
                                   className="w-full h-full object-cover shrink-0"
                                 />
                               ) : (

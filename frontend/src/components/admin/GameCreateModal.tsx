@@ -101,7 +101,7 @@ export function GameCreateModal({ onClose }: GameCreateModalProps) {
             {showRawgSearch && (
               <div className="space-y-3 pt-1">
                 <div className="relative">
-                  <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
                   <input
                     type="text"
                     value={rawgQuery}

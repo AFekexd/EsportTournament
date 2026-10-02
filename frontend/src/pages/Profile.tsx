@@ -15,44 +15,32 @@ import {
   X,
   Gamepad2,
   ChevronRight,
-  Plus,
-  Trash2,
-  Star,
   Clock
 } from "lucide-react";
 import MatchHistory from "../components/profile/MatchHistory";
 import MatchHistoryModal from "../components/profile/MatchHistoryModal";
 import { fetchUserMatches } from "../store/slices/usersSlice";
-import { RankSelector } from "../components/profile/RankSelector";
 import { DiscordConnectModal } from "../components/common/DiscordConnectModal";
 import { updateUser } from "../store/slices/authSlice";
 import { apiFetch } from "../lib/api-client";
 import { API_URL } from "../config";
 import { useAuth } from "../hooks/useAuth";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
-import {
-  fetchGames,
-  fetchUserRanks,
-  setUserRank,
-  deleteUserRank,
-  fetchRanks,
-} from "../store/slices/gamesSlice";
+import { fetchGames } from "../store/slices/gamesSlice";
 import { fetchMyTeams } from "../store/slices/teamsSlice";
 import { fetchTournaments } from "../store/slices/tournamentsSlice";
 import {
   fetchPublicProfile,
   clearCurrentProfile,
 } from "../store/slices/usersSlice";
-import type { Team, Tournament, UserRank } from "../types";
+import type { Team, Tournament } from "../types";
 
 export function ProfilePage() {
   const { id } = useParams<{ id: string }>();
   const { user, isAuthenticated } = useAuth();
   const dispatch = useAppDispatch();
 
-  const { games, gameRanks, userRanks } = useAppSelector(
-    (state) => state.games
-  );
+  const { games } = useAppSelector((state) => state.games);
   const { currentProfile, userMatches, isLoading: isProfileLoading } = useAppSelector(
     (state) => state.users
   );
@@ -61,26 +49,6 @@ export function ProfilePage() {
   const [localSteamId, setLocalSteamId] = useState("");
   const [isAvatarOpen, setIsAvatarOpen] = useState(false);
   const [isMatchHistoryOpen, setIsMatchHistoryOpen] = useState(false);
-  const [isAddGameModalOpen, setIsAddGameModalOpen] = useState(false);
-  // Track games that are temporarily visible (user added them but hasn't selected a rank yet)
-  // Persist in localStorage to survive page refresh
-  const [visibleGameIds, setVisibleGameIds] = useState<string[]>(() => {
-    try {
-      const saved = localStorage.getItem('profile_visible_games');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  // Persist visibleGameIds to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem('profile_visible_games', JSON.stringify(visibleGameIds));
-    } catch {
-      // Ignore localStorage errors
-    }
-  }, [visibleGameIds]);
   const [isDiscordModalOpen, setIsDiscordModalOpen] = useState(false);
 
   // ESC kezelés az Avatar Lightbox-hoz
@@ -147,8 +115,7 @@ export function ProfilePage() {
 
       if (isOwnProfile) {
         dispatch(fetchMyTeams());
-        dispatch(fetchTournaments({ page: 1 })); // Ideally should capture my tournaments
-        dispatch(fetchUserRanks());
+        dispatch(fetchTournaments({ page: 1 }));
       }
     }
 
@@ -167,61 +134,6 @@ export function ProfilePage() {
       }
     };
   }, [dispatch, isAuthenticated, id, isOwnProfile, games.length]);
-
-  // Fetch Game Ranks
-  useEffect(() => {
-    if (games.length > 0) {
-      games.forEach((game) => {
-        if (!gameRanks[game.id]) {
-          dispatch(fetchRanks(game.id));
-        }
-      });
-    }
-  }, [dispatch, games, gameRanks]);
-
-  const handleRankChange = async (gameId: string, rankId: string) => {
-    if (!isOwnProfile) return;
-    try {
-      if (!rankId) {
-        // Remove rank
-        await dispatch(deleteUserRank(gameId)).unwrap();
-
-        // Remove from visible set if cleared
-        setVisibleGameIds(prev => prev.filter(id => id !== gameId));
-
-        toast.success("Rang törölve");
-      } else {
-        // Set rank
-        await dispatch(setUserRank({ gameId, rankId })).unwrap();
-        toast.success("Rang frissítve");
-      }
-    } catch (error) {
-      console.error("Failed to update rank", error);
-      toast.error("Hiba történt a rang frissítésekor");
-    }
-  };
-
-  const toggleGameVisibility = (gameId: string) => {
-    setVisibleGameIds(prev => prev.includes(gameId) ? prev : [...prev, gameId]);
-  }
-
-  // Determine which games to display
-  // Show games that:
-  // 1. Have a userRank (isOwnProfile ? userRanks : currentProfile?.ranks)
-  // 2. OR are in visibleGameIds (only relevant for own profile)
-  const displayedGames = games.filter(game => {
-    if (isOwnProfile) {
-      const hasRank = userRanks.some(ur => ur.gameId === game.id);
-      const isVisible = visibleGameIds.includes(game.id);
-      const isFavorite = user?.favoriteGameId === game.id;
-      return hasRank || isVisible || isFavorite;
-    } else {
-      // Public profile: only show ranked games
-      // Note: currentProfile.ranks structure is slightly different in filtered games?
-      // publicProfile returns ranks array
-      return currentProfile?.ranks?.some(r => r.gameId === game.id);
-    }
-  });
 
   const handleSteamSync = async () => {
     if (!localSteamId) return;
@@ -358,8 +270,6 @@ export function ProfilePage() {
   };
 
   const getTopGameImage = () => {
-    // 1. Check favorite game - use favoriteGameId to find game from games array
-    // This is more reliable than relying on favoriteGame object which may not be populated
     if (isOwnProfile && user?.favoriteGameId) {
       const favoriteGame = games.find(g => g.id === user.favoriteGameId);
       if (favoriteGame?.imageUrl) {
@@ -372,42 +282,7 @@ export function ProfilePage() {
         return favoriteGame.imageUrl;
       }
     }
-
-    // 2. Fallback to ranks
-    let relevantRanks: { gameId: string; value: number }[] = [];
-
-    if (isOwnProfile) {
-      relevantRanks = userRanks.map((ur) => ({
-        gameId: ur.gameId,
-        value: ur.rank?.value || 0,
-      }));
-    } else {
-      relevantRanks =
-        currentProfile?.ranks?.map((r) => ({
-          gameId: r.gameId,
-          value: r.rankValue,
-        })) || [];
-    }
-
-    if (relevantRanks.length === 0) return null;
-
-    // Sort by value desc
-    relevantRanks.sort((a, b) => b.value - a.value);
-
-    // Get top
-    const topRank = relevantRanks[0];
-    if (!topRank) return null;
-
-    const game = games.find((g) => g.id === topRank.gameId);
-    return game?.imageUrl || null;
-  };
-
-  const formatTimeBalance = (seconds: number) => {
-    const isNegative = seconds < 0;
-    const absSeconds = Math.abs(seconds);
-    const hours = Math.floor(absSeconds / 3600);
-    const minutes = Math.floor((absSeconds % 3600) / 60);
-    return `${isNegative ? "-" : ""}${hours}h ${minutes}m`;
+    return null;
   };
 
   const topGameImage = getTopGameImage();
@@ -611,17 +486,6 @@ export function ProfilePage() {
                       {effectiveTournaments.length}
                     </div>
                   </div>
-
-                  {isOwnProfile && (
-                    <div className="tactical-card p-3 sm:p-4 text-center">
-                      <div className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
-                        Időegyenleg
-                      </div>
-                      <div className="font-display text-2xl sm:text-3xl font-bold text-emerald-400">
-                        {formatTimeBalance(user?.timeBalanceSeconds || 0)}
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
@@ -671,230 +535,6 @@ export function ProfilePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Column */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Skill Levels Section */}
-            <div className="tactical-card overflow-visible">
-              <div className="p-4 md:p-5 border-b border-border flex justify-between items-center bg-secondary/60">
-                <h2 className="font-display text-lg font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
-                  <Shield size={20} className="text-primary" />
-                  Játék Skillek
-                </h2>
-                {isOwnProfile && (
-                  <button
-                    onClick={() => setIsAddGameModalOpen(true)}
-                    className="font-mono text-xs font-bold text-primary hover:text-foreground transition-colors flex items-center gap-1 uppercase tracking-wider"
-                  >
-                    <Plus size={14} /> Játék hozzáadása
-                  </button>
-                )}
-              </div>
-
-              <div className="p-4 md:p-6">
-                {games.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground font-mono text-sm">
-                    <p>Még nincsenek játékok a rendszerben.</p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {displayedGames.map((game) => {
-                      const ranks = gameRanks[game.id] || [];
-                      let userRank;
-                      if (isOwnProfile) {
-                        userRank = userRanks.find(
-                          (ur: UserRank) => ur.gameId === game.id
-                        );
-                      } else {
-                        const publicRank = currentProfile?.ranks?.find(
-                          (r) => r.gameId === game.id
-                        );
-                        if (publicRank) {
-                          userRank = {
-                            rank: {
-                              name: publicRank.rankName,
-                              value: publicRank.rankValue,
-                            },
-                            rankId: publicRank.id,
-                          };
-                        }
-                      }
-
-                      const currentRankId = isOwnProfile
-                        ? userRank?.rankId || ""
-                        : "";
-
-                      return (
-                        <div
-                          key={game.id}
-                          className="bg-secondary/40 border border-border rounded p-4 hover:border-primary/40 transition-all group"
-                        >
-                          <div className="flex items-center gap-4">
-                            {/* Left Side: Game Info */}
-                            <div className="w-12 h-12 rounded bg-card border border-border flex items-center justify-center shadow-sm overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
-                              {game.imageUrl ? (
-                                <img
-                                  src={game.imageUrl}
-                                  alt={game.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                <span className="text-lg font-bold text-muted-foreground">
-                                  {game.name.charAt(0)}
-                                </span>
-                              )}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <h3 className="font-bold text-foreground group-hover:text-primary transition-colors truncate">
-                                {game.name}
-                              </h3>
-                              <div className="text-sm text-muted-foreground mt-0.5">
-                                {userRank?.rank ? (
-                                  <span className="flex items-center gap-1.5 whitespace-nowrap">
-                                    <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
-                                    {userRank.rank.name}{" "}
-                                    <span className="text-white/30">|</span>{" "}
-                                    {userRank.rank.value}p
-                                  </span>
-                                ) : (
-                                  <span className="text-muted-foreground italic">
-                                    Nincs rang
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Actions Row - Separate row below game info */}
-                          {/* Actions Row - Separate row below game info */}
-                          {isOwnProfile && (
-                            <div className="flex items-center gap-3 mt-4 pt-4 border-t border-border">
-                              {/* Favorite Toggle - Always visible */}
-                              <button
-                                onClick={async () => {
-                                  const isFavorite = user?.favoriteGameId === game.id;
-                                  try {
-                                    const newFavoriteId = isFavorite ? null : game.id;
-
-                                    // Optimistic update
-                                    dispatch(updateUser({ ...user!, favoriteGameId: newFavoriteId, favoriteGame: newFavoriteId ? { id: game.id, imageUrl: game.imageUrl || '' } : undefined }));
-
-                                    await apiFetch(`${API_URL}/users/${user?.id}`, {
-                                      method: "PATCH",
-                                      headers: { "Content-Type": "application/json" },
-                                      body: JSON.stringify({ favoriteGameId: newFavoriteId }),
-                                    });
-                                    toast.success(isFavorite ? "Kedvenc játék eltávolítva" : "Kedvenc játék beállítva");
-                                  } catch (e) {
-                                    console.error(e);
-                                    toast.error("Hiba történt");
-                                  }
-                                }}
-                                className={`w-9 h-9 flex items-center justify-center rounded border transition-all shrink-0 ${user?.favoriteGameId === game.id
-                                  ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20 shadow-[0_0_15px_rgba(234,179,8,0.2)]"
-                                  : "bg-secondary text-muted-foreground border-border hover:text-yellow-500 hover:border-yellow-500/50"
-                                  }`}
-                                title={user?.favoriteGameId === game.id ? "Kedvenc játék eltávolítása" : "Beállítás kedvencként"}
-                              >
-                                <Star size={18} fill={user?.favoriteGameId === game.id ? "currentColor" : "none"} />
-                              </button>
-
-                              {ranks.length > 0 ? (
-                                <>
-                                  <div className="shrink-0">
-                                    <RankSelector
-                                      gameId={game.id}
-                                      currentRankId={currentRankId}
-                                      ranks={ranks}
-                                      onSelect={(gId, rId) => handleRankChange(gId, rId)}
-                                    />
-                                  </div>
-
-                                  <button
-                                    onClick={() => handleRankChange(game.id, "")}
-                                    className="w-10 h-10 flex items-center justify-center rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-foreground border border-red-500/20 transition-all hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] shrink-0"
-                                    title="Játék eltávolítása"
-                                  >
-                                    <Trash2 size={18} />
-                                  </button>
-                                </>
-                              ) : (
-                                <button
-                                  onClick={() => {
-                                    // Just remove from visible list if no ranks
-                                    setVisibleGameIds(prev => prev.filter(id => id !== game.id));
-                                    toast.success("Játék eltávolítva a nézetből");
-                                  }}
-                                  className="w-10 h-10 flex items-center justify-center rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-foreground border border-red-500/20 transition-all hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] shrink-0 ml-auto"
-                                  title="Játék eltávolítása"
-                                >
-                                  <Trash2 size={18} />
-                                </button>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                    {displayedGames.length === 0 && (
-                      <div className="col-span-1 md:col-span-2 text-center py-8 border-2 border-dashed border-border rounded-xl">
-                        <p className="text-muted-foreground">Nincs beállított rang egy játéknál sem.</p>
-                        {isOwnProfile && (
-                          <button
-                            onClick={() => setIsAddGameModalOpen(true)}
-                            className="mt-2 text-primary hover:underline font-medium"
-                          >
-                            Játék hozzáadása
-                          </button>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Add Game Modal */}
-            {isAddGameModalOpen && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-                <div className="w-full max-w-md bg-card border border-border rounded-lg shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-                  <div className="flex items-center justify-between p-5 border-b border-border bg-secondary/60">
-                    <h2 className="font-display text-xl font-bold uppercase tracking-wider text-foreground">Játék hozzáadása</h2>
-                    <button
-                      onClick={() => setIsAddGameModalOpen(false)}
-                      className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-                    >
-                      <X size={18} />
-                    </button>
-                  </div>
-                  <div className="p-4 md:p-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
-                    <div className="space-y-2">
-                      {games.filter(g => !userRanks.find(ur => ur.gameId === g.id)).length === 0 ? (
-                        <p className="text-center font-mono text-xs text-muted-foreground py-6">Már minden játékot hozzáadtál.</p>
-                      ) : (
-                        games.filter(g => !userRanks.find(ur => ur.gameId === g.id)).map(game => (
-                          <button
-                            key={game.id}
-                            onClick={() => {
-                              toggleGameVisibility(game.id);
-                              setIsAddGameModalOpen(false);
-                            }}
-                            className="w-full flex items-center gap-3 p-2.5 rounded bg-secondary/30 hover:bg-secondary transition-colors border border-transparent hover:border-border group text-left"
-                          >
-                            <div className="w-10 h-10 rounded bg-card flex items-center justify-center overflow-hidden border border-border shrink-0">
-                              {game.imageUrl ? (
-                                <img src={game.imageUrl} alt={game.name} className="w-full h-full object-cover" />
-                              ) : (
-                                <span className="font-display font-bold text-muted-foreground">{game.name.charAt(0)}</span>
-                              )}
-                            </div>
-                            <span className="font-medium text-foreground group-hover:text-primary transition-colors">{game.name}</span>
-                            <Plus size={16} className="ml-auto text-muted-foreground group-hover:text-primary" />
-                          </button>
-                        ))
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Teams Section */}
             <div className="tactical-card overflow-hidden">
@@ -937,6 +577,7 @@ export function ProfilePage() {
                             <img
                               src={team.logoUrl}
                               alt={team.name}
+                              referrerPolicy="no-referrer"
                               className="w-full h-full object-cover"
                             />
                           ) : (
@@ -951,8 +592,6 @@ export function ProfilePage() {
                           </h3>
                           <div className="font-mono text-xs text-muted-foreground mt-0.5 flex items-center gap-2">
                             <span>{team.members?.length || 0} TAG</span>
-                            <span className="text-border">/</span>
-                            <span className="text-accent">{team.elo} ELO</span>
                           </div>
                         </div>
                       </Link>

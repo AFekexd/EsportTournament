@@ -114,3 +114,50 @@ export function validateImageSize(dataUrl: string, maxSizeMB: number = 10): bool
     const sizeMB = sizeBytes / (1024 * 1024);
     return sizeMB <= maxSizeMB;
 }
+
+/**
+ * Validates that an image string is either a valid base64 image data URL,
+ * a safe local path (e.g. starting with '/' like '/uploads/'), or empty.
+ * External HTTP/HTTPS URLs are strictly forbidden to prevent IP grabbing and tracking pixels.
+ */
+export function isSafeImageUrl(url: string | null | undefined): boolean {
+    if (!url) return true;
+    const trimmed = url.trim();
+    if (!trimmed) return true;
+    if (/^(https?:|\/\/)/i.test(trimmed)) {
+        return false;
+    }
+    return isBase64DataUrl(trimmed) || trimmed.startsWith('/');
+}
+
+/**
+ * Validates and processes an image input:
+ * - Rejects any external HTTP/HTTPS URLs (anti-IP grabber)
+ * - Compresses and sanitizes valid base64 data URLs via Sharp
+ * - Allows safe local relative paths (e.g., /uploads/...)
+ */
+export async function processAndValidateImage(
+    url: string | null | undefined,
+    maxSizeMB: number = 10
+): Promise<string | undefined> {
+    if (!url) return undefined;
+    const trimmed = url.trim();
+    if (!trimmed) return undefined;
+
+    if (/^(https?:|\/\/)/i.test(trimmed)) {
+        throw new Error('Külső kép URL megadása biztonsági okokból nem engedélyezett. Kérlek töltsd fel a képet közvetlenül a fájlválasztóval!');
+    }
+
+    if (isBase64DataUrl(trimmed)) {
+        if (!validateImageSize(trimmed, maxSizeMB)) {
+            throw new Error(`A kép mérete túl nagy (maximum ${maxSizeMB}MB engedélyezett)`);
+        }
+        return await processImage(trimmed);
+    }
+
+    if (trimmed.startsWith('/')) {
+        return trimmed;
+    }
+
+    throw new Error('Érvénytelen képformátum. Csak közvetlenül feltöltött kép vagy helyi fájl engedélyezett.');
+}

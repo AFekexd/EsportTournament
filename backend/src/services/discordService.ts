@@ -148,52 +148,7 @@ class DiscordService {
                         .setDescription('Csapat neve')
                         .setRequired(true)),
 
-            new SlashCommandBuilder()
-                .setName('link')
-                .setDescription('Discord fiók összekötése a webes fiókkal'),
-
-            new SlashCommandBuilder()
-                .setName('predict')
-                .setDescription('Tippelj egy meccs eredményére')
-                .addStringOption(option =>
-                    option.setName('match')
-                        .setDescription('Meccs ID')
-                        .setRequired(true))
-                .addIntegerOption(option =>
-                    option.setName('home_score')
-                        .setDescription('Hazai pontszám')
-                        .setRequired(true)
-                        .setMinValue(0)
-                        .setMaxValue(100))
-                .addIntegerOption(option =>
-                    option.setName('away_score')
-                        .setDescription('Vendég pontszám')
-                        .setRequired(true)
-                        .setMinValue(0)
-                        .setMaxValue(100)),
-
-            new SlashCommandBuilder()
-                .setName('checkin')
-                .setDescription('Bejelentkezés a következő meccsedre'),
-
-            new SlashCommandBuilder()
-                .setName('preferences')
-                .setDescription('Discord értesítés beállítások megtekintése/módosítása'),
-
             // Admin commands
-            new SlashCommandBuilder()
-                .setName('announce')
-                .setDescription('Rendszerüzenet küldése (Admin)')
-                .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
-                .addStringOption(option =>
-                    option.setName('message')
-                        .setDescription('Üzenet tartalma')
-                        .setRequired(true))
-                .addChannelOption(option =>
-                    option.setName('channel')
-                        .setDescription('Célcsatorna (opcionális)')
-                        .setRequired(false)),
-
             new SlashCommandBuilder()
                 .setName('sync-all')
                 .setDescription('Összes felhasználó szinkronizálása (Admin)')
@@ -224,12 +179,6 @@ class DiscordService {
                     await this.handleRoleToggle(interaction, roleName);
                 } else if (interaction.customId === 'verify_button') {
                     await this.handleVerifyButton(interaction);
-                } else if (interaction.customId.startsWith('checkin_')) {
-                    const matchId = interaction.customId.replace('checkin_', '');
-                    await CommandHandlers.handleCheckInButton(interaction, matchId);
-                } else if (interaction.customId.startsWith('pref_')) {
-                    const prefKey = interaction.customId.replace('pref_', '');
-                    await CommandHandlers.handlePreferenceToggle(interaction, prefKey);
                 }
                 return;
             }
@@ -237,8 +186,6 @@ class DiscordService {
             if (interaction.isModalSubmit()) {
                 if (interaction.customId === 'verify_modal') {
                     await this.handleVerifyModal(interaction);
-                } else if (interaction.customId === 'link_modal') {
-                    await CommandHandlers.handleLinkModal(interaction);
                 }
                 return;
             }
@@ -269,21 +216,6 @@ class DiscordService {
                         break;
                     case 'team':
                         await CommandHandlers.handleTeamCommand(interaction);
-                        break;
-                    case 'link':
-                        await CommandHandlers.handleLinkCommand(interaction);
-                        break;
-                    case 'predict':
-                        await CommandHandlers.handlePredictCommand(interaction);
-                        break;
-                    case 'checkin':
-                        await CommandHandlers.handleCheckInCommand(interaction);
-                        break;
-                    case 'preferences':
-                        await CommandHandlers.handlePreferencesCommand(interaction);
-                        break;
-                    case 'announce':
-                        await CommandHandlers.handleAnnounceCommand(interaction);
                         break;
                     case 'sync-all':
                         await CommandHandlers.handleSyncAllCommand(interaction);

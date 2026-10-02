@@ -4,7 +4,7 @@ import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest, requireRole, optionalAuth } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { getFederatedIdentities } from '../utils/keycloak-admin.js';
-import { processImage, isBase64DataUrl, validateImageSize } from '../utils/imageProcessor.js';
+import { processAndValidateImage } from '../utils/imageProcessor.js';
 import { notificationService } from '../services/notificationService.js';
 import { UserRole, TournamentStatus } from '../utils/enums.js';
 import { tournamentService } from '../services/tournamentService.js';
@@ -90,13 +90,14 @@ tournamentsRouter.post(
             throw new ApiError('Game not found', 404, 'GAME_NOT_FOUND');
         }
 
-        // Process image if base64
-        let processedImageUrl = imageUrl;
-        if (imageUrl && isBase64DataUrl(imageUrl)) {
-            if (!validateImageSize(imageUrl, 150)) {
-                throw new ApiError('A kép túl nagy (max 150KB)', 400, 'IMAGE_TOO_LARGE');
+        // Process image safely
+        let processedImageUrl: string | undefined = undefined;
+        if (imageUrl) {
+            try {
+                processedImageUrl = await processAndValidateImage(imageUrl, 15);
+            } catch (err: any) {
+                throw new ApiError(err.message || 'Érvénytelen versenykép', 400, 'INVALID_IMAGE');
             }
-            processedImageUrl = await processImage(imageUrl);
         }
 
         const tournament = await prisma.tournament.create({
@@ -296,13 +297,14 @@ tournamentsRouter.patch(
         } = req.body;
 
 
-        // Process image if base64
-        let processedImageUrl = imageUrl;
-        if (imageUrl && isBase64DataUrl(imageUrl)) {
-            if (!validateImageSize(imageUrl, 150)) {
-                throw new ApiError('A kép túl nagy (max 10MB)', 400, 'IMAGE_TOO_LARGE');
+        // Process image safely
+        let processedImageUrl: string | undefined = undefined;
+        if (imageUrl !== undefined && imageUrl !== null && imageUrl !== '') {
+            try {
+                processedImageUrl = await processAndValidateImage(imageUrl, 15);
+            } catch (err: any) {
+                throw new ApiError(err.message || 'Érvénytelen versenykép', 400, 'INVALID_IMAGE');
             }
-            processedImageUrl = await processImage(imageUrl);
         }
 
         const updateData: any = {

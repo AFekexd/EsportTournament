@@ -108,11 +108,6 @@ kioskRouter.post('/session/start', async (req, res) => {
                 return;
             }
 
-            // 2. Check Time Balance
-            if (user.timeBalanceSeconds <= 0) {
-                res.status(403).json({ error: 'Nincs időegyenleged.' });
-                return;
-            }
         }
 
         // Close any existing open sessions for this machine
@@ -194,13 +189,9 @@ kioskRouter.post('/session/start', async (req, res) => {
                 // The desktop app uses this to show a countdown.
                 remainingTime = bookingRemainingSeconds;
 
-                console.log(`[SESSION] User balance: ${user.timeBalanceSeconds}s, Booking chain end: ${chainEndTime.toISOString()} -> Remaining: ${remainingTime}s`);
+                console.log(`[SESSION] Booking chain end: ${chainEndTime.toISOString()} -> Remaining: ${remainingTime}s`);
             } else {
-                // No active booking. Fallback to balance
-                // Or deny? Original logic allowed fallback to balance if no booking found? 
-                // Ah, above we returned 403 if no active booking found in strict mode.
-                // But let's keep the balance fallback for safety if the first check passed but somehow this failed (unlikely).
-                remainingTime = user.timeBalanceSeconds;
+                remainingTime = 0;
             }
         }
 
@@ -233,16 +224,6 @@ kioskRouter.post('/session/end', async (req, res) => {
         if (activeSession) {
             const now = new Date();
             const durationSeconds = Math.floor((now.getTime() - activeSession.startTime.getTime()) / 1000);
-
-            // Update user balance (Skip for ADMIN/TEACHER)
-            if (!['ADMIN', 'TEACHER'].includes(activeSession.user.role)) {
-                await prisma.user.update({
-                    where: { id: activeSession.userId },
-                    data: {
-                        timeBalanceSeconds: { decrement: durationSeconds }
-                    }
-                });
-            }
 
             // Close session
             await prisma.session.update({
@@ -339,82 +320,51 @@ kioskRouter.get('/status/:machineId', async (req, res) => {
 
         if (activeSession) {
             const now = new Date();
-            const durationSeconds = Math.floor((now.getTime() - activeSession.startTime.getTime()) / 1000);
             const isUnlimited = ['ADMIN', 'TEACHER'].includes(activeSession.user.role);
-            const remaining = isUnlimited ? -1 : activeSession.user.timeBalanceSeconds - durationSeconds;
 
-            if (remaining <= 0 && !isUnlimited) {
-                // Time up!
-                res.json({ Locked: true, Message: "Time expired", MachineName: machine.name });
-            } else {
-                // CLAMP to booking end time (CHAINED)
-                // If booking ends in 5 mins, but balance is 1 hour, we must return 5 mins.
-                if (!isUnlimited) {
-                    // Find active booking chain
-                    const futureBookings = await prisma.booking.findMany({
-                        where: {
-                            userId: activeSession.userId,
-                            computerId: machine.id,
-                            endTime: { gt: now }
-                        },
-                        orderBy: { startTime: 'asc' }
-                    });
+            if (isUnlimited) {
+                res.json({ Locked: false, RemainingSeconds: -1, MachineName: machine.name });
+                return;
+            }
 
-                    // Find the active one
-                    // Note: activeSession doesn't have a bookingId, so we match by time
-                    let currentBookingIndex = futureBookings.findIndex(b => b.startTime <= now && b.endTime >= now);
+            // Find active booking chain
+            const futureBookings = await prisma.booking.findMany({
+                where: {
+                    userId: activeSession.userId,
+                    computerId: machine.id,
+                    endTime: { gt: now }
+                },
+                orderBy: { startTime: 'asc' }
+            });
 
-                    if (currentBookingIndex !== -1) {
-                        let chainEndTime = futureBookings[currentBookingIndex].endTime;
+            // Find the active one
+            let currentBookingIndex = futureBookings.findIndex(b => b.startTime <= now && b.endTime >= now);
 
-                        // Look ahead for consecutive bookings
-                        for (let i = currentBookingIndex + 1; i < futureBookings.length; i++) {
-                            const nextBooking = futureBookings[i];
-                            if (nextBooking.startTime.getTime() <= chainEndTime.getTime() + 60000) {
-                                chainEndTime = nextBooking.endTime;
-                            } else {
-                                break;
-                            }
-                        }
+            if (currentBookingIndex !== -1) {
+                let chainEndTime = futureBookings[currentBookingIndex].endTime;
 
-                        const bookingTimeLeft = Math.floor((chainEndTime.getTime() - now.getTime()) / 1000);
-
-                        // Determine final remaining time.
-                        // Logic change: If there is a booking, we strictly follow the booking time.
-                        // Only if balance runs out DO WE CARE? User aid "User max time ELYETT a lefoglalt időt".
-                        // This implies we prioritize booking time.
-
-                        // However, if the user has NO balance left at all (0 or neg), we probably shouldn't let them play?
-                        // But maybe they paid for the booking separately? 
-                        // For now, let's use the booking time as the primary source for the countdown.
-
-                        const finalRemaining = bookingTimeLeft;
-
-                        if (finalRemaining <= 0) {
-                            res.json({ Locked: true, Message: "Booking time expired", MachineName: machine.name });
-                            return;
-                        }
-
-                        res.json({ Locked: false, RemainingSeconds: finalRemaining, MachineName: machine.name });
-                        return;
+                // Look ahead for consecutive bookings
+                for (let i = currentBookingIndex + 1; i < futureBookings.length; i++) {
+                    const nextBooking = futureBookings[i];
+                    if (nextBooking.startTime.getTime() <= chainEndTime.getTime() + 60000) {
+                        chainEndTime = nextBooking.endTime;
                     } else {
-                        // No active booking covers NOW? 
-                        // If we require bookings, then lock.
-                        // If we allow ad-hoc usage (if implemented), check balance.
-
-                        // Based on the Context: "Check if user has time & booking" was in StartSession. 
-                        // If we are here, a session is active.
-
-                        // If we rely on the session being valid:
-                        // Original logic: res.json({ Locked: false, RemainingSeconds: remaining });
-
-                        // But if we want to enforce booking times:
-                        res.json({ Locked: true, Message: "No active booking found", MachineName: machine.name });
-                        return;
+                        break;
                     }
                 }
 
-                res.json({ Locked: false, RemainingSeconds: remaining, MachineName: machine.name });
+                const bookingTimeLeft = Math.floor((chainEndTime.getTime() - now.getTime()) / 1000);
+
+                if (bookingTimeLeft <= 0) {
+                    res.json({ Locked: true, Message: "A foglalási időd lejárt", MachineName: machine.name });
+                    return;
+                }
+
+                res.json({ Locked: false, RemainingSeconds: bookingTimeLeft, MachineName: machine.name });
+                return;
+            } else {
+                res.json({ Locked: true, Message: "Nincs érvényes foglalásod erre a gépre", MachineName: machine.name });
+                return;
             }
         } else {
             // No active session, machine should be locked

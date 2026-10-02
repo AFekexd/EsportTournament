@@ -42,11 +42,6 @@ const GameEditModal = lazy(() =>
     default: module.GameEditModal,
   })),
 );
-const GameRankModal = lazy(() =>
-  import("../components/admin/GameRankModal").then((module) => ({
-    default: module.GameRankModal,
-  })),
-);
 const TournamentCreateModal = lazy(() =>
   import("../components/admin/TournamentCreateModal").then((module) => ({
     default: module.TournamentCreateModal,
@@ -141,6 +136,7 @@ export function AdminPage() {
     | "incidents"
     | "grades"
   >("overview");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [stats, setStats] = useState({
     activeTournaments: 0,
     registeredUsers: 0,
@@ -157,7 +153,6 @@ export function AdminPage() {
   const [statusTournament, setStatusTournament] = useState<Tournament | null>(
     null,
   );
-  const [editingGameRanks, setEditingGameRanks] = useState<Game | null>(null);
 
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
@@ -317,23 +312,80 @@ export function AdminPage() {
 
   const canManageComputers = user?.role === "ADMIN" || user?.role === "TEACHER";
 
-  const tabs = [
-    { id: "overview", label: "Áttekintés", icon: Settings },
-    { id: "users", label: "Felhasználók", icon: Users },
-    { id: "teams", label: "Csapatok", icon: Shield },
-    { id: "tournaments", label: "Versenyek", icon: Trophy },
-    { id: "games", label: "Játékok", icon: Gamepad2 },
-    { id: "announcements", label: "Bejelentések", icon: MessageSquare },
-    { id: "bugreports", label: "Hibajelentések", icon: Bug },
-    { id: "incidents", label: "Incidensek", icon: AlertTriangle },
-    { id: "grades", label: "Tanulmányi eredmények", icon: BookText },
-    ...(canManageComputers
-      ? [
-        { id: "bookings", label: "Gépfoglalás", icon: Calendar },
-        { id: "kiosk", label: "Gépterem", icon: Monitor },
-      ]
-      : []),
+  const tabGroups = [
+    {
+      id: "core",
+      name: "Központ & Vezérlés",
+      icon: Settings,
+      iconColor: "text-cyan-400",
+      badgeBg: "bg-cyan-500/15",
+      badgeBorder: "border-cyan-500/30",
+      activeBorderColor: "border-cyan-500/50",
+      tabs: [
+        { id: "overview", label: "Áttekintés", icon: Settings },
+        { id: "users", label: "Felhasználók", icon: Users, badge: totalUsers },
+        { id: "teams", label: "Csapatok", icon: Shield, badge: totalTeams },
+      ],
+    },
+    {
+      id: "competitions",
+      name: "Bajnokságok & Játékok",
+      icon: Trophy,
+      iconColor: "text-yellow-400",
+      badgeBg: "bg-yellow-500/15",
+      badgeBorder: "border-yellow-500/30",
+      activeBorderColor: "border-yellow-500/50",
+      tabs: [
+        {
+          id: "tournaments",
+          label: "Versenyek",
+          icon: Trophy,
+          badge: totalTournaments,
+        },
+        { id: "games", label: "Játékok", icon: Gamepad2, badge: games.length },
+      ],
+    },
+    {
+      id: "operations",
+      name: "Kommunikáció & Naplók",
+      icon: AlertTriangle,
+      iconColor: "text-purple-400",
+      badgeBg: "bg-purple-500/15",
+      badgeBorder: "border-purple-500/30",
+      activeBorderColor: "border-purple-500/50",
+      tabs: [
+        { id: "announcements", label: "Bejelentések", icon: MessageSquare },
+        { id: "bugreports", label: "Hibajelentések", icon: Bug },
+        { id: "incidents", label: "Incidensek", icon: AlertTriangle },
+      ],
+    },
+    {
+      id: "school",
+      name: "Iskola & Labor",
+      icon: Monitor,
+      iconColor: "text-emerald-400",
+      badgeBg: "bg-emerald-500/15",
+      badgeBorder: "border-emerald-500/30",
+      activeBorderColor: "border-emerald-500/50",
+      tabs: [
+        { id: "grades", label: "Tanulmányi eredmények", icon: BookText },
+        ...(canManageComputers
+          ? [
+            { id: "bookings", label: "Gépfoglalás", icon: Calendar },
+            { id: "kiosk", label: "Gépterem", icon: Monitor },
+          ]
+          : []),
+      ],
+    },
   ];
+
+  const tabs = tabGroups.flatMap((g) => g.tabs);
+  const activeTabItem = tabs.find((t) => t.id === activeTab);
+  const activeGroup = tabGroups.find((g) => g.tabs.some((t) => t.id === activeTab));
+  const visibleGroups =
+    selectedCategory === "all"
+      ? tabGroups
+      : tabGroups.filter((g) => g.id === selectedCategory);
 
   return (
     <div className="min-h-screen animate-fade-in pb-20">
@@ -391,27 +443,181 @@ export function AdminPage() {
         </div>
       </div>
 
-      {/* Horizontal Tabs Navigation */}
-      <div className="flex flex-wrap gap-2 mb-6 pb-4 border-b border-border/60 overflow-x-auto">
-        {tabs.map((tab) => {
-          const isActive = activeTab === tab.id;
-          const Icon = tab.icon;
-          return (
+      {/* Tactical Category & Tabs Command Deck */}
+      <div className="bg-[#0B0F17]/90 backdrop-blur-md rounded-2xl border border-border/80 p-4 mb-6 shadow-xl">
+        {/* Category Filter Pills (Quick filter on top) */}
+        <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-border/60 gap-3 flex-wrap">
+          <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar py-1">
             <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`admin-tab-pill ${isActive ? "admin-tab-pill--active" : ""
-                }`}
+              onClick={() => setSelectedCategory("all")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all shrink-0 flex items-center gap-1.5 ${
+                selectedCategory === "all"
+                  ? "bg-primary text-primary-foreground shadow-sm shadow-primary/25"
+                  : "bg-secondary/40 text-muted-foreground hover:text-foreground hover:bg-secondary border border-border/50"
+              }`}
             >
-              <Icon size={16} />
-              {tab.label}
+              <span>Összes modul</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-background/30 font-bold">
+                {tabs.length}
+              </span>
             </button>
-          );
-        })}
+            {tabGroups.map((group) => {
+              const isSelected = selectedCategory === group.id;
+              const hasActiveTab = group.tabs.some((t) => t.id === activeTab);
+              const GroupIcon = group.icon;
+              return (
+                <button
+                  key={group.id}
+                  onClick={() => setSelectedCategory(group.id)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all shrink-0 flex items-center gap-2 ${
+                    isSelected
+                      ? "bg-primary text-primary-foreground shadow-sm shadow-primary/25"
+                      : hasActiveTab
+                      ? "bg-secondary/80 text-foreground border border-primary/40"
+                      : "bg-secondary/40 text-muted-foreground hover:text-foreground hover:bg-secondary border border-border/50"
+                  }`}
+                >
+                  <GroupIcon size={14} className={isSelected ? "text-primary-foreground" : group.iconColor} />
+                  <span>{group.name}</span>
+                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-background/30 font-bold">
+                    {group.tabs.length}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="text-[11px] font-mono text-muted-foreground hidden md:flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Rendszer online</span>
+          </div>
+        </div>
+
+        {/* Tab Cards Grid */}
+        <div
+          className={`grid gap-4 ${
+            selectedCategory === "all"
+              ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+              : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-4xl"
+          }`}
+        >
+          {visibleGroups.map((group) => {
+            const hasActiveTab = group.tabs.some((t) => t.id === activeTab);
+            const GroupIcon = group.icon;
+            return (
+              <div
+                key={group.id}
+                className={`rounded-xl p-3 bg-[#121824]/50 border transition-all ${
+                  hasActiveTab
+                    ? `${group.activeBorderColor} bg-[#121824]/90 shadow-md`
+                    : "border-border/60 hover:border-border"
+                }`}
+              >
+                {/* Group Header */}
+                <div className="flex items-center justify-between pb-2.5 mb-2 border-b border-border/50">
+                  <div className="flex items-center gap-2">
+                    <div className={`p-1 rounded ${group.badgeBg} ${group.iconColor}`}>
+                      <GroupIcon size={13} />
+                    </div>
+                    <span className="text-xs font-display font-bold uppercase tracking-wider text-foreground">
+                      {group.name}
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono text-muted-foreground/80">
+                    {group.tabs.length} {group.tabs.length === 1 ? "elem" : "elem"}
+                  </span>
+                </div>
+
+                {/* Group Tab Buttons */}
+                <div className="space-y-1.5">
+                  {group.tabs.map((tab) => {
+                    const isActive = activeTab === tab.id;
+                    const TabIcon = tab.icon;
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id as any)}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-mono transition-all text-left group ${
+                          isActive
+                            ? "bg-primary text-primary-foreground font-bold shadow-md shadow-primary/25"
+                            : "bg-secondary/40 hover:bg-secondary/90 text-muted-foreground hover:text-foreground border border-transparent hover:border-border/60"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <TabIcon
+                            size={15}
+                            className={
+                              isActive
+                                ? "text-primary-foreground shrink-0"
+                                : "text-muted-foreground group-hover:text-foreground shrink-0 transition-colors"
+                            }
+                          />
+                          <span className="truncate">{tab.label}</span>
+                        </div>
+
+                        {tab.badge !== undefined && (
+                          <span
+                            className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full font-bold shrink-0 ml-1.5 transition-colors ${
+                              isActive
+                                ? "bg-black/20 text-primary-foreground"
+                                : "bg-secondary text-muted-foreground border border-border/60"
+                            }`}
+                          >
+                            {tab.badge}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Active Module Context Banner */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 bg-[#0E131F] rounded-t-xl border border-b-0 border-border/80 gap-3">
+        <div className="flex items-center gap-3.5">
+          <div
+            className={`p-2.5 rounded-lg border ${
+              activeGroup?.badgeBg || "bg-primary/10"
+            } ${activeGroup?.badgeBorder || "border-primary/30"} ${
+              activeGroup?.iconColor || "text-primary"
+            }`}
+          >
+            {activeTabItem && <activeTabItem.icon size={20} />}
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span
+                className={`text-[10px] font-mono font-bold uppercase tracking-widest ${
+                  activeGroup?.iconColor || "text-primary"
+                }`}
+              >
+                {activeGroup?.name}
+              </span>
+              <span className="text-xs text-muted-foreground/60">//</span>
+              <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+                Aktív modul
+              </span>
+            </div>
+            <h2 className="text-xl font-display font-bold uppercase tracking-wide text-foreground">
+              {activeTabItem?.label}
+            </h2>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          {activeTabItem?.badge !== undefined && (
+            <div className="px-3 py-1 rounded bg-secondary/80 border border-border text-xs font-mono text-muted-foreground">
+              Elemek: <strong className="text-foreground">{activeTabItem.badge}</strong>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Main Content Area */}
-      <div className="tactical-card p-6 min-h-[500px]">
+      <div className="tactical-card p-6 min-h-[500px] rounded-t-none border-t-0">
         <Suspense
           fallback={
             <div className="flex items-center justify-center h-[400px]">
@@ -638,6 +844,7 @@ export function AdminPage() {
                           <img
                             src={game.imageUrl}
                             alt={game.name}
+                            referrerPolicy="no-referrer"
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                           />
                         ) : (
@@ -666,17 +873,7 @@ export function AdminPage() {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="grid grid-cols-3 gap-2 mt-auto">
-                          <button
-                            className="flex flex-col items-center justify-center p-2 rounded-lg bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-all gap-1 border border-transparent hover:border-border"
-                            onClick={() => setEditingGameRanks(game)}
-                            title="Rangok kezelése"
-                          >
-                            <Shield size={16} />
-                            <span className="text-[10px] font-medium">
-                              Rangok
-                            </span>
-                          </button>
+                        <div className="grid grid-cols-2 gap-2 mt-auto">
                           <button
                             className="flex flex-col items-center justify-center p-2 rounded-lg bg-secondary hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all gap-1 border border-transparent hover:border-primary/20"
                             onClick={() => setEditingGame(game)}
@@ -769,19 +966,19 @@ export function AdminPage() {
                 <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                   <div className="relative flex-1 md:w-64">
                     <Search
-                      size={18}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                      size={16}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
                     />
                     <input
                       type="text"
                       placeholder="Keresés..."
                       value={tournamentSearch}
                       onChange={(e) => setTournamentSearch(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 bg-secondary/80 border border-border rounded text-foreground placeholder-muted-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors"
+                      className="w-full pl-9 pr-4 h-10 bg-secondary/80 border border-border rounded text-foreground placeholder:text-muted-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors"
                     />
                   </div>
                   <button
-                    className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded font-mono text-xs uppercase tracking-wider font-bold transition-all shadow-md shadow-primary/20 whitespace-nowrap"
+                    className="flex items-center gap-2 px-4 h-10 bg-primary hover:bg-primary/90 text-primary-foreground rounded font-mono text-xs uppercase tracking-wider font-bold transition-all shadow-md shadow-primary/20 whitespace-nowrap"
                     onClick={() => setShowTournamentModal(true)}
                   >
                     <Plus size={18} />
@@ -940,12 +1137,6 @@ export function AdminPage() {
           />
         )}
 
-        {editingGameRanks && (
-          <GameRankModal
-            game={editingGameRanks}
-            onClose={() => setEditingGameRanks(null)}
-          />
-        )}
 
         {showTournamentModal && (
           <TournamentCreateModal

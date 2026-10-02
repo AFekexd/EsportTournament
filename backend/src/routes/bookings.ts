@@ -435,41 +435,36 @@ bookingsRouter.post(
                 throw new ApiError('Már van foglalásod erre az időpontra egy másik gépen.', 400, 'USER_ALREADY_BOOKED');
             }
 
-            // 2. Advanced Balance Check (Account for ALL future bookings)
+            // 2. Weekly Limit Check (Students can enter / book up to 3 times per week)
             if (!['ADMIN', 'TEACHER'].includes(user.role)) {
-                // Get all active future bookings for user (including the one we are about to make effectively)
-                // Actually we just query all future bookings from NOW
-                const futureBookings = await tx.booking.findMany({
+                const targetDate = new Date(startOfDay);
+                const dayOfW = targetDate.getDay(); // 0: Sunday, 1: Monday, ...
+                const diffToMonday = (dayOfW === 0 ? -6 : 1) - dayOfW;
+                const startOfWeek = new Date(targetDate);
+                startOfWeek.setDate(targetDate.getDate() + diffToMonday);
+                startOfWeek.setHours(0, 0, 0, 0);
+
+                const endOfWeek = new Date(startOfWeek);
+                endOfWeek.setDate(startOfWeek.getDate() + 6);
+                endOfWeek.setHours(23, 59, 59, 999);
+
+                // Fetch bookings in that week
+                const weeklyBookings = await tx.booking.findMany({
                     where: {
                         userId: user.id,
-                        endTime: { gt: new Date() } // All bookings that haven't finished yet
-                    }
+                        date: { gte: startOfWeek, lte: endOfWeek },
+                    },
                 });
 
-                // Calculate total "reserved" time
-                const futureReservedMs = futureBookings.reduce((sum, b) => {
-                    // If booking started in past but ends in future, count remaining? 
-                    // Or just count full duration? 
-                    // "Logic 1": Count full duration of all strictly future bookings??
-                    // Better Logic: Count full duration of pending bookings.
-                    // For simplicity and safety: Sum (endTime - startTime) of all found bookings.
-                    return sum + (b.endTime.getTime() - b.startTime.getTime());
-                }, 0);
-
-                const totalRequiredMs = futureReservedMs + duration;
-                const balanceMs = user.timeBalanceSeconds * 1000;
-
-                if (balanceMs < totalRequiredMs) {
-                    const requiredMinutes = Math.floor(totalRequiredMs / 60000);
-                    const availableMinutes = Math.floor(balanceMs / 60000);
+                if (weeklyBookings.length >= 3) {
                     throw new ApiError(
-                        `Nincs elegendő időegyenleged a jövőbeli foglalásokat is figyelembe véve. Szükséges (összesen): ${requiredMinutes} perc, Egyenleg: ${availableMinutes} perc`,
-                        403,
-                        'INSUFFICIENT_FUTURE_BALANCE'
+                        'Heti maximum 3 alkalommal látogathatod a labort / foglalhatsz gépet. Erre a hétre már elérted a limitet (3 foglalás).',
+                        400,
+                        'WEEKLY_LIMIT_EXCEEDED'
                     );
                 }
 
-                // 3. Daily Limit Check (2 hours)
+                // 3. Daily Limit Check (1 booking per day)
                 const dailyBookings = await tx.booking.findMany({
                     where: {
                         userId: user.id,
@@ -477,14 +472,9 @@ bookingsRouter.post(
                     },
                 });
 
-                const dailyTotalMs = dailyBookings.reduce((sum, b) => sum + (b.endTime.getTime() - b.startTime.getTime()), 0);
-                const newDailyTotalMs = dailyTotalMs + duration;
-
-                if (newDailyTotalMs > 86400000) {
-                    const remainingMs = Math.max(0, 86400000 - dailyTotalMs);
-                    const remainingMinutes = Math.floor(remainingMs / 60000);
+                if (dailyBookings.length >= 1) {
                     throw new ApiError(
-                        `Naponta maximum 4 óra foglalható. Még foglalható: ${remainingMinutes} perc.`,
+                        'Naponta legfeljebb 1 alkalommal foglalhatsz gépet.',
                         400,
                         'DAILY_LIMIT_EXCEEDED'
                     );

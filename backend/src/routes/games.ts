@@ -2,7 +2,7 @@ import { Router, Response } from 'express';
 import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest, requireRole } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
-import { processImage, isBase64DataUrl, validateImageSize } from '../utils/imageProcessor.js';
+import { processAndValidateImage } from '../utils/imageProcessor.js';
 import { isBase64Pdf, validatePdfSize } from '../utils/pdfProcessor.js';
 import { notificationService } from '../services/notificationService.js';
 import { logSystemActivity } from '../services/logService.js';
@@ -48,13 +48,14 @@ gamesRouter.post(
             throw new ApiError('A csapatméretnek 1, 2, 3 vagy 5-nek kell lennie', 400, 'INVALID_TEAM_SIZE');
         }
 
-        // Process image if base64
-        let processedImageUrl = imageUrl;
-        if (imageUrl && isBase64DataUrl(imageUrl)) {
-            if (!validateImageSize(imageUrl, 10)) {
-                throw new ApiError('A kép túl nagy (max 10MB)', 400, 'IMAGE_TOO_LARGE');
+        // Process image safely
+        let processedImageUrl: string | undefined = undefined;
+        if (imageUrl !== undefined && imageUrl !== null && imageUrl !== '') {
+            try {
+                processedImageUrl = await processAndValidateImage(imageUrl, 10);
+            } catch (err: any) {
+                throw new ApiError(err.message || 'Érvénytelen képformátum', 400, 'INVALID_IMAGE');
             }
-            processedImageUrl = await processImage(imageUrl);
         }
 
         // Process PDF if base64
@@ -134,12 +135,9 @@ gamesRouter.post(
         let safeImageUrl: string | null = null;
         if (imageUrl && typeof imageUrl === 'string') {
             try {
-                const parsed = new URL(imageUrl);
-                if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
-                    safeImageUrl = parsed.toString();
-                }
+                safeImageUrl = (await processAndValidateImage(imageUrl, 10)) || null;
             } catch {
-                // Ignore invalid image URL
+                safeImageUrl = null;
             }
         }
 
@@ -216,13 +214,14 @@ gamesRouter.patch(
             throw new ApiError('A játék nem található', 404, 'NOT_FOUND');
         }
 
-        // Process image if base64
-        let processedImageUrl = imageUrl;
-        if (imageUrl && isBase64DataUrl(imageUrl)) {
-            if (!validateImageSize(imageUrl, 10)) {
-                throw new ApiError('A kép túl nagy (max 10MB)', 400, 'IMAGE_TOO_LARGE');
+        // Process image safely
+        let processedImageUrl: string | undefined = undefined;
+        if (imageUrl !== undefined && imageUrl !== null && imageUrl !== '') {
+            try {
+                processedImageUrl = await processAndValidateImage(imageUrl, 10);
+            } catch (err: any) {
+                throw new ApiError(err.message || 'Érvénytelen képformátum', 400, 'INVALID_IMAGE');
             }
-            processedImageUrl = await processImage(imageUrl);
         }
 
 

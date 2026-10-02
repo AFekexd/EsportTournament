@@ -176,15 +176,6 @@ export function BookingPage() {
     }
   };
 
-  const formatBalance = (seconds: number) => {
-    if (user?.role === "ADMIN") return "Végtelen";
-    const isNegative = seconds < 0;
-    const absSeconds = Math.abs(seconds);
-    const hours = Math.floor(absSeconds / 3600);
-    const minutes = Math.floor((absSeconds % 3600) / 60);
-    return `${isNegative ? "-" : ""}${hours} óra ${minutes} perc`;
-  };
-
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString("hu-HU", {
@@ -194,11 +185,6 @@ export function BookingPage() {
       day: "numeric",
     });
   };
-
-
-  const isBalanceInsufficient =
-    user?.role !== "ADMIN" &&
-    (user?.timeBalanceSeconds || 0) - selectedDuration * 60 < 0;
 
   return (
     <div className="w-full mx-auto px-4 py-4 md:py-8">
@@ -223,9 +209,9 @@ export function BookingPage() {
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#121824] border border-border/80 rounded font-mono text-xs text-foreground shadow-sm">
             <Clock size={14} className="text-primary" />
             <span>
-              Elérhető egyenleg:{" "}
+              Foglalási keret:{" "}
               <span className="text-primary font-bold">
-                {formatBalance(user.timeBalanceSeconds)}
+                {user.role === "ADMIN" || user.role === "TEACHER" ? "Korlátlan" : "Heti max. 3 alkalom"}
               </span>
             </span>
           </div>
@@ -467,23 +453,12 @@ export function BookingPage() {
 
               {user && (
                 <div className="pt-3 border-t border-primary/20 flex flex-col gap-1 text-xs">
-                  <div className="flex justify-between text-muted-foreground">
-                    <span>Jelenlegi egyenleg:</span>
-                    <span>{formatBalance(user.timeBalanceSeconds)}</span>
-                  </div>
-                  <div className="flex justify-between font-bold text-foreground">
-                    <span>Foglalás után:</span>
-                    <span
-                      className={
-                        user.role !== "ADMIN" &&
-                          user.timeBalanceSeconds - selectedDuration * 60 < 0
-                          ? "text-red-400"
-                          : "text-green-400"
-                      }
-                    >
-                      {formatBalance(
-                        user.timeBalanceSeconds - selectedDuration * 60,
-                      )}
+                  <div className="flex justify-between items-center text-muted-foreground">
+                    <span>Heti szabályzat:</span>
+                    <span className="text-primary font-medium font-mono">
+                      {user.role === "ADMIN" || user.role === "TEACHER"
+                        ? "Korlátlan hozzáférés"
+                        : "Heti max. 3 belépés / diák"}
                     </span>
                   </div>
                 </div>
@@ -507,7 +482,7 @@ export function BookingPage() {
               <button
                 className="flex-1 px-5 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded font-mono text-xs uppercase tracking-wider font-bold transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={handleBooking}
-                disabled={isLoading || isBalanceInsufficient}
+                disabled={isLoading}
               >
                 <Check size={16} />
                 Foglalás

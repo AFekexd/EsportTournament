@@ -193,7 +193,7 @@ export function AnnouncementManager() {
                 ) : (
                   <div className="relative">
                     <Search
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
                       size={14}
                     />
                     <input

@@ -1496,7 +1496,7 @@ export function TournamentDetailPage() {
                             {user?.displayName || user?.username}
                           </p>
                           <p className="text-muted-foreground text-sm">
-                            ELO: {user?.elo || 1000}
+                            Egyéni versenyző
                           </p>
                         </div>
                       </div>
@@ -1524,7 +1524,7 @@ export function TournamentDetailPage() {
                             value={team.id}
                             className="bg-[#121A22]"
                           >
-                            {team.name} ({team.elo} ELO)
+                            {team.name}
                           </option>
                         ))}
                     </select>

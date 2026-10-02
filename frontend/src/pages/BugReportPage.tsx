@@ -1,5 +1,6 @@
-import { toast } from "sonner";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
+import { useSearchParams } from "react-router-dom";
 import {
     Bug,
     Send,
@@ -18,11 +19,13 @@ import {
     XCircle,
     Loader2,
     ImageIcon,
+    Monitor,
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { API_URL } from "../config";
 import { apiFetch } from "../lib/api-client";
 import { ImageUpload } from "../components/common/ImageUpload";
+import IncidentPage from "./IncidentPage";
 
 interface BugReport {
     id: string;
@@ -60,6 +63,16 @@ const statusConfig: Record<string, { label: string; icon: React.ReactNode; color
 
 export function BugReportPage() {
     const { isAuthenticated } = useAuth();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const activeTab = searchParams.get("tab") === "incidents" ? "incidents" : "website";
+
+    const handleTabChange = (tab: "website" | "incidents") => {
+        if (tab === "incidents") {
+            setSearchParams({ tab: "incidents" });
+        } else {
+            setSearchParams({});
+        }
+    };
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -167,7 +180,38 @@ export function BugReportPage() {
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Tab Navigation */}
+            <div className="flex border-b border-border/80 gap-3">
+                <button
+                    type="button"
+                    onClick={() => handleTabChange("website")}
+                    className={`flex items-center gap-2 px-5 py-3 border-b-2 font-display text-sm font-bold uppercase tracking-wider transition-colors ${
+                        activeTab === "website"
+                            ? "border-red-500 text-foreground"
+                            : "border-transparent text-muted-foreground hover:text-foreground"
+                    }`}
+                >
+                    <Bug size={16} className={activeTab === "website" ? "text-red-500" : ""} />
+                    Weboldal hiba
+                </button>
+                <button
+                    type="button"
+                    onClick={() => handleTabChange("incidents")}
+                    className={`flex items-center gap-2 px-5 py-3 border-b-2 font-display text-sm font-bold uppercase tracking-wider transition-colors ${
+                        activeTab === "incidents"
+                            ? "border-amber-500 text-foreground"
+                            : "border-transparent text-muted-foreground hover:text-foreground"
+                    }`}
+                >
+                    <Monitor size={16} className={activeTab === "incidents" ? "text-amber-400" : ""} />
+                    Labor / Géptermi incidensek
+                </button>
+            </div>
+
+            {activeTab === "incidents" ? (
+                <IncidentPage hideHeader />
+            ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Bug Report Form */}
                 <div className="tactical-card p-6 sm:p-8">
                     <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-border">
@@ -386,7 +430,8 @@ export function BugReportPage() {
                         </div>
                     )}
                 </div>
-            </div>
+              </div>
+            )}
         </div>
     );
 }

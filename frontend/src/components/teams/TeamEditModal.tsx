@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { updateTeam } from "../../store/slices/teamsSlice";
 import type { Team } from "../../types";
 import { ImageUpload } from "../common/ImageUpload";
-import { Button } from "../ui/button";
 
 interface TeamEditModalProps {
   team: Team;

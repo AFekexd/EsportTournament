@@ -1,5 +1,5 @@
 import { useEffect, useRef, lazy, Suspense } from "react";
-import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useParams, Navigate } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import { useAppDispatch, useAppSelector } from "./hooks/useRedux";
@@ -26,11 +26,8 @@ const AdminPage = lazy(() => import("./pages/Admin").then(m => ({ default: m.Adm
 const RequestsPage = lazy(() => import("./pages/admin/RequestsPage"));
 const ReleasesPage = lazy(() => import("./pages/admin/ReleasesPage"));
 const AdminLogs = lazy(() => import("./components/admin/AdminLogs").then(m => ({ default: m.AdminLogs })));
-const DiscordAdminPage = lazy(() => import("./pages/DiscordSettings").then(m => ({ default: m.DiscordAdminPage })));
 const DiscordCallbackPage = lazy(() => import("./pages/DiscordCallbackPage").then(m => ({ default: m.DiscordCallbackPage })));
-const TeacherTimePage = lazy(() => import("./pages/TeacherTimePage").then(m => ({ default: m.TeacherTimePage })));
 const BugReportPage = lazy(() => import("./pages/BugReportPage").then(m => ({ default: m.BugReportPage })));
-const IncidentPage = lazy(() => import("./pages/IncidentPage"));
 const GlobalRulesPage = lazy(() => import("./pages/GlobalRulesPage").then(m => ({ default: m.GlobalRulesPage })));
 const TournamentEmbedPage = lazy(() => import("./pages/embed/TournamentEmbedPage").then(m => ({ default: m.TournamentEmbedPage })));
 const TeamEmbedPage = lazy(() => import("./pages/embed/TeamEmbedPage").then(m => ({ default: m.TeamEmbedPage })));
@@ -119,7 +116,6 @@ function AppContent() {
               <Route path="teams/:id" element={<TeamDetailPage />} />
               <Route path="leaderboards" element={<LeaderboardsPage />} />
               <Route path="notifications" element={<NotificationsPage />} />
-              <Route path="discord-settings" element={<DiscordAdminPage />} />
               <Route
                 path="auth/discord/callback"
                 element={<DiscordCallbackPage />}
@@ -133,10 +129,10 @@ function AppContent() {
               <Route path="admin/requests" element={<RequestsPage />} />
               <Route path="admin/releases" element={<ReleasesPage />} />
               <Route path="admin/logs" element={<AdminLogs />} />
-              <Route path="teacher/time" element={<TeacherTimePage />} />
+              <Route path="teacher/time" element={<Navigate to="/booking" replace />} />
               <Route path="booking" element={<BookingPage />} />
               <Route path="bug-report" element={<BugReportPage />} />
-              <Route path="incidents" element={<IncidentPage />} />
+              <Route path="incidents" element={<Navigate to="/bug-report?tab=incidents" replace />} />
               <Route path="rules" element={<GlobalRulesPage />} />
             </Route>
             <Route

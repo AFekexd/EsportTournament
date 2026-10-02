@@ -90,15 +90,15 @@ export function TeamManagement() {
           {/* Search */}
           <div className="relative flex-1 md:w-64">
             <Search
-              size={18}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+              size={16}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
             />
             <input
               type="text"
               placeholder="Csapat keresése..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-secondary/80 border border-border rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary font-mono text-xs transition-colors"
+              className="w-full h-9 pl-9 pr-4 bg-secondary/80 border border-border rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary font-mono text-xs transition-colors"
             />
           </div>
         </div>

@@ -5,6 +5,7 @@ import { authenticate, optionalAuth, AuthenticatedRequest } from '../middleware/
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { UserRole } from '../utils/enums.js';
 import { notificationService } from '../services/notificationService.js';
+import { processAndValidateImage } from '../utils/imageProcessor.js';
 
 export const usersRouter: Router = Router();
 
@@ -371,11 +372,21 @@ usersRouter.patch(
             discordId?: string | null;
         };
 
+        // Validate and process avatar if provided
+        let processedAvatarUrl = avatarUrl;
+        if (avatarUrl !== undefined && avatarUrl !== null && avatarUrl !== '') {
+            try {
+                processedAvatarUrl = await processAndValidateImage(avatarUrl, 10);
+            } catch (err: any) {
+                throw new ApiError(err.message || 'Érvénytelen képformátum', 400, 'INVALID_IMAGE');
+            }
+        }
+
         // --- SPLIT UPDATE LOGIC ---
 
         // 1. Identify Restricted vs Immediate fields
         const isNameChanged = displayName !== undefined && displayName !== currentUser.displayName;
-        const isAvatarChanged = avatarUrl !== undefined && avatarUrl !== currentUser.avatarUrl;
+        const isAvatarChanged = processedAvatarUrl !== undefined && processedAvatarUrl !== currentUser.avatarUrl;
 
         // These are restricted and require approval if not Admin/Organizer
         const restrictedChangesProvided = isNameChanged || isAvatarChanged;
@@ -387,7 +398,7 @@ usersRouter.patch(
         if (isRestrictedContext && restrictedChangesProvided) {
             // Split the data
             if (isNameChanged) pendingData.displayName = displayName;
-            if (isAvatarChanged) pendingData.avatarUrl = avatarUrl;
+            if (isAvatarChanged) pendingData.avatarUrl = processedAvatarUrl;
 
             // Immediate fields (email preferences are always immediate)
             if (emailNotifications !== undefined) immediateData.emailNotifications = emailNotifications;
@@ -401,7 +412,7 @@ usersRouter.patch(
         } else {
             // If Admin or no restricted changes, everything is immediate
             if (displayName !== undefined) immediateData.displayName = displayName;
-            if (avatarUrl !== undefined) immediateData.avatarUrl = avatarUrl;
+            if (processedAvatarUrl !== undefined) immediateData.avatarUrl = processedAvatarUrl;
             if (emailNotifications !== undefined) immediateData.emailNotifications = emailNotifications;
             if (emailPrefTournaments !== undefined) immediateData.emailPrefTournaments = emailPrefTournaments;
             if (emailPrefMatches !== undefined) immediateData.emailPrefMatches = emailPrefMatches;

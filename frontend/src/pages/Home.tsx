@@ -90,10 +90,10 @@ export function HomePage() {
       accentBorder: "hover:border-accent/60",
     },
     {
-      badge: "KOMPETITÍV ELO",
-      title: "Hivatalos Iskolai Rangsor",
+      badge: "HIVATALOS RANGLISTA",
+      title: "Iskolai Teljesítményrangsor",
       description:
-        "Dinamikus pontrendszer minden meccs után. Hódítsd meg a Pollák ranglistáját egyéniben és csapattal egyaránt.",
+        "Győzelmek és mérkőzés statisztikák alapján összeállított rangsor. Hódítsd meg a Pollák ranglistáját diáktársaiddal!",
       link: "/leaderboards",
       linkText: "Ranglista megtekintése",
       icon: <Shield className="h-6 w-6 text-amber-400" />,
@@ -160,12 +160,12 @@ export function HomePage() {
             <Button
               asChild
               size="lg"
-              className="h-12 px-6 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground font-display text-base font-bold uppercase tracking-wider shadow-sm transition-all"
+              className="h-12 px-6 rounded-md bg-primary hover:bg-primary/90 text-white font-display text-base font-bold uppercase tracking-wider shadow-sm transition-all"
             >
-              <Link to="/tournaments" className="flex items-center gap-2">
-                <Trophy className="h-4 w-4" />
-                Bajnokságok böngészése
-                <ArrowRight className="h-4 w-4 ml-1" />
+              <Link to="/tournaments" className="flex items-center gap-2 text-white">
+                <Trophy className="h-4 w-4 text-white" />
+                <span>Bajnokságok böngészése</span>
+                <ArrowRight className="h-4 w-4 ml-1 text-white" />
               </Link>
             </Button>
 
@@ -234,8 +234,8 @@ export function HomePage() {
                     <span className="text-foreground font-bold">Esport Terem (10 PC)</span>
                   </div>
                   <div className="bg-secondary/60 p-2 rounded">
-                    <span className="text-muted-foreground block text-[10px]">RANGSOR</span>
-                    <span className="text-amber-400 font-bold">+150 ELO Bajnoki</span>
+                    <span className="text-muted-foreground block text-[10px]">DÍJAZÁS</span>
+                    <span className="text-amber-400 font-bold">Kupa & Érmek</span>
                   </div>
                 </div>
               </div>
@@ -460,9 +460,9 @@ export function HomePage() {
           <Button
             asChild
             size="lg"
-            className="h-12 px-8 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground font-display text-base font-bold uppercase tracking-wider"
+            className="h-12 px-8 rounded-md bg-primary hover:bg-primary/90 text-white font-display text-base font-bold uppercase tracking-wider"
           >
-            <Link to="/tournaments">Bajnokságok listája</Link>
+            <Link to="/tournaments" className="text-white">Bajnokságok listája</Link>
           </Button>
           <Button
             asChild

@@ -9,13 +9,11 @@ import {
   ChevronLeft,
   ChevronRight,
   TrendingUp,
-  MessageSquare,
   Monitor,
   ClipboardList,
   FileQuestion,
   GitCommit,
   Bug,
-  AlertTriangle,
   ScrollText,
 } from "lucide-react";
 
@@ -44,7 +42,6 @@ const navItems: NavItem[] = [
   { to: "/rules", icon: <ScrollText size={20} />, label: "Házirend" },
   { to: "/leaderboards", icon: <TrendingUp size={20} />, label: "Ranglisták" },
   { to: "/settings", icon: <Settings size={20} />, label: "Beállítások" },
-  { to: "/incidents", icon: <AlertTriangle size={20} />, label: "Incidensek" },
   { to: "/bug-report", icon: <Bug size={20} />, label: "Hibajelentés" },
 ];
 
@@ -66,18 +63,6 @@ const adminItems: NavItem[] = [
     icon: <ClipboardList size={20} />,
     label: "Napló",
     roles: ["ADMIN"],
-  },
-  {
-    to: "/teacher/time",
-    icon: <Monitor size={20} />,
-    label: "Időkeret",
-    roles: ["ADMIN", "TEACHER"],
-  },
-  {
-    to: "/discord-settings",
-    icon: <MessageSquare size={20} />,
-    label: "Discord",
-    roles: ["ADMIN", "ORGANIZER", "MODERATOR", "TEACHER"],
   },
   {
     to: "/admin/requests",

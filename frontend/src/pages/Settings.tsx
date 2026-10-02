@@ -15,11 +15,13 @@ import {
   AlertCircle,
   Newspaper,
   Clock,
+  CheckCircle2,
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useAppDispatch } from "../hooks/useRedux";
 import { updateUser } from "../store/slices/authSlice";
 import { ImageUpload } from "../components/common/ImageUpload";
+import { DiscordConnectModal } from "../components/common/DiscordConnectModal";
 import { API_URL } from "../config";
 import { apiFetch } from "../lib/api-client";
 
@@ -64,6 +66,7 @@ export function SettingsPage() {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [steamId, setSteamId] = useState(user?.steamId || "");
   const [syncLoading, setSyncLoading] = useState(false);
+  const [isDiscordModalOpen, setIsDiscordModalOpen] = useState(false);
 
   // Pending Request State
   const [pendingRequest, setPendingRequest] = useState<any>(null);
@@ -318,14 +321,14 @@ export function SettingsPage() {
                   onChange={(e) => setDisplayName(e.target.value)}
                   disabled={!isAdmin || !!pendingRequest}
                   maxLength={50}
-                  className={`w-full px-4 py-2.5 bg-secondary/40 border border-border rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 text-base ${!isAdmin || !!pendingRequest
-                      ? "opacity-50 cursor-not-allowed"
+                  className={`w-full h-10 px-4 bg-secondary/40 border border-border rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 text-sm ${!isAdmin || !!pendingRequest
+                      ? "opacity-50 cursor-not-allowed pr-10"
                       : ""
                     }`}
                   placeholder="pl. GamerPro123"
                 />
                 {!isAdmin && (
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+                  <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
                     <Lock size={16} />
                   </div>
                 )}
@@ -369,17 +372,17 @@ export function SettingsPage() {
                   value={steamId}
                   onChange={(e) => setSteamId(e.target.value)}
                   disabled={!!pendingRequest}
-                  className="flex-1 px-4 py-2.5 bg-secondary/40 border border-border rounded text-foreground font-mono placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 text-sm disabled:opacity-50"
+                  className="flex-1 h-10 px-4 bg-secondary/40 border border-border rounded text-foreground font-mono placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 text-sm disabled:opacity-50"
                   placeholder="76561198..."
                 />
                 <button
                   onClick={handleSteamSync}
                   disabled={!steamId || syncLoading || !!pendingRequest}
-                  className="px-3.5 py-2 bg-secondary border border-border rounded hover:border-primary/50 hover:text-foreground transition-all text-muted-foreground disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="h-10 px-3.5 bg-secondary border border-border rounded hover:border-primary/50 hover:text-foreground transition-all text-muted-foreground disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                   title="Játékok szinkronizálása"
                 >
                   <RefreshCw
-                    size={20}
+                    size={18}
                     className={syncLoading ? "animate-spin text-primary" : ""}
                   />
                 </button>
@@ -440,6 +443,69 @@ export function SettingsPage() {
                 >
                   Keycloak Profil
                 </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Connected Accounts / Integrations */}
+          <div className="tactical-card p-6 sm:p-8">
+            <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-border">
+              <div className="p-2.5 bg-secondary rounded border border-border text-[#5865F2]">
+                <Gamepad2 size={20} />
+              </div>
+              <div>
+                <h2 className="font-display text-lg font-bold uppercase tracking-wider text-foreground">
+                  Kapcsolt Fiókok
+                </h2>
+                <p className="text-xs text-muted-foreground">
+                  Külső platformok és integrációk kezelése
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {/* Discord Integration */}
+              <div className="flex items-center justify-between p-3.5 bg-secondary/30 border border-border rounded">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded bg-[#5865F2]/20 border border-[#5865F2]/30 flex items-center justify-center text-[#5865F2] shrink-0">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="#5865F2"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.419-2.1568 2.419zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.419-2.1568 2.419z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-display text-sm font-bold text-foreground flex items-center gap-2">
+                      Discord
+                      {user?.discordId ? (
+                        <span className="text-[10px] font-mono font-normal px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center gap-1">
+                          <CheckCircle2 size={10} />
+                          Összekapcsolva
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-mono font-normal px-2 py-0.5 rounded bg-secondary text-muted-foreground">
+                          Nincs összekapcsolva
+                        </span>
+                      )}
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      {user?.discordId
+                        ? "A fiókod sikeresen csatolva van a Discord szerverünkhöz."
+                        : "Kapcsold össze fiókodat az automatikus rangokhoz és értesítésekhez."}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsDiscordModalOpen(true)}
+                  className="px-3.5 py-1.5 text-xs font-display font-bold uppercase tracking-wider rounded bg-[#5865F2] hover:bg-[#4752C4] text-white transition-all shadow-sm shrink-0 ml-3"
+                >
+                  {user?.discordId ? "Kezelés" : "Összekötés"}
+                </button>
               </div>
             </div>
           </div>
@@ -582,6 +648,11 @@ export function SettingsPage() {
 
       {/* Spacer for sticky mobile button */}
       <div className="h-24 md:h-0" />
+
+      <DiscordConnectModal
+        isOpen={isDiscordModalOpen}
+        onClose={() => setIsDiscordModalOpen(false)}
+      />
     </div>
   );
 }

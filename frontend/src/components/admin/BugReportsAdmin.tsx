@@ -335,20 +335,20 @@ export function BugReportsAdmin() {
                 {/* Filters */}
                 <div className="flex flex-wrap gap-3">
                     <div className="relative">
-                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
                         <input
                             type="text"
                             placeholder="Keresés..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="pl-9 pr-4 py-2 bg-secondary/80 border border-border rounded text-foreground font-mono text-xs placeholder:text-muted-foreground focus:outline-none focus:border-primary"
+                            className="h-9 pl-9 pr-4 bg-secondary/80 border border-border rounded text-foreground font-mono text-xs placeholder:text-muted-foreground focus:outline-none focus:border-primary"
                         />
                     </div>
 
                     <select
                         value={filterStatus}
                         onChange={(e) => setFilterStatus(e.target.value)}
-                        className="px-3 py-2 bg-secondary/80 border border-border rounded text-foreground font-mono text-xs focus:outline-none focus:border-primary"
+                        className="h-9 px-3 bg-secondary/80 border border-border rounded text-foreground font-mono text-xs focus:outline-none focus:border-primary cursor-pointer"
                     >
                         <option value="">Minden státusz</option>
                         {statuses.map((s) => (
@@ -361,7 +361,7 @@ export function BugReportsAdmin() {
                     <select
                         value={filterCategory}
                         onChange={(e) => setFilterCategory(e.target.value)}
-                        className="px-3 py-2 bg-secondary/80 border border-border rounded text-foreground font-mono text-xs focus:outline-none focus:border-primary"
+                        className="h-9 px-3 bg-secondary/80 border border-border rounded text-foreground font-mono text-xs focus:outline-none focus:border-primary cursor-pointer"
                     >
                         <option value="">Minden kategória</option>
                         {categories.map((c) => (

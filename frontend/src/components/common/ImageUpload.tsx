@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import type { ChangeEvent, DragEvent } from "react";
-import { Upload, X, Link as LinkIcon, Image as ImageIcon, ZoomIn, ZoomOut, Check, RotateCcw } from "lucide-react";
+import { X, Image as ImageIcon, ZoomIn, ZoomOut, Check, RotateCcw } from "lucide-react";
 import Cropper from "react-easy-crop";
 import type { Area } from "react-easy-crop";
 import getCroppedImg from "../../utils/cropImage";
@@ -21,17 +21,12 @@ export function ImageUpload({
   value,
   onChange,
   label = "Kép",
-  placeholder = "https://example.com/image.jpg",
   maxSizeMB = 15,
   className = "",
   aspect = "video",
   skipCrop = false,
 }: ImageUploadProps) {
-  const [mode, setMode] = useState<"upload" | "url">("upload");
   const [isDragging, setIsDragging] = useState(false);
-  const [urlInput, setUrlInput] = useState(
-    value && !value.startsWith("data:") ? value : ""
-  );
   const [error, setError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -107,16 +102,8 @@ export function ImageUpload({
     }
   };
 
-  const handleUrlSubmit = () => {
-    if (urlInput.trim()) {
-      onChange(urlInput.trim());
-      setError("");
-    }
-  };
-
   const handleClear = () => {
     onChange("");
-    setUrlInput("");
     setError("");
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -248,75 +235,31 @@ export function ImageUpload({
 
       {!value ? (
         <>
-          {/* Mode Toggle */}
-          <div className="flex gap-2 mb-3">
-            <button
-              type="button"
-              onClick={() => setMode("upload")}
-              className={`flex-1 px-4 py-2 rounded text-xs font-mono uppercase tracking-wider font-bold transition-all ${mode === "upload"
-                ? "bg-primary text-primary-foreground"
-                : "bg-secondary/80 text-muted-foreground hover:text-foreground border border-border"
-                }`}
-            >
-              <Upload size={14} className="inline mr-2" />
-              Feltöltés
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode("url")}
-              className={`flex-1 px-4 py-2 rounded text-xs font-mono uppercase tracking-wider font-bold transition-all ${mode === "url"
-                ? "bg-primary text-primary-foreground"
-                : "bg-secondary/80 text-muted-foreground hover:text-foreground border border-border"
-                }`}
-            >
-              <LinkIcon size={14} className="inline mr-2" />
-              URL
-            </button>
+          <div
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current?.click()}
+            className={`relative border-2 border-dashed rounded p-8 text-center cursor-pointer transition-all ${isDragging
+              ? "border-primary bg-primary/10"
+              : "border-border hover:border-primary/50 bg-secondary/30"
+              }`}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <ImageIcon size={40} className="mx-auto mb-3 text-muted-foreground" />
+            <p className="text-foreground text-sm font-semibold mb-1">
+              Kattints vagy húzd ide a képet
+            </p>
+            <p className="text-xs font-mono text-muted-foreground">
+              PNG, JPG, GIF, WebP (max {maxSizeMB}MB)
+            </p>
           </div>
-
-          {/* Upload Mode */}
-          {mode === "upload" && (
-            <div
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              onClick={() => fileInputRef.current?.click()}
-              className={`relative border-2 border-dashed rounded p-8 text-center cursor-pointer transition-all ${isDragging
-                ? "border-primary bg-primary/10"
-                : "border-border hover:border-primary/50 bg-secondary/30"
-                }`}
-            >
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-              <ImageIcon size={40} className="mx-auto mb-3 text-muted-foreground" />
-              <p className="text-foreground text-sm font-semibold mb-1">
-                Kattints vagy húzd ide a képet
-              </p>
-              <p className="text-xs font-mono text-muted-foreground">
-                PNG, JPG, GIF, WebP (max {maxSizeMB}MB)
-              </p>
-            </div>
-          )}
-
-          {/* URL Mode */}
-          {mode === "url" && (
-            <div className="flex gap-2">
-              <input
-                type="url"
-                value={urlInput}
-                onChange={(e) => setUrlInput(e.target.value)}
-                onBlur={handleUrlSubmit}
-                onKeyDown={(e) => e.key === "Enter" && handleUrlSubmit()}
-                placeholder={placeholder}
-                className="flex-1 px-4 py-2.5 bg-secondary/80 border border-border rounded text-foreground font-mono text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
-              />
-            </div>
-          )}
           {/* Error Message */}
           {error && <p className="text-destructive font-mono text-xs mt-2">{error}</p>}
         </>
@@ -330,6 +273,7 @@ export function ImageUpload({
             <img
               src={value}
               alt="Preview"
+              referrerPolicy="no-referrer"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-secondary opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">

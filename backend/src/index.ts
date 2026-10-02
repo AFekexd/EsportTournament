@@ -39,7 +39,6 @@ import { clientUpdateRouter } from './routes/clientUpdate.js';
 import { adminEmailRouter } from './routes/admin-email.js';
 import { adminDiscordRouter } from './routes/admin-discord.js';
 import { digestService } from './services/digestService.js';
-import { matchReminderService } from './services/matchReminderService.js';
 import { supervisorsRouter } from './routes/supervisors.js';
 import { incidentsRouter } from './routes/incidents.js';
 import { adminSettingsRouter } from './routes/adminSettings.js';
@@ -82,7 +81,6 @@ setIo(io);
 BookingNotificationService.startReminderJob();
 TournamentSchedulerService.startScheduler();
 digestService.startScheduler();
-matchReminderService.startScheduler();
 
 const PORT = process.env.PORT || 3000;
 

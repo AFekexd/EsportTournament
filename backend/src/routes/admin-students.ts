@@ -4,7 +4,7 @@ import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import prisma from '../lib/prisma.js';
 import { logSystemActivity } from '../services/logService.js';
 import multer from 'multer';
-import * as xlsx from 'xlsx';
+import { readSheet } from 'read-excel-file/node';
 
 export const adminStudentsRouter: Router = Router();
 
@@ -22,21 +22,6 @@ function findColumn(row: any, possibleNames: string[]): any {
         if (found) return row[found];
     }
     return undefined;
-}
-
-// Calculate time balance based on average
-function calculateTimeBalanceSeconds(average: number): number {
-    // Example formula:
-    // >= 4.5 -> 4 hours (14400 seconds)
-    // >= 4.0 -> 3 hours (10800 seconds)
-    // >= 3.5 -> 2 hours (7200 seconds)
-    // >= 3.0 -> 1 hour (3600 seconds)
-    // < 3.0 -> 0 hours
-    if (average >= 4.5) return 14400;
-    if (average >= 4.0) return 10800;
-    if (average >= 3.5) return 7200;
-    if (average >= 3.0) return 3600;
-    return 0;
 }
 
 adminStudentsRouter.post(
@@ -57,12 +42,22 @@ adminStudentsRouter.post(
         }
 
         // Parse Excel
-        const workbook = xlsx.read(req.file.buffer, { type: 'buffer' });
-        const sheetName = workbook.SheetNames[0]; // Take first sheet
-        const sheet = workbook.Sheets[sheetName];
+        const rows = await readSheet(req.file.buffer);
 
-        // Convert to JSON
-        const rawData = xlsx.utils.sheet_to_json(sheet);
+        if (!rows || rows.length < 2) {
+            throw new ApiError('Az Excel fájl üres vagy rossz formátumú.', 400, 'EMPTY_FILE');
+        }
+
+        const headers = rows[0].map((h: any) => String(h ?? '').trim());
+        const rawData = rows.slice(1).map((row: any[]) => {
+            const obj: Record<string, any> = {};
+            headers.forEach((header: string, i: number) => {
+                if (header && row[i] !== undefined && row[i] !== null) {
+                    obj[header] = row[i];
+                }
+            });
+            return obj;
+        });
 
         if (rawData.length === 0) {
             throw new ApiError('Az Excel fájl üres vagy rossz formátumú.', 400, 'EMPTY_FILE');
@@ -138,16 +133,11 @@ adminStudentsRouter.post(
                     average = totalScore / numSubjects;
                 }
 
-                const newTimeToAdd = !isNaN(average) && !isFailing ? calculateTimeBalanceSeconds(average) : 0;
-
                 await tx.user.update({
                     where: { id: student.id },
                     data: {
                         isBannedFromBooking: isFailing,
-                        lastGradeAverage: !isNaN(average) ? average : null,
-                        timeBalanceSeconds: {
-                            increment: newTimeToAdd
-                        }
+                        lastGradeAverage: !isNaN(average) ? average : null
                     }
                 });
 

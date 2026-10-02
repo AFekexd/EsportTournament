@@ -5,6 +5,7 @@ import { ApiError, asyncHandler } from '../middleware/errorHandler.js';
 import { UserRole } from '../utils/enums.js';
 import { emailService } from '../services/emailService.js';
 import { discordService } from '../services/discordService.js';
+import { processAndValidateImage } from '../utils/imageProcessor.js';
 
 export const bugReportsRouter: Router = Router();
 
@@ -130,13 +131,22 @@ bugReportsRouter.post(
             throw new ApiError('Érvénytelen prioritás', 400, 'INVALID_PRIORITY');
         }
 
+        let processedImageUrl: string | undefined = undefined;
+        if (imageUrl) {
+            try {
+                processedImageUrl = await processAndValidateImage(imageUrl, 15);
+            } catch (err: any) {
+                throw new ApiError(err.message || 'Érvénytelen képformátum', 400, 'INVALID_IMAGE');
+            }
+        }
+
         const bugReport = await prisma.bugReport.create({
             data: {
                 title,
                 description,
                 category,
                 priority: priority || 'MEDIUM',
-                imageUrl,
+                imageUrl: processedImageUrl || null,
                 reporterId: user.id
             },
             include: {

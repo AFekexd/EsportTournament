@@ -9,7 +9,6 @@ import {
   Megaphone,
   Swords,
   Calendar,
-  AlertCircle,
   Loader2,
 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';

@@ -1,4 +1,4 @@
-import { ScrollText, Shield } from "lucide-react";
+import { Shield } from "lucide-react";
 
 export function GlobalRulesPage() {
     const pdfUrl = "/rules.pdf";

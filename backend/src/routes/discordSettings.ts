@@ -158,24 +158,3 @@ discordRouter.post(
         });
     })
 );
-
-// Helper functions
-function getChannelDisplayName(channel: string): string {
-    const names: Record<string, string> = {
-        announcements: '📢 Hirdetmények',
-        tournaments: '🏆 Versenyek',
-        matches: '⚔️ Meccsek',
-        general: '💬 Általános',
-    };
-    return names[channel] || channel;
-}
-
-function getChannelIcon(channel: string): string {
-    const icons: Record<string, string> = {
-        announcements: '📢',
-        tournaments: '🏆',
-        matches: '⚔️',
-        general: '💬',
-    };
-    return icons[channel] || '📝';
-}

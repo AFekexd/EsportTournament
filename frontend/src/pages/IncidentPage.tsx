@@ -37,7 +37,11 @@ interface Computer {
   hostname?: string;
 }
 
-const IncidentPage = () => {
+interface IncidentPageProps {
+  hideHeader?: boolean;
+}
+
+const IncidentPage = ({ hideHeader = false }: IncidentPageProps) => {
   const { isAuthenticated } = useAuth();
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [computers, setComputers] = useState<Computer[]>([]);
@@ -186,28 +190,43 @@ const IncidentPage = () => {
   return (
     <div className="flex flex-col gap-8 pb-16">
       {/* Tactical Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-border/60 pb-6">
-        <div className="flex flex-col gap-3">
-          <div className="inline-flex w-fit items-center gap-2 rounded border border-border bg-secondary/80 px-3 py-1 font-mono text-xs uppercase tracking-wider text-amber-400">
-            <AlertTriangle className="h-3.5 w-3.5" />
-            <span>LABOR INCIDENSKEZELŐ // HARDWARE & DESK STATUS</span>
+      {!hideHeader ? (
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-border/60 pb-6">
+          <div className="flex flex-col gap-3">
+            <div className="inline-flex w-fit items-center gap-2 rounded border border-border bg-secondary/80 px-3 py-1 font-mono text-xs uppercase tracking-wider text-amber-400">
+              <AlertTriangle className="h-3.5 w-3.5" />
+              <span>LABOR INCIDENSKEZELŐ // HARDWARE & DESK STATUS</span>
+            </div>
+            <h1 className="font-display text-3xl sm:text-5xl font-bold uppercase tracking-tight text-foreground">
+              INCIDENS <span className="text-amber-400">JELENTÉS</span>
+            </h1>
+            <p className="text-muted-foreground text-sm max-w-xl">
+              Hardveres meghibásodás a teremben vagy hiba az esport munkaállomáson? Jelentsd be és a laborfelelősök megoldják.
+            </p>
           </div>
-          <h1 className="font-display text-3xl sm:text-5xl font-bold uppercase tracking-tight text-foreground">
-            INCIDENS <span className="text-amber-400">JELENTÉS</span>
-          </h1>
-          <p className="text-muted-foreground text-sm max-w-xl">
-            Hardveres meghibásodás a teremben vagy hiba az esport munkaállomáson? Jelentsd be és a laborfelelősök megoldják.
-          </p>
-        </div>
 
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded bg-amber-500 hover:bg-amber-400 text-black font-display font-bold uppercase tracking-wider text-sm transition-all shadow-md shadow-amber-500/20"
-        >
-          {showForm ? <XCircle size={16} /> : <Plus size={16} />}
-          <span>{showForm ? "Mégse" : "Új bejelentés"}</span>
-        </button>
-      </div>
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded bg-amber-500 hover:bg-amber-400 text-black font-display font-bold uppercase tracking-wider text-sm transition-all shadow-md shadow-amber-500/20"
+          >
+            {showForm ? <XCircle size={16} /> : <Plus size={16} />}
+            <span>{showForm ? "Mégse" : "Új bejelentés"}</span>
+          </button>
+        </div>
+      ) : (
+        <div className="flex justify-between items-center bg-secondary/30 p-4 rounded border border-border">
+          <p className="text-sm text-muted-foreground">
+            Itt jelentheted a géptermi gépek, monitorok vagy perifériák hardveres problémáit.
+          </p>
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded bg-amber-500 hover:bg-amber-400 text-black font-display font-bold uppercase tracking-wider text-xs transition-all shadow-md shadow-amber-500/20"
+          >
+            {showForm ? <XCircle size={14} /> : <Plus size={14} />}
+            <span>{showForm ? "Mégse" : "Új labor incidens"}</span>
+          </button>
+        </div>
+      )}
 
       {showForm && (
         <div className="tactical-card p-6 sm:p-8 max-w-3xl mx-auto w-full">
@@ -228,7 +247,7 @@ const IncidentPage = () => {
               </label>
               <input
                 type="text"
-                className="w-full px-4 py-2.5 bg-secondary/40 border border-border rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-amber-400/50 text-sm"
+                className="w-full h-10 px-4 bg-secondary/40 border border-border rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-amber-400/50 text-sm"
                 placeholder="Pl. Nem működik a bal oldali fejhallgató jack aljzata..."
                 value={formData.title}
                 onChange={(e) =>
@@ -245,11 +264,11 @@ const IncidentPage = () => {
                 </label>
                 <div className="relative">
                   <Monitor
-                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
                     size={16}
                   />
                   <select
-                    className="w-full pl-10 pr-4 py-2.5 bg-secondary/40 border border-border rounded text-foreground appearance-none focus:outline-none focus:border-amber-400/50 text-sm"
+                    className="w-full h-10 pl-10 pr-4 bg-secondary/40 border border-border rounded text-foreground focus:outline-none focus:border-amber-400/50 text-sm cursor-pointer"
                     value={formData.computerId}
                     onChange={(e) =>
                       setFormData({ ...formData, computerId: e.target.value })
@@ -273,7 +292,7 @@ const IncidentPage = () => {
                   Prioritás
                 </label>
                 <select
-                  className="w-full px-4 py-2.5 bg-secondary/40 border border-border rounded text-foreground appearance-none focus:outline-none focus:border-amber-400/50 text-sm"
+                  className="w-full h-10 px-4 bg-secondary/40 border border-border rounded text-foreground focus:outline-none focus:border-amber-400/50 text-sm cursor-pointer"
                   value={formData.priority}
                   onChange={(e) =>
                     setFormData({ ...formData, priority: e.target.value })

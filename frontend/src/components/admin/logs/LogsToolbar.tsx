@@ -38,7 +38,7 @@ export function LogsToolbar({
         {/* Search */}
         <div className="relative flex-1">
           <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
             size={14}
           />
           <input
@@ -46,7 +46,7 @@ export function LogsToolbar({
             placeholder="Keresés üzenetben, felhasználóban..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full bg-secondary/80 border border-border rounded pl-9 pr-4 py-2 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all"
+            className="w-full h-9 bg-secondary/80 border border-border rounded pl-9 pr-4 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all"
           />
         </div>
 
@@ -54,7 +54,7 @@ export function LogsToolbar({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded border transition-all text-xs font-mono font-bold uppercase tracking-wider ${showFilters || hasActiveFilters
+            className={`flex items-center gap-2 h-9 px-3.5 rounded border transition-all text-xs font-mono font-bold uppercase tracking-wider ${showFilters || hasActiveFilters
                 ? "bg-primary/20 border-primary text-primary"
                 : "bg-secondary/80 border border-border text-muted-foreground hover:text-foreground hover:bg-secondary"
               }`}
@@ -68,7 +68,7 @@ export function LogsToolbar({
 
           <button
             onClick={onExport}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded bg-secondary/80 border border-border text-muted-foreground hover:text-foreground hover:bg-secondary transition-all text-xs font-mono font-bold uppercase tracking-wider"
+            className="flex items-center gap-1.5 h-9 px-3.5 rounded bg-secondary/80 border border-border text-muted-foreground hover:text-foreground hover:bg-secondary transition-all text-xs font-mono font-bold uppercase tracking-wider"
             title="Exportálás CSV-be"
           >
             <Download size={14} />
@@ -123,7 +123,7 @@ export function LogsToolbar({
             </label>
             <div className="relative">
               <Calendar
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
                 size={14}
               />
               <input
@@ -142,7 +142,7 @@ export function LogsToolbar({
             </label>
             <div className="relative">
               <Calendar
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
                 size={14}
               />
               <input

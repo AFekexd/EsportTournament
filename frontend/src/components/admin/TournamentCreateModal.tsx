@@ -255,7 +255,7 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                   </div>
 
                   <div className="relative">
-                    <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                    <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
                     <input
                       type="text"
                       value={globalSearchQuery}

@@ -164,11 +164,15 @@ export function Navbar() {
         <div className="flex items-center gap-4">
           <button
             onClick={() => dispatch(toggleSearch())}
-            className="flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-all hover:bg-secondary/80 hover:text-foreground"
-            aria-label="Search (Ctrl+K)"
+            className="flex items-center gap-2 h-9 px-2.5 sm:px-3 rounded-md bg-secondary/40 border border-border text-muted-foreground transition-all hover:bg-secondary hover:text-foreground hover:border-primary/40 text-xs font-mono"
+            aria-label="Keresés (Ctrl+K)"
             title="Keresés (Ctrl+K)"
           >
-            <Search size={20} />
+            <Search size={16} />
+            <span className="hidden sm:inline text-xs text-muted-foreground">Keresés...</span>
+            <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground/80 bg-background/60 border border-border rounded">
+              Ctrl K
+            </kbd>
           </button>
 
           <button

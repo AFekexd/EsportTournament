@@ -256,10 +256,10 @@ function LeaderboardsSlide({ topPlayers }: { topPlayers: LeaderboardPlayer[] }) 
 
               <div className="text-right px-8">
                 <div className="text-7xl font-black text-foreground drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
-                  {player.elo}
+                  {player.matchesWon}
                 </div>
                 <div className="text-lg font-bold uppercase tracking-[0.2em] text-primary">
-                  ELO PONT
+                  GYŐZELEM
                 </div>
               </div>
             </div>
@@ -373,10 +373,10 @@ function TeamsSlide({ topTeams }: { topTeams: LeaderboardTeam[] }) {
 
               <div className="text-right px-8">
                 <div className="text-7xl font-black text-foreground drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
-                  {team.elo}
+                  {team.matchesWon}
                 </div>
                 <div className="text-lg font-bold uppercase tracking-[0.2em] text-primary">
-                  ELO PONT
+                  GYŐZELEM
                 </div>
               </div>
             </div>

@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { Users, Shield, Search, Edit2, Trash2, Clock, LogOut } from "lucide-react";
+import { Users, Shield, Search, Edit2, Trash2, LogOut } from "lucide-react";
 import { authService } from "../../lib/auth-service";
 import { RoleChangeModal } from "./RoleChangeModal";
-import { UserTimeModal } from "./UserTimeModal";
 import { UserEditModal } from "./UserEditModal";
-import { BulkUserTimeModal } from "./BulkUserTimeModal";
 import { ConfirmationModal } from "../common/ConfirmationModal";
 import { API_URL } from "../../config";
 
@@ -18,7 +16,7 @@ interface User {
   avatarUrl: string | null;
   role: "ADMIN" | "ORGANIZER" | "MODERATOR" | "TEACHER" | "STUDENT" | "DOK";
   elo: number;
-  timeBalanceSeconds: number;
+  timeBalanceSeconds?: number;
   omId: string | null;
   discordId: string | null;
   createdAt: string;
@@ -42,13 +40,7 @@ export function UserManagement() {
   });
 
   const [roleModalUser, setRoleModalUser] = useState<User | null>(null);
-  const [timeModalUser, setTimeModalUser] = useState<User | null>(null);
   const [editModalUser, setEditModalUser] = useState<User | null>(null);
-
-  // Bulk actions state
-  const [selectedUserIds, setSelectedUserIds] = useState<Set<string>>(new Set());
-  const [isBulkTimeModalOpen, setIsBulkTimeModalOpen] = useState(false);
-  const [isSelectAllGlobal, setIsSelectAllGlobal] = useState(false);
 
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
@@ -152,31 +144,7 @@ export function UserManagement() {
   // Refetch when page or sort changes
   useEffect(() => {
     fetchUsers();
-    // Clear selections when page changes to avoid confusion
-    setSelectedUserIds(new Set());
-    setIsSelectAllGlobal(false);
   }, [page, sortConfig]);
-
-  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked && users.length > 0) {
-      setSelectedUserIds(new Set(users.map(u => u.id)));
-      setIsSelectAllGlobal(false);
-    } else {
-      setSelectedUserIds(new Set());
-      setIsSelectAllGlobal(false);
-    }
-  };
-
-  const handleSelectUser = (userId: string) => {
-    const newSelected = new Set(selectedUserIds);
-    if (newSelected.has(userId)) {
-      newSelected.delete(userId);
-      setIsSelectAllGlobal(false);
-    } else {
-      newSelected.add(userId);
-    }
-    setSelectedUserIds(newSelected);
-  };
 
   const handleSort = (key: string) => {
     setSortConfig((current) => ({
@@ -228,23 +196,6 @@ export function UserManagement() {
         {config.label}
       </span>
     );
-  };
-
-  const formatTime = (seconds: number) => {
-    if (!seconds && seconds !== 0) return "-";
-
-    const isNegative = seconds < 0;
-    const absSeconds = Math.abs(seconds);
-
-    const hours = Math.floor(absSeconds / 3600);
-    const mins = Math.floor((absSeconds % 3600) / 60);
-
-    const sign = isNegative ? "-" : "";
-
-    if (hours > 0) {
-      return `${sign}${hours}ó ${mins}p`;
-    }
-    return `${sign}${mins}p`;
   };
 
   // Since we are now doing server-side search/pagination, we use users directly.
@@ -378,15 +329,15 @@ export function UserManagement() {
           {/* Search */}
           <div className="relative flex-1 md:w-64">
             <Search
-              size={18}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+              size={16}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
             />
             <input
               type="text"
               placeholder="Keresés felhasználók között..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-secondary/80 border border-border rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary font-mono text-xs transition-colors"
+              className="w-full h-9 pl-9 pr-4 bg-secondary/80 border border-border rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary font-mono text-xs transition-colors"
             />
           </div>
 
@@ -395,7 +346,7 @@ export function UserManagement() {
             <select
               value={selectedRole}
               onChange={(e) => setSelectedRole(e.target.value)}
-              className="appearance-none w-full sm:w-auto px-3.5 py-2 pr-9 bg-secondary/80 border border-border rounded text-foreground font-mono text-xs focus:outline-none focus:border-primary transition-colors cursor-pointer"
+              className="w-full sm:w-auto h-9 px-3.5 bg-secondary/80 border border-border rounded text-foreground font-mono text-xs focus:outline-none focus:border-primary transition-colors cursor-pointer"
               style={{
                 colorScheme: "dark",
               }}
@@ -408,21 +359,6 @@ export function UserManagement() {
               <option value="DOK">DÖK</option>
               <option value="STUDENT">Diák</option>
             </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground">
-              <svg
-                className="w-3.5 h-3.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </div>
           </div>
 
           {/* Reset ToS Button */}
@@ -506,62 +442,11 @@ export function UserManagement() {
         </div>
       </div>
 
-      {/* Bulk Actions */}
-      {selectedUserIds.size > 0 && (
-        <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 mb-6 flex flex-col gap-3">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="text-foreground flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary">
-                {isSelectAllGlobal ? totalUsers : selectedUserIds.size}
-              </div>
-              <span>felhasználó kiválasztva</span>
-            </div>
-            <div className="flex gap-3 w-full sm:w-auto">
-              <button
-                onClick={() => setIsBulkTimeModalOpen(true)}
-                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-all text-sm font-medium"
-              >
-                <Clock size={16} />
-                Tömeges Időkeret Módosítás
-              </button>
-            </div>
-          </div>
-
-          {selectedUserIds.size === users.length && totalUsers > users.length && (
-            <div className="text-center text-sm py-2 border-t border-primary/10 mt-2">
-              {!isSelectAllGlobal ? (
-                <>
-                  <span className="text-muted-foreground mr-2">Ezen az oldalon lévő mind a(z) {users.length} felhasználó ki van választva.</span>
-                  <button onClick={() => setIsSelectAllGlobal(true)} className="text-primary hover:underline font-medium">
-                    Az összes ({totalUsers}) felhasználó kiválasztása
-                  </button>
-                </>
-              ) : (
-                <>
-                  <span className="text-primary font-medium mr-2">A(z) összes ({totalUsers}) felhasználó ki van választva.</span>
-                  <button onClick={() => { setSelectedUserIds(new Set()); setIsSelectAllGlobal(false); }} className="text-muted-foreground hover:underline">
-                    Kijelölés törlése
-                  </button>
-                </>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
       {/* Users Table */}
       <div className="admin-table-container overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-border text-muted text-sm uppercase">
-              <th className="p-3 w-10 text-center">
-                <input
-                  type="checkbox"
-                  className="rounded border-border bg-secondary text-primary focus:ring-primary/50 cursor-pointer w-4 h-4"
-                  checked={filteredUsers.length > 0 && selectedUserIds.size === filteredUsers.length}
-                  onChange={handleSelectAll}
-                />
-              </th>
               <th
                 className="p-3 cursor-pointer hover:text-foreground transition-colors"
                 onClick={() => handleSort('username')}
@@ -593,18 +478,6 @@ export function UserManagement() {
                 Szerep {getSortIcon('role')}
               </th>
               <th
-                className="p-3 text-center cursor-pointer hover:text-foreground transition-colors"
-                onClick={() => handleSort('timeBalanceSeconds')}
-              >
-                Időkeret {getSortIcon('timeBalanceSeconds')}
-              </th>
-              <th
-                className="p-3 text-center cursor-pointer hover:text-foreground transition-colors"
-                onClick={() => handleSort('elo')}
-              >
-                ELO {getSortIcon('elo')}
-              </th>
-              <th
                 className="p-3 cursor-pointer hover:text-foreground transition-colors"
                 onClick={() => handleSort('createdAt')}
               >
@@ -616,7 +489,7 @@ export function UserManagement() {
           <tbody>
             {filteredUsers.length === 0 ? (
               <tr>
-                <td colSpan={9} className="text-center p-8 text-muted">
+                <td colSpan={7} className="text-center p-8 text-muted">
                   {searchTerm || selectedRole !== "ALL"
                     ? "Nincs találat a szűrési feltételeknek megfelelően"
                     : "Még nincs felhasználó"}
@@ -626,17 +499,8 @@ export function UserManagement() {
               filteredUsers.map((user) => (
                 <tr
                   key={user.id}
-                  className={`border-b border-border transition-colors ${selectedUserIds.has(user.id) ? "bg-primary/5" : "hover:bg-secondary"
-                    }`}
+                  className="border-b border-border transition-colors hover:bg-secondary"
                 >
-                  <td className="p-3 text-center">
-                    <input
-                      type="checkbox"
-                      className="rounded border-border bg-secondary text-primary focus:ring-primary/50 cursor-pointer w-4 h-4"
-                      checked={selectedUserIds.has(user.id)}
-                      onChange={() => handleSelectUser(user.id)}
-                    />
-                  </td>
                   <td className="p-3">
                     <Link
                       to={`/profile/${user.id}`}
@@ -675,31 +539,11 @@ export function UserManagement() {
                     {user.discordId ? <span className="text-[#5865F2]">{user.discordId}</span> : "-"}
                   </td>
                   <td className="p-3">{getRoleBadge(user.role)}</td>
-                  <td
-                    className={`p-3 text-center font-mono text-sm ${user.timeBalanceSeconds < 0
-                      ? "text-red-400"
-                      : "text-green-400"
-                      }`}
-                  >
-                    {["ADMIN", "TEACHER"].includes(user.role)
-                      ? "∞"
-                      : formatTime(user.timeBalanceSeconds || 0)}
-                  </td>
-                  <td className="p-3 text-center font-mono text-sm text-primary">
-                    {user.elo}
-                  </td>
                   <td className="p-3 text-sm text-muted">
                     {new Date(user.createdAt).toLocaleDateString("hu-HU")}
                   </td>
                   <td className="p-3 text-right">
                     <div className="flex gap-2 justify-end">
-                      <button
-                        className="btn-icon hover:bg-secondary/80"
-                        title="Időkeret kezelése"
-                        onClick={() => setTimeModalUser(user)}
-                      >
-                        <Clock size={16} />
-                      </button>
                       <button
                         className="btn-icon hover:bg-secondary/80"
                         title="Szerep módosítása"
@@ -797,37 +641,12 @@ export function UserManagement() {
         />
       )}
 
-      {timeModalUser && (
-        <UserTimeModal
-          user={timeModalUser}
-          onClose={() => setTimeModalUser(null)}
-          onSuccess={() => {
-            fetchUsers(); // Refresh to show new balance
-          }}
-        />
-      )}
-
       {editModalUser && (
         <UserEditModal
           user={editModalUser}
           onClose={() => setEditModalUser(null)}
           onSuccess={() => {
             fetchUsers(); // Refresh to show new name/avatar
-          }}
-        />
-      )}
-
-      {isBulkTimeModalOpen && (
-        <BulkUserTimeModal
-          userIds={Array.from(selectedUserIds)}
-          userCount={isSelectAllGlobal ? totalUsers : selectedUserIds.size}
-          selectAll={isSelectAllGlobal}
-          filters={{ role: selectedRole, search: searchTerm }}
-          onClose={() => setIsBulkTimeModalOpen(false)}
-          onSuccess={() => {
-            fetchUsers();
-            setSelectedUserIds(new Set()); // Clear selection after success
-            setIsSelectAllGlobal(false);
           }}
         />
       )}

@@ -1,17 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
   Trophy,
   Calendar,
   Users,
-  Filter,
   Search,
   ArrowRight,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import { fetchTournaments } from "../store/slices/tournamentsSlice";
 import { fetchGames } from "../store/slices/gamesSlice";
-import { BlurImage } from "../components/common/BlurImage";
+import { LazyImage } from "../components/common/LazyImage";
 import type { Tournament, Game } from "../types";
 
 const statusLabels: Record<string, { label: string; colors: string; dot: string }> = {
@@ -70,7 +69,7 @@ function TournamentCard({ tournament }: { tournament: Tournament }) {
       {/* Game Image Header */}
       <div className="relative w-full h-44 overflow-hidden bg-[#0B0F17]">
         {tournament.imageUrl || tournament.game?.imageUrl ? (
-          <BlurImage
+          <LazyImage
             src={tournament.imageUrl || tournament.game?.imageUrl}
             alt={tournament.name}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -176,6 +175,21 @@ function TournamentCard({ tournament }: { tournament: Tournament }) {
   );
 }
 
+// School year starts September 1
+// If month >= 8 (September..December), start year is year
+// If month < 8 (January..August), start year is year - 1
+function getAcademicYearStart(dateInput?: string | Date): number {
+  const d = dateInput ? new Date(dateInput) : new Date();
+  if (isNaN(d.getTime())) return getAcademicYearStart(new Date());
+  const year = d.getFullYear();
+  const month = d.getMonth(); // 0 is January, 8 is September
+  return month >= 8 ? year : year - 1;
+}
+
+function formatAcademicYear(startYear: number): string {
+  return `${startYear}/${startYear + 1}`;
+}
+
 export function TournamentsPage() {
   const dispatch = useAppDispatch();
   const { tournaments, isLoading, pagination } = useAppSelector(
@@ -183,25 +197,98 @@ export function TournamentsPage() {
   );
   const { games } = useAppSelector((state) => state.games);
 
+  const currentAcademicYearStart = getAcademicYearStart(new Date());
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [gameFilter, setGameFilter] = useState<string>("");
   const [teamSizeFilter, setTeamSizeFilter] = useState<string>("");
+  const [academicYearFilter, setAcademicYearFilter] = useState<string>("");
 
   useEffect(() => {
     dispatch(
-      fetchTournaments({ page: 1, status: statusFilter, gameId: gameFilter }),
+      fetchTournaments({ page: 1, limit: 50, status: statusFilter, gameId: gameFilter }),
     );
     dispatch(fetchGames());
   }, [dispatch, statusFilter, gameFilter]);
 
-  const filteredTournaments = tournaments.filter((t: Tournament) => {
-    const matchesSearch = t.name.toLowerCase().includes(search.toLowerCase());
-    const size = t.teamSize || t.game?.teamSize || 1;
-    const matchesTeamSize =
-      teamSizeFilter === "" || size.toString() === teamSizeFilter;
-    return matchesSearch && matchesTeamSize;
-  });
+  // Extract available academic years from all loaded tournaments, always placing currentAcademicYearStart at the top
+  const availableAcademicYears = useMemo(() => {
+    const yearsSet = new Set<number>();
+    yearsSet.add(currentAcademicYearStart);
+    tournaments.forEach((t) => {
+      const y = getAcademicYearStart(t.startDate || t.createdAt);
+      yearsSet.add(y);
+    });
+    return Array.from(yearsSet).sort((a, b) => {
+      if (a === currentAcademicYearStart) return -1;
+      if (b === currentAcademicYearStart) return 1;
+      return b - a;
+    });
+  }, [tournaments, currentAcademicYearStart]);
+
+  // Filter tournaments by search, team size, and selected academic year
+  const filteredTournaments = useMemo(() => {
+    return tournaments.filter((t: Tournament) => {
+      const matchesSearch = t.name.toLowerCase().includes(search.toLowerCase());
+      const size = t.teamSize || t.game?.teamSize || 1;
+      const matchesTeamSize =
+        teamSizeFilter === "" || size.toString() === teamSizeFilter;
+
+      const tournamentAcademicYear = getAcademicYearStart(t.startDate || t.createdAt);
+      const matchesAcademicYear =
+        academicYearFilter === "" || tournamentAcademicYear.toString() === academicYearFilter;
+
+      return matchesSearch && matchesTeamSize && matchesAcademicYear;
+    });
+  }, [tournaments, search, teamSizeFilter, academicYearFilter]);
+
+  // Group tournaments by academic year
+  const groupedByAcademicYear = useMemo(() => {
+    const groups = new Map<number, Tournament[]>();
+
+    filteredTournaments.forEach((t) => {
+      const startYear = getAcademicYearStart(t.startDate || t.createdAt);
+      if (!groups.has(startYear)) {
+        groups.set(startYear, []);
+      }
+      groups.get(startYear)!.push(t);
+    });
+
+    // Sort tournaments inside each school year by start date descending
+    groups.forEach((yearTournaments) => {
+      yearTournaments.sort((a, b) => {
+        const dateA = new Date(a.startDate || a.createdAt).getTime();
+        const dateB = new Date(b.startDate || b.createdAt).getTime();
+        return dateB - dateA;
+      });
+    });
+
+    return groups;
+  }, [filteredTournaments]);
+
+  // Determine which academic years to display, ALWAYS putting currentAcademicYearStart at the top
+  const academicYearsToDisplay = useMemo(() => {
+    if (academicYearFilter) {
+      return [Number(academicYearFilter)];
+    }
+
+    const yearsSet = new Set<number>();
+    // Collect all academic years that have matching tournaments
+    groupedByAcademicYear.forEach((list, y) => {
+      if (list.length > 0) yearsSet.add(y);
+    });
+
+    // When no search or filters are active, ensure current academic year is always displayed at the top
+    if (!search && !statusFilter && !gameFilter && !teamSizeFilter) {
+      yearsSet.add(currentAcademicYearStart);
+    }
+
+    return Array.from(yearsSet).sort((a, b) => {
+      if (a === currentAcademicYearStart) return -1;
+      if (b === currentAcademicYearStart) return 1;
+      return b - a; // descending order for previous school years
+    });
+  }, [groupedByAcademicYear, academicYearFilter, currentAcademicYearStart, search, statusFilter, gameFilter, teamSizeFilter]);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -215,7 +302,7 @@ export function TournamentsPage() {
           Hivatalos Bajnokságok
         </h1>
         <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
-          Csatlakozz a kiírt versenyekhez csapatoddal vagy egyénileg, küzdj meg az ELO-ért és a díjakért.
+          Csatlakozz a kiírt versenyekhez csapatoddal vagy egyénileg, küzdj meg az elismerésért és a díjakért.
         </p>
       </div>
 
@@ -226,41 +313,35 @@ export function TournamentsPage() {
           <div className="relative flex items-center">
             <Search
               size={16}
-              className="absolute left-3.5 text-muted-foreground pointer-events-none z-10"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10"
             />
             <input
               type="text"
               placeholder="Verseny nevének keresése..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-[#121824] border border-border/80 rounded font-mono text-sm text-foreground placeholder:text-muted-foreground placeholder:font-sans focus:outline-none focus:border-primary transition-colors"
+              className="w-full h-10 pl-11 pr-4 bg-[#121824] border border-border/80 rounded font-mono text-sm text-foreground placeholder:text-muted-foreground placeholder:font-sans focus:outline-none focus:border-primary transition-colors"
             />
           </div>
         </div>
 
         {/* Filter Group */}
         <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative">
-            <Filter
-              size={14}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-            />
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full sm:w-auto pl-3.5 pr-8 py-2.5 bg-[#121824] border border-border/80 rounded font-mono text-xs text-foreground focus:outline-none focus:border-primary transition-colors appearance-none cursor-pointer min-w-[160px]"
-            >
-              <option value="">ÖSSZES STÁTUSZ</option>
-              <option value="REGISTRATION">REGISZTRÁCIÓ</option>
-              <option value="IN_PROGRESS">FOLYAMATBAN</option>
-              <option value="COMPLETED">BEFEJEZETT</option>
-            </select>
-          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="w-full sm:w-auto h-10 px-3.5 bg-[#121824] border border-border/80 rounded font-mono text-sm text-foreground focus:outline-none focus:border-primary transition-colors cursor-pointer min-w-[160px]"
+          >
+            <option value="">ÖSSZES STÁTUSZ</option>
+            <option value="REGISTRATION">REGISZTRÁCIÓ</option>
+            <option value="IN_PROGRESS">FOLYAMATBAN</option>
+            <option value="COMPLETED">BEFEJEZETT</option>
+          </select>
 
           <select
             value={teamSizeFilter}
             onChange={(e) => setTeamSizeFilter(e.target.value)}
-            className="w-full sm:w-auto px-3.5 py-2.5 bg-[#121824] border border-border/80 rounded font-mono text-xs text-foreground focus:outline-none focus:border-primary transition-colors appearance-none cursor-pointer"
+            className="w-full sm:w-auto h-10 px-3.5 bg-[#121824] border border-border/80 rounded font-mono text-sm text-foreground focus:outline-none focus:border-primary transition-colors cursor-pointer"
           >
             <option value="">ÖSSZES MÉRET</option>
             <option value="1">1v1</option>
@@ -272,12 +353,25 @@ export function TournamentsPage() {
           <select
             value={gameFilter}
             onChange={(e) => setGameFilter(e.target.value)}
-            className="w-full sm:w-auto px-3.5 py-2.5 bg-[#121824] border border-border/80 rounded font-mono text-xs text-foreground focus:outline-none focus:border-primary transition-colors appearance-none cursor-pointer"
+            className="w-full sm:w-auto h-10 px-3.5 bg-[#121824] border border-border/80 rounded font-mono text-sm text-foreground focus:outline-none focus:border-primary transition-colors cursor-pointer"
           >
             <option value="">ÖSSZES JÁTÉK</option>
             {games.map((game: Game) => (
               <option key={game.id} value={game.id}>
                 {game.name.toUpperCase()}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={academicYearFilter}
+            onChange={(e) => setAcademicYearFilter(e.target.value)}
+            className="w-full sm:w-auto h-10 px-3.5 bg-[#121824] border border-border/80 rounded font-mono text-sm text-foreground focus:outline-none focus:border-primary transition-colors cursor-pointer"
+          >
+            <option value="">ÖSSZES TANÉV</option>
+            {availableAcademicYears.map((startYear) => (
+              <option key={startYear} value={startYear}>
+                {formatAcademicYear(startYear)} tanév {startYear === currentAcademicYearStart ? "(JELENLEGI)" : ""}
               </option>
             ))}
           </select>
@@ -301,7 +395,7 @@ export function TournamentsPage() {
             </div>
           ))}
         </div>
-      ) : filteredTournaments.length === 0 ? (
+      ) : filteredTournaments.length === 0 && academicYearsToDisplay.every((y) => (groupedByAcademicYear.get(y) || []).length === 0) ? (
         <div className="flex flex-col items-center justify-center py-20 bg-[#121824] rounded-lg border border-border/80">
           <div className="w-16 h-16 bg-[#0B0F17] rounded border border-border flex items-center justify-center mb-4">
             <Trophy size={32} className="text-muted-foreground" />
@@ -314,10 +408,59 @@ export function TournamentsPage() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredTournaments.map((tournament: Tournament) => (
-            <TournamentCard key={tournament.id} tournament={tournament} />
-          ))}
+        <div className="space-y-12">
+          {academicYearsToDisplay.map((startYear) => {
+            const yearTournaments = groupedByAcademicYear.get(startYear) || [];
+            const isCurrent = startYear === currentAcademicYearStart;
+
+            return (
+              <section key={startYear} className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-border/70 gap-2">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`flex items-center justify-center h-8 px-2.5 rounded font-mono text-xs font-bold border tracking-wider ${
+                        isCurrent
+                          ? "bg-primary/15 text-primary border-primary/40 shadow-sm shadow-primary/10"
+                          : "bg-secondary/60 text-muted-foreground border-border"
+                      }`}
+                    >
+                      {formatAcademicYear(startYear)}
+                    </div>
+                    <div className="flex items-center gap-2.5">
+                      <h2 className="font-display text-2xl font-bold uppercase tracking-wider text-foreground">
+                        {formatAcademicYear(startYear)} Tanév
+                      </h2>
+                      {isCurrent && (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-widest bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
+                          Jelenlegi tanév
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
+                    <Calendar size={13} className="text-muted-foreground/80" />
+                    <span>
+                      {yearTournaments.length} {yearTournaments.length === 1 ? "verseny" : "verseny"}
+                    </span>
+                  </div>
+                </div>
+
+                {yearTournaments.length === 0 ? (
+                  <div className="py-8 px-6 bg-[#121824]/60 rounded-lg border border-border/60 text-center">
+                    <p className="text-xs font-mono text-muted-foreground">
+                      Ebben a tanévben jelenleg nincs megjeleníthető verseny.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {yearTournaments.map((tournament: Tournament) => (
+                      <TournamentCard key={tournament.id} tournament={tournament} />
+                    ))}
+                  </div>
+                )}
+              </section>
+            );
+          })}
         </div>
       )}
 
@@ -336,6 +479,7 @@ export function TournamentsPage() {
                 dispatch(
                   fetchTournaments({
                     page: i + 1,
+                    limit: 50,
                     status: statusFilter,
                     gameId: gameFilter,
                   }),

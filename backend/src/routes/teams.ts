@@ -4,7 +4,7 @@ import { randomBytes } from 'crypto';
 import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest, optionalAuth } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
-import { processImage, isBase64DataUrl, validateImageSize } from '../utils/imageProcessor.js';
+import { processAndValidateImage } from '../utils/imageProcessor.js';
 
 export const teamsRouter: Router = Router();
 
@@ -143,30 +143,32 @@ teamsRouter.post(
             throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
-        // Process logo image if base64
-        let processedLogoUrl = logoUrl;
-        if (logoUrl && isBase64DataUrl(logoUrl)) {
-            if (!validateImageSize(logoUrl, 150)) {
-                throw new ApiError('A logó túl nagy (max 150MB)', 400, 'IMAGE_TOO_LARGE');
+        // Process logo image safely
+        let processedLogoUrl: string | undefined = undefined;
+        if (logoUrl) {
+            try {
+                processedLogoUrl = await processAndValidateImage(logoUrl, 15);
+            } catch (err: any) {
+                throw new ApiError(err.message || 'Érvénytelen logó kép', 400, 'INVALID_IMAGE');
             }
-            processedLogoUrl = await processImage(logoUrl);
         }
 
-        // Process cover image if base64
-        let processedCoverUrl = coverUrl;
-        if (coverUrl && isBase64DataUrl(coverUrl)) {
-            if (!validateImageSize(coverUrl, 150)) {
-                throw new ApiError('A borítókép túl nagy (max 150MB)', 400, 'IMAGE_TOO_LARGE');
+        // Process cover image safely
+        let processedCoverUrl: string | undefined = undefined;
+        if (coverUrl) {
+            try {
+                processedCoverUrl = await processAndValidateImage(coverUrl, 15);
+            } catch (err: any) {
+                throw new ApiError(err.message || 'Érvénytelen borítókép', 400, 'INVALID_IMAGE');
             }
-            processedCoverUrl = await processImage(coverUrl);
         }
 
         const team = await prisma.team.create({
             data: {
                 name,
                 description,
-                logoUrl: processedLogoUrl,
-                coverUrl: processedCoverUrl,
+                logoUrl: processedLogoUrl || null,
+                coverUrl: processedCoverUrl || null,
                 joinCode: generateJoinCode(),
                 ownerId: user.id,
                 members: {
@@ -267,22 +269,24 @@ teamsRouter.patch(
 
         const { name, description, logoUrl, coverUrl } = req.body;
 
-        // Process logo image if base64
-        let processedLogoUrl = logoUrl;
-        if (logoUrl && isBase64DataUrl(logoUrl)) {
-            if (!validateImageSize(logoUrl, 150)) {
-                throw new ApiError('A logó túl nagy (max 150MB)', 400, 'IMAGE_TOO_LARGE');
+        // Process logo image safely
+        let processedLogoUrl: string | undefined = undefined;
+        if (logoUrl !== undefined && logoUrl !== null && logoUrl !== '') {
+            try {
+                processedLogoUrl = await processAndValidateImage(logoUrl, 15);
+            } catch (err: any) {
+                throw new ApiError(err.message || 'Érvénytelen logó kép', 400, 'INVALID_IMAGE');
             }
-            processedLogoUrl = await processImage(logoUrl);
         }
 
-        // Process cover image if base64
-        let processedCoverUrl = coverUrl;
-        if (coverUrl && isBase64DataUrl(coverUrl)) {
-            if (!validateImageSize(coverUrl, 150)) {
-                throw new ApiError('A borítókép túl nagy (max 150MB)', 400, 'IMAGE_TOO_LARGE');
+        // Process cover image safely
+        let processedCoverUrl: string | undefined = undefined;
+        if (coverUrl !== undefined && coverUrl !== null && coverUrl !== '') {
+            try {
+                processedCoverUrl = await processAndValidateImage(coverUrl, 15);
+            } catch (err: any) {
+                throw new ApiError(err.message || 'Érvénytelen borítókép', 400, 'INVALID_IMAGE');
             }
-            processedCoverUrl = await processImage(coverUrl);
         }
 
         // If not Admin/Organizer, create Change Request instead of immediate update

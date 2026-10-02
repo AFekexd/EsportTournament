@@ -212,14 +212,14 @@ export function TeamsPage() {
         <div className="relative max-w-md mx-auto flex items-center">
           <Search
             size={16}
-            className="absolute left-3.5 text-muted-foreground pointer-events-none z-10"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10"
           />
           <input
             type="text"
             placeholder="Csapat keresése név alapján..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-[#121824] border border-border/80 rounded font-mono text-sm text-foreground placeholder:text-muted-foreground placeholder:font-sans focus:outline-none focus:border-primary transition-colors"
+            className="w-full h-10 pl-11 pr-4 bg-[#121824] border border-border/80 rounded font-mono text-sm text-foreground placeholder:text-muted-foreground placeholder:font-sans focus:outline-none focus:border-primary transition-colors"
           />
         </div>
       </div>
