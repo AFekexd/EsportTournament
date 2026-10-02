@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import crypto from 'crypto';
 import { logSystemActivity } from '../services/logService.js';
 import prisma from '../lib/prisma.js'; // Assuming this is where prisma client is exported in new backend
 import { emitMachineUpdate, emitUserUpdate, emitSessionUpdate } from '../services/socket.js'; // Import helper from socket service
@@ -430,8 +431,17 @@ kioskRouter.get('/status/:machineId', async (req, res) => {
 kioskRouter.post('/register', async (req, res) => {
     const { name, hostname, row, position, adminPassword } = req.body;
 
-    // Simple Admin Password Check (In production use proper auth or env secret)
-    if (adminPassword !== '55pollak5565') {
+    const expectedPassword = process.env.KIOSK_ADMIN_PASSWORD;
+    if (!expectedPassword) {
+        console.error('[KIOSK] KIOSK_ADMIN_PASSWORD is not set in environment variables');
+        res.status(503).json({ error: 'A gép regisztráció jelenleg nincs konfigurálva a szerveren' });
+        return;
+    }
+
+    const providedBuffer = Buffer.from(String(adminPassword || ''));
+    const expectedBuffer = Buffer.from(expectedPassword);
+
+    if (providedBuffer.length !== expectedBuffer.length || !crypto.timingSafeEqual(providedBuffer, expectedBuffer)) {
         res.status(401).json({ error: 'Hibás admin jelszó' });
         return;
     }

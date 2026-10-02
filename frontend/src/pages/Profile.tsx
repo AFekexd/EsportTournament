@@ -413,38 +413,35 @@ export function ProfilePage() {
   const topGameImage = getTopGameImage();
 
   return (
-    <div className="min-h-screen bg-[#121A22] text-foreground p-4 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="flex flex-col gap-8 pb-16">
+      <div className="max-w-7xl mx-auto w-full space-y-6">
         {/* Profile Header & Stats Combined */}
-        <div className="relative overflow-hidden rounded-2xl bg-[#121A22] border border-border shadow-2xl">
+        <div className="tactical-card relative overflow-hidden">
           {/* Banner */}
           <div
-            className={`h-72 md:h-80 relative group ${!topGameImage ? "bg-[#121A22]" : ""}`}
+            className={`h-64 sm:h-72 md:h-80 relative group ${!topGameImage ? "bg-secondary/80 bg-grid-pattern" : ""}`}
           >
             {/* Background Image */}
             {topGameImage && (
               <img
                 src={topGameImage}
                 alt="Profile Banner"
-                className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 ease-out will-change-transform "
+                className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 ease-out will-change-transform"
               />
             )}
 
             {!topGameImage && (
               <>
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-900/40 via-primary/20 to-blue-900/40"></div>
-                <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]"></div>
-                <div className="absolute inset-0 overflow-hidden">
-                  <div className="absolute -top-1/2 -right-1/2 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[120px] opacity-30 animate-pulse"></div>
-                  <div className="absolute -bottom-1/2 -left-1/2 w-[600px] h-[600px] bg-primary/30 rounded-full blur-[100px] opacity-30"></div>
-                </div>
+                <div className="absolute inset-0 bg-secondary/80 bg-grid-pattern"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/60 to-transparent"></div>
+                <div className="absolute top-0 right-0 w-96 h-48 bg-primary/10 blur-[80px]"></div>
               </>
             )}
 
             {/* Overlay */}
             <div
               className={`absolute inset-0 ${topGameImage
-                ? "bg-gradient-to-t from-card via-black/30 to-black/10"
+                ? "bg-gradient-to-t from-card via-black/40 to-black/10"
                 : "bg-gradient-to-t from-card via-transparent to-transparent"
                 }`}
             ></div>
@@ -453,60 +450,60 @@ export function ProfilePage() {
               <div className="absolute top-6 right-6 flex gap-3 z-20">
                 <Link
                   to="/settings"
-                  className="p-2 bg-primary hover:bg-primary/90 !text-foreground shadow-lg shadow-primary/20 rounded-full transition-all hover:scale-105"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-border bg-secondary hover:border-primary/60 text-foreground font-mono text-xs uppercase tracking-wider transition-all shadow-sm"
                   title="Szerkesztés"
                 >
-                  <Edit size={20} />
+                  <Edit size={14} />
+                  <span>Szerkesztés</span>
                 </Link>
               </div>
             )}
           </div>
 
-          <div className="px-8 pb-8">
-            <div className="relative flex flex-col md:flex-row gap-8 items-end -mt-20">
+          <div className="px-6 sm:px-8 pb-8">
+            <div className="relative flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-end -mt-16 sm:-mt-20">
               {/* Avatar */}
               <div className="relative shrink-0 mx-auto md:mx-0 z-10">
                 <div
-                  className="w-36 h-36 md:w-44 md:h-44 rounded-full p-1.5 bg-[#121A22] shadow-2xl relative cursor-pointer group/avatar"
+                  className="w-32 h-32 md:w-36 md:h-36 rounded-lg p-1 bg-secondary border border-border shadow-xl relative cursor-pointer group/avatar overflow-hidden"
                   onClick={() => setIsAvatarOpen(true)}
                 >
-                  <div className="w-full h-full rounded-full p-1 bg-gradient-to-br from-primary to-purple-600 group-hover/avatar:scale-[1.02] transition-transform">
-                    <div className="w-full h-full rounded-full bg-[#121A22] overflow-hidden flex items-center justify-center relative z-10">
-                      {profileUser?.avatarUrl ? (
-                        <img
-                          src={profileUser.avatarUrl}
-                          alt={profileUser.displayName || profileUser.username}
-                          className="w-full h-full object-cover transform transition-transform group-hover/avatar:scale-110 duration-500"
-                        />
-                      ) : (
-                        <span className="text-5xl font-bold text-foreground">
-                          {(
-                            profileUser?.displayName ||
-                            profileUser?.username ||
-                            "?"
-                          )
-                            .charAt(0)
-                            .toUpperCase()}
-                        </span>
-                      )}
-                    </div>
+                  <div className="w-full h-full rounded bg-card overflow-hidden flex items-center justify-center relative z-10">
+                    {profileUser?.avatarUrl ? (
+                      <img
+                        src={profileUser.avatarUrl}
+                        alt={profileUser.displayName || profileUser.username}
+                        className="w-full h-full object-cover transform transition-transform group-hover/avatar:scale-105 duration-300"
+                      />
+                    ) : (
+                      <span className="font-display text-4xl font-bold text-foreground">
+                        {(
+                          profileUser?.displayName ||
+                          profileUser?.username ||
+                          "?"
+                        )
+                          .charAt(0)
+                          .toUpperCase()}
+                      </span>
+                    )}
                   </div>
 
                   {/* Zoom hint overlay */}
-                  <div className="absolute inset-0 rounded-full bg-secondary opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-opacity z-20 pointer-events-none">
-                    <span className="text-foreground text-xs font-bold uppercase tracking-widest">Nagyítás</span>
+                  <div className="absolute inset-0 bg-background/80 opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-opacity z-20 pointer-events-none">
+                    <span className="text-foreground text-[10px] font-mono font-bold uppercase tracking-widest">Nagyítás</span>
                   </div>
                 </div>
+
                 {/* Status Indicator */}
-                <div className="absolute bottom-3 right-3 md:bottom-5 md:right-5 z-20">
+                <div className="absolute -bottom-1 -right-1 z-20">
                   <div
-                    className={`w-8 h-8 rounded-full border-[4px] border-border flex items-center justify-center ${profileUser?.role === "ADMIN"
+                    className={`w-7 h-7 rounded border border-border flex items-center justify-center ${profileUser?.role === "ADMIN"
                       ? "bg-red-500 text-foreground"
                       : profileUser?.role === "ORGANIZER"
-                        ? "bg-purple-500 text-foreground"
+                        ? "bg-primary text-foreground"
                         : profileUser?.role === "MODERATOR"
-                          ? "bg-blue-500 text-foreground"
-                          : "bg-gray-600 text-gray-200"
+                          ? "bg-accent text-foreground"
+                          : "bg-secondary text-muted-foreground"
                       }`}
                     title={getRoleLabel(profileUser?.role)}
                   >
@@ -527,10 +524,10 @@ export function ProfilePage() {
               <div className="flex-1 flex flex-col items-center md:items-start w-full gap-4">
                 {/* Info */}
                 <div className="text-center md:text-left space-y-2 w-full">
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground tracking-tight flex flex-col sm:flex-row items-center sm:items-baseline gap-2 sm:gap-3">
+                  <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold uppercase tracking-tight text-foreground flex flex-col sm:flex-row items-center sm:items-baseline gap-2 sm:gap-3">
                     {profileUser?.displayName || profileUser?.username}
                     <span
-                      className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-widest ${getRoleBadgeStyle(
+                      className={`tactical-badge text-[11px] font-mono ${getRoleBadgeStyle(
                         profileUser?.role
                       )}`}
                     >
@@ -538,19 +535,19 @@ export function ProfilePage() {
                     </span>
                   </h1>
 
-                  <div className="flex flex-wrap justify-center md:justify-start items-center gap-2 sm:gap-4 text-muted-foreground text-sm">
+                  <div className="flex flex-wrap justify-center md:justify-start items-center gap-2 sm:gap-4 text-muted-foreground text-xs font-mono">
                     {profileUser?.displayName && (
                       <span className="font-medium text-primary">
                         {profileUser?.username?.includes('@') ? profileUser?.username : `@${profileUser?.username}`}
                       </span>
                     )}
 
-                    <div className="hidden sm:block w-1 h-1 bg-gray-600 rounded-full"></div>
+                    <span className="hidden sm:inline text-border">/</span>
 
-                    <div className="flex items-center gap-2">
-                      <Calendar size={14} />
-                      <span className="whitespace-nowrap">
-                        {new Date(
+                    <div className="flex items-center gap-1.5">
+                      <Calendar size={13} className="text-muted-foreground" />
+                      <span>
+                        CSATLAKOZVA: {new Date(
                           profileUser?.createdAt || Date.now()
                         ).toLocaleDateString("hu-HU", {
                           year: "numeric",
@@ -562,33 +559,32 @@ export function ProfilePage() {
 
                     {isOwnProfile && user?.omId && (
                       <>
-                        <div className="hidden sm:block w-1 h-1 bg-gray-600 rounded-full"></div>
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <FileText size={14} />
-                          <span className="whitespace-nowrap">
-                            OM: <span className="text-foreground font-mono">{user.omId}</span>
+                        <span className="hidden sm:inline text-border">/</span>
+                        <div className="flex items-center gap-1.5">
+                          <FileText size={13} className="text-muted-foreground" />
+                          <span>
+                            OM: <span className="text-foreground">{user.omId}</span>
                           </span>
                         </div>
                       </>
                     )}
 
-                    <div className="hidden sm:block w-1 h-1 bg-gray-600 rounded-full"></div>
-                    <div className="flex items-center gap-2">
-                      {/* Generic Discord/Gamepad Icon acting as Discord indicator */}
-                      <Gamepad2 size={14} className={profileUser?.discordId ? "text-[#5865F2]" : "text-muted-foreground"} />
-                      <span className={`whitespace-nowrap ${profileUser?.discordId ? "text-[#5865F2] font-medium" : "text-muted-foreground"}`}>
+                    <span className="hidden sm:inline text-border">/</span>
+                    <div className="flex items-center gap-1.5">
+                      <Gamepad2 size={13} className={profileUser?.discordId ? "text-primary" : "text-muted-foreground"} />
+                      <span>
                         {profileUser?.discordId ? (
-                          "Discord: Összekötve"
+                          <span className="text-primary font-medium">DISCORD: ÖSSZEKÖTVE</span>
                         ) : (
                           isOwnProfile ? (
                             <button
                               onClick={() => setIsDiscordModalOpen(true)}
-                              className="hover:text-[#5865F2] hover:underline transition-colors"
+                              className="hover:text-primary hover:underline transition-colors uppercase"
                             >
-                              Discord: Csatlakozás
+                              DISCORD: CSATLAKOZÁS
                             </button>
                           ) : (
-                            "Discord: Nincs összekötve"
+                            <span>DISCORD: NINCS</span>
                           )
                         )}
                       </span>
@@ -597,42 +593,32 @@ export function ProfilePage() {
                 </div>
 
                 {/* Stats */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full">
-                  <div className="bg-[#121A22] rounded-xl p-3 sm:p-4 border border-border text-center hover:border-primary/50 transition-all group relative overflow-hidden">
-                    <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors"></div>
-                    <div className="relative z-10">
-                      <div className="text-muted-foreground text-[10px] uppercase tracking-widest font-bold mb-1 group-hover:text-primary transition-colors">
-                        Csapat
-                      </div>
-                      <div className="text-xl sm:text-2xl font-black text-foreground">
-                        {effectiveTeams.length}
-                      </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full pt-1">
+                  <div className="tactical-card p-3 sm:p-4 text-center">
+                    <div className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
+                      Csapatok
+                    </div>
+                    <div className="font-display text-2xl sm:text-3xl font-bold text-foreground">
+                      {effectiveTeams.length}
                     </div>
                   </div>
 
-                  <div className="bg-[#121A22] rounded-xl p-3 sm:p-4 border border-border text-center hover:border-purple-500/50 transition-all group relative overflow-hidden">
-                    <div className="absolute inset-0 bg-purple-500/5 group-hover:bg-primary/20 transition-colors"></div>
-                    <div className="relative z-10">
-                      <div className="text-muted-foreground text-[10px] uppercase tracking-widest font-bold mb-1 group-hover:text-primary transition-colors">
-                        Verseny
-                      </div>
-                      <div className="text-xl sm:text-2xl font-black text-foreground">
-                        {effectiveTournaments.length}
-                      </div>
+                  <div className="tactical-card p-3 sm:p-4 text-center">
+                    <div className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
+                      Versenyek
+                    </div>
+                    <div className="font-display text-2xl sm:text-3xl font-bold text-foreground">
+                      {effectiveTournaments.length}
                     </div>
                   </div>
-
 
                   {isOwnProfile && (
-                    <div className="bg-[#121A22] rounded-xl p-3 sm:p-4 border border-border text-center hover:border-green-500/50 transition-all group relative overflow-hidden">
-                      <div className="absolute inset-0 bg-green-500/5 group-hover:bg-green-500/10 transition-colors"></div>
-                      <div className="relative z-10">
-                        <div className="text-muted-foreground text-[10px] uppercase tracking-widest font-bold mb-1 group-hover:text-green-400 transition-colors">
-                          Időegyenleg
-                        </div>
-                        <div className="text-xl sm:text-2xl font-black text-foreground">
-                          {formatTimeBalance(user?.timeBalanceSeconds || 0)}
-                        </div>
+                    <div className="tactical-card p-3 sm:p-4 text-center">
+                      <div className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
+                        Időegyenleg
+                      </div>
+                      <div className="font-display text-2xl sm:text-3xl font-bold text-emerald-400">
+                        {formatTimeBalance(user?.timeBalanceSeconds || 0)}
                       </div>
                     </div>
                   )}
@@ -643,16 +629,16 @@ export function ProfilePage() {
         </div>
 
         {/* Match History Section */}
-        <div className="bg-[#121A22] rounded-xl border border-border overflow-hidden mb-6">
-          <div className="p-6 border-b border-border flex justify-between items-center bg-secondary">
-            <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+        <div className="tactical-card overflow-hidden mb-6">
+          <div className="p-4 md:p-5 border-b border-border flex justify-between items-center bg-secondary/60">
+            <h2 className="font-display text-lg font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
               <Gamepad2 size={20} className="text-primary" />
               Mérkőzés Előzmények
             </h2>
             {userMatches && userMatches.length > 5 && (
               <button
                 onClick={() => setIsMatchHistoryOpen(true)}
-                className="text-xs font-bold text-primary hover:text-foreground transition-colors flex items-center gap-1 uppercase tracking-wider"
+                className="font-mono text-xs font-bold text-primary hover:text-foreground transition-colors flex items-center gap-1 uppercase tracking-wider"
               >
                 Összes
                 <ChevronRight size={14} />
@@ -686,16 +672,16 @@ export function ProfilePage() {
           {/* Main Column */}
           <div className="lg:col-span-2 space-y-6">
             {/* Skill Levels Section */}
-            <div className="bg-[#121A22] rounded-xl border border-border overflow-visible">
-              <div className="p-4 md:p-6 border-b border-border flex justify-between items-center bg-secondary">
-                <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+            <div className="tactical-card overflow-visible">
+              <div className="p-4 md:p-5 border-b border-border flex justify-between items-center bg-secondary/60">
+                <h2 className="font-display text-lg font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
                   <Shield size={20} className="text-primary" />
                   Játék Skillek
                 </h2>
                 {isOwnProfile && (
                   <button
                     onClick={() => setIsAddGameModalOpen(true)}
-                    className="text-xs font-bold text-primary hover:text-foreground transition-colors flex items-center gap-1 uppercase tracking-wider"
+                    className="font-mono text-xs font-bold text-primary hover:text-foreground transition-colors flex items-center gap-1 uppercase tracking-wider"
                   >
                     <Plus size={14} /> Játék hozzáadása
                   </button>
@@ -704,7 +690,7 @@ export function ProfilePage() {
 
               <div className="p-4 md:p-6">
                 {games.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
+                  <div className="text-center py-8 text-muted-foreground font-mono text-sm">
                     <p>Még nincsenek játékok a rendszerben.</p>
                   </div>
                 ) : (
@@ -738,11 +724,11 @@ export function ProfilePage() {
                       return (
                         <div
                           key={game.id}
-                          className="bg-[#121A22]/50 border border-border rounded-xl p-4 hover:border-primary/30 transition-all group"
+                          className="bg-secondary/40 border border-border rounded p-4 hover:border-primary/40 transition-all group"
                         >
                           <div className="flex items-center gap-4">
                             {/* Left Side: Game Info */}
-                            <div className="w-12 h-12 rounded-lg bg-[#121A22] border border-border flex items-center justify-center shadow-lg overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
+                            <div className="w-12 h-12 rounded bg-card border border-border flex items-center justify-center shadow-sm overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
                               {game.imageUrl ? (
                                 <img
                                   src={game.imageUrl}
@@ -801,9 +787,9 @@ export function ProfilePage() {
                                     toast.error("Hiba történt");
                                   }
                                 }}
-                                className={`w-10 h-10 flex items-center justify-center rounded-xl border transition-all shrink-0 ${user?.favoriteGameId === game.id
+                                className={`w-9 h-9 flex items-center justify-center rounded border transition-all shrink-0 ${user?.favoriteGameId === game.id
                                   ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20 shadow-[0_0_15px_rgba(234,179,8,0.2)]"
-                                  : "bg-[#121A22] text-muted-foreground border-border hover:text-yellow-500 hover:border-yellow-500/50"
+                                  : "bg-secondary text-muted-foreground border-border hover:text-yellow-500 hover:border-yellow-500/50"
                                   }`}
                                 title={user?.favoriteGameId === game.id ? "Kedvenc játék eltávolítása" : "Beállítás kedvencként"}
                               >
@@ -868,20 +854,20 @@ export function ProfilePage() {
             {/* Add Game Modal */}
             {isAddGameModalOpen && (
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-                <div className="w-full max-w-md bg-[#121A22] border border-border rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-                  <div className="flex items-center justify-between p-6 border-b border-border">
-                    <h2 className="text-xl font-bold text-foreground">Játék hozzáadása</h2>
+                <div className="w-full max-w-md bg-card border border-border rounded-lg shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+                  <div className="flex items-center justify-between p-5 border-b border-border bg-secondary/60">
+                    <h2 className="font-display text-xl font-bold uppercase tracking-wider text-foreground">Játék hozzáadása</h2>
                     <button
                       onClick={() => setIsAddGameModalOpen(false)}
-                      className="text-muted-foreground hover:text-foreground transition-colors"
+                      className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
                     >
-                      <X size={20} />
+                      <X size={18} />
                     </button>
                   </div>
                   <div className="p-4 md:p-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
                     <div className="space-y-2">
                       {games.filter(g => !userRanks.find(ur => ur.gameId === g.id)).length === 0 ? (
-                        <p className="text-center text-muted-foreground py-4">Már minden játékot hozzáadtál.</p>
+                        <p className="text-center font-mono text-xs text-muted-foreground py-6">Már minden játékot hozzáadtál.</p>
                       ) : (
                         games.filter(g => !userRanks.find(ur => ur.gameId === g.id)).map(game => (
                           <button
@@ -890,13 +876,13 @@ export function ProfilePage() {
                               toggleGameVisibility(game.id);
                               setIsAddGameModalOpen(false);
                             }}
-                            className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-secondary transition-colors border border-transparent hover:border-border group text-left"
+                            className="w-full flex items-center gap-3 p-2.5 rounded bg-secondary/30 hover:bg-secondary transition-colors border border-transparent hover:border-border group text-left"
                           >
-                            <div className="w-10 h-10 rounded-lg bg-[#121A22] flex items-center justify-center overflow-hidden border border-border">
+                            <div className="w-10 h-10 rounded bg-card flex items-center justify-center overflow-hidden border border-border shrink-0">
                               {game.imageUrl ? (
                                 <img src={game.imageUrl} alt={game.name} className="w-full h-full object-cover" />
                               ) : (
-                                <span className="font-bold text-muted-foreground">{game.name.charAt(0)}</span>
+                                <span className="font-display font-bold text-muted-foreground">{game.name.charAt(0)}</span>
                               )}
                             </div>
                             <span className="font-medium text-foreground group-hover:text-primary transition-colors">{game.name}</span>
@@ -911,16 +897,16 @@ export function ProfilePage() {
             )}
 
             {/* Teams Section */}
-            <div className="bg-[#121A22] rounded-xl border border-border overflow-hidden">
-              <div className="p-4 md:p-6 border-b border-border flex justify-between items-center bg-secondary">
-                <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+            <div className="tactical-card overflow-hidden">
+              <div className="p-4 md:p-5 border-b border-border flex justify-between items-center bg-secondary/60">
+                <h2 className="font-display text-lg font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
                   <Users size={20} className="text-primary" />
                   Csapatok
                 </h2>
                 {isOwnProfile && effectiveTeams.length > 0 && (
                   <Link
                     to="/teams"
-                    className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors uppercase tracking-wider"
+                    className="font-mono text-xs font-semibold text-primary hover:text-primary/80 transition-colors uppercase tracking-wider"
                   >
                     Összes
                   </Link>
@@ -929,24 +915,24 @@ export function ProfilePage() {
 
               <div className="p-4 md:p-6">
                 {effectiveTeams.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-12 text-muted-foreground bg-[#121A22]/30 rounded-xl border border-dashed border-border">
-                    <Users size={48} className="mb-4 opacity-20" />
-                    <p>Nincs csapat tagság</p>
+                  <div className="flex flex-col items-center justify-center py-10 text-muted-foreground bg-secondary/30 rounded border border-dashed border-border">
+                    <Users size={36} className="mb-3 opacity-20" />
+                    <p className="text-sm font-mono">Nincs csapat tagság</p>
                     {isOwnProfile && (
-                      <Link to="/teams" className="mt-4 btn btn-sm btn-primary">
+                      <Link to="/teams" className="mt-4 px-3 py-1.5 rounded border border-border bg-secondary hover:border-primary/60 text-foreground font-mono text-xs uppercase tracking-wider transition-all">
                         Csapatok keresése
                       </Link>
                     )}
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {effectiveTeams.map((team: Team) => (
                       <Link
                         key={team.id}
                         to={`/teams/${team.id}`}
-                        className="group bg-[#121A22]/50 border border-border rounded-xl p-4 flex items-center gap-4 hover:border-primary/50 hover:bg-[#121A22] transition-all"
+                        className="group bg-secondary/40 border border-border rounded p-3.5 flex items-center gap-3.5 hover:border-primary/50 hover:bg-secondary/60 transition-all"
                       >
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-gray-800 to-gray-900 border border-border flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform text-foreground">
+                        <div className="w-11 h-11 rounded bg-secondary border border-border flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform text-foreground">
                           {team.logoUrl ? (
                             <img
                               src={team.logoUrl}
@@ -954,19 +940,19 @@ export function ProfilePage() {
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <span className="font-bold">
+                            <span className="font-display font-bold">
                               {team.name.charAt(0).toUpperCase()}
                             </span>
                           )}
                         </div>
-                        <div className="overflow-hidden">
-                          <h3 className="font-bold text-foreground truncate group-hover:text-primary transition-colors">
+                        <div className="overflow-hidden min-w-0">
+                          <h3 className="font-bold text-foreground truncate group-hover:text-primary transition-colors text-sm">
                             {team.name}
                           </h3>
-                          <div className="text-xs text-muted-foreground mt-1 flex items-center gap-2">
-                            <span>{team.members?.length || 0} tag</span>
-                            <span className="w-1 h-1 rounded-full bg-gray-600"></span>
-                            <span>{team.elo} ELO</span>
+                          <div className="font-mono text-xs text-muted-foreground mt-0.5 flex items-center gap-2">
+                            <span>{team.members?.length || 0} TAG</span>
+                            <span className="text-border">/</span>
+                            <span className="text-accent">{team.elo} ELO</span>
                           </div>
                         </div>
                       </Link>
@@ -1065,7 +1051,7 @@ export function ProfilePage() {
                             <line x1="10" y1="14" x2="21" y2="3"></line>
                           </svg>
                         </a>
-                        <div className="text-xs text-muted-foreground font-mono bg-[#121A22] px-2 py-1 rounded inline-block">
+                        <div className="text-xs text-muted-foreground font-mono bg-secondary px-2 py-1 rounded inline-block">
                           ID:{" "}
                           {isOwnProfile
                             ? user?.steamId
@@ -1298,7 +1284,7 @@ export function ProfilePage() {
                           value={localSteamId}
                           onChange={(e) => setLocalSteamId(e.target.value)}
                           placeholder="Steam ID64 beillesztése..."
-                          className="bg-[#121A22] border border-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#66c0f4] transition-colors w-full text-center"
+                          className="bg-secondary border border-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#66c0f4] transition-colors w-full text-center font-mono"
                         />
                         <button
                           onClick={handleSteamSync}
@@ -1335,16 +1321,16 @@ export function ProfilePage() {
           </div>
           <div className="space-y-6">
             {/* Recent Tournaments */}
-            <div className="bg-[#121A22] rounded-xl border border-border overflow-hidden h-full">
-              <div className="p-4 md:p-6 border-b border-border flex justify-between items-center bg-secondary">
-                <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+            <div className="tactical-card overflow-hidden h-full">
+              <div className="p-4 md:p-5 border-b border-border flex justify-between items-center bg-secondary/60">
+                <h2 className="font-display text-lg font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
                   <Trophy size={20} className="text-primary" />
                   Versenyek
                 </h2>
                 {isOwnProfile && effectiveTournaments.length > 0 && (
                   <Link
                     to="/tournaments"
-                    className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors uppercase tracking-wider"
+                    className="font-mono text-xs font-semibold text-primary hover:text-primary/80 transition-colors uppercase tracking-wider"
                   >
                     Összes
                   </Link>
@@ -1353,26 +1339,26 @@ export function ProfilePage() {
 
               <div className="p-4 space-y-3">
                 {effectiveTournaments.length === 0 ? (
-                  <div className="text-center py-12 text-muted-foreground">
-                    <Trophy size={40} className="mx-auto mb-3 opacity-20" />
-                    <p className="text-sm">Nincs aktív verseny</p>
+                  <div className="text-center py-10 text-muted-foreground bg-secondary/30 rounded border border-dashed border-border">
+                    <Trophy size={36} className="mx-auto mb-3 opacity-20" />
+                    <p className="text-sm font-mono">Nincs aktív verseny</p>
                   </div>
                 ) : (
                   effectiveTournaments.map((tournament: Tournament) => (
                     <Link
                       key={tournament.id}
                       to={`/tournaments/${tournament.id}`}
-                      className="block bg-[#121A22]/50 border border-border rounded-lg p-4 hover:border-purple-500/50 hover:bg-[#121A22] transition-all group"
+                      className="block bg-secondary/40 border border-border rounded p-3.5 hover:border-primary/50 hover:bg-secondary/60 transition-all group"
                     >
-                      <div className="flex justify-between items-start mb-3">
+                      <div className="flex justify-between items-start mb-2">
                         <h3 className="font-bold text-foreground text-sm line-clamp-2 group-hover:text-primary transition-colors">
                           {tournament.name}
                         </h3>
                         <span
-                          className={`text-[10px] px-2 py-0.5 rounded border uppercase tracking-wide font-bold ${tournament.status === "REGISTRATION"
-                            ? "bg-green-500/10 text-green-500 border-green-500/20"
+                          className={`tactical-badge text-[10px] ${tournament.status === "REGISTRATION"
+                            ? "bg-green-500/10 text-green-400 border-green-500/20"
                             : tournament.status === "IN_PROGRESS"
-                              ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
+                              ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
                               : "bg-primary/20 text-primary border-primary/20"
                             }`}
                         >
@@ -1384,9 +1370,9 @@ export function ProfilePage() {
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                        <div className="flex items-center gap-1.5 bg-secondary px-2 py-1 rounded">
-                          <Calendar size={12} />
+                      <div className="flex items-center gap-3 text-xs font-mono text-muted-foreground">
+                        <div className="flex items-center gap-1.5 bg-secondary px-2 py-0.5 rounded">
+                          <Calendar size={11} />
                           <span>
                             {new Date(tournament.startDate).toLocaleDateString(
                               "hu-HU"
@@ -1395,7 +1381,7 @@ export function ProfilePage() {
                         </div>
                         <div className="flex items-center gap-1.5 truncate">
                           <span className="w-1.5 h-1.5 rounded-full bg-primary/50"></span>
-                          {tournament.game?.name}
+                          <span className="truncate">{tournament.game?.name}</span>
                         </div>
                       </div>
                     </Link>

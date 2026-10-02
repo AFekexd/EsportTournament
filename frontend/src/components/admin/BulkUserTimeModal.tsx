@@ -81,98 +81,98 @@ export const BulkUserTimeModal: React.FC<BulkUserTimeModalProps> = ({
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
             <div
-                className="bg-[#121A22] rounded-xl border border-border shadow-2xl w-full max-w-md overflow-hidden"
+                className="tactical-card rounded-lg border border-border shadow-2xl w-full max-w-md overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="p-6 border-b border-border flex justify-between items-center bg-gradient-to-r from-blue-500/10 to-transparent">
-                    <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-                        <Clock className="text-primary" size={24} />
+                <div className="p-6 border-b border-border flex justify-between items-center bg-card/95 backdrop-blur-md">
+                    <h2 className="text-xl font-display font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
+                        <Clock className="text-primary" size={20} />
                         Tömeges Időkeret kezelés
                     </h2>
                     <button
-                        className="text-muted-foreground hover:text-foreground transition-colors"
+                        className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded hover:bg-secondary/80"
                         onClick={onClose}
                     >
-                        <X size={24} />
+                        <X size={18} />
                     </button>
                 </div>
 
                 {/* Content */}
                 <div className="p-6">
-                    <div className="flex items-center gap-4 mb-6 bg-secondary p-4 rounded-lg border border-border">
-                        <div className="w-12 h-12 rounded-full bg-primary/20 flex flex-col items-center justify-center border border-primary/50 text-foreground">
-                            <span className="font-bold">{userCount}</span>
+                    <div className="flex items-center gap-4 mb-6 bg-secondary/40 p-4 rounded border border-border/80">
+                        <div className="w-12 h-12 rounded bg-primary/20 flex flex-col items-center justify-center border border-primary/50 text-foreground">
+                            <span className="font-mono font-bold text-base text-primary">{userCount}</span>
                         </div>
                         <div>
-                            <div className="font-bold text-foreground text-lg">
+                            <div className="font-display font-bold text-foreground text-sm uppercase">
                                 Érintett felhasználók: {userCount} fő
                             </div>
-                            <div className="text-muted-foreground text-sm">
+                            <div className="text-muted-foreground font-mono text-xs">
                                 Az alábbi művelet mindenkin végrehajtódik
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-2 bg-secondary p-1 rounded-lg mb-6">
+                    <div className="flex flex-wrap gap-2 bg-secondary/60 p-1.5 rounded border border-border/80 mb-6">
                         <button
-                            className={`flex-1 min-w-[30%] py-2 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2 ${mode === "ADD"
-                                ? "bg-green-500/20 text-green-400 border border-green-500/30"
+                            className={`flex-1 min-w-[30%] py-2 rounded text-xs font-mono uppercase tracking-wider font-semibold transition-colors flex items-center justify-center gap-1.5 ${mode === "ADD"
+                                ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"
                                 : "text-muted-foreground hover:text-foreground"
                                 }`}
                             onClick={() => setMode("ADD")}
                         >
-                            <Plus size={16} /> Hozzáadás
+                            <Plus size={14} /> Hozzáadás
                         </button>
                         <button
-                            className={`flex-1 min-w-[30%] py-2 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2 ${mode === "REMOVE"
-                                ? "bg-red-500/20 text-red-400 border border-red-500/30"
+                            className={`flex-1 min-w-[30%] py-2 rounded text-xs font-mono uppercase tracking-wider font-semibold transition-colors flex items-center justify-center gap-1.5 ${mode === "REMOVE"
+                                ? "bg-destructive/20 text-destructive border border-destructive/40"
                                 : "text-muted-foreground hover:text-foreground"
                                 }`}
                             onClick={() => setMode("REMOVE")}
                         >
-                            <Minus size={16} /> Levonás
+                            <Minus size={14} /> Levonás
                         </button>
                         <button
-                            className={`flex-1 min-w-[30%] py-2 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2 ${mode === "ZERO"
-                                ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
+                            className={`flex-1 min-w-[30%] py-2 rounded text-xs font-mono uppercase tracking-wider font-semibold transition-colors flex items-center justify-center gap-1.5 ${mode === "ZERO"
+                                ? "bg-amber-500/20 text-amber-400 border border-amber-500/40"
                                 : "text-muted-foreground hover:text-foreground"
                                 }`}
                             onClick={() => setMode("ZERO")}
                         >
-                            <RotateCcw size={16} /> Nullázás
+                            <RotateCcw size={14} /> Nullázás
                         </button>
                     </div>
 
                     {mode !== "ZERO" && (
                         <div className="mb-6">
-                            <label className="block text-muted-foreground text-sm font-bold mb-2">
+                            <label className="block text-muted-foreground text-xs font-mono uppercase tracking-wider font-bold mb-1.5">
                                 Időtartam (perc)
                             </label>
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-3">
                                 <input
                                     type="number"
                                     min="1"
-                                    className="flex-1 bg-secondary border border-border rounded-lg px-4 py-3 text-foreground focus:outline-none focus:border-blue-500/50"
+                                    className="flex-1 bg-secondary/80 border border-border rounded px-4 py-2 text-foreground font-mono text-sm focus:outline-none focus:border-primary"
                                     value={amount}
                                     onChange={(e) => setAmount(Number(e.target.value))}
                                 />
-                                <div className="flex gap-2">
+                                <div className="flex gap-1.5">
                                     <button
                                         onClick={() => setAmount(30)}
-                                        className="px-3 py-1 rounded border border-border text-sm hover:bg-secondary transition-colors"
+                                        className="px-3 py-2 rounded border border-border bg-secondary font-mono text-xs uppercase hover:bg-secondary/80 text-foreground transition-colors"
                                     >
                                         30p
                                     </button>
                                     <button
                                         onClick={() => setAmount(60)}
-                                        className="px-3 py-1 rounded border border-border text-sm hover:bg-secondary transition-colors"
+                                        className="px-3 py-2 rounded border border-border bg-secondary font-mono text-xs uppercase hover:bg-secondary/80 text-foreground transition-colors"
                                     >
                                         1h
                                     </button>
                                     <button
                                         onClick={() => setAmount(120)}
-                                        className="px-3 py-1 rounded border border-border text-sm hover:bg-secondary transition-colors"
+                                        className="px-3 py-2 rounded border border-border bg-secondary font-mono text-xs uppercase hover:bg-secondary/80 text-foreground transition-colors"
                                     >
                                         2h
                                     </button>
@@ -182,10 +182,10 @@ export const BulkUserTimeModal: React.FC<BulkUserTimeModalProps> = ({
                     )}
 
                     <div className="mb-6">
-                        <label className="block text-muted-foreground text-sm font-bold mb-2">
+                        <label className="block text-muted-foreground text-xs font-mono uppercase tracking-wider font-bold mb-1.5">
                             Indoklás (Kötelező)
                         </label>
-                        <div className="flex flex-wrap gap-2 mb-3">
+                        <div className="flex flex-wrap gap-1.5 mb-3">
                             {[
                                 "Nyeremény",
                                 "Jutalomból",
@@ -197,9 +197,9 @@ export const BulkUserTimeModal: React.FC<BulkUserTimeModalProps> = ({
                                 <button
                                     key={preset}
                                     onClick={() => setReason(preset)}
-                                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${reason === preset
-                                        ? "bg-primary text-foreground border-primary"
-                                        : "bg-secondary text-muted-foreground border-border hover:bg-secondary/80 hover:text-foreground"
+                                    className={`px-2.5 py-1 rounded font-mono text-xs uppercase tracking-wider transition-colors ${reason === preset
+                                        ? "bg-primary text-primary-foreground font-bold border border-primary"
+                                        : "bg-secondary text-muted-foreground border border-border hover:text-foreground"
                                         }`}
                                 >
                                     {preset}
@@ -207,7 +207,7 @@ export const BulkUserTimeModal: React.FC<BulkUserTimeModalProps> = ({
                             ))}
                         </div>
                         <textarea
-                            className="w-full bg-secondary border border-border rounded-lg px-4 py-3 text-foreground focus:outline-none focus:border-blue-500/50 min-h-[80px]"
+                            className="w-full bg-secondary/80 border border-border rounded px-4 py-2.5 text-foreground font-mono text-xs focus:outline-none focus:border-primary min-h-[80px]"
                             placeholder="Írd ide az indoklást..."
                             value={reason}
                             onChange={(e) => setReason(e.target.value)}
@@ -216,21 +216,21 @@ export const BulkUserTimeModal: React.FC<BulkUserTimeModalProps> = ({
                 </div>
 
                 {/* Footer */}
-                <div className="p-6 border-t border-border flex justify-end gap-3 bg-secondary">
+                <div className="p-6 border-t border-border flex justify-end gap-3 bg-card/95">
                     <button
-                        className="btn btn-secondary"
+                        className="px-5 py-2.5 rounded border border-border text-foreground bg-secondary/80 hover:bg-secondary transition-colors font-mono text-xs uppercase tracking-wider font-semibold"
                         onClick={onClose}
                         disabled={isLoading}
                     >
                         Mégse
                     </button>
                     <button
-                        className={`btn ${mode === "ADD"
-                            ? "bg-green-600 hover:bg-green-700"
+                        className={`px-5 py-2.5 rounded font-mono text-xs uppercase tracking-wider font-bold shadow-md transition-all ${mode === "ADD"
+                            ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-600/20"
                             : mode === "REMOVE"
-                                ? "bg-red-600 hover:bg-red-700"
-                                : "bg-yellow-600 hover:bg-yellow-700 text-black"
-                            } border-none font-medium`}
+                                ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground shadow-destructive/20"
+                                : "bg-amber-600 hover:bg-amber-500 text-black shadow-amber-600/20"
+                            }`}
                         onClick={handleSave}
                         disabled={isLoading}
                     >

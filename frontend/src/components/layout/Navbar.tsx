@@ -202,7 +202,7 @@ export function Navbar() {
                     className="text-muted-foreground transition-colors group-hover:text-primary"
                   />
                   {unreadCount > 0 && (
-                    <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-foreground shadow-[0_0_8px_hsla(var(--primary),0.4)]">
+                    <span className="absolute -right-1 -top-1 flex h-4 min-w-[16px] items-center justify-center rounded bg-primary px-1 font-mono text-[10px] font-bold text-white">
                       {unreadCount > 9 ? "9+" : unreadCount}
                     </span>
                   )}
@@ -210,9 +210,9 @@ export function Navbar() {
 
                 {/* Notification Dropdown */}
                 {showNotifications && (
-                  <div className="fixed inset-x-4 top-20 z-50 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 w-auto sm:w-80 rounded-xl border border-border bg-[#121A22] shadow-xl shadow-black/50 overflow-hidden animate-in slide-in-from-top-2 duration-200">
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-                      <h3 className="font-semibold text-foreground">Értesítések</h3>
+                  <div className="fixed inset-x-4 top-20 z-50 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 w-auto sm:w-80 rounded tactical-card shadow-2xl overflow-hidden animate-in slide-in-from-top-2 duration-200">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-secondary/40">
+                      <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-foreground">Értesítések</h3>
                       {notifications.length > 0 && (
                         <button
                           onClick={handleDeleteAll}
@@ -319,12 +319,12 @@ export function Navbar() {
                   className="flex items-center gap-3 transition-opacity hover:opacity-80"
                 >
                   <div className="hidden md:flex md:flex-col md:items-end">
-                    <span className="text-sm font-medium text-white/90">
+                    <span className="text-sm font-semibold text-foreground">
                       {user.displayName || user.username}
                     </span>
                     {user.role !== "STUDENT" && (
                       <span
-                        className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${getRoleColor(
+                        className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider border ${getRoleColor(
                           user.role,
                         )}`}
                       >
@@ -333,40 +333,38 @@ export function Navbar() {
                       </span>
                     )}
                   </div>
-                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-tr from-primary to-accent p-[2px] shadow-lg shadow-primary/20">
-                    <div className="h-full w-full overflow-hidden rounded-full bg-background">
-                      {user.avatarUrl ? (
-                        <img
-                          key={user.avatarUrl}
-                          src={user.avatarUrl}
-                          alt={user.displayName || user.username}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-zinc-900 font-bold text-foreground">
-                          {(user.displayName || user.username)
-                            .charAt(0)
-                            .toUpperCase()}
-                        </div>
-                      )}
-                    </div>
+                  <div className="flex h-9 w-9 items-center justify-center rounded border border-border/80 bg-[#0B0F17] overflow-hidden">
+                    {user.avatarUrl ? (
+                      <img
+                        key={user.avatarUrl}
+                        src={user.avatarUrl}
+                        alt={user.displayName || user.username}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center font-display font-bold text-foreground">
+                        {(user.displayName || user.username)
+                          .charAt(0)
+                          .toUpperCase()}
+                      </div>
+                    )}
                   </div>
                 </Link>
                 <button
-                  className="flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-all hover:bg-secondary/80 hover:text-destructive"
+                  className="flex h-9 w-9 items-center justify-center rounded border border-transparent hover:border-border/60 text-muted-foreground transition-all hover:bg-[#121824] hover:text-destructive"
                   onClick={logout}
                   aria-label="Logout"
                 >
-                  <LogOut size={18} />
+                  <LogOut size={16} />
                 </button>
               </div>
             </>
           ) : (
             <button
-              className="inline-flex h-9 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-accent px-5 py-2 text-sm font-bold text-foreground shadow-lg shadow-primary/20 transition-all hover:scale-105 hover:shadow-primary/30 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+              className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 font-display text-sm font-bold uppercase tracking-wider text-primary-foreground shadow-sm transition-all hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
               onClick={login}
             >
-              <LogIn size={16} />
+              <LogIn size={15} />
               <span>Bejelentkezés</span>
             </button>
           )}

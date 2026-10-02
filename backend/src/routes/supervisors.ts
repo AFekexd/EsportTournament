@@ -128,6 +128,13 @@ supervisorsRouter.post(
 
         let actualUserId = user.id;
 
+        // If assigning self, check if user has eligible supervisor role
+        if (!targetUserId || targetUserId === user.id) {
+            if (!['ADMIN', 'ORGANIZER', 'MODERATOR', 'DOK', 'TEACHER'].includes(user.role)) {
+                throw new ApiError('Nem rendelkezel felügyelői jogosultsággal.', 403, 'FORBIDDEN');
+            }
+        }
+
         // If targetUserId is provided, check admin perms
         if (targetUserId && targetUserId !== user.id) {
             if (user.role !== 'ADMIN') {

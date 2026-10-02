@@ -1,25 +1,26 @@
-import { ScrollText } from "lucide-react";
+import { ScrollText, Shield } from "lucide-react";
 
 export function GlobalRulesPage() {
     const pdfUrl = "/rules.pdf";
 
     return (
-        <div className="container mx-auto px-4 py-8 min-h-screen">
-            {/* Header */}
-            <div className="mb-8 flex items-center gap-4">
-                <div className="p-3 bg-primary/10 rounded-xl text-primary">
-                    <ScrollText size={32} />
+        <div className="flex flex-col gap-8 pb-16">
+            {/* Tactical Header */}
+            <div className="flex flex-col gap-3 border-b border-border/60 pb-6">
+                <div className="inline-flex w-fit items-center gap-2 rounded border border-border bg-secondary/80 px-3 py-1 font-mono text-xs uppercase tracking-wider text-primary">
+                    <Shield className="h-3.5 w-3.5" />
+                    <span>HIVATALOS SZABÁLYZAT // CODE OF CONDUCT</span>
                 </div>
-                <div>
-                    <h1 className="text-3xl font-bold text-foreground">Házirend</h1>
-                    <p className="text-muted-foreground text-lg">
-                        A terem és a versenyek általános házirendje
-                    </p>
-                </div>
+                <h1 className="font-display text-3xl sm:text-5xl font-bold uppercase tracking-tight text-foreground">
+                    ESPORT LABOR <span className="text-primary">HÁZIREND</span>
+                </h1>
+                <p className="text-muted-foreground text-sm max-w-xl">
+                    A Pollák Antal Technikum esport termének és hivatalos versenyeinek kötelező érvényű házirendje.
+                </p>
             </div>
 
-            {/* Content */}
-            <div className="bg-[#121A22] rounded-2xl border border-border shadow-xl overflow-hidden h-[80vh]">
+            {/* Content Frame */}
+            <div className="tactical-card overflow-hidden h-[80vh] border border-border bg-card">
                 <iframe
                     src={pdfUrl}
                     className="w-full h-full"

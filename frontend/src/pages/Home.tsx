@@ -2,12 +2,14 @@ import { Link } from "react-router-dom";
 import {
   Trophy,
   Users,
-  Gamepad2,
-  Calendar,
+  Monitor,
   ArrowRight,
-  Zap,
   Shield,
-  Star,
+  Zap,
+  Swords,
+  ChevronRight,
+  Terminal,
+  Activity,
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -16,376 +18,462 @@ import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import { fetchStats } from "../store/slices/statsSlice";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const features = [
-  {
-    icon: <Trophy className="h-6 w-6" />,
-    title: "Versenyek",
-    description: "Regisztrálj versenyekre és versenyezz a legjobb csapatokkal.",
-  },
-  {
-    icon: <Users className="h-6 w-6" />,
-    title: "Csapatok",
-    description: "Hozz létre csapatot vagy csatlakozz meglévőkhöz.",
-  },
-  {
-    icon: <Gamepad2 className="h-6 w-6" />,
-    title: "Játékok",
-    description: "Támogatunk minden népszerű esport játékot.",
-  },
-  {
-    icon: <Star className="h-6 w-6" />,
-    title: "Ranglisták",
-    description: "ELO alapú rangsorrendszer a tiszta versenyzésért.",
-  },
-];
-
-/*
-5 verseny
-Jó közösség
-Értékes díjak
-Automata Bracket rendszer
-Részletes statisztikák
-*/
-
 export function HomePage() {
   const { isAuthenticated, login } = useAuth();
   const dispatch = useAppDispatch();
   const { data: stats, loading: statsLoading } = useAppSelector(
-    (state) => state.stats,
+    (state) => state.stats
   );
 
-  // Fetch stats on component mount and refresh every 30 seconds
   useEffect(() => {
     dispatch(fetchStats());
-
     const interval = setInterval(() => {
       dispatch(fetchStats());
-    }, 30000); // 30 seconds
-
+    }, 30000);
     return () => clearInterval(interval);
   }, [dispatch]);
 
   const statsData = [
     {
+      code: "01",
       value: stats?.activeTournaments ?? 0,
-      label: "Versenyek",
+      label: "Aktív Versenyek",
+      unit: "Bajnokság",
       url: "/tournaments",
+      icon: <Trophy className="h-4 w-4 text-primary" />,
     },
     {
+      code: "02",
       value: stats?.registeredUsers ?? 0,
-      label: "Regisztrált Játékosok",
+      label: "Igazolt Játékosok",
+      unit: "Diák",
       url: "/leaderboards",
+      icon: <Users className="h-4 w-4 text-accent" />,
     },
     {
+      code: "03",
       value: stats?.createdTeams ?? 0,
-      label: "Létrehozott Csapatok",
+      label: "Bejegyzett Csapatok",
+      unit: "Formáció",
       url: "/teams",
+      icon: <Swords className="h-4 w-4 text-primary" />,
     },
-    { value: stats?.playedMatches ?? 0, label: "Meccsek" },
+    {
+      code: "04",
+      value: stats?.playedMatches ?? 0,
+      label: "Lejátszott Mérkőzések",
+      unit: "Mérkőzés",
+      url: "/tournaments",
+      icon: <Activity className="h-4 w-4 text-emerald-400" />,
+    },
+  ];
+
+  const pillars = [
+    {
+      badge: "VERSENYRENDSZER",
+      title: "Automata Ágrajz & Svájci Lebonyolítás",
+      description:
+        "Valós idejű bracket generálás, single és double elimination formátumok, automatikus pontszámítás és eredménykezelés.",
+      link: "/tournaments",
+      linkText: "Bajnokságok böngészése",
+      icon: <Trophy className="h-6 w-6 text-primary" />,
+      accentBorder: "hover:border-primary/60",
+    },
+    {
+      badge: "ESPORT TEREM",
+      title: "Gépfoglalás & Tanulmányi Időkeret",
+      description:
+        "10 db csúcskategóriás gamer konfiguráció az iskola esport laborjában. Foglalj gépet edzéshez vagy hivatalos meccsekhez.",
+      link: "/booking",
+      linkText: "Időpont foglalása",
+      icon: <Monitor className="h-6 w-6 text-accent" />,
+      accentBorder: "hover:border-accent/60",
+    },
+    {
+      badge: "KOMPETITÍV ELO",
+      title: "Hivatalos Iskolai Rangsor",
+      description:
+        "Dinamikus pontrendszer minden meccs után. Hódítsd meg a Pollák ranglistáját egyéniben és csapattal egyaránt.",
+      link: "/leaderboards",
+      linkText: "Ranglista megtekintése",
+      icon: <Shield className="h-6 w-6 text-amber-400" />,
+      accentBorder: "hover:border-amber-400/60",
+    },
+    {
+      badge: "SQUAD HUB",
+      title: "Csapatépítés & Steam Integráció",
+      description:
+        "Alapíts csapatot diáktársaiddal, szinkronizáld a Steam profilodat, kövesd a közös meccselőzményeket és a statisztikákat.",
+      link: "/teams",
+      linkText: "Csapatok felfedezése",
+      icon: <Users className="h-6 w-6 text-emerald-400" />,
+      accentBorder: "hover:border-emerald-400/60",
+    },
   ];
 
   return (
-    <div className="flex flex-col gap-20 pb-20 ">
-      {/* Hero Section */}
-      <section className="relative grid min-h-[600px] grid-cols-1 items-center gap-12 rounded-xl overflow-hidden py-12 lg:grid-cols-2">
-        {/* Background Effects */}
-        <div className="absolute -left-20 -top-20 -z-10 h-96 w-96 rounded-full bg-primary/30 blur-[128px]" />
-        <div className="absolute  right-0 top-1/2 -z-10 h-96 w-96 rounded-full bg-[hsl(var(--neon-pink))]/20 blur-[128px]" />
-        <div className="absolute left-1/2 bottom-0 -z-10 h-64 w-64 rounded-full bg-accent/20 blur-[100px]" />
+    <div className="flex flex-col gap-16 pb-20">
+      {/* Platform Status Ribbon */}
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/60 pb-4 pt-2">
+        <div className="flex items-center gap-3">
+          <span className="flex h-2.5 w-2.5 relative">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+          </span>
+          <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+            POLLÁK ANTAL TECHNIKUM <span className="text-border mx-1">|</span> ESPORTHUB BÖNGÉSZŐ
+          </span>
+        </div>
+        <div className="flex items-center gap-4 text-xs font-mono text-muted-foreground">
+          <span className="hidden sm:inline">SZERVER: ONLINE</span>
+          <span className="hidden sm:inline text-border">/</span>
+          <span>10 PC ELÉRHETŐ</span>
+          <span className="text-border">/</span>
+          <Link to="/rules" className="hover:text-primary transition-colors">
+            HÁZIREND [?]
+          </Link>
+        </div>
+      </div>
 
-        <div className="flex flex-col gap-8 p-10 ">
-          <div className="w-fit rounded-full border border-primary/50 bg-primary/10 px-4 py-1.5 backdrop-blur-md shadow-[0_0_12px_hsla(var(--primary),0.2)]">
-            <div className="flex items-center gap-2 text-sm font-bold text-primary tracking-wide">
-              <Zap className="h-4 w-4 fill-primary animate-pulse" />
-              <span>ISKOLAI ESPORT PLATFORM</span>
-            </div>
+      {/* Hero Section — Tactical Esports Arena */}
+      <section className="relative grid grid-cols-1 gap-12 lg:grid-cols-12 items-center">
+        {/* Left Column: Mission & Actions */}
+        <div className="flex flex-col gap-6 lg:col-span-7">
+          <div className="inline-flex w-fit items-center gap-2 rounded border border-border bg-secondary/80 px-3 py-1 font-mono text-xs uppercase tracking-wider text-primary">
+            <Terminal className="h-3.5 w-3.5" />
+            <span>2026 TAVASZI SZEZON // OFFICIAL LEAGUE</span>
           </div>
 
-          <h1 className="text-glow text-5xl font-black leading-tight tracking-tighter text-foreground sm:text-6xl md:text-7xl">
-            Versenyezz a{" "}
-            <span className="bg-clip-text bg-gradient-to-r from-[hsl(var(--accent))] via-primary to-[hsl(var(--neon-pink))] animate-pulse">
-              LEGJOBBAKKAL
-            </span>
+          <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-foreground leading-[1.05]">
+            LÉPJ BE AZ <span className="text-primary">ARÉNÁBA.</span>
+            <br />
+            VERSENYEZZ A <span className="text-accent">LEGJOBBAKKAL.</span>
           </h1>
 
-          <p className="max-w-[600px] text-lg text-muted-foreground sm:text-xl leading-relaxed font-light">
-            Az iskolai esport versenysorozat hivatalos platformja. Csatlakozz a
-            közösséghez, alapíts csapatot, és küzdj meg a bajnoki címért.
+          <p className="max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed">
+            A Pollák Antal Technikum hivatalos esport versenysorozata és laborfoglaló
+            rendszere. Alapíts csapatot diáktársaiddal, regisztrálj az aktív kupákra, és
+            küzdj meg a dicsőségért a 10 gépes esport laborban.
           </p>
 
-          <div className="mt-4 flex flex-wrap gap-4">
-            {isAuthenticated ? (
-              <>
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className="rounded-full border-primary/50 bg-secondary text-base hover:bg-primary/10 hover:text-foreground hover:border-primary backdrop-blur-sm"
-                >
-                  <Link to="/tournaments" className="gap-2">
-                    Versenyek
-                    <ArrowRight className="h-5 w-5" />
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className="rounded-full border-primary/50 bg-secondary text-base hover:bg-primary/10 hover:text-foreground hover:border-primary backdrop-blur-sm"
-                >
-                  <Link to="/teams">Csapatok felfedezése</Link>
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  size="lg"
-                  onClick={login}
-                  className="rounded-full bg-gradient-to-r from-primary to-[hsl(var(--neon-pink))] text-base font-bold text-foreground shadow-[0_0_15px_hsla(var(--primary),0.3)] transition-all hover:scale-105 hover:shadow-[0_0_25px_hsla(var(--primary),0.5)] border-none"
-                >
-                  Csatlakozás Most
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className="rounded-full border-primary/50 bg-secondary text-base hover:bg-primary/10 hover:text-foreground hover:border-primary backdrop-blur-sm"
-                >
-                  <Link to="/tournaments">Versenyek böngészése</Link>
-                </Button>
-              </>
+          <div className="flex flex-wrap items-center gap-4 pt-2">
+            <Button
+              asChild
+              size="lg"
+              className="h-12 px-6 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground font-display text-base font-bold uppercase tracking-wider shadow-sm transition-all"
+            >
+              <Link to="/tournaments" className="flex items-center gap-2">
+                <Trophy className="h-4 w-4" />
+                Bajnokságok böngészése
+                <ArrowRight className="h-4 w-4 ml-1" />
+              </Link>
+            </Button>
+
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="h-12 px-6 rounded-md border-border bg-card hover:bg-secondary text-foreground font-display text-base font-bold uppercase tracking-wider transition-all"
+            >
+              <Link to="/booking" className="flex items-center gap-2">
+                <Monitor className="h-4 w-4 text-accent" />
+                Gépfoglalás
+              </Link>
+            </Button>
+
+            {!isAuthenticated && (
+              <Button
+                variant="ghost"
+                onClick={login}
+                className="h-12 px-5 font-mono text-sm text-muted-foreground hover:text-foreground"
+              >
+                [ Belépés Keycloak fiókkal ]
+              </Button>
             )}
           </div>
         </div>
 
-        <div className="relative hidden h-[500px] lg:block perspective-[1000px]">
-          {/* Visual elements using absolute positioning and Tailwind */}
-          <div className="absolute left-[10%] top-[10%] w-56 hover:animate-bounce delay-0 hover:z-10">
-            <div className="glass-card rounded-2xl p-6 text-center shadow-2xl transition-all hover:scale-110 group cursor-pointer border-t border-border relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/20 text-primary transition-shadow">
-                <Trophy className="h-7 w-7" />
-              </div>
-              <span className="font-bold text-foreground relative z-10">
-                Automata Bracket
-              </span>
+        {/* Right Column: Tactical Live Telemetry Radar Card */}
+        <div className="lg:col-span-5">
+          <div className="relative rounded-lg border border-border bg-card p-6 shadow-xl overflow-hidden">
+            {/* Corner Tactical Marks */}
+            <div className="absolute top-2 left-2 text-[10px] font-mono text-muted-foreground/60 select-none">
+              +-- HUD.01
             </div>
-          </div>
-
-          <div className="absolute right-[10%] top-[35%] w-56 hover:animate-bounce delay-700 hover:z-10">
-            <div className="glass-card rounded-2xl p-6 text-center shadow-2xl transition-all hover:scale-110 group cursor-pointer border-t border-border relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--accent))]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-accent/20 text-accent shadow-[0_0_15px_hsla(var(--accent),0.3)] group-hover:shadow-[0_0_25px_hsla(var(--accent),0.6)] transition-shadow">
-                <Shield className="h-7 w-7" />
-              </div>
-              <span className="font-bold text-foreground relative z-10">
-                ELO Rendszer
-              </span>
+            <div className="absolute top-2 right-2 text-[10px] font-mono text-emerald-400/80 flex items-center gap-1">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              LIVE
             </div>
-          </div>
 
-          <div className="absolute bottom-[10%] left-[20%] w-56 hover:animate-bounce delay-300 hover:z-10">
-            <div className="glass-card rounded-2xl p-6 text-center shadow-2xl transition-all hover:scale-110 group cursor-pointer border-t border-border relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--neon-pink))]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-[hsl(var(--neon-pink))]/20 text-[hsl(var(--neon-pink))] shadow-[0_0_15px_hsla(var(--neon-pink),0.3)] group-hover:shadow-[0_0_25px_hsla(var(--neon-pink),0.6)] transition-shadow">
-                <Calendar className="h-7 w-7" />
+            <div className="mt-4 flex flex-col gap-4">
+              <div className="flex items-center justify-between border-b border-border/80 pb-3">
+                <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                  KIEMELT SZEZON INFORMÁCIÓ
+                </span>
+                <span className="font-mono text-xs text-primary font-bold">
+                  S26 // POLLÁK CUP
+                </span>
               </div>
-              <span className="font-bold text-foreground relative z-10">
-                Versenynaptár
-              </span>
+
+              {/* Tournament Match Preview Container */}
+              <div className="rounded-md border border-border/80 bg-background/60 p-4">
+                <div className="flex items-center justify-between text-xs font-mono text-muted-foreground mb-2">
+                  <span>HIVATALOS FORMÁTUM</span>
+                  <span className="text-foreground font-semibold">5v5 / DOUBLE ELIM.</span>
+                </div>
+                <div className="text-xl font-display font-bold uppercase text-foreground">
+                  Pollák Tavaszi Esport Bajnokság
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Minden mérkőzés az iskola esport termében és online közvetítésben zajlik.
+                </p>
+
+                <div className="mt-4 grid grid-cols-2 gap-2 pt-2 border-t border-border/60 text-xs font-mono">
+                  <div className="bg-secondary/60 p-2 rounded">
+                    <span className="text-muted-foreground block text-[10px]">HELYSZÍN</span>
+                    <span className="text-foreground font-bold">Esport Terem (10 PC)</span>
+                  </div>
+                  <div className="bg-secondary/60 p-2 rounded">
+                    <span className="text-muted-foreground block text-[10px]">RANGSOR</span>
+                    <span className="text-amber-400 font-bold">+150 ELO Bajnoki</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Lab Status Quick Feed */}
+              <div className="flex items-center justify-between rounded-md border border-border/60 bg-secondary/30 px-3 py-2 text-xs font-mono">
+                <span className="text-muted-foreground flex items-center gap-2">
+                  <Zap className="h-3.5 w-3.5 text-accent" />
+                  GÉPTEREM ÁLLAPOT:
+                </span>
+                <span className="text-emerald-400 font-semibold">FOGLALÁSOK AKTÍVAK</span>
+              </div>
+
+              <Button
+                asChild
+                className="w-full h-10 rounded bg-secondary hover:bg-secondary/80 text-foreground font-display font-bold uppercase tracking-wider text-sm border border-border"
+              >
+                <Link to="/tournaments" className="flex items-center justify-center gap-2">
+                  Aktuális bajnokság megtekintése
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+              </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="relative py-10">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-primary/10 via-transparent to-primary/10 blur-3xl opacity-50" />
-        <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
+      {/* Telemetry / Live Metrics Section */}
+      <section className="relative">
+        <div className="mb-4 flex items-center justify-between border-b border-border/60 pb-2">
+          <h2 className="font-mono text-xs uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+            <Activity className="h-3.5 w-3.5 text-primary" />
+            TELEMETRIA // VALÓS IDEJŰ STATISZTIKÁK
+          </h2>
+          <span className="font-mono text-xs text-muted-foreground">AUTO-REFRESH 30s</span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {statsLoading
-            ? // Loading skeleton
-            Array.from({ length: 4 }).map((_, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center justify-center border-l border-border py-4 first:border-0"
-              >
-                <Skeleton className="h-16 w-32 mb-2 bg-secondary" />
-                <Skeleton className="h-4 w-40 bg-secondary" />
-              </div>
-            ))
-            : statsData.map((stat, index) => (
-              <Link
-                key={index}
-                to={stat.url || "#"}
-                className="flex flex-col items-center justify-center border-l border-border py-4 first:border-0 group hover:bg-secondary rounded-lg transition-colors"
-              >
-                <span className="text-glow mb-2 text-5xl font-black tracking-tight text-foreground md:text-6xl group-hover:scale-110 transition-transform duration-300 group-hover:text-primary">
-                  {stat.value}
-                </span>
-                <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground group-hover:text-foreground transition-colors">
-                  {stat.label}
-                </span>
-              </Link>
-            ))}
+            ? Array.from({ length: 4 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="rounded-lg border border-border bg-card p-5"
+                >
+                  <Skeleton className="h-4 w-20 mb-3 bg-secondary" />
+                  <Skeleton className="h-10 w-28 mb-2 bg-secondary" />
+                  <Skeleton className="h-3 w-36 bg-secondary" />
+                </div>
+              ))
+            : statsData.map((stat) => (
+                <Link
+                  key={stat.code}
+                  to={stat.url}
+                  className="group relative rounded-lg border border-border bg-card p-5 transition-all duration-200 hover:border-primary/60 hover:bg-card/90"
+                >
+                  <div className="flex items-center justify-between text-muted-foreground mb-2">
+                    <span className="font-mono text-xs text-muted-foreground/80">
+                      [{stat.code}]
+                    </span>
+                    <span className="transition-transform group-hover:scale-110">
+                      {stat.icon}
+                    </span>
+                  </div>
+
+                  <div className="font-mono text-3xl sm:text-4xl font-bold text-foreground tracking-tight group-hover:text-primary transition-colors">
+                    {stat.value.toLocaleString("hu-HU")}
+                  </div>
+
+                  <div className="mt-2 flex items-center justify-between border-t border-border/40 pt-2 text-xs">
+                    <span className="font-display font-semibold uppercase text-muted-foreground group-hover:text-foreground transition-colors">
+                      {stat.label}
+                    </span>
+                    <span className="font-mono text-muted-foreground/60 text-[11px]">
+                      {stat.unit}
+                    </span>
+                  </div>
+                </Link>
+              ))}
         </div>
       </section>
 
-      {/* Discord Section */}
-      <div className="flex w-full flex-col md:!flex-row justify-evenly items-center gap-8">
-        <section className="relative overflow-hidden rounded-3xl border border-[#5865F2]/30 bg-[#5865F2]/10 p-8 md:p-12 ">
-          <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,#5865F2,transparent_70%)] opacity-20" />
+      {/* Platform Pillars Section */}
+      <section className="flex flex-col gap-6">
+        <div className="border-b border-border/60 pb-3">
+          <div className="font-mono text-xs uppercase tracking-widest text-primary mb-1">
+            // FUNKCIÓK & RENDSZEREK
+          </div>
+          <h2 className="font-display text-2xl sm:text-3xl font-bold uppercase text-foreground">
+            A Pollák Esport Ökoszisztéma
+          </h2>
+        </div>
 
-          <div className="flex flex-col justify-center gap-6 text-center md:flex-row md:justify-between md:text-left w-full h-full">
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-center gap-3 md:justify-start">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#5865F2] text-foreground shadow-[0_0_15px_rgba(88,101,242,0.5)]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {pillars.map((pillar, idx) => (
+            <Link
+              key={idx}
+              to={pillar.link}
+              className={`group flex flex-col justify-between rounded-lg border border-border bg-card p-6 transition-all duration-200 ${pillar.accentBorder}`}
+            >
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="inline-block rounded border border-border bg-secondary px-2.5 py-0.5 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground group-hover:text-foreground transition-colors">
+                    {pillar.badge}
+                  </span>
+                  <div className="rounded p-2 bg-secondary/80 group-hover:bg-secondary transition-colors">
+                    {pillar.icon}
+                  </div>
+                </div>
+
+                <h3 className="font-display text-xl font-bold uppercase text-foreground group-hover:text-primary transition-colors mb-2">
+                  {pillar.title}
+                </h3>
+
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {pillar.description}
+                </p>
+              </div>
+
+              <div className="mt-6 flex items-center gap-2 font-display text-sm font-bold uppercase tracking-wider text-primary group-hover:underline">
+                {pillar.linkText}
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Community & Discord Station */}
+      <section className="rounded-lg border border-border bg-card p-8 lg:p-10 relative overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="lg:col-span-8 flex flex-col gap-4">
+            <div className="flex items-center gap-2">
+              <span className="rounded bg-[#5865F2]/20 border border-[#5865F2]/30 px-2.5 py-0.5 font-mono text-xs uppercase tracking-wider text-[#5865F2] font-semibold">
+                COMMUNITY HUB
+              </span>
+              <span className="font-mono text-xs text-muted-foreground">
+                DISCORD SZERVER
+              </span>
+            </div>
+
+            <h2 className="font-display text-2xl sm:text-4xl font-bold uppercase text-foreground leading-tight">
+              Csatlakozz a Pollák Esport Közösséghez
+            </h2>
+
+            <p className="text-muted-foreground text-sm sm:text-base max-w-2xl leading-relaxed">
+              Közvetlen kapcsolat a versenybírókkal és szervezőkkel, csapatkereső
+              csatornák, automata meccsértesítések és baráti mérkőzések.
+              A szerver az iskola hivatalos virtuális klubháza.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-4 pt-2">
+              <Button
+                asChild
+                className="h-11 px-6 rounded bg-[#5865F2] hover:bg-[#4752C4] text-white font-display text-sm font-bold uppercase tracking-wider transition-all"
+              >
+                <a
+                  href="https://discord.gg/BsAz7YqjWx"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2"
+                >
                   <svg
-                    width="24"
-                    height="24"
+                    width="18"
+                    height="18"
                     viewBox="0 0 24 24"
                     fill="currentColor"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.419-2.1568 2.419zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.419-2.1568 2.419z" />
                   </svg>
-                </div>
-                <h2 className="text-2xl font-bold text-foreground md:text-3xl">
-                  Pollák Discord
-                </h2>
-              </div>
-              <p className="max-w-xl text-muted-foreground">
-                Találj csapattársakat, szervezz meccseket, és légy része az
-                iskolai esport vérkeringésének. Közvetlen kapcsolat a
-                szervezőkkel és a többi játékossal.
-              </p>
-            </div>
+                  Belépés a Discord szerverre
+                </a>
+              </Button>
 
-            <Button
-              asChild
-              size="lg"
-              className="h-12 min-w-[200px] shrink-0 rounded-full bg-[#5865F2] text-foreground hover:bg-[#4752C4] shadow-[0_0_20px_rgba(88,101,242,0.4)] hover:shadow-[0_0_30px_rgba(88,101,242,0.6)] transition-all border-none"
-            >
-              <a
-                href="https://discord.gg/BsAz7YqjWx"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="gap-2 !text-foreground hover:!text-[#5865F2]"
+              <Button
+                asChild
+                variant="outline"
+                className="h-11 px-5 border-border bg-secondary hover:bg-secondary/80 font-display text-sm font-bold uppercase tracking-wider"
               >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.419-2.1568 2.419zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.419-2.1568 2.419z" />
-                </svg>
-                Csatlakozás
-              </a>
-            </Button>
-          </div>
-        </section>
-        <div className="w-full max-w-[350px]">
-          <iframe
-            src="https://discord.com/widget?id=1449786215720026237&theme=dark"
-            className="w-full h-[500px] rounded-2xl"
-            title="Discord widget"
-            sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
-          ></iframe>
-        </div>
-      </div>
-      {/* Features Section */}
-      <section className="flex flex-col gap-16 ">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="glass-card group relative overflow-hidden rounded-3xl p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_0_25px_hsla(var(--primary),0.15)] border border-border hover:border-primary/50 cursor-pointer"
-            >
-              <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br from-primary/30 to-transparent blur-2xl transition-all group-hover:scale-150 group-hover:bg-primary/40" />
-
-              <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary text-foreground shadow-inner ring-1 ring-white/10 transition-colors group-hover:bg-primary group-hover:text-foreground group-hover:shadow-[0_0_12px_hsla(var(--primary),0.35)]">
-                {feature.icon}
-              </div>
-              <h3 className="mb-3 text-xl font-bold text-foreground group-hover:text-primary transition-colors">
-                {feature.title}
-              </h3>
-              <p className="text-muted-foreground">{feature.description}</p>
+                <Link to="/rules">Versenyszabályzat olvasása</Link>
+              </Button>
             </div>
-          ))}
+          </div>
+
+          <div className="lg:col-span-4 flex justify-center">
+            <div className="w-full max-w-[320px] rounded-lg border border-border bg-secondary/40 p-4 font-mono text-xs">
+              <div className="text-muted-foreground uppercase mb-2 border-b border-border pb-1">
+                // SZABÁLYZATI IRÁNYELVEK
+              </div>
+              <ul className="space-y-2 text-muted-foreground text-[12px]">
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">01.</span>
+                  <span>Sportszerű magatartás és Fair Play kötelezettség.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">02.</span>
+                  <span>Érvényes Pollák diák jogviszony a versenyeken.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">03.</span>
+                  <span>Géptermi eszközök kímélése és rendbetétele.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="pb-8">
-        <div className="relative overflow-hidden rounded-[40px] border border-border bg-background/50 p-1 md:p-1">
-          {/* Outer Glow */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-purple-500/20 to-pink-500/20 blur-3xl" />
-
-          <div className="relative overflow-hidden rounded-[36px] bg-[#121A22] px-6 py-16 text-center shadow-2xl md:px-16 md:py-24">
-            {/* Background Effects */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
-            <div className="absolute left-0 top-0 -z-10 h-full w-full bg-[radial-gradient(circle_800px_at_100%_200px,#3b0764,transparent)]" />
-            <div className="absolute right-0 top-0 -z-10 h-full w-full bg-[radial-gradient(circle_800px_at_0%_-200px,#1e1b4b,transparent)]" />
-
-            <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-8">
-              <div className="inline-flex items-center rounded-full border border-border bg-secondary px-3 py-1 text-sm font-medium text-foreground backdrop-blur-3xl">
-                <span className="mr-2 flex h-2 w-2 items-center justify-center">
-                  <span className="absolute h-2 w-2 animate-ping rounded-full bg-primary opacity-75"></span>
-                  <span className="relative h-1.5 w-1.5 rounded-full bg-primary"></span>
-                </span>
-                Csatlakozz a jövő bajnokaihoz
-              </div>
-
-              <h2 className="text-4xl font-black tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-                Készen állsz az <br />
-                <span className="bg-gradient-to-r from-primary via-purple-400 to-pink-500 bg-clip-text text-transparent">
-                  igazi kihívásra?
-                </span>
-              </h2>
-
-              <p className="max-w-2xl text-lg text-muted-foreground sm:text-xl">
-                Lépj be a versenyek világába, építsd fel a saját csapatodat, és
-                mutasd meg mindenkinek, hogy mire vagy képes. A dicsőség csak
-                egy kattintásra van.
-              </p>
-
-              <div className="mt-4 flex flex-wrap justify-center gap-4">
-                {isAuthenticated ? (
-                  <Button
-                    asChild
-                    size="lg"
-                    className="h-14 min-w-[200px] rounded-full bg-white text-base font-bold text-black hover:bg-gray-200 hover:scale-105 transition-all duration-300"
-                  >
-                    <Link to="/teams/create">Csapat létrehozása</Link>
-                  </Button>
-                ) : (
-                  <>
-                    <Button
-                      size="lg"
-                      onClick={login}
-                      className="h-14 min-w-[200px] rounded-full bg-white text-base font-bold text-black hover:bg-gray-200 hover:scale-105 transition-all duration-300 shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)]"
-                    >
-                      Bejelentkezés
-                    </Button>
-                    <Button
-                      asChild
-                      size="lg"
-                      variant="outline"
-                      className="h-14 min-w-[200px] rounded-full border-border bg-secondary text-base font-bold text-foreground hover:bg-secondary/80 backdrop-blur-sm transition-all duration-300"
-                    >
-                      <Link to="/tournaments">Versenyek</Link>
-                    </Button>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
+      {/* Final Action Strip */}
+      <section className="rounded-lg border border-border bg-secondary/40 p-8 sm:p-12 text-center flex flex-col items-center gap-4">
+        <span className="font-mono text-xs uppercase tracking-widest text-primary">
+          // KÉSZEN ÁLLSZ A MEGMEKKETTETÉSRE?
+        </span>
+        <h2 className="font-display text-3xl sm:text-5xl font-bold uppercase text-foreground max-w-2xl">
+          Építsd Fel a Csapatodat és Hódítsd Meg a Bajnokságot
+        </h2>
+        <p className="text-muted-foreground text-sm sm:text-base max-w-xl">
+          Csatlakozz a bajnokságokhoz, kövesd az élő meccseket és képviseld az
+          osztályodat a Pollák Esport Ligában.
+        </p>
+        <div className="pt-2 flex flex-wrap justify-center gap-4">
+          <Button
+            asChild
+            size="lg"
+            className="h-12 px-8 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground font-display text-base font-bold uppercase tracking-wider"
+          >
+            <Link to="/tournaments">Bajnokságok listája</Link>
+          </Button>
+          <Button
+            asChild
+            variant="outline"
+            size="lg"
+            className="h-12 px-8 rounded-md border-border bg-card hover:bg-secondary font-display text-base font-bold uppercase tracking-wider"
+          >
+            <Link to="/teams">Csapat létrehozása</Link>
+          </Button>
         </div>
       </section>
     </div>
   );
 }
-
-// Remove the import CSS line since we are not using it anymore
-// import './Home.css';

@@ -137,14 +137,28 @@ export const authenticate = async (
 
 // Role-based access control
 export const requireRole = (...roles: string[]) => {
-    return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    return async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
         if (!req.user) {
             return next(new ApiError('Nincs bejelentkezve', 401, 'UNAUTHORIZED'));
         }
 
         const userRoles = req.user.realm_access?.roles || [];
         // Allow if user has one of the required roles OR is an ADMIN
-        const hasRole = roles.some((role) => userRoles.includes(role)) || userRoles.includes(UserRole.ADMIN);
+        let hasRole = roles.some((role) => userRoles.includes(role)) || userRoles.includes(UserRole.ADMIN);
+
+        if (!hasRole && req.user.sub) {
+            try {
+                const dbUser = await prisma.user.findUnique({
+                    where: { keycloakId: req.user.sub },
+                    select: { role: true },
+                });
+                if (dbUser && (roles.includes(dbUser.role) || dbUser.role === UserRole.ADMIN)) {
+                    hasRole = true;
+                }
+            } catch (err) {
+                console.error('Error checking DB role in requireRole:', err);
+            }
+        }
 
         if (!hasRole) {
             return next(new ApiError('Nincs jogosultsága', 403, 'FORBIDDEN'));

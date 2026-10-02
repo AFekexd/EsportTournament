@@ -502,23 +502,22 @@ export function TournamentDetailPage() {
         <div className="container mx-auto px-4 h-full relative flex flex-col justify-end pb-8">
           <Link
             to="/tournaments"
-            className="absolute top-8 left-4 md:left-4 inline-flex items-center gap-2 text-white/70 hover:text-foreground bg-secondary hover:bg-secondary backdrop-blur-md px-3 py-2 md:px-4 md:py-2 rounded-full border border-border transition-all text-sm font-medium z-20"
+            className="absolute top-8 left-4 md:left-4 inline-flex items-center gap-2 text-muted-foreground hover:text-foreground bg-[#121824]/90 backdrop-blur-md px-3 py-1.5 rounded border border-border/80 transition-all font-mono text-xs uppercase tracking-wider z-20"
           >
-            <ArrowLeft size={16} />
+            <ArrowLeft size={14} />
             <span className="hidden md:inline">Vissza a versenyekhez</span>
             <span className="md:hidden">Vissza</span>
           </Link>
-
 
           {/* Top Right Actions */}
           <div className="absolute top-8 right-4 md:right-4 flex items-center gap-2 z-20">
             {user?.role === "ADMIN" && (
               <Button
                 onClick={() => setShowStatusModal(true)}
-                className="bg-secondary hover:bg-secondary border border-border text-foreground font-medium h-10 w-10 p-0 rounded-full backdrop-blur-md transition-all"
+                className="bg-[#121824]/90 hover:bg-[#121824] border border-border/80 text-foreground h-9 w-9 p-0 rounded backdrop-blur-md transition-all"
                 title="Státusz módosítása"
               >
-                <Edit2 size={16} />
+                <Edit2 size={15} />
               </Button>
             )}
 
@@ -528,15 +527,15 @@ export function TournamentDetailPage() {
                 navigator.clipboard.writeText(shareUrl);
                 toast.success("Link másolva!");
               }}
-              className="bg-secondary hover:bg-secondary border border-border text-foreground font-medium h-10 w-10 p-0 rounded-full backdrop-blur-md transition-all"
+              className="bg-[#121824]/90 hover:bg-[#121824] border border-border/80 text-foreground h-9 w-9 p-0 rounded backdrop-blur-md transition-all"
               title="Megosztás"
             >
-              <Share2 size={16} />
+              <Share2 size={15} />
             </Button>
 
             {(user?.role === "ADMIN" || user?.role === "ORGANIZER") && (
               <Button
-                className="bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 h-10 w-10 p-0 rounded-full backdrop-blur-md transition-all"
+                className="bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/40 h-9 w-9 p-0 rounded backdrop-blur-md transition-all"
                 onClick={() => {
                   setConfirmModal({
                     isOpen: true,
@@ -559,62 +558,60 @@ export function TournamentDetailPage() {
                 }}
                 title="Törlés"
               >
-                <Trash2 size={16} />
+                <Trash2 size={15} />
               </Button>
             )}
           </div>
 
           <div className="flex flex-col lg:flex-row lg:items-end gap-6 mt-20">
             {/* Left Content */}
-            <div className="flex-grow space-y-6">
+            <div className="flex-grow space-y-4">
               {/* Badges Row */}
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2">
                 <span
-                  className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md shadow-lg ${statusLabels[currentTournament.status]?.class ||
-                    "bg-gray-500/20 text-muted-foreground border-gray-500/50"
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded font-mono text-xs font-bold uppercase tracking-wider border backdrop-blur-md ${statusLabels[currentTournament.status]?.class ||
+                    "bg-[#121824] text-muted-foreground border-border/80"
                     }`}
                 >
-                  <StatusIcon size={14} />
+                  <StatusIcon size={13} />
                   {statusLabels[currentTournament.status]?.label ||
                     currentTournament.status}
                 </span>
 
                 {currentTournament.game && (
-                  <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-secondary/80 text-foreground border border-border backdrop-blur-md shadow-lg">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded font-mono text-xs font-bold uppercase tracking-wide text-cyan-400 bg-[#0B0F17]/90 border border-border/80 backdrop-blur-md">
                     {currentTournament.game.name}
                   </span>
                 )}
 
-                <span className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-primary/30 text-indigo-300 border border-primary/20 backdrop-blur-md shadow-lg">
-                  <Users size={14} />
-                  {requiredTeamSize}v{requiredTeamSize}
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded font-mono text-xs font-bold uppercase tracking-wider bg-[#121824] text-foreground border border-border/80 backdrop-blur-md">
+                  <Users size={13} className="text-primary" />
+                  {requiredTeamSize}v{requiredTeamSize} FORMÁTUM
                 </span>
 
                 {currentTournament.requireRank && (
                   <span
-                    className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 backdrop-blur-md shadow-lg"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded font-mono text-xs font-bold uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/30 backdrop-blur-md"
                     title="Kötelező rangot beállítani a profilban"
                   >
-                    <Shield size={14} />
-                    Rank limitált
+                    <Shield size={13} />
+                    Rang-Hitelesített
                   </span>
                 )}
               </div>
 
               <div>
-                <h1 className="text-3xl md:text-6xl font-black text-foreground leading-tight drop-shadow-2xl tracking-tight mb-4">
+                <h1 className="font-display text-3xl md:text-6xl font-extrabold uppercase tracking-wide text-foreground leading-tight drop-shadow-md">
                   {currentTournament.name}
                 </h1>
-
-
               </div>
 
               <div className="flex flex-wrap items-center gap-6">
                 {/* Date & Participants */}
-                <div className="flex flex-wrap gap-x-8 gap-y-2 text-sm md:text-base font-medium text-gray-300">
-                  <div className="flex items-center gap-2.5">
-                    <Calendar size={18} className="text-primary" />
-                    <span className="drop-shadow-md">
+                <div className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs md:text-sm text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <Calendar size={15} className="text-primary" />
+                    <span>
                       {startDate.toLocaleDateString("hu-HU", {
                         month: "long",
                         day: "numeric",
@@ -623,26 +620,26 @@ export function TournamentDetailPage() {
                       })}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2.5">
-                    <Users size={18} className="text-primary" />
-                    <span className="drop-shadow-md">
+                  <div className="flex items-center gap-2">
+                    <Users size={15} className="text-primary" />
+                    <span>
                       {currentTournament.participantsCount ??
                         (currentTournament._count?.entries || 0)}{" "}
-                      / {currentTournament.maxTeams} résztvevő
+                      / {currentTournament.maxTeams} RÉSZTVEVŐ
                     </span>
                   </div>
                 </div>
 
-                {/* CTA Buttons - Inline with stats or below */}
+                {/* CTA Buttons */}
                 {isRegistrationOpen &&
                   isAuthenticated &&
                   !isAlreadyRegistered && (
                     <Button
                       onClick={() => setShowRegisterModal(true)}
-                      className="bg-primary hover:bg-primary-hover text-foreground font-bold px-8 py-2.5 rounded-xl shadow-lg shadow-primary/20 hover:scale-105 transition-all w-full sm:w-auto"
+                      className="bg-primary hover:bg-primary-hover text-foreground font-mono text-xs font-bold uppercase tracking-wider px-6 py-2 rounded border border-primary transition-all w-full sm:w-auto"
                     >
-                      <UserPlus size={18} className="mr-2" />
-                      Nevezés
+                      <UserPlus size={16} className="mr-2" />
+                      Nevezés a Tornára
                     </Button>
                   )}
 
@@ -652,10 +649,10 @@ export function TournamentDetailPage() {
                   myEntry && (
                     <Button
                       onClick={() => handleUnregister(myEntry)}
-                      className="bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 font-bold px-8 py-2.5 rounded-xl hover:scale-105 transition-all"
+                      className="bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/40 font-mono text-xs font-bold uppercase tracking-wider px-6 py-2 rounded transition-all"
                     >
-                      <LogOut size={18} className="mr-2" />
-                      Leiratkozás
+                      <LogOut size={16} className="mr-2" />
+                      Nevezés Visszavonása
                     </Button>
                   )}
               </div>
@@ -729,15 +726,15 @@ export function TournamentDetailPage() {
         {/* Stats Grid */}
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <div className="bg-[#121A22] p-6 rounded-xl border border-border shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group">
-            <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
+          <div className="tactical-card p-6 rounded-lg border border-border shadow-lg flex items-center gap-4 hover:border-primary/50 transition-colors group">
+            <div className="bg-primary/10 border border-primary/30 p-3 rounded text-primary group-hover:bg-primary/20 transition-colors">
               <Trophy size={24} />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-1">
+              <p className="text-xs text-muted-foreground uppercase font-mono tracking-wider font-semibold mb-1">
                 Formátum
               </p>
-              <p className="text-lg font-bold text-foreground">
+              <p className="text-lg font-display font-bold uppercase tracking-wider text-foreground">
                 {currentTournament.format === "SINGLE_ELIMINATION"
                   ? "Egyenes kieséses"
                   : currentTournament.format === "DOUBLE_ELIMINATION"
@@ -749,15 +746,15 @@ export function TournamentDetailPage() {
             </div>
           </div>
 
-          <div className="bg-[#121A22] p-6 rounded-xl border border-border shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group">
-            <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
+          <div className="tactical-card p-6 rounded-lg border border-border shadow-lg flex items-center gap-4 hover:border-primary/50 transition-colors group">
+            <div className="bg-primary/10 border border-primary/30 p-3 rounded text-primary group-hover:bg-primary/20 transition-colors">
               <Clock size={24} />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-1">
+              <p className="text-xs text-muted-foreground uppercase font-mono tracking-wider font-semibold mb-1">
                 Jelentkezési határidő
               </p>
-              <p className="text-lg font-bold text-foreground">
+              <p className="text-lg font-display font-bold uppercase tracking-wider text-foreground">
                 {regDeadline.toLocaleString("hu-HU", {
                   year: "numeric",
                   month: "long",
@@ -770,15 +767,15 @@ export function TournamentDetailPage() {
           </div>
 
           {currentTournament.endDate && (
-            <div className="bg-[#121A22] p-6 rounded-xl border border-border shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group">
-              <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
+            <div className="tactical-card p-6 rounded-lg border border-border shadow-lg flex items-center gap-4 hover:border-primary/50 transition-colors group">
+              <div className="bg-primary/10 border border-primary/30 p-3 rounded text-primary group-hover:bg-primary/20 transition-colors">
                 <Calendar size={24} />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-1">
+                <p className="text-xs text-muted-foreground uppercase font-mono tracking-wider font-semibold mb-1">
                   Befejezés
                 </p>
-                <p className="text-lg font-bold text-foreground">
+                <p className="text-lg font-display font-bold uppercase tracking-wider text-foreground">
                   {new Date(currentTournament.endDate).toLocaleString("hu-HU", {
                     year: "numeric",
                     month: "long",
@@ -792,15 +789,15 @@ export function TournamentDetailPage() {
           )}
 
           {(currentTournament as any).prizePool && (
-            <div className="bg-[#121A22] p-6 rounded-xl border border-border shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group">
-              <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
+            <div className="tactical-card p-6 rounded-lg border border-border shadow-lg flex items-center gap-4 hover:border-primary/50 transition-colors group">
+              <div className="bg-primary/10 border border-primary/30 p-3 rounded text-primary group-hover:bg-primary/20 transition-colors">
                 <Award size={24} />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-1">
+                <p className="text-xs text-muted-foreground uppercase font-mono tracking-wider font-semibold mb-1">
                   Díjazás
                 </p>
-                <p className="text-lg font-bold text-foreground">
+                <p className="text-lg font-display font-bold uppercase tracking-wider text-foreground">
                   {(currentTournament as any).prizePool}
                 </p>
               </div>
@@ -811,17 +808,17 @@ export function TournamentDetailPage() {
           {(currentTournament.game?.rules ||
             currentTournament.game?.rulesPdfUrl) && (
               <div
-                className={`bg-[#121A22] p-6 rounded-xl border border-border shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group cursor-pointer`}
+                className={`tactical-card p-6 rounded-lg border border-border shadow-lg flex items-center gap-4 hover:border-primary/50 transition-colors group cursor-pointer`}
                 onClick={() => setShowViewRulesModal(true)}
               >
-                <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
+                <div className="bg-primary/10 border border-primary/30 p-3 rounded text-primary group-hover:bg-primary/20 transition-colors">
                   <ScrollText size={24} />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-1">
+                  <p className="text-xs text-muted-foreground uppercase font-mono tracking-wider font-semibold mb-1">
                     Szabályzat
                   </p>
-                  <p className="text-lg font-bold text-foreground flex items-center gap-2">
+                  <p className="text-lg font-display font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
                     Megtekintés
                     <ArrowRight
                       size={16}
@@ -835,10 +832,10 @@ export function TournamentDetailPage() {
 
         {/* Tabs */}
         <div className="flex justify-center mb-8">
-          <div className="bg-[#121A22] p-1 rounded-full border border-border inline-flex overflow-x-auto max-w-full">
+          <div className="bg-secondary/80 p-1 rounded border border-border inline-flex overflow-x-auto max-w-full font-mono">
             <button
-              className={`px-4 md:px-8 py-2 rounded-full text-sm font-bold transition-all ${activeTab === "info"
-                ? "bg-primary text-black shadow-lg"
+              className={`px-4 md:px-6 py-2 rounded text-xs font-bold uppercase tracking-wider transition-all ${activeTab === "info"
+                ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
                 : "text-muted-foreground hover:text-foreground"
                 }`}
               onClick={() => setActiveTab("info")}
@@ -847,8 +844,8 @@ export function TournamentDetailPage() {
             </button>
             {currentTournament.hasQualifier && (
               <button
-                className={`px-4 md:px-8 py-2 rounded-full text-sm font-bold transition-all ${activeTab === "qualifier"
-                  ? "bg-primary text-black shadow-lg"
+                className={`px-4 md:px-6 py-2 rounded text-xs font-bold uppercase tracking-wider transition-all ${activeTab === "qualifier"
+                  ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
                   : "text-muted-foreground hover:text-foreground"
                   }`}
                 onClick={() => setActiveTab("qualifier")}
@@ -857,8 +854,8 @@ export function TournamentDetailPage() {
               </button>
             )}
             <button
-              className={`px-4 md:px-8 py-2 rounded-full text-sm font-bold transition-all ${activeTab === "bracket"
-                ? "bg-primary text-black shadow-lg"
+              className={`px-4 md:px-6 py-2 rounded text-xs font-bold uppercase tracking-wider transition-all ${activeTab === "bracket"
+                ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
                 : "text-muted-foreground hover:text-foreground"
                 }`}
               onClick={() => setActiveTab("bracket")}
@@ -873,28 +870,28 @@ export function TournamentDetailPage() {
           <div className="space-y-8">
             {/* Description Section */}
             {currentTournament.description && (
-              <div className="bg-[#121A22] p-6 rounded-xl border border-border shadow-lg">
-                <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                  <Info size={20} className="text-primary" />
+              <div className="tactical-card p-6 rounded-lg border border-border shadow-lg">
+                <h2 className="text-lg font-display font-bold uppercase tracking-wider text-foreground mb-4 flex items-center gap-2">
+                  <Info size={18} className="text-primary" />
                   Leírás
                 </h2>
-                <div className="prose prose-invert max-w-none text-gray-300">
-                  <p className="whitespace-pre-wrap leading-relaxed">
+                <div className="prose prose-invert max-w-none text-foreground/80 font-mono text-sm leading-relaxed">
+                  <p className="whitespace-pre-wrap">
                     {currentTournament.description}
                   </p>
                 </div>
               </div>
             )}
             {/* Participants Section */}
-            <div className="bg-[#121A22] rounded-xl border border-border overflow-hidden">
-              <div className="p-6 border-b border-border flex justify-between items-center">
-                <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-                  <Users size={20} className="text-primary" />
+            <div className="tactical-card rounded-lg border border-border overflow-hidden">
+              <div className="p-6 border-b border-border flex justify-between items-center bg-card/90">
+                <h2 className="text-lg font-display font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
+                  <Users size={18} className="text-primary" />
                   {currentTournament.game?.teamSize === 1
                     ? "Regisztrált játékosok"
                     : "Regisztrált résztvevők"}
                 </h2>
-                <span className="bg-secondary text-muted-foreground text-xs px-2 py-1 rounded">
+                <span className="bg-secondary/80 border border-border text-muted-foreground font-mono text-xs px-2.5 py-1 rounded">
                   {currentTournament.entries?.length || 0} résztvevő
                 </span>
               </div>
@@ -996,15 +993,15 @@ export function TournamentDetailPage() {
         {activeTab === "qualifier" && currentTournament.hasQualifier && (
           <div className="space-y-8">
             {/* Qualifier Settings */}
-            <div className="bg-[#121A22] p-6 rounded-xl border border-border shadow-lg flex items-center gap-4 hover:border-primary/30 transition-colors group">
-              <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
+            <div className="tactical-card p-6 rounded-lg border border-border shadow-lg flex items-center gap-4 hover:border-primary/50 transition-colors group">
+              <div className="bg-primary/10 border border-primary/30 p-3 rounded text-primary group-hover:bg-primary/20 transition-colors">
                 <Shield size={24} />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-1">
+                <p className="text-xs text-muted-foreground uppercase font-mono tracking-wider font-semibold mb-1">
                   Selejtező
                 </p>
-                <p className="text-lg font-bold text-foreground">
+                <p className="text-lg font-display font-bold uppercase tracking-wider text-foreground">
                   {currentTournament.qualifierMatches} meccs / min.{" "}
                   {currentTournament.qualifierMinPoints} pont
                 </p>
@@ -1012,10 +1009,10 @@ export function TournamentDetailPage() {
             </div>
 
             {/* Qualifier Results */}
-            <div className="bg-[#121A22] rounded-xl border border-border overflow-hidden">
-              <div className="p-6 border-b border-border flex justify-between items-center">
-                <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-                  <Award size={20} className="text-primary" />
+            <div className="tactical-card rounded-lg border border-border overflow-hidden">
+              <div className="p-6 border-b border-border flex justify-between items-center bg-card/90">
+                <h2 className="text-lg font-display font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
+                  <Award size={18} className="text-primary" />
                   Eredmények
                 </h2>
               </div>
@@ -1206,11 +1203,11 @@ export function TournamentDetailPage() {
 
         {activeTab === "bracket" && (
           <div
-            className={`bg-[#121A22] rounded-xl border border-border overflow-hidden shadow-2xl ${isFullscreen ? "fixed inset-0 z-50 rounded-none" : "relative"
+            className={`tactical-card rounded-lg border border-border overflow-hidden shadow-2xl ${isFullscreen ? "fixed inset-0 z-50 rounded-none" : "relative"
               }`}
           >
-            <div className="p-4 border-b border-border flex justify-between items-center bg-secondary">
-              <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+            <div className="p-4 border-b border-border flex justify-between items-center bg-card/90">
+              <h2 className="text-base font-display font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
                 <Trophy size={18} className="text-primary" />
                 Bracket
               </h2>

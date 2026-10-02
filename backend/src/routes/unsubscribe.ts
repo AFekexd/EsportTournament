@@ -13,7 +13,12 @@ router.get('/', async (req, res) => {
         }
 
         // 1. Verify Signature
-        const secret = process.env.UNSUBSCRIBE_SECRET || process.env.JWT_SECRET || 'fallback_secret_do_not_use_in_prod';
+        const secret = process.env.UNSUBSCRIBE_SECRET || process.env.JWT_SECRET;
+        if (!secret) {
+            console.error('[UNSUBSCRIBE] Neither UNSUBSCRIBE_SECRET nor JWT_SECRET is configured');
+            return res.status(503).send(renderErrorPage('Szolgáltatás nem elérhető', 'A leiratkozási szolgáltatás jelenleg nem konfigurált a szerveren.'));
+        }
+
         const hmac = crypto.createHmac('sha256', secret);
         hmac.update(userId);
         const expectedSignature = hmac.digest('hex');
@@ -85,14 +90,25 @@ function renderSuccessPage() {
     `;
 }
 
+function escapeHtml(str: string): string {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 function renderErrorPage(title: string, message: string) {
+    const safeTitle = escapeHtml(title);
+    const safeMessage = escapeHtml(message);
     return `
 <!DOCTYPE html>
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hiba</title>
+    <title>${safeTitle}</title>
     <style>
         body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: #0a0a0f; color: #fff; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
         .card { background: #111118; padding: 40px; border-radius: 16px; text-align: center; max-width: 400px; width: 90%; border: 1px solid rgba(239, 68, 68, 0.2); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
@@ -104,8 +120,8 @@ function renderErrorPage(title: string, message: string) {
 <body>
     <div class="card">
         <div class="icon">⚠️</div>
-        <h1>${title}</h1>
-        <p>${message}</p>
+        <h1>${safeTitle}</h1>
+        <p>${safeMessage}</p>
     </div>
 </body>
 </html>

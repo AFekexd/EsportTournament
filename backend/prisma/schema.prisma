@@ -187,6 +187,9 @@ model User {
   bugReports            BugReport[]
   bugReportNotification BugReportNotificationSetting? @relation("BugReportNotifications")
   incidents             Incident[]
+
+  @@index([role])
+  @@index([elo])
 }
 
 // Csapat
@@ -212,6 +215,9 @@ model Team {
   // Scrim relations
   createdScrims  Scrim[] @relation("ScrimRequester")
   acceptedScrims Scrim[] @relation("ScrimOpponent")
+
+  @@index([elo])
+  @@index([ownerId])
 }
 
 // Csapattag
@@ -284,6 +290,10 @@ model Tournament {
 
   entries TournamentEntry[]
   matches Match[]
+
+  @@index([status])
+  @@index([startDate])
+  @@index([gameId])
 }
 
 // Verseny jelentkezés
@@ -304,6 +314,9 @@ model TournamentEntry {
 
   @@unique([tournamentId, teamId])
   @@unique([tournamentId, userId])
+  @@index([tournamentId])
+  @@index([userId])
+  @@index([teamId])
 }
 
 // Meccs
@@ -341,6 +354,11 @@ model Match {
   // Check-in and prediction relations
   checkIns    MatchCheckIn[]
   predictions MatchPrediction[]
+
+  @@index([tournamentId])
+  @@index([status])
+  @@index([playedAt])
+  @@index([scheduledAt])
 }
 
 // Játékos statisztikák

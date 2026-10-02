@@ -8,7 +8,7 @@ import { notificationService } from '../services/notificationService.js';
 export const adminKioskRouter: Router = Router();
 
 // Get all machines
-adminKioskRouter.get('/machines', async (req, res) => {
+adminKioskRouter.get('/machines', authenticate, requireRole('ADMIN', 'TEACHER'), async (req, res) => {
     const machines = await prisma.computer.findMany({
         orderBy: { position: 'asc' }
     });
@@ -245,8 +245,8 @@ adminKioskRouter.post('/machines/:id/competition-mode', authenticate, requireRol
     }
 });
 
-// Get logs (recent)
-adminKioskRouter.get('/logs', async (req, res) => {
+// Get logs (recent) - Admin only
+adminKioskRouter.get('/logs', authenticate, requireRole('ADMIN'), async (req, res) => {
     const logs = await prisma.log.findMany({
         take: 100,
         orderBy: { createdAt: 'desc' },

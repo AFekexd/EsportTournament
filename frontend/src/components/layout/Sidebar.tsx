@@ -3,7 +3,6 @@ import {
   Home,
   Trophy,
   Users,
-  Gamepad2,
   Calendar,
   Settings,
   Shield,
@@ -15,8 +14,6 @@ import {
   ClipboardList,
   FileQuestion,
   GitCommit,
-  Newspaper,
-  Swords,
   Bug,
   AlertTriangle,
   ScrollText,
@@ -43,12 +40,9 @@ const navItems: NavItem[] = [
   { to: "/teams", icon: <Users size={20} />, label: "Csapatok" },
   { to: "/booking", icon: <Monitor size={20} />, label: "Gépfoglalás" },
   { to: "/tournaments", icon: <Trophy size={20} />, label: "Versenyek" },
-  { to: "/games", icon: <Gamepad2 size={20} />, label: "Játékok" },
   { to: "/calendar", icon: <Calendar size={20} />, label: "Naptár" },
-  { to: "/news", icon: <Newspaper size={20} />, label: "Hírek" },
   { to: "/rules", icon: <ScrollText size={20} />, label: "Házirend" },
   { to: "/leaderboards", icon: <TrendingUp size={20} />, label: "Ranglisták" },
-  { to: "/scrims", icon: <Swords size={20} />, label: "Gyakorló (Scrims)" },
   { to: "/settings", icon: <Settings size={20} />, label: "Beállítások" },
   { to: "/incidents", icon: <AlertTriangle size={20} />, label: "Incidensek" },
   { to: "/bug-report", icon: <Bug size={20} />, label: "Hibajelentés" },
@@ -188,24 +182,29 @@ export function Sidebar() {
           : "-translate-x-full md:w-20 md:translate-x-0"
           }`}
       >
-        <div className="flex h-16 items-center border-b border-border px-4">
+        <div className="flex h-16 items-center border-b border-border/80 px-4">
           {isOpen && (
             <Link
               to="/"
-              className="flex items-center gap-2 font-bold text-primary transition-opacity hover:opacity-80"
+              className="flex items-center gap-2.5 transition-opacity hover:opacity-90"
             >
               <img
                 src="/esportlogo.png"
-                alt="EsportHub"
-                className="md:w-15 md:h-15 w-12 h-12"
+                alt="Pollák Esport"
+                className="w-10 h-10 object-contain"
               />
-              <span className="text-xl tracking-tight text-foreground font-black tracking-tighter">
-                EsportHub
-              </span>
+              <div className="flex flex-col">
+                <span className="font-display text-lg font-bold tracking-wider text-foreground leading-tight">
+                  POLLÁK <span className="text-primary">ESPORT</span>
+                </span>
+                <span className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
+                  HUB // V2.6
+                </span>
+              </div>
             </Link>
           )}
           <button
-            className={`ml-auto flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-secondary/80 hover:text-foreground ${!isOpen && "mx-auto"
+            className={`ml-auto flex h-8 w-8 items-center justify-center rounded text-muted-foreground transition-all hover:bg-secondary hover:text-foreground ${!isOpen && "mx-auto"
               }`}
             onClick={() => dispatch(toggleSidebar())}
             aria-label={isOpen ? "Collapse sidebar" : "Expand sidebar"}
@@ -214,8 +213,13 @@ export function Sidebar() {
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto py-6">
-          <div className="mb-8 px-3">
+        <nav className="flex-1 overflow-y-auto py-4">
+          <div className="mb-6 px-3">
+            {isOpen && (
+              <div className="px-3 pb-2 text-[10px] font-mono font-bold uppercase tracking-widest text-muted-foreground/60 select-none">
+                // NAVIGÁCIÓ
+              </div>
+            )}
             <div className="space-y-1">
               {navItems.map((item) => (
                 <Link
@@ -227,16 +231,16 @@ export function Sidebar() {
                       dispatch(toggleSidebar());
                     }
                   }}
-                  className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive(item.to)
-                    ? "bg-primary/20 text-foreground shadow-[0_0_12px_hsla(var(--primary),0.2)] border border-primary/30"
-                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  className={`group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-150 ${isActive(item.to)
+                    ? "bg-primary/10 text-primary font-semibold border-l-2 border-primary rounded-l-none"
+                    : "text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
                     } ${!isOpen && "justify-center px-0"}`}
                   title={!isOpen ? item.label : undefined}
                 >
                   <span
-                    className={`transition-transform duration-200 group-hover:scale-110 ${isActive(item.to)
-                      ? "text-primary drop-shadow-[0_0_6px_hsla(var(--primary),0.5)]"
-                      : ""
+                    className={`transition-colors ${isActive(item.to)
+                      ? "text-primary"
+                      : "text-muted-foreground group-hover:text-foreground"
                       }`}
                   >
                     {item.icon}
@@ -248,8 +252,13 @@ export function Sidebar() {
           </div>
 
           {isAuthenticated && (
-            <div className="border-t border-border pt-5">
-              <div className="mb-8 px-3">
+            <div className="border-t border-border/60 pt-4">
+              <div className="mb-6 px-3">
+                {isOpen && (
+                  <div className="px-3 pb-2 text-[10px] font-mono font-bold uppercase tracking-widest text-muted-foreground/60 select-none">
+                    // ADMINISZTRÁCIÓ
+                  </div>
+                )}
                 <div className="space-y-1">
                   {adminItems.filter(canView).map((item) => (
                     <Link
@@ -260,30 +269,30 @@ export function Sidebar() {
                           dispatch(toggleSidebar());
                         }
                       }}
-                      className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive(item.to)
-                        ? "bg-primary/20 text-foreground shadow-[0_0_12px_hsla(var(--primary),0.2)] border border-primary/30"
-                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      className={`group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-150 ${isActive(item.to)
+                        ? "bg-primary/10 text-primary font-semibold border-l-2 border-primary rounded-l-none"
+                        : "text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
                         } ${!isOpen && "justify-center px-0"}`}
                       title={!isOpen ? item.label : undefined}
                     >
                       <div className="relative">
                         <span
-                          className={`transition-transform duration-200 group-hover:scale-110 ${isActive(item.to)
-                            ? "text-primary drop-shadow-[0_0_6px_hsla(var(--primary),0.5)]"
-                            : ""
+                          className={`transition-colors ${isActive(item.to)
+                            ? "text-primary"
+                            : "text-muted-foreground group-hover:text-foreground"
                             }`}
                         >
                           {item.icon}
                         </span>
                         {!isOpen && (item as any).badge && requestCount > 0 && (
-                          <span className="absolute -top-1 -right-1 block h-3 w-3 rounded-full bg-red-500 ring-2 ring-border" />
+                          <span className="absolute -top-1 -right-1 block h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-card" />
                         )}
                       </div>
                       {isOpen && (
                         <div className="flex items-center justify-between flex-1">
                           <span>{item.label}</span>
                           {(item as any).badge && requestCount > 0 && (
-                            <span className="bg-red-500 text-foreground text-[10px] font-bold px-2 py-0.5 rounded-full">
+                            <span className="bg-red-500/20 text-red-400 border border-red-500/30 text-[10px] font-mono font-bold px-1.5 py-0.2 rounded">
                               {requestCount}
                             </span>
                           )}

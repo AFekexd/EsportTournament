@@ -63,25 +63,25 @@ export function ConfirmationModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
       <div
-        className={`bg-[#121A22] rounded-2xl border ${styles.border} shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200`}
+        className={`tactical-card border ${styles.border} shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
           <div className="flex items-start gap-4">
-            <div className={`p-3 rounded-xl ${styles.bgIcon} flex-shrink-0`}>
+            <div className={`p-2.5 rounded ${styles.bgIcon} flex-shrink-0 border ${styles.border}`}>
               {styles.icon}
             </div>
             <div className="flex-1">
-              <h3 className="text-xl font-bold text-foreground mb-2">{title}</h3>
-              <p className="text-muted-foreground leading-relaxed">{message}</p>
+              <h3 className="text-lg font-display font-bold uppercase tracking-tight text-foreground mb-1">{title}</h3>
+              <p className="text-xs font-mono text-muted-foreground leading-relaxed">{message}</p>
             </div>
           </div>
         </div>
 
-        <div className="p-4 bg-[#121A22]/50 border-t border-border flex justify-end gap-3">
+        <div className="p-4 bg-secondary/40 border-t border-border flex justify-end gap-2.5">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+            className="px-3.5 py-1.5 rounded border border-border bg-secondary text-xs font-mono uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
           >
             {cancelLabel}
           </button>
@@ -90,7 +90,7 @@ export function ConfirmationModal({
               onConfirm();
               onClose();
             }}
-            className={`px-6 py-2 rounded-lg text-sm font-bold shadow-lg transition-all hover:scale-105 active:scale-95 ${styles.button}`}
+            className={`px-4 py-1.5 rounded text-xs font-mono font-bold uppercase tracking-wider transition-all ${styles.button}`}
           >
             {confirmLabel}
           </button>

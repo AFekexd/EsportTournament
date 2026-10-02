@@ -35,9 +35,9 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ matches, currentUserId, isA
 
     if (matches.length === 0) {
         return (
-            <div className="text-center py-8 text-muted-foreground bg-[#121A22]/30 rounded-xl border border-dashed border-border">
+            <div className="text-center py-8 text-muted-foreground tactical-card rounded-lg border border-dashed border-border">
                 <Trophy size={32} className="mx-auto mb-3 opacity-20" />
-                <p className="text-sm">Még nincsenek lejátszott meccsek.</p>
+                <p className="text-sm font-mono">Még nincsenek lejátszott meccsek.</p>
             </div>
         );
     }
@@ -87,15 +87,15 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ matches, currentUserId, isA
                     <div
                         key={match.id}
                         className={`
-                            relative flex items-center justify-between p-3 
-                            bg-[#121A22]/30 border-y border-r border-l-4 border-border 
+                            relative flex items-center justify-between p-3.5 
+                            bg-card/70 border-y border-r border-l-4 border-border 
                             rounded-r-lg rounded-l-[2px] transition-all duration-200 group
                             ${borderColor} ${bgHover}
                         `}
                     >
                         {/* Game & Date - Compact */}
                         <div className="flex items-center gap-3 w-1/3 min-w-[140px]">
-                            <div className="w-10 h-10 rounded bg-[#121A22] border border-border overflow-hidden shrink-0 flex items-center justify-center">
+                            <div className="w-10 h-10 rounded bg-secondary border border-border overflow-hidden shrink-0 flex items-center justify-center">
                                 {match.tournament.game?.imageUrl ? (
                                     <img
                                         src={match.tournament.game.imageUrl}
@@ -116,13 +116,13 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ matches, currentUserId, isA
                                 >
                                     {match.tournament.name}
                                 </Link>
-                                <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                                <div className="flex items-center gap-2 text-[10px] font-mono text-muted-foreground">
                                     <span className="uppercase tracking-wide">
                                         {match.playedAt ? new Date(match.playedAt).toLocaleDateString('hu-HU') : 'TBD'}
                                     </span>
                                     {match.round > 0 && (
                                         <>
-                                            <span className="w-0.5 h-0.5 rounded-full bg-gray-600"></span>
+                                            <span className="w-0.5 h-0.5 rounded-full bg-border"></span>
                                             <span>{match.round}. Kör</span>
                                         </>
                                     )}
@@ -132,13 +132,13 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ matches, currentUserId, isA
 
                         {/* Score - Center Piece */}
                         <div className="flex items-center justify-center gap-3 sm:gap-6 flex-1">
-                            <div className={`text-lg font-black ${statusColor} text-right w-8`}>
+                            <div className={`text-lg font-mono font-black ${statusColor} text-right w-8`}>
                                 {myScore ?? '-'}
                             </div>
-                            <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest bg-[#121A22] px-1.5 py-0.5 rounded">
+                            <div className="text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-widest bg-secondary/80 border border-border/50 px-2 py-0.5 rounded">
                                 VS
                             </div>
-                            <div className={`text-lg font-black ${result === 'win' ? 'text-red-500' : result === 'loss' ? 'text-green-500' : 'text-muted-foreground'} text-left w-8`}>
+                            <div className={`text-lg font-mono font-black ${result === 'win' ? 'text-red-500' : result === 'loss' ? 'text-green-500' : 'text-muted-foreground'} text-left w-8`}>
                                 {oppScore ?? '-'}
                             </div>
                         </div>
@@ -147,10 +147,10 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ matches, currentUserId, isA
                         <div className="flex items-center justify-end gap-3 w-1/3 min-w-[140px]">
                             {/* Opponent Name & Avatar */}
                             <div className="flex items-center gap-2 text-right">
-                                <span className="text-sm font-semibold text-gray-300 truncate max-w-[100px] sm:max-w-[150px]">
+                                <span className="text-sm font-semibold text-foreground/90 truncate max-w-[100px] sm:max-w-[150px]">
                                     {(opponent as any).displayName || (opponent as any).username || (opponent as any).name || '?'}
                                 </span>
-                                <div className="w-8 h-8 rounded-full bg-[#121A22] border border-border flex items-center justify-center overflow-hidden shrink-0">
+                                <div className="w-8 h-8 rounded-full bg-secondary border border-border flex items-center justify-center overflow-hidden shrink-0">
                                     {(opponent as any).avatarUrl ? (
                                         <img src={(opponent as any).avatarUrl} alt="avatar" className="w-full h-full object-cover" />
                                     ) : (

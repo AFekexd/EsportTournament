@@ -137,25 +137,25 @@ export function CommandPalette() {
     return (
         <div className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] px-4 backdrop-blur-sm bg-background/80 animate-in fade-in duration-200">
             <div
-                className="w-full max-w-2xl bg-[#121A22] border border-border rounded-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
+                className="w-full max-w-2xl tactical-card shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Search Header */}
-                <div className="flex items-center px-4 py-3 border-b border-border gap-3">
-                    <Search className="text-muted-foreground" size={20} />
+                <div className="flex items-center px-4 py-3 border-b border-border gap-3 bg-secondary/30">
+                    <Search className="text-primary" size={18} />
                     <input
                         ref={inputRef}
                         type="text"
                         placeholder="Keresés versenyek és felhasználók között..."
-                        className="flex-1 bg-transparent border-none text-foreground placeholder-gray-500 focus:outline-none focus:ring-0 text-lg"
+                        className="flex-1 bg-transparent border-none text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0 text-base font-mono"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                     />
                     <button
                         onClick={handleClose}
-                        className="p-1 rounded bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-colors"
+                        className="p-1 rounded bg-secondary border border-border hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-colors"
                     >
-                        <div className="text-xs px-1.5 font-medium">ESC</div>
+                        <div className="text-[10px] font-mono px-1.5 font-bold uppercase">ESC</div>
                     </button>
                 </div>
 
@@ -167,26 +167,26 @@ export function CommandPalette() {
 
                     {/* Loading State */}
                     {isLoading && (
-                        <div className="py-8 flex flex-col items-center text-muted-foreground">
-                            <Loader size={24} className="animate-spin mb-2" />
-                            <p className="text-sm">Keresés folyamatban...</p>
+                        <div className="py-8 flex flex-col items-center text-muted-foreground font-mono text-xs">
+                            <Loader size={20} className="animate-spin mb-2 text-primary" />
+                            <p>Keresés folyamatban...</p>
                         </div>
                     )}
 
                     {/* Empty State / Hints */}
                     {!isLoading && query.length < 2 && (
-                        <div className="py-12 text-center text-muted-foreground">
-                            <p className="text-sm">Írj be legalább 2 karaktert a kereséshez</p>
-                            <div className="flex justify-center gap-4 mt-4 text-xs">
-                                <span className="flex items-center gap-1"><Trophy size={12} /> Versenyek</span>
-                                <span className="flex items-center gap-1"><User size={12} /> Felhasználók</span>
+                        <div className="py-10 text-center text-muted-foreground font-mono">
+                            <p className="text-xs">Írj be legalább 2 karaktert a kereséshez</p>
+                            <div className="flex justify-center gap-4 mt-3 text-[11px]">
+                                <span className="flex items-center gap-1.5"><Trophy size={13} className="text-amber-400" /> Versenyek</span>
+                                <span className="flex items-center gap-1.5"><User size={13} className="text-primary" /> Felhasználók</span>
                             </div>
                         </div>
                     )}
 
                     {/* No Results */}
                     {!isLoading && query.length >= 2 && results.tournaments.length === 0 && results.users.length === 0 && (
-                        <div className="py-8 text-center text-muted-foreground">
+                        <div className="py-8 text-center text-muted-foreground font-mono text-xs">
                             <p>Nincs találat a következőre: "{query}"</p>
                         </div>
                     )}
@@ -194,7 +194,7 @@ export function CommandPalette() {
                     {/* Results Groups */}
                     {!isLoading && results.tournaments.length > 0 && (
                         <div className="mb-2">
-                            <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                            <div className="px-3 py-1.5 text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-wider">
                                 Versenyek
                             </div>
                             {results.tournaments.map((t, i) => {
@@ -205,17 +205,17 @@ export function CommandPalette() {
                                         key={t.id}
                                         data-index={globalIndex}
                                         onClick={() => handleNavigate(`/tournaments/${t.id}`)}
-                                        className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg text-left group transition-all duration-100 ${isSelected ? 'bg-primary/20 ring-1 ring-primary/50' : 'hover:bg-secondary'
+                                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded text-left group transition-all duration-100 ${isSelected ? 'bg-primary/20 ring-1 ring-primary/50' : 'hover:bg-secondary/60'
                                             }`}
                                     >
-                                        <div className="p-2 bg-yellow-500/10 rounded-md text-yellow-500 group-hover:bg-yellow-500/20">
-                                            <Trophy size={18} />
+                                        <div className="p-2 bg-amber-500/10 border border-amber-500/20 rounded text-amber-400 group-hover:bg-amber-500/20">
+                                            <Trophy size={16} />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h4 className={`font-medium truncate ${isSelected ? 'text-primary' : 'text-foreground'}`}>{t.name}</h4>
-                                            <p className="text-xs text-muted-foreground truncate">{t.game?.name || 'Játék'}</p>
+                                            <h4 className={`text-sm font-semibold truncate ${isSelected ? 'text-primary' : 'text-foreground'}`}>{t.name}</h4>
+                                            <p className="text-xs font-mono text-muted-foreground truncate">{t.game?.name || 'Játék'}</p>
                                         </div>
-                                        <ArrowRight size={16} className={`text-muted-foreground transition-all ${isSelected ? 'text-primary opacity-100' : 'opacity-0 group-hover:opacity-100'}`} />
+                                        <ArrowRight size={14} className={`text-muted-foreground transition-all ${isSelected ? 'text-primary opacity-100' : 'opacity-0 group-hover:opacity-100'}`} />
                                     </button>
                                 );
                             })}
@@ -225,7 +225,7 @@ export function CommandPalette() {
                     {/* Users Results */}
                     {!isLoading && results.users.length > 0 && (
                         <div>
-                            <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                            <div className="px-3 py-1.5 text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-wider">
                                 Felhasználók
                             </div>
                             {results.users.map((u, i) => {
@@ -236,31 +236,31 @@ export function CommandPalette() {
                                         key={u.id}
                                         data-index={globalIndex}
                                         onClick={() => handleNavigate(`/profile/${u.id}`)}
-                                        className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg text-left group transition-all duration-100 ${isSelected ? 'bg-primary/20 ring-1 ring-primary/50' : 'hover:bg-secondary'
+                                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded text-left group transition-all duration-100 ${isSelected ? 'bg-primary/20 ring-1 ring-primary/50' : 'hover:bg-secondary/60'
                                             }`}
                                     >
-                                        <div className="p-1 rounded-full border border-border overflow-hidden w-9 h-9 flex-shrink-0">
+                                        <div className="p-0.5 rounded border border-border overflow-hidden w-8 h-8 flex-shrink-0">
                                             {u.avatarUrl ? (
-                                                <img src={u.avatarUrl} alt={u.username} className="w-full h-full object-cover" />
+                                                <img src={u.avatarUrl} alt={u.username} className="w-full h-full object-cover rounded" />
                                             ) : (
-                                                <div className="w-full h-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-foreground">
+                                                <div className="w-full h-full bg-secondary flex items-center justify-center text-xs font-mono font-bold text-foreground">
                                                     {(u.displayName || u.username).charAt(0).toUpperCase()}
                                                 </div>
                                             )}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h4 className={`font-medium truncate ${isSelected ? 'text-primary' : 'text-foreground'}`}>{u.displayName || u.username}</h4>
-                                            <p className="text-xs text-muted-foreground truncate">@{u.username}</p>
+                                            <h4 className={`text-sm font-semibold truncate ${isSelected ? 'text-primary' : 'text-foreground'}`}>{u.displayName || u.username}</h4>
+                                            <p className="text-xs font-mono text-muted-foreground truncate">@{u.username}</p>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <span className={`text-[10px] px-1.5 py-0.5 rounded border ${u.role === 'ADMIN' ? 'border-yellow-500/30 text-yellow-500' :
-                                                u.role === 'ORGANIZER' ? 'border-primary/20 text-primary' :
-                                                    'border-gray-500/30 text-muted-foreground'
+                                            <span className={`tactical-badge text-[10px] ${u.role === 'ADMIN' ? 'border-destructive/40 text-destructive bg-destructive/10' :
+                                                u.role === 'ORGANIZER' ? 'border-primary/40 text-primary bg-primary/10' :
+                                                    'border-border text-muted-foreground bg-secondary'
                                                 }`}>
                                                 {u.role}
                                             </span>
                                         </div>
-                                        <ArrowRight size={16} className={`text-muted-foreground transition-all ${isSelected ? 'text-primary opacity-100' : 'opacity-0 group-hover:opacity-100'}`} />
+                                        <ArrowRight size={14} className={`text-muted-foreground transition-all ${isSelected ? 'text-primary opacity-100' : 'opacity-0 group-hover:opacity-100'}`} />
                                     </button>
                                 );
                             })}
@@ -270,10 +270,10 @@ export function CommandPalette() {
                 </div>
 
                 {/* Footer */}
-                <div className="px-4 py-2 bg-secondary border-t border-border text-[10px] text-muted-foreground flex justify-end gap-3">
-                    <span className="flex items-center gap-1"><kbd className="bg-secondary/80 px-1 rounded text-gray-300">↑↓</kbd> navigate</span>
-                    <span className="flex items-center gap-1"><kbd className="bg-secondary/80 px-1 rounded text-gray-300">Enter</kbd> select</span>
-                    <span className="flex items-center gap-1"><kbd className="bg-secondary/80 px-1 rounded text-gray-300">Esc</kbd> close</span>
+                <div className="px-4 py-2 bg-secondary/40 border-t border-border text-[10px] font-mono text-muted-foreground flex justify-end gap-3">
+                    <span className="flex items-center gap-1"><kbd className="bg-secondary px-1.5 py-0.5 rounded border border-border text-foreground">↑↓</kbd> navigáció</span>
+                    <span className="flex items-center gap-1"><kbd className="bg-secondary px-1.5 py-0.5 rounded border border-border text-foreground">Enter</kbd> kiválasztás</span>
+                    <span className="flex items-center gap-1"><kbd className="bg-secondary px-1.5 py-0.5 rounded border border-border text-foreground">Esc</kbd> bezárás</span>
                 </div>
             </div>
 

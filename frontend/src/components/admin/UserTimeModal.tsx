@@ -71,20 +71,20 @@ export const UserTimeModal: React.FC<UserTimeModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
       <div
-        className="bg-[#121A22] rounded-xl border border-border shadow-2xl w-full max-w-md overflow-hidden"
+        className="tactical-card shadow-2xl w-full max-w-md overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-border flex justify-between items-center bg-gradient-to-r from-blue-500/10 to-transparent">
-          <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-            <Clock className="text-primary" size={24} />
+        <div className="p-5 border-b border-border flex justify-between items-center bg-secondary/40">
+          <h2 className="text-base font-display font-bold uppercase tracking-tight text-foreground flex items-center gap-2">
+            <Clock className="text-primary" size={18} />
             Időkeret kezelése
           </h2>
           <button
-            className="text-muted-foreground hover:text-foreground transition-colors"
+            className="p-1 text-muted-foreground hover:text-foreground hover:bg-secondary rounded border border-border transition-colors"
             onClick={onClose}
           >
-            <X size={24} />
+            <X size={16} />
           </button>
         </div>
 

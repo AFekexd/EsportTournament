@@ -48,10 +48,10 @@ export function RankSelector({
                 onClick={() => !disabled && setIsOpen(!isOpen)}
                 disabled={disabled}
                 className={`
-          flex items-center gap-3 px-4 py-2.5 rounded-xl border text-sm transition-all duration-300 min-w-[140px] justify-between
+          flex items-center gap-3 px-4 py-2.5 rounded border text-sm font-mono transition-all duration-300 min-w-[140px] justify-between
           ${isOpen
-                        ? "bg-[#121A22] border-primary text-foreground shadow-[0_0_12px_hsla(var(--primary),0.2)]"
-                        : "bg-[#121A22] border-border text-gray-300 hover:bg-[#121A22] hover:border-border hover:text-foreground"
+                        ? "bg-secondary border-primary text-foreground shadow-[0_0_12px_hsla(var(--primary),0.2)]"
+                        : "bg-secondary/80 border-border text-foreground hover:bg-secondary hover:border-primary/50"
                     }
           ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
         `}
@@ -88,7 +88,7 @@ export function RankSelector({
 
             {/* Dropdown Menu */}
             {isOpen && (
-                <div className="absolute right-0 top-full mt-2 w-64 bg-[#121A22] border border-border rounded-xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200 ring-1 ring-white/5">
+                <div className="absolute right-0 top-full mt-2 w-64 tactical-card border border-border rounded shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200 ring-1 ring-border">
                     <div className="max-h-[280px] overflow-y-auto custom-scrollbar p-1.5 space-y-1">
                         {/* Ranks */}
                         {ranks.map((rank) => {
@@ -98,14 +98,14 @@ export function RankSelector({
                                     key={rank.id}
                                     onClick={() => handleSelect(rank.id)}
                                     className={`
-                    w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 text-left group
+                    w-full flex items-center gap-3 px-3 py-2 rounded text-sm font-mono transition-all duration-200 text-left group
                     ${isSelected
-                                            ? "bg-primary/10 text-foreground border border-primary/20"
+                                            ? "bg-primary/10 text-foreground border border-primary/30"
                                             : "text-muted-foreground hover:bg-secondary hover:text-foreground border border-transparent"
                                         }
                   `}
                                 >
-                                    <div className="w-8 h-8 flex items-center justify-center shrink-0 bg-[#121A22] rounded-md border border-border group-hover:border-border transition-colors p-1">
+                                    <div className="w-8 h-8 flex items-center justify-center shrink-0 bg-secondary rounded border border-border group-hover:border-border transition-colors p-1">
                                         {rank.image ? (
                                             <img
                                                 src={rank.image}

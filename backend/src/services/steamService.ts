@@ -1,6 +1,6 @@
 import prisma from "../lib/prisma.js";
 
-const STEAM_API_KEY = process.env.STEAM_API_KEY || "7727AE3836768E83ED71477FCBAFEFCC"; // Ensure this is set in .env
+const STEAM_API_KEY = process.env.STEAM_API_KEY || "";
 const STEAM_API_BASE = "https://api.steampowered.com";
 
 interface SteamGame {

@@ -134,84 +134,84 @@ export function MachineEditModal({
     return (
         <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
             <div
-                className="bg-[#121A22] rounded-2xl w-full max-w-2xl border border-border shadow-2xl flex flex-col max-h-[90vh]"
+                className="tactical-card rounded-lg w-full max-w-2xl border border-border shadow-2xl flex flex-col max-h-[90vh]"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="flex items-center justify-between p-6 border-b border-border">
+                <div className="flex items-center justify-between p-6 border-b border-border bg-card/95 backdrop-blur-md">
                     <div>
-                        <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+                        <h2 className="text-xl font-display font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
                             {computer ? `Gép Szerkesztése: ${computer.name}` : "Új Gép Létrehozása"}
                         </h2>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-xs font-mono text-muted-foreground mt-0.5">
                             {computer ? "Adatok, specifikációk és játékok kezelése" : "Adatok megadása az új géphez"}
                         </p>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+                        className="p-2 rounded hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-colors"
                     >
-                        <X size={20} />
+                        <X size={18} />
                     </button>
                 </div>
 
-                <div className="p-6 overflow-y-auto custom-scrollbar space-y-8">
+                <div className="p-6 overflow-y-auto custom-scrollbar space-y-6">
                     {/* Alapadatok */}
                     <section className="space-y-4">
-                        <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
+                        <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-primary border-b border-border pb-2">
                             Alapadatok
                         </h3>
                         <div className="space-y-4">
                             <div>
-                                <label className="text-sm text-muted-foreground">Gép neve</label>
+                                <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Gép neve</label>
                                 <input
                                     type="text"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    className="w-full bg-[#121A22] border border-border rounded-lg px-4 py-2 text-foreground focus:border-primary/50 focus:outline-none transition-colors mt-1"
+                                    className="w-full bg-secondary/80 border border-border rounded px-4 py-2 text-foreground font-mono text-sm focus:border-primary focus:outline-none transition-colors mt-1"
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="text-sm text-muted-foreground">Sor (0-tól)</label>
+                                    <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Sor (0-tól)</label>
                                     <input
                                         type="number"
                                         value={row}
                                         onChange={(e) => setRow(parseInt(e.target.value))}
-                                        className="w-full bg-[#121A22] border border-border rounded-lg px-4 py-2 text-foreground focus:border-primary/50 focus:outline-none transition-colors mt-1"
+                                        className="w-full bg-secondary/80 border border-border rounded px-4 py-2 text-foreground font-mono text-sm focus:border-primary focus:outline-none transition-colors mt-1"
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-sm text-muted-foreground">Pozíció (0-tól)</label>
+                                    <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Pozíció (0-tól)</label>
                                     <input
                                         type="number"
                                         value={position}
                                         onChange={(e) => setPosition(parseInt(e.target.value))}
-                                        className="w-full bg-[#121A22] border border-border rounded-lg px-4 py-2 text-foreground focus:border-primary/50 focus:outline-none transition-colors mt-1"
+                                        className="w-full bg-secondary/80 border border-border rounded px-4 py-2 text-foreground font-mono text-sm focus:border-primary focus:outline-none transition-colors mt-1"
                                     />
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="text-sm text-muted-foreground">Státusz</label>
+                                    <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Státusz</label>
                                     <select
                                         value={status}
                                         onChange={(e) => setStatus(e.target.value as any)}
-                                        className="w-full bg-[#121A22] border border-border rounded-lg px-4 py-2 text-foreground focus:border-primary/50 focus:outline-none transition-colors mt-1"
+                                        className="w-full bg-secondary/80 border border-border rounded px-4 py-2 text-foreground font-mono text-sm focus:border-primary focus:outline-none transition-colors mt-1"
                                     >
                                         <option value="AVAILABLE">Elérhető</option>
                                         <option value="MAINTENANCE">Karbantartás</option>
                                         <option value="OUT_OF_ORDER">Üzemen kívül</option>
                                     </select>
                                 </div>
-                                <div className="flex items-center pt-6">
+                                <div className="flex items-center pt-5">
                                     <label className="flex items-center gap-2 cursor-pointer select-none">
                                         <input
                                             type="checkbox"
                                             checked={isActive}
                                             onChange={(e) => setIsActive(e.target.checked)}
-                                            className="w-4 h-4 rounded border-gray-600 bg-[#121A22] text-primary focus:ring-primary"
+                                            className="w-4 h-4 rounded border-border bg-secondary text-primary focus:ring-primary"
                                         />
-                                        <span className="text-foreground">Aktív (Látható)</span>
+                                        <span className="text-xs font-mono text-foreground">Aktív (Látható)</span>
                                     </label>
                                 </div>
                             </div>
@@ -220,42 +220,42 @@ export function MachineEditModal({
 
                     {/* Specifikációk */}
                     <section className="space-y-4">
-                        <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
+                        <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-primary border-b border-border pb-2">
                             Hardver Specifikációk
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <label className="text-sm text-muted-foreground">Processzor (CPU)</label>
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Processzor (CPU)</label>
                                 <input
                                     type="text"
                                     value={specs.cpu}
                                     onChange={(e) => setSpecs({ ...specs, cpu: e.target.value })}
                                     placeholder="pl. Intel Core i7-12700K"
-                                    className="w-full bg-[#121A22] border border-border rounded-lg px-4 py-2 text-foreground focus:border-primary/50 focus:outline-none transition-colors"
+                                    className="w-full bg-secondary/80 border border-border rounded px-4 py-2 text-foreground font-mono text-sm focus:border-primary focus:outline-none transition-colors"
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-sm text-muted-foreground">Videókártya (GPU)</label>
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Videókártya (GPU)</label>
                                 <input
                                     type="text"
                                     value={specs.gpu}
                                     onChange={(e) => setSpecs({ ...specs, gpu: e.target.value })}
                                     placeholder="pl. NVIDIA RTX 4070"
-                                    className="w-full bg-[#121A22] border border-border rounded-lg px-4 py-2 text-foreground focus:border-primary/50 focus:outline-none transition-colors"
+                                    className="w-full bg-secondary/80 border border-border rounded px-4 py-2 text-foreground font-mono text-sm focus:border-primary focus:outline-none transition-colors"
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-sm text-muted-foreground">Memória (RAM)</label>
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Memória (RAM)</label>
                                 <input
                                     type="text"
                                     value={specs.ram}
                                     onChange={(e) => setSpecs({ ...specs, ram: e.target.value })}
                                     placeholder="pl. 32GB DDR5"
-                                    className="w-full bg-[#121A22] border border-border rounded-lg px-4 py-2 text-foreground focus:border-primary/50 focus:outline-none transition-colors"
+                                    className="w-full bg-secondary/80 border border-border rounded px-4 py-2 text-foreground font-mono text-sm focus:border-primary focus:outline-none transition-colors"
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-sm text-muted-foreground">Monitor</label>
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Monitor</label>
                                 <input
                                     type="text"
                                     value={specs.monitor}
@@ -263,7 +263,7 @@ export function MachineEditModal({
                                         setSpecs({ ...specs, monitor: e.target.value })
                                     }
                                     placeholder="pl. Samsung Odyssey G5 27"
-                                    className="w-full bg-[#121A22] border border-border rounded-lg px-4 py-2 text-foreground focus:border-primary/50 focus:outline-none transition-colors"
+                                    className="w-full bg-secondary/80 border border-border rounded px-4 py-2 text-foreground font-mono text-sm focus:border-primary focus:outline-none transition-colors"
                                 />
                             </div>
                         </div>
@@ -271,7 +271,7 @@ export function MachineEditModal({
 
                     {/* Játékok */}
                     <section className="space-y-4">
-                        <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
+                        <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-primary border-b border-border pb-2">
                             Telepített Játékok
                         </h3>
 
@@ -281,33 +281,33 @@ export function MachineEditModal({
                                 value={newGame}
                                 onChange={(e) => setNewGame(e.target.value)}
                                 placeholder="Új játék hozzáadása..."
-                                className="flex-1 bg-[#121A22] border border-border rounded-lg px-4 py-2 text-foreground focus:border-primary/50 focus:outline-none transition-colors"
+                                className="flex-1 bg-secondary/80 border border-border rounded px-4 py-2 text-foreground font-mono text-sm focus:border-primary focus:outline-none transition-colors"
                             />
                             <button
                                 type="submit"
                                 disabled={!newGame.trim()}
-                                className="px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-colors disabled:opacity-50 flex items-center gap-2"
+                                className="px-4 py-2 bg-primary/10 text-primary border border-primary/30 rounded hover:bg-primary/20 transition-colors disabled:opacity-50 flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider font-semibold"
                             >
-                                <Plus size={18} />
+                                <Plus size={16} />
                                 Hozzáadás
                             </button>
                         </form>
 
-                        <div className="flex flex-wrap gap-2 min-h-[100px] bg-[#121A22]/50 rounded-xl p-4 border border-border">
+                        <div className="flex flex-wrap gap-2 min-h-[100px] bg-secondary/40 rounded p-4 border border-border">
                             {installedGames.length === 0 ? (
-                                <p className="text-muted-foreground text-sm italic w-full text-center py-8">
+                                <p className="text-muted-foreground text-xs font-mono italic w-full text-center py-8">
                                     Nincsenek telepített játékok rögzítve
                                 </p>
                             ) : (
                                 installedGames.map((game, idx) => (
                                     <div
                                         key={idx}
-                                        className="flex items-center gap-2 px-3 py-1.5 bg-[#121A22] rounded-lg border border-border group"
+                                        className="flex items-center gap-2 px-3 py-1.5 bg-secondary rounded border border-border group"
                                     >
-                                        <span className="text-sm text-gray-200">{game}</span>
+                                        <span className="text-xs font-mono text-foreground font-medium">{game}</span>
                                         <button
                                             onClick={() => handleRemoveGame(game)}
-                                            className="text-muted-foreground hover:text-red-400 transition-colors p-0.5 rounded-md hover:bg-secondary"
+                                            className="text-muted-foreground hover:text-destructive transition-colors p-0.5 rounded hover:bg-destructive/10"
                                         >
                                             <X size={14} />
                                         </button>
@@ -318,22 +318,22 @@ export function MachineEditModal({
                     </section>
                 </div>
 
-                <div className="p-6 border-t border-border flex justify-end gap-3">
+                <div className="p-6 border-t border-border flex justify-end gap-3 bg-card/95">
                     <button
                         onClick={onClose}
-                        className="px-6 py-2.5 rounded-xl border border-border text-gray-300 hover:bg-secondary transition-colors font-medium"
+                        className="px-5 py-2.5 rounded border border-border text-foreground bg-secondary/80 hover:bg-secondary transition-colors font-mono text-xs uppercase tracking-wider font-semibold"
                     >
                         Mégse
                     </button>
                     <button
                         onClick={handleSave}
                         disabled={isLoading}
-                        className="px-6 py-2.5 rounded-xl bg-primary text-foreground hover:bg-primary-hover transition-colors font-medium shadow-lg shadow-primary/20 flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                        className="px-5 py-2.5 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-all font-mono text-xs uppercase tracking-wider font-bold shadow-md shadow-primary/20 flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                         {isLoading ? (
-                            <div className="w-5 h-5 border-2 border-border border-t-white rounded-full animate-spin" />
+                            <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
                         ) : (
-                            <Save size={18} />
+                            <Save size={16} />
                         )}
                         Mentés
                     </button>

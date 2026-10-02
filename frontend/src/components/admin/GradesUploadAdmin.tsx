@@ -76,10 +76,10 @@ export function GradesUploadAdmin() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Upload Card */}
-                <div className="rounded-xl border border-border bg-[#121A22] p-6 flex flex-col">
-                    <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                        <span className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
-                            <Upload size={18} />
+                <div className="tactical-card p-6 flex flex-col rounded-lg border border-border">
+                    <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-primary mb-4 flex items-center gap-2">
+                        <span className="p-1.5 rounded bg-primary/10 text-primary">
+                            <Upload size={16} />
                         </span>
                         Fájl feltöltés
                     </h3>
@@ -88,7 +88,7 @@ export function GradesUploadAdmin() {
                     <label
                         className={`
                             relative flex flex-col items-center justify-center gap-3 p-8 
-                            rounded-xl border-2 border-dashed cursor-pointer
+                            rounded border-2 border-dashed cursor-pointer
                             transition-all duration-300 group mb-4
                             ${file
                                 ? "border-emerald-500/40 bg-emerald-500/5"
@@ -97,7 +97,7 @@ export function GradesUploadAdmin() {
                         `}
                     >
                         <div className={`
-                            p-3 rounded-xl transition-colors duration-300
+                            p-3 rounded transition-colors duration-300
                             ${file
                                 ? "bg-emerald-500/15 text-emerald-400"
                                 : "bg-secondary text-muted-foreground group-hover:text-primary group-hover:bg-primary/10"
@@ -105,17 +105,17 @@ export function GradesUploadAdmin() {
                         `}>
                             <FileSpreadsheet size={32} />
                         </div>
-                        <div className="text-center">
+                        <div className="text-center font-mono">
                             {file ? (
                                 <>
-                                    <p className="text-sm font-medium text-emerald-400">{file.name}</p>
+                                    <p className="text-sm font-semibold text-emerald-400">{file.name}</p>
                                     <p className="text-xs text-muted-foreground mt-1">
                                         {(file.size / 1024).toFixed(1)} KB • Kattints a módosításhoz
                                     </p>
                                 </>
                             ) : (
                                 <>
-                                    <p className="text-sm font-medium text-foreground">
+                                    <p className="text-xs font-bold uppercase tracking-wider text-foreground">
                                         Kattints vagy húzd ide a fájlt
                                     </p>
                                     <p className="text-xs text-muted-foreground mt-1">
@@ -136,10 +136,10 @@ export function GradesUploadAdmin() {
                     {/* Upload Button */}
                     <button
                         className={`
-                            flex items-center justify-center gap-2 w-full px-4 py-3 
-                            rounded-lg font-medium text-sm transition-all duration-300
+                            flex items-center justify-center gap-2 w-full px-5 py-2.5 
+                            rounded font-mono text-xs uppercase tracking-wider font-bold transition-all duration-200
                             ${file && !uploading
-                                ? "bg-primary text-foreground hover:bg-primary-hover shadow-lg shadow-primary/20"
+                                ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20"
                                 : "bg-secondary text-muted-foreground cursor-not-allowed opacity-50"
                             }
                         `}
@@ -148,7 +148,7 @@ export function GradesUploadAdmin() {
                     >
                         {uploading ? (
                             <>
-                                <div className="w-4 h-4 border-2 border-foreground/30 border-t-foreground rounded-full animate-spin" />
+                                <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                                 Feldolgozás...
                             </>
                         ) : (
@@ -161,27 +161,27 @@ export function GradesUploadAdmin() {
                 </div>
 
                 {/* Info & Results Card */}
-                <div className="rounded-xl border border-border bg-[#121A22] p-6 flex flex-col">
-                    <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                        <span className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400">
-                            <Info size={18} />
+                <div className="tactical-card p-6 flex flex-col rounded-lg border border-border">
+                    <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-primary mb-4 flex items-center gap-2">
+                        <span className="p-1.5 rounded bg-primary/10 text-primary">
+                            <Info size={16} />
                         </span>
                         Útmutató
                     </h3>
 
                     <div className="space-y-3 mb-6">
-                        <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary border border-border">
-                            <div className="mt-0.5 text-amber-400 shrink-0">
+                        <div className="flex items-start gap-3 p-3 rounded bg-secondary/40 border border-border">
+                            <div className="mt-0.5 text-primary shrink-0">
                                 <FileSpreadsheet size={16} />
                             </div>
                             <div>
-                                <p className="text-sm font-medium text-foreground">Kötelező oszlopok</p>
-                                <p className="text-xs text-muted-foreground mt-0.5">
+                                <p className="text-xs font-mono font-bold uppercase tracking-wider text-foreground">Kötelező oszlopok</p>
+                                <p className="text-xs font-mono text-muted-foreground mt-0.5">
                                     OM/Azonosító, Átlag/Tanulmányi, Bukás/Elégtelen
                                 </p>
                             </div>
                         </div>
-                        <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary border border-border">
+                        <div className="flex items-start gap-3 p-3 rounded bg-secondary/40 border border-border">
                             <div className="mt-0.5 text-cyan-400 shrink-0">
                                 <CheckCircle2 size={16} />
                             </div>

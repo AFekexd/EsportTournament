@@ -39,7 +39,9 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.1.0",
     "@prisma/client": "^7.1.0",
+    "@types/compression": "^1.8.1",
     "@types/nodemailer": "^7.0.4",
+    "compression": "^1.8.2",
     "cors": "^2.8.5",
     "dayjs": "^1.11.19",
     "discord.js": "^14.25.1",

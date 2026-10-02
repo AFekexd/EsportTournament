@@ -6,6 +6,7 @@ import { processImage, isBase64DataUrl, validateImageSize } from '../utils/image
 import { isBase64Pdf, validatePdfSize } from '../utils/pdfProcessor.js';
 import { notificationService } from '../services/notificationService.js';
 import { logSystemActivity } from '../services/logService.js';
+import { rawgService } from '../services/rawgService.js';
 
 export const gamesRouter: Router = Router();
 
@@ -87,6 +88,79 @@ gamesRouter.post(
             .catch(err => console.error('Failed to notify users about new game:', err));
 
         res.status(201).json({ success: true, data: game });
+    })
+);
+
+// Search games globally from RAWG Video Games Database API
+gamesRouter.get(
+    '/global/search',
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const query = typeof req.query.q === 'string' ? req.query.q : '';
+        const page = parseInt(req.query.page as string) || 1;
+        const pageSize = parseInt(req.query.pageSize as string) || 20;
+
+        const results = await rawgService.searchGames(query, page, pageSize);
+
+        res.json({
+            success: true,
+            data: results.games,
+            total: results.total,
+        });
+    })
+);
+
+// Select / Sync a global RAWG game into the local database (Admin / Organizer only)
+gamesRouter.post(
+    '/global/select',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user || (user.role !== 'ADMIN' && user.role !== 'ORGANIZER')) {
+            throw new ApiError('Csak adminisztrátorok és szervezők választhatnak ki globális játékot', 403, 'FORBIDDEN');
+        }
+
+        const { name, imageUrl, description, teamSize } = req.body;
+
+        if (!name || typeof name !== 'string' || name.trim().length === 0) {
+            throw new ApiError('A játék neve kötelező', 400, 'INVALID_NAME');
+        }
+
+        const trimmedName = name.trim().substring(0, 100);
+        const safeTeamSize = teamSize && [1, 2, 3, 5].includes(Number(teamSize)) ? Number(teamSize) : 1;
+
+        let safeImageUrl: string | null = null;
+        if (imageUrl && typeof imageUrl === 'string') {
+            try {
+                const parsed = new URL(imageUrl);
+                if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+                    safeImageUrl = parsed.toString();
+                }
+            } catch {
+                // Ignore invalid image URL
+            }
+        }
+
+        const safeDescription = description && typeof description === 'string' ? description.substring(0, 2000) : null;
+
+        // Upsert game so selecting it is idempotent
+        const game = await prisma.game.upsert({
+            where: { name: trimmedName },
+            update: {
+                ...(safeImageUrl ? { imageUrl: safeImageUrl } : {}),
+                ...(safeDescription ? { description: safeDescription } : {}),
+            },
+            create: {
+                name: trimmedName,
+                imageUrl: safeImageUrl,
+                description: safeDescription,
+                teamSize: safeTeamSize,
+            },
+        });
+
+        res.json({ success: true, data: game });
     })
 );
 

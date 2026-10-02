@@ -79,42 +79,44 @@ export function TermsModal() {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-md p-4 animate-in fade-in duration-300">
-      <div className="bg-[#121A22] rounded-2xl border border-border shadow-2xl w-full max-w-5xl h-[85vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-300">
+      <div className="tactical-card shadow-2xl w-full max-w-5xl h-[85vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-300">
         {/* Header */}
-        <div className="p-6 border-b border-border bg-[#121A22]">
-          <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
-            <ScrollText className="text-primary" size={32} />
+        <div className="p-6 border-b border-border bg-secondary/40">
+          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-primary mb-2">
+            <ScrollText size={14} className="text-primary" />
+            <span>Kötelező Szabályzat // Házirend</span>
+          </div>
+          <h2 className="text-2xl font-display font-bold uppercase tracking-tight text-foreground">
             Házirend Elfogadása
           </h2>
-          <p className="text-muted-foreground mt-2">
-            A szolgáltatás használatához el kell olvasnod és el kell fogadnod a
-            házirendet.
+          <p className="text-xs font-mono text-muted-foreground mt-1">
+            A szolgáltatás használatához el kell olvasnod és el kell fogadnod a hivatalos házirendet.
           </p>
         </div>
 
         {/* PDF Viewer / Content */}
-        <div className="flex-1 overflow-y-auto bg-[#121A22] p-4 flex flex-col items-center">
+        <div className="flex-1 overflow-y-auto bg-background/60 p-4 flex flex-col items-center">
           {!pdfError ? (
             <>
               {/* Page Navigation */}
               {numPages && numPages > 1 && (
-                <div className="flex items-center gap-4 mb-4 sticky top-0 z-10 bg-[#121A22] py-2 rounded-lg">
+                <div className="flex items-center gap-3 mb-4 sticky top-0 z-10 bg-secondary/90 border border-border px-3 py-1.5 rounded font-mono text-xs">
                   <button
                     onClick={goToPrevPage}
                     disabled={pageNumber <= 1}
-                    className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    className="p-1.5 rounded bg-secondary hover:bg-secondary/80 disabled:opacity-30 disabled:cursor-not-allowed transition-colors border border-border"
                   >
-                    <ChevronLeft size={20} className="text-foreground" />
+                    <ChevronLeft size={16} className="text-foreground" />
                   </button>
-                  <span className="text-foreground text-sm">
+                  <span className="text-foreground">
                     {pageNumber} / {numPages}
                   </span>
                   <button
                     onClick={goToNextPage}
                     disabled={pageNumber >= numPages}
-                    className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    className="p-1.5 rounded bg-secondary hover:bg-secondary/80 disabled:opacity-30 disabled:cursor-not-allowed transition-colors border border-border"
                   >
-                    <ChevronRight size={20} className="text-foreground" />
+                    <ChevronRight size={16} className="text-foreground" />
                   </button>
                 </div>
               )}
@@ -126,8 +128,8 @@ export function TermsModal() {
                 onLoadError={onDocumentLoadError}
                 loading={
                   <div className="flex items-center justify-center p-8">
-                    <Loader2 className="animate-spin text-primary" size={32} />
-                    <span className="ml-2 text-foreground">
+                    <Loader2 className="animate-spin text-primary" size={24} />
+                    <span className="ml-2 text-foreground font-mono text-xs">
                       Dokumentum betöltése...
                     </span>
                   </div>
@@ -138,36 +140,36 @@ export function TermsModal() {
                   pageNumber={pageNumber}
                   renderTextLayer={true}
                   renderAnnotationLayer={true}
-                  className="shadow-2xl rounded-lg overflow-hidden"
+                  className="shadow-2xl rounded overflow-hidden"
                   width={Math.min(800, window.innerWidth - 64)}
                 />
               </Document>
             </>
           ) : (
-            <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center text-center p-8 bg-[#121A22]">
-              <ScrollText size={48} className="text-muted-foreground mb-4" />
-              <h3 className="text-lg font-bold text-foreground mb-2">
+            <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center text-center p-8">
+              <ScrollText size={40} className="text-muted-foreground mb-4 opacity-50" />
+              <h3 className="text-base font-display font-bold uppercase tracking-tight text-foreground mb-2">
                 A dokumentum nem tölthető be
               </h3>
-              <p className="text-muted-foreground mb-6 max-w-md">
+              <p className="text-xs font-mono text-muted-foreground mb-6 max-w-md">
                 A házirend dokumentum (rules.pdf) jelenleg nem érhető el a
                 szerveren, vagy hibás.
               </p>
               <a
                 href="/rules.pdf"
                 target="_blank"
-                className="px-6 py-2 bg-secondary hover:bg-secondary/80 rounded-lg text-foreground transition-colors border border-border"
+                className="px-4 py-2 bg-secondary hover:bg-secondary/80 rounded text-foreground font-mono text-xs uppercase tracking-wider transition-colors border border-border"
               >
-                Megnyitás új lapon (Megpróbálhatod így)
+                Megnyitás új lapon
               </a>
             </div>
           )}
         </div>
 
         {/* Footer / Actions */}
-        <div className="p-6 border-t border-border bg-[#121A22] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-sm text-muted-foreground flex items-center gap-2">
-            <FileText size={16} />
+        <div className="p-4 sm:p-5 border-t border-border bg-secondary/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="text-xs font-mono text-muted-foreground flex items-center gap-2">
+            <FileText size={14} />
             <a
               href="/rules.pdf"
               target="_blank"
@@ -180,13 +182,13 @@ export function TermsModal() {
           <button
             onClick={handleAccept}
             disabled={isLoading}
-            className="w-full sm:w-auto px-8 py-3 bg-primary hover:bg-primary/90 text-foreground font-bold rounded-xl shadow-lg shadow-primary/20 transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-6 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground font-display font-bold uppercase tracking-wider text-xs rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_0_15px_hsla(var(--primary),0.2)]"
           >
             {isLoading ? (
               "Feldolgozás..."
             ) : (
               <>
-                <CheckCircle2 size={20} />
+                <CheckCircle2 size={16} />
                 Elolvastam és Elfogadom
               </>
             )}

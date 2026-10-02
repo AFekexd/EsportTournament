@@ -8,6 +8,15 @@ import { discordService } from '../services/discordService.js';
 
 export const bugReportsRouter: Router = Router();
 
+function escapeHtml(str: unknown): string {
+    return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 // Helper function to send notifications to configured admins
 async function notifyAdminsAboutBugReport(bugReport: any, reporter: any) {
     try {
@@ -39,6 +48,12 @@ async function notifyAdminsAboutBugReport(bugReport: any, reporter: any) {
             'HIGH': 'Magas'
         };
 
+        const safeReporterName = escapeHtml(reporter.displayName || reporter.username);
+        const safeTitle = escapeHtml(bugReport.title);
+        const safeCategory = escapeHtml(categoryLabels[bugReport.category] || bugReport.category);
+        const safePriority = escapeHtml(priorityLabels[bugReport.priority] || bugReport.priority);
+        const safeDescription = escapeHtml(bugReport.description).replace(/\n/g, '<br>');
+
         for (const setting of settings) {
             // Send email notification
             if (setting.receiveEmail && setting.user.email) {
@@ -49,13 +64,13 @@ async function notifyAdminsAboutBugReport(bugReport: any, reporter: any) {
                     html: `
                         <div style="font-family: sans-serif; color: #333;">
                             <h2 style="color: #e74c3c;">🐛 Új hibajelentés érkezett</h2>
-                            <p><strong>Bejelentő:</strong> ${reporter.displayName || reporter.username}</p>
-                            <p><strong>Cím:</strong> ${bugReport.title}</p>
-                            <p><strong>Kategória:</strong> ${categoryLabels[bugReport.category] || bugReport.category}</p>
-                            <p><strong>Prioritás:</strong> ${priorityLabels[bugReport.priority] || bugReport.priority}</p>
+                            <p><strong>Bejelentő:</strong> ${safeReporterName}</p>
+                            <p><strong>Cím:</strong> ${safeTitle}</p>
+                            <p><strong>Kategória:</strong> ${safeCategory}</p>
+                            <p><strong>Prioritás:</strong> ${safePriority}</p>
                             <p><strong>Leírás:</strong></p>
                             <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                                ${bugReport.description}
+                                ${safeDescription}
                             </div>
                             <p style="margin-top: 20px;">
                                 <a href="${process.env.FRONTEND_URL || 'https://esport.pollak.info'}/admin?tab=bug-reports" 

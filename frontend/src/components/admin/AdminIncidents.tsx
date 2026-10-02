@@ -152,25 +152,25 @@ export const AdminIncidents = () => {
   return (
     <div className="space-y-8 pb-20">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div className="bg-[#121A22] border border-border rounded-2xl p-6">
-          <h3 className="text-sm font-medium text-muted-foreground mb-2">
+        <div className="tactical-card p-5">
+          <h3 className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">
             Nyitott Ügyek
           </h3>
-          <div className="text-3xl font-bold text-foreground">
+          <div className="text-3xl font-display font-bold text-amber-400">
             {incidents.filter((i) => i.status === "OPEN").length}
           </div>
         </div>
-        <div className="bg-[#121A22] border border-border rounded-2xl p-6">
-          <h3 className="text-sm font-medium text-muted-foreground mb-2">
+        <div className="tactical-card p-5">
+          <h3 className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">
             Folyamatban
           </h3>
-          <div className="text-3xl font-bold text-foreground">
+          <div className="text-3xl font-display font-bold text-primary">
             {incidents.filter((i) => i.status === "IN_PROGRESS").length}
           </div>
         </div>
 
         {/* Settings */}
-        <div className="lg:col-span-2 bg-[#121A22] border border-primary/20 rounded-2xl p-6 relative">
+        <div className="lg:col-span-2 tactical-card p-5 relative">
           <div className="relative z-10 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div>
               <h3 className="flex items-center gap-2 text-sm font-medium text-primary mb-1">
@@ -267,9 +267,9 @@ export const AdminIncidents = () => {
         </div>
       </div>
 
-      <div className="bg-[#121A22] border border-border rounded-2xl overflow-hidden">
-        <div className="p-6 border-b border-border">
-          <h2 className="text-xl font-bold text-foreground">
+      <div className="tactical-card overflow-hidden">
+        <div className="p-5 border-b border-border bg-secondary/40">
+          <h2 className="text-base font-display font-bold uppercase tracking-wider text-foreground">
             Bejelentett Incidensek
           </h2>
         </div>
@@ -393,9 +393,9 @@ export const AdminIncidents = () => {
       {/* Manage Modal (Custom implementation since Dialog is missing) */}
       {selectedIncident && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 animate-in fade-in">
-          <div className="bg-[#121A22] border border-border rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
-            <div className="p-6 border-b border-border flex justify-between items-center">
-              <h3 className="text-xl font-bold text-foreground">
+          <div className="tactical-card w-full max-w-lg overflow-hidden shadow-2xl">
+            <div className="p-5 border-b border-border bg-secondary/40 flex justify-between items-center">
+              <h3 className="text-base font-display font-bold uppercase tracking-tight text-foreground">
                 Incidens Kezelése
               </h3>
               <button

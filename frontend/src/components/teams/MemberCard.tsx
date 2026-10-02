@@ -19,37 +19,32 @@ export function MemberCard({
   const isCurrentUser = member.userId === currentUserId;
 
   return (
-    <div className="group relative flex items-center gap-4 p-4 bg-gradient-to-br from-card to-background border border-border rounded-xl hover:border-primary/30 hover:shadow-[0_0_30px_rgba(var(--primary-rgb),0.1)] hover:scale-[1.02] transition-all duration-300 overflow-hidden">
-      {/* Background Glow Effect */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
-
+    <div className="group relative flex items-center gap-4 p-4 tactical-card border border-border rounded-lg hover:border-primary/50 transition-all duration-300 overflow-hidden">
       <Link
         to={`/profile/${member.userId}`}
-        className="relative w-16 h-16 shrink-0 block"
+        className="relative w-14 h-14 shrink-0 block"
       >
-        <div className="w-full h-full rounded-2xl bg-gradient-to-br from-card to-background p-0.5 shadow-lg group-hover:shadow-primary/20 transition-all duration-300">
-          <div className="w-full h-full rounded-[14px] overflow-hidden bg-[#121A22] flex items-center justify-center relative">
-            {member.user?.avatarUrl ? (
-              <img
-                src={member.user.avatarUrl}
-                alt={member.user.displayName || member.user.username}
-                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-              />
-            ) : (
-              <span className="text-xl font-bold text-muted-foreground group-hover:text-foreground transition-colors">
-                {(member.user?.displayName || member.user?.username || "U")
-                  .charAt(0)
-                  .toUpperCase()}
-              </span>
-            )}
+        <div className="w-full h-full rounded border border-border bg-secondary overflow-hidden flex items-center justify-center relative">
+          {member.user?.avatarUrl ? (
+            <img
+              src={member.user.avatarUrl}
+              alt={member.user.displayName || member.user.username}
+              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+            />
+          ) : (
+            <span className="text-lg font-mono font-bold text-muted-foreground group-hover:text-foreground transition-colors">
+              {(member.user?.displayName || member.user?.username || "U")
+                .charAt(0)
+                .toUpperCase()}
+            </span>
+          )}
 
-            {/* Captain Crown Overlay */}
-            {isCaptain && (
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end justify-center pb-1">
-                <Crown size={12} className="text-yellow-400 drop-shadow-md" />
-              </div>
-            )}
-          </div>
+          {/* Captain Crown Overlay */}
+          {isCaptain && (
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end justify-center pb-1">
+              <Crown size={12} className="text-yellow-400 drop-shadow-md" />
+            </div>
+          )}
         </div>
       </Link>
 

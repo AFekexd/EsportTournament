@@ -38,22 +38,7 @@ authRouter.post(
 
         const role = getHighestRole(req.user!);
 
-        // Explicitly log the full token payload as requested
-        console.log('\n=== FULL KEYCLOAK TOKEN PAYLOAD ===');
-        console.log(JSON.stringify(req.user, null, 2));
-        console.log('===================================\n');
-
-        console.log('Syncing user:', {
-            keycloakId,
-            email: userEmail,
-            username,
-            role,
-            omId: OM, // Log the found value
-            omSource: userPayload.OM ? 'OM' : (userPayload.om ? 'om' : (userPayload.omId ? 'omId' : 'NOT_FOUND')),
-            originalEmail: email,
-            originalUsername: preferred_username,
-            realmRoles: req.user!.realm_access?.roles
-        });
+        console.log(`[AUTH] Syncing user: ${username} (role: ${role})`);
 
         // Only update role from Keycloak if it's a privileged role
         // This prevents overwriting manually assigned roles in the database with 'STUDENT'

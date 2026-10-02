@@ -335,20 +335,20 @@ export function BugReportsAdmin() {
                 {/* Filters */}
                 <div className="flex flex-wrap gap-3">
                     <div className="relative">
-                        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                         <input
                             type="text"
                             placeholder="Keresés..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="pl-9 pr-4 py-2 bg-[#121A22] border border-border rounded-lg text-foreground placeholder-gray-500 text-sm focus:outline-none focus:border-primary/50"
+                            className="pl-9 pr-4 py-2 bg-secondary/80 border border-border rounded text-foreground font-mono text-xs placeholder:text-muted-foreground focus:outline-none focus:border-primary"
                         />
                     </div>
 
                     <select
                         value={filterStatus}
                         onChange={(e) => setFilterStatus(e.target.value)}
-                        className="px-3 py-2 bg-[#121A22] border border-border rounded-lg text-foreground text-sm focus:outline-none focus:border-primary/50"
+                        className="px-3 py-2 bg-secondary/80 border border-border rounded text-foreground font-mono text-xs focus:outline-none focus:border-primary"
                     >
                         <option value="">Minden státusz</option>
                         {statuses.map((s) => (
@@ -361,7 +361,7 @@ export function BugReportsAdmin() {
                     <select
                         value={filterCategory}
                         onChange={(e) => setFilterCategory(e.target.value)}
-                        className="px-3 py-2 bg-[#121A22] border border-border rounded-lg text-foreground text-sm focus:outline-none focus:border-primary/50"
+                        className="px-3 py-2 bg-secondary/80 border border-border rounded text-foreground font-mono text-xs focus:outline-none focus:border-primary"
                     >
                         <option value="">Minden kategória</option>
                         {categories.map((c) => (
@@ -374,21 +374,21 @@ export function BugReportsAdmin() {
 
                 {/* Notification Settings Panel */}
                 {showNotificationSettings && (
-                    <div className="bg-[#121A22] rounded-xl border border-border p-6">
-                        <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                            <Bell className="text-primary" size={20} />
+                    <div className="tactical-card p-6">
+                        <h3 className="text-base font-display font-bold uppercase tracking-wider text-foreground mb-3 flex items-center gap-2">
+                            <Bell className="text-primary" size={18} />
                             Értesítési beállítások
                         </h3>
-                        <p className="text-sm text-muted-foreground mb-4">
+                        <p className="text-xs font-mono text-muted-foreground mb-4">
                             Új hibajelentéskor az alábbi admin-ok kapnak értesítést:
                         </p>
 
                         {/* Add Admin */}
-                        <div className="flex gap-2 mb-4">
+                        <div className="flex gap-2 mb-4 font-mono text-xs">
                             <select
                                 value={selectedAdminToAdd}
                                 onChange={(e) => setSelectedAdminToAdd(e.target.value)}
-                                className="flex-1 px-3 py-2 bg-[#121A22] border border-border rounded-lg text-foreground text-sm focus:outline-none focus:border-primary/50"
+                                className="flex-1 px-3 py-2 bg-secondary/80 border border-border rounded text-foreground focus:outline-none focus:border-primary"
                             >
                                 <option value="">Válassz admin-t...</option>
                                 {availableAdmins.map((admin) => (
@@ -500,29 +500,29 @@ export function BugReportsAdmin() {
                                         setSelectedReport(report);
                                         setAdminNote(report.adminNote || "");
                                     }}
-                                    className={`p-4 rounded-xl border cursor-pointer transition-all ${isSelected
+                                    className={`p-4 rounded border cursor-pointer transition-all ${isSelected
                                         ? "bg-primary/10 border-primary/50"
-                                        : "bg-[#121A22] border-border hover:border-border"
+                                        : "bg-secondary/40 border-border hover:border-primary/40"
                                         }`}
                                 >
                                     <div className="flex items-start justify-between gap-3 mb-2">
-                                        <h3 className="font-medium text-foreground line-clamp-1">
+                                        <h3 className="font-semibold text-foreground line-clamp-1">
                                             {report.title}
                                         </h3>
                                         <span
-                                            className={`flex items-center gap-1 px-2 py-0.5 rounded-full border text-xs font-medium whitespace-nowrap ${statusConfig.color}`}
+                                            className={`flex items-center gap-1 px-2 py-0.5 rounded border text-xs font-mono whitespace-nowrap ${statusConfig.color}`}
                                         >
                                             {statusConfig.icon}
                                             {statusConfig.label}
                                         </span>
                                     </div>
 
-                                    <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                                    <p className="text-xs font-mono text-muted-foreground line-clamp-2 mb-3">
                                         {report.description}
                                     </p>
 
-                                    <div className="flex items-center flex-wrap gap-2 text-xs">
-                                        <span className="flex items-center gap-1 px-2 py-1 rounded bg-secondary text-muted-foreground">
+                                    <div className="flex items-center flex-wrap gap-2 text-xs font-mono">
+                                        <span className="flex items-center gap-1 px-2 py-0.5 rounded bg-secondary text-muted-foreground">
                                             {categoryConfig.icon}
                                             {categoryConfig.label}
                                         </span>
@@ -545,7 +545,7 @@ export function BugReportsAdmin() {
                 </div>
 
                 {/* Detail Panel */}
-                <div className="bg-[#121A22] rounded-xl border border-border p-6">
+                <div className="tactical-card p-6">
                     {selectedReport ? (
                         <div className="space-y-6">
                             <div className="flex items-start justify-between gap-3">
@@ -708,7 +708,7 @@ export function BugReportsAdmin() {
                         className="absolute inset-0 bg-secondary backdrop-blur-sm"
                         onClick={() => setShowChangelogModal(false)}
                     />
-                    <div className="relative bg-[#121A22] rounded-2xl border border-border p-6 w-full max-w-md shadow-2xl animate-fade-in">
+                    <div className="relative tactical-card p-6 w-full max-w-md shadow-2xl animate-fade-in">
                         <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
                             <FileText className="text-green-400" size={20} />
                             Changelog bejegyzés

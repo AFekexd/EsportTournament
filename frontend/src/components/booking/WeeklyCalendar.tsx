@@ -181,7 +181,7 @@ export function WeeklyCalendar({
         <div className="flex items-center gap-2 ml-4">
           <Filter size={16} className="text-muted-foreground" />
           <select
-            className="bg-[#121A22] border border-border rounded-lg px-3 py-1.5 text-sm text-foreground focus:outline-none focus:border-primary"
+            className="bg-secondary/80 border border-border rounded px-3 py-1.5 font-mono text-xs text-foreground focus:outline-none focus:border-primary"
             value={selectedComputerId}
             onChange={(e) => setSelectedComputerId(e.target.value)}
           >

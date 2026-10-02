@@ -67,30 +67,30 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-[1000] p-4">
       <div
-        className="bg-[#121A22]  border border-border rounded-2xl max-w-[600px] w-full max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_hsl(var(--background) / 0.5)] max-md:max-h-[95vh]"
+        className="tactical-card border border-border rounded-lg max-w-[600px] w-full max-h-[90vh] overflow-y-auto shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center p-6 border-b border-border max-md:p-4">
-          <h2 className="text-2xl font-bold text-foreground">
+        <div className="flex justify-between items-center p-6 border-b border-border bg-card/95 backdrop-blur-md">
+          <h2 className="text-xl font-display font-bold uppercase tracking-wider text-foreground">
             Csapat szerkesztése
           </h2>
           <button
-            className="w-8 h-8 rounded-lg bg-transparent border-none text-muted-foreground cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-muted hover:text-foreground"
+            className="w-8 h-8 rounded bg-transparent border border-transparent text-muted-foreground cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-secondary hover:border-border hover:text-foreground"
             onClick={onClose}
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 max-md:p-4">
-          <div className="form-group">
-            <label htmlFor="edit-name" className="form-label">
-              Csapat neve <span className="required">*</span>
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div>
+            <label htmlFor="edit-name" className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5">
+              Csapat neve <span className="text-primary">*</span>
             </label>
             <input
               id="edit-name"
               type="text"
-              className={`input ${errors.name ? "input-error" : ""}`}
+              className={`w-full px-4 py-2.5 bg-secondary/80 border rounded text-foreground font-mono text-sm focus:outline-none transition-colors ${errors.name ? "border-red-500" : "border-border focus:border-primary"}`}
               value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
@@ -99,23 +99,23 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
             />
             <div className="flex justify-between items-center mt-1">
               {errors.name ? (
-                <span className="error-message">{errors.name}</span>
+                <span className="text-xs text-red-400 font-mono">{errors.name}</span>
               ) : (
                 <span></span>
               )}
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs font-mono text-muted-foreground">
                 {formData.name.length}/50
               </span>
             </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="edit-description" className="form-label">
+          <div>
+            <label htmlFor="edit-description" className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5">
               Leírás
             </label>
             <textarea
               id="edit-description"
-              className="input textarea max-h-[150px] min-h-[50px]"
+              className="w-full px-4 py-2.5 bg-secondary/80 border border-border rounded text-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors max-h-[150px] min-h-[80px]"
               placeholder="Rövid leírás a csapatról..."
               value={formData.description}
               onChange={(e) =>
@@ -125,15 +125,15 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
               maxLength={500}
             />
             <div className="text-right mt-1">
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs font-mono text-muted-foreground">
                 {formData.description.length}/500
               </span>
             </div>
           </div>
 
-          <div className="form-group grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="form-label">Logó</label>
+              <label className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5">Logó</label>
               <ImageUpload
                 value={formData.logoUrl}
                 onChange={(val) => setFormData({ ...formData, logoUrl: val })}
@@ -143,7 +143,7 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
               />
             </div>
             <div>
-              <label className="form-label">Borítókép</label>
+              <label className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5">Borítókép</label>
               <ImageUpload
                 value={formData.coverUrl}
                 onChange={(val) => setFormData({ ...formData, coverUrl: val })}
@@ -155,14 +155,18 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
           </div>
 
           <div className="flex justify-end gap-3 pt-6 border-t border-border">
-            <Button
+            <button
               type="button"
-              className="btn btn-secondary"
+              className="px-5 py-2.5 bg-secondary/80 hover:bg-secondary border border-border text-foreground rounded font-mono text-xs uppercase tracking-wider font-semibold transition-all"
               onClick={onClose}
             >
               Mégse
-            </Button>
-            <Button type="submit" className="btn " disabled={updateLoading}>
+            </button>
+            <button
+              type="submit"
+              className="px-5 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded font-mono text-xs uppercase tracking-wider font-bold transition-all shadow-md shadow-primary/20 flex items-center gap-2 disabled:opacity-50"
+              disabled={updateLoading}
+            >
               {updateLoading ? (
                 <>
                   <div className="spinner" />
@@ -170,11 +174,11 @@ export function TeamEditModal({ team, onClose }: TeamEditModalProps) {
                 </>
               ) : (
                 <>
-                  <Save size={18} />
+                  <Save size={16} />
                   Mentés
                 </>
               )}
-            </Button>
+            </button>
           </div>
         </form>
       </div>

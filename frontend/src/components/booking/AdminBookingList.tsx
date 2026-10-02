@@ -178,7 +178,7 @@ export function AdminBookingList() {
                 </div>
             </div>
 
-            <Card className="border-border bg-[#121A22]/50">
+            <Card className="tactical-card border-border overflow-hidden rounded-lg">
                 <CardContent className="p-0">
                     {isLoading ? (
                         <div className="p-8 text-center text-muted-foreground">Betöltés...</div>

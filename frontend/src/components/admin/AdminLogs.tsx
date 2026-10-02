@@ -340,11 +340,11 @@ export function AdminLogs() {
       />
 
       {/* Main Table Container */}
-      <div className="bg-[#121A22] border border-border rounded-xl overflow-hidden shadow-xl flex flex-col h-[calc(100vh-320px)]">
+      <div className="tactical-card overflow-hidden shadow-xl flex flex-col h-[calc(100vh-320px)]">
         <div className="overflow-auto flex-1 custom-scrollbar">
-          <table className="w-full text-left border-collapse relative">
-            <thead className="bg-[#121A22] sticky top-0 z-10 shadow-sm">
-              <tr className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
+          <table className="w-full text-left border-collapse relative font-mono text-xs">
+            <thead className="bg-secondary/60 sticky top-0 z-10 shadow-sm">
+              <tr className="text-xs uppercase tracking-wider text-muted-foreground font-bold">
                 <th className="p-4 w-12 border-b border-border"></th>
                 <th className="p-4 w-48 border-b border-border">Időpont</th>
                 <th className="p-4 w-40 border-b border-border">Típus</th>
@@ -515,9 +515,9 @@ export function AdminLogs() {
                       </td>
                     </tr>
                     {expandedLogId === log.id && log.metadata && (
-                      <tr className="bg-[#121A22]">
+                      <tr className="bg-secondary/20">
                         <td colSpan={6} className="p-0 border-b border-border">
-                          <div className="p-4 pl-16 grid gap-2 animate-fade-in">
+                          <div className="p-4 pl-16 grid gap-2 animate-fade-in font-mono">
                             <LogMetadataViewer
                               data={log.metadata}
                               initiallyExpanded={true}
@@ -534,8 +534,8 @@ export function AdminLogs() {
         </div>
 
         {/* Footer / Pagination */}
-        <div className="bg-[#121A22] border-t border-border p-4 flex items-center justify-between">
-          <div className="text-xs text-muted-foreground">
+        <div className="bg-secondary/40 border-t border-border p-3.5 flex items-center justify-between font-mono text-xs">
+          <div className="text-muted-foreground">
             Összesen {totalPages * 50} bejegyzés (becsült)
           </div>
 

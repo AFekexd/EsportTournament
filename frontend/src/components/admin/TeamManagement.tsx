@@ -95,10 +95,10 @@ export function TeamManagement() {
             />
             <input
               type="text"
-              placeholder="Keresés..."
+              placeholder="Csapat keresése..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-[#121A22] border border-border rounded-lg text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors text-sm"
+              className="w-full pl-9 pr-4 py-2 bg-secondary/80 border border-border rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary font-mono text-xs transition-colors"
             />
           </div>
         </div>
@@ -106,11 +106,11 @@ export function TeamManagement() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        <div className="bg-[#121A22] rounded-xl border border-border p-4">
-          <div className="text-2xl font-bold text-foreground">
+        <div className="tactical-card p-4">
+          <div className="text-2xl font-display font-bold text-foreground">
             {pagination?.total || 0}
           </div>
-          <div className="text-sm text-muted-foreground">Összes csapat</div>
+          <div className="text-xs font-mono uppercase tracking-wider text-muted-foreground mt-0.5">Összes csapat</div>
         </div>
       </div>
 

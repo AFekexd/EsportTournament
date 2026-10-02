@@ -1,14 +1,28 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { Game, ApiResponse, Rank, UserRank } from '../../types';
 import { API_URL } from '../../config';
+import { apiFetch } from '../../lib/api-client';
 import type { RootState } from '../index';
+
+export interface GlobalGame {
+    id: number | string;
+    name: string;
+    slug: string;
+    backgroundImage: string | null;
+    rating?: number;
+    genres?: string[];
+    released?: string;
+    teamSize?: number;
+}
 
 interface GamesState {
     games: Game[];
+    globalGames: GlobalGame[];
     currentGame: Game | null;
     gameRanks: Record<string, Rank[]>;
     userRanks: UserRank[];
     isLoading: boolean;
+    globalLoading: boolean;
     createLoading: boolean;
     updateLoading: boolean;
     error: string | null;
@@ -16,10 +30,12 @@ interface GamesState {
 
 const initialState: GamesState = {
     games: [],
+    globalGames: [],
     currentGame: null,
     gameRanks: {},
     userRanks: [],
     isLoading: false,
+    globalLoading: false,
     createLoading: false,
     updateLoading: false,
     error: null,
@@ -46,6 +62,31 @@ export const fetchGame = createAsyncThunk('games/fetchGame', async (id: string) 
 
     return data.data!;
 });
+
+export const searchGlobalGames = createAsyncThunk(
+    'games/searchGlobalGames',
+    async (query?: string) => {
+        const url = new URL(`${API_URL}/games/global/search`);
+        if (query) url.searchParams.set('q', query);
+        const res = await apiFetch(url.toString());
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error?.message || 'Failed to search global games');
+        return data.data as GlobalGame[];
+    }
+);
+
+export const selectGlobalGame = createAsyncThunk(
+    'games/selectGlobalGame',
+    async (game: { name: string; imageUrl?: string | null; description?: string | null; teamSize?: number }) => {
+        const res = await apiFetch(`${API_URL}/games/global/select`, {
+            method: 'POST',
+            body: JSON.stringify(game),
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error?.message || 'Failed to select global game');
+        return data.data as Game;
+    }
+);
 
 const getToken = (state: RootState) => state.auth.token;
 
@@ -242,6 +283,26 @@ const gamesSlice = createSlice({
             })
             .addCase(fetchGame.fulfilled, (state, action) => {
                 state.currentGame = action.payload;
+            })
+            // Global RAWG Games
+            .addCase(searchGlobalGames.pending, (state) => {
+                state.globalLoading = true;
+            })
+            .addCase(searchGlobalGames.fulfilled, (state, action) => {
+                state.globalLoading = false;
+                state.globalGames = action.payload;
+            })
+            .addCase(searchGlobalGames.rejected, (state, action) => {
+                state.globalLoading = false;
+                state.error = action.error.message || 'Failed to search global games';
+            })
+            .addCase(selectGlobalGame.fulfilled, (state, action) => {
+                const index = state.games.findIndex(g => g.id === action.payload.id);
+                if (index === -1) {
+                    state.games.push(action.payload);
+                } else {
+                    state.games[index] = action.payload;
+                }
             })
             // Create game
             .addCase(createGame.pending, (state) => {

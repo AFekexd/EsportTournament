@@ -23,25 +23,25 @@ const MatchHistoryModal: React.FC<MatchHistoryModalProps> = ({
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in duration-200">
             <div
-                className="bg-[#121A22] border border-border rounded-2xl w-full max-w-4xl max-h-[85vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200"
+                className="tactical-card rounded-lg border border-border w-full max-w-4xl max-h-[85vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="p-6 border-b border-border flex items-center justify-between bg-[#121A22]">
+                <div className="p-6 border-b border-border flex items-center justify-between bg-card/95 backdrop-blur-md">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-primary/10 rounded-lg">
+                        <div className="p-2 bg-primary/10 border border-primary/30 rounded">
                             <Gamepad2 size={24} className="text-primary" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-foreground">Mérkőzés Előzmények</h2>
-                            <p className="text-sm text-muted-foreground">{matches.length} lejátszott mérkőzés</p>
+                            <h2 className="text-xl font-display font-bold uppercase tracking-wider text-foreground">Mérkőzés Előzmények</h2>
+                            <p className="text-xs font-mono text-muted-foreground">{matches.length} lejátszott mérkőzés</p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-2 hover:bg-secondary rounded-lg transition-colors text-muted-foreground hover:text-foreground"
+                        className="p-2 hover:bg-secondary rounded border border-transparent hover:border-border transition-colors text-muted-foreground hover:text-foreground"
                     >
-                        <X size={24} />
+                        <X size={20} />
                     </button>
                 </div>
 

@@ -47,54 +47,54 @@ export function TournamentRulesPage() {
 
     if (!rules && !rulesPdfUrl) {
         return (
-            <div className="container mx-auto px-4 py-8">
-                <div className="mb-8">
+            <div className="flex flex-col gap-6 pb-16">
+                <div>
                     <Link
                         to={`/tournaments/${id}`}
-                        className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-4"
+                        className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground font-mono text-xs uppercase tracking-wider transition-colors mb-4"
                     >
-                        <ArrowLeft size={20} />
+                        <ArrowLeft size={16} />
                         Vissza a versenyhez
                     </Link>
-                    <h1 className="text-3xl font-bold text-foreground">{currentTournament.name}</h1>
+                    <h1 className="font-display text-2xl sm:text-3xl font-bold uppercase tracking-tight text-foreground">{currentTournament.name}</h1>
                 </div>
-                <div className="bg-[#121A22] p-8 rounded-xl border border-border text-center">
-                    <Shield className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                    <h2 className="text-xl font-bold text-foreground mb-2">Nincs elérhető szabályzat</h2>
-                    <p className="text-muted-foreground">Ehhez a versenyhez/játékhoz nincs feltöltve szabályzat.</p>
+                <div className="tactical-card p-12 text-center flex flex-col items-center justify-center">
+                    <Shield className="w-12 h-12 text-muted-foreground mb-4 opacity-30" />
+                    <h2 className="font-display text-lg font-bold uppercase tracking-wider text-foreground mb-1">Nincs elérhető szabályzat</h2>
+                    <p className="text-muted-foreground text-sm font-mono">Ehhez a versenyhez/játékhoz nincs feltöltve egyedi szabályzat.</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="container mx-auto px-4 py-8 min-h-screen">
+        <div className="flex flex-col gap-6 pb-16">
             {/* Header */}
-            <div className="mb-8">
+            <div>
                 <Link
                     to={`/tournaments/${id}`}
-                    className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-4"
+                    className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground font-mono text-xs uppercase tracking-wider transition-colors mb-4"
                 >
-                    <ArrowLeft size={20} />
+                    <ArrowLeft size={16} />
                     Vissza a versenyhez
                 </Link>
-                <div className="flex items-center gap-4">
-                    <div className="p-3 bg-primary/10 rounded-xl text-primary">
-                        <ScrollText size={32} />
+                <div className="flex items-center gap-3.5 border-b border-border/60 pb-6">
+                    <div className="p-2.5 bg-secondary rounded border border-border text-primary">
+                        <ScrollText size={24} />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold text-foreground">Játékszabályzat</h1>
-                        <p className="text-muted-foreground text-lg">
-                            {gameName ? `${gameName} - ` : ""}{currentTournament.name}
+                        <h1 className="font-display text-2xl sm:text-4xl font-bold uppercase tracking-tight text-foreground">Játékszabályzat</h1>
+                        <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground mt-0.5">
+                            {gameName ? `${gameName} // ` : ""}{currentTournament.name}
                         </p>
                     </div>
                 </div>
             </div>
 
             {/* Content */}
-            <div className="bg-[#121A22] rounded-2xl border border-border shadow-xl overflow-hidden">
+            <div className="tactical-card overflow-hidden">
                 {rulesPdfUrl ? (
-                    <div className="w-full h-[80vh] bg-secondary">
+                    <div className="w-full h-[80vh] bg-card">
                         <iframe
                             src={rulesPdfUrl}
                             className="w-full h-full"
@@ -102,9 +102,9 @@ export function TournamentRulesPage() {
                         />
                     </div>
                 ) : (
-                    <div className="p-8">
+                    <div className="p-6 sm:p-8">
                         <div
-                            className="prose prose-invert max-w-none text-gray-300 [&>h1]:text-2xl [&>h2]:text-xl [&>h3]:text-lg [&>ul]:list-disc [&>ol]:list-decimal [&>ul]:pl-5 [&>ol]:pl-5"
+                            className="prose prose-invert max-w-none text-muted-foreground [&>h1]:text-2xl [&>h1]:text-foreground [&>h2]:text-xl [&>h2]:text-foreground [&>h3]:text-lg [&>ul]:list-disc [&>ol]:list-decimal [&>ul]:pl-5 [&>ol]:pl-5"
                             dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(rules || "") }}
                         />
                     </div>

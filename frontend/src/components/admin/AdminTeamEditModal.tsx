@@ -113,37 +113,36 @@ export function AdminTeamEditModal({
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-[1000] p-4">
       <div
-        className="bg-[#121A22] border border-border rounded-2xl max-w-[800px] w-full max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_hsl(var(--background) / 0.5)]"
+        className="tactical-card border border-border rounded-lg max-w-[800px] w-full max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center p-6 border-b border-border sticky top-0 bg-[#121A22] z-10">
-          <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-            <Shield className="text-primary" size={24} />
+        <div className="flex justify-between items-center p-6 border-b border-border sticky top-0 bg-card/95 backdrop-blur-md z-10">
+          <h2 className="text-xl font-display font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
+            <Shield className="text-primary" size={20} />
             Csapat szerkesztése
           </h2>
           <button
-            className="p-2 rounded-lg hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-colors"
+            className="p-1.5 rounded hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-colors"
             onClick={onClose}
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
         <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left: General Info */}
           <div>
-            <h3 className="text-lg font-semibold text-foreground mb-4">
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-primary mb-4">
               Alapadatok
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="form-group">
-                <label className="block text-sm font-medium text-muted-foreground mb-1">
+                <label className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5">
                   Csapat neve
                 </label>
                 <input
                   type="text"
-                  className={`w-full bg-secondary border border-border rounded-lg px-4 py-2 text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors ${errors.name ? "border-red-500/50" : ""
-                    }`}
+                  className={`w-full bg-secondary/80 border ${errors.name ? "border-destructive" : "border-border"} rounded px-4 py-2 text-foreground font-mono text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors`}
                   value={formData.name}
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
@@ -152,18 +151,18 @@ export function AdminTeamEditModal({
                 />
                 <div className="flex justify-between items-center mt-1">
                   {errors.name ? (
-                    <span className="text-red-400 text-xs">{errors.name}</span>
+                    <span className="text-destructive font-mono text-xs">{errors.name}</span>
                   ) : <span></span>}
-                  <span className="text-xs text-muted-foreground">{formData.name.length}/50</span>
+                  <span className="text-xs font-mono text-muted-foreground">{formData.name.length}/50</span>
                 </div>
               </div>
 
               <div className="form-group">
-                <label className="block text-sm font-medium text-muted-foreground mb-1">
+                <label className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5">
                   Leírás
                 </label>
                 <textarea
-                  className="w-full bg-secondary border border-border rounded-lg px-4 py-2 text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors resize-none"
+                  className="w-full bg-secondary/80 border border-border rounded px-4 py-2 text-foreground font-mono text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors resize-none"
                   value={formData.description}
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
@@ -172,13 +171,13 @@ export function AdminTeamEditModal({
                   maxLength={500}
                 />
                 <div className="text-right mt-1">
-                  <span className="text-xs text-muted-foreground">{formData.description.length}/500</span>
+                  <span className="text-xs font-mono text-muted-foreground">{formData.description.length}/500</span>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-1">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5">
                     Logó
                   </label>
                   <ImageUpload
@@ -192,7 +191,7 @@ export function AdminTeamEditModal({
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-1">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5">
                     Borítókép
                   </label>
                   <ImageUpload
@@ -210,14 +209,14 @@ export function AdminTeamEditModal({
               <div className="pt-4">
                 <button
                   type="submit"
-                  className="w-full btn btn-primary flex items-center justify-center gap-2"
+                  className="w-full px-5 py-2.5 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-all font-mono text-xs uppercase tracking-wider font-bold shadow-md shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50"
                   disabled={updateLoading}
                 >
                   {updateLoading ? (
                     "Mentés..."
                   ) : (
                     <>
-                      <Save size={18} /> Mentés
+                      <Save size={16} /> Mentés
                     </>
                   )}
                 </button>
@@ -227,18 +226,18 @@ export function AdminTeamEditModal({
 
           {/* Right: Members */}
           <div>
-            <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center justify-between">
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-primary mb-4 flex items-center justify-between">
               <span>Csapattagok</span>
-              <span className="text-sm font-normal text-muted-foreground">
+              <span className="text-xs font-mono text-muted-foreground lowercase">
                 {localMembers.length} tag
               </span>
             </h3>
-            <div className="bg-secondary rounded-xl border border-border overflow-hidden">
-              <div className="max-h-[400px] overflow-y-auto divide-y divide-white/5">
+            <div className="bg-secondary/40 rounded border border-border overflow-hidden">
+              <div className="max-h-[400px] overflow-y-auto divide-y divide-border/40">
                 {localMembers.map((member) => (
                   <div
                     key={member.userId}
-                    className="flex items-center justify-between p-3 hover:bg-secondary transition-colors"
+                    className="flex items-center justify-between p-3 hover:bg-secondary/60 transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       {member.user?.avatarUrl ? (
@@ -248,7 +247,7 @@ export function AdminTeamEditModal({
                           className="w-8 h-8 rounded-full object-cover"
                         />
                       ) : (
-                        <div className="w-8 h-8 rounded-full bg-secondary/80 flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
                           <User size={14} className="text-muted-foreground" />
                         </div>
                       )}
@@ -256,12 +255,12 @@ export function AdminTeamEditModal({
                         <div className="text-sm font-medium text-foreground flex items-center gap-2">
                           {member.user?.displayName || member.user?.username}
                           {member.role === "CAPTAIN" && (
-                            <span className="text-[10px] bg-yellow-500/20 text-yellow-500 px-1.5 py-0.5 rounded uppercase font-bold">
+                            <span className="text-[10px] font-mono font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 px-1.5 py-0.2 rounded uppercase">
                               CPT
                             </span>
                           )}
                         </div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-xs font-mono text-muted-foreground">
                           @{member.user?.username}
                         </div>
                       </div>
@@ -270,7 +269,7 @@ export function AdminTeamEditModal({
                     {member.role !== "CAPTAIN" && (
                       <button
                         onClick={() => handleRemoveMember(member.userId)}
-                        className="p-1.5 rounded bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors"
+                        className="p-1.5 rounded bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors"
                         title="Tag eltávolítása"
                       >
                         <Trash2 size={14} />
@@ -279,7 +278,7 @@ export function AdminTeamEditModal({
                   </div>
                 ))}
                 {localMembers.length === 0 && (
-                  <div className="p-8 text-center text-muted-foreground text-sm">
+                  <div className="p-8 text-center text-muted-foreground font-mono text-xs">
                     Nincsenek tagok
                   </div>
                 )}

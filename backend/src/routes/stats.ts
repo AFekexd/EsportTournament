@@ -3,12 +3,21 @@ import prisma from '../lib/prisma.js';
 
 const router: Router = Router();
 
+// In-memory cache for aggregate platform metrics
+let cachedStats: any = null;
+let statsExpiry = 0;
+const STATS_TTL = 30 * 1000; // 30 seconds
+
 /**
  * GET /api/stats
- * Get platform statistics
+ * Get platform statistics (Cached for 30s)
  */
 router.get('/', async (req, res, next) => {
   try {
+    if (cachedStats && Date.now() < statsExpiry) {
+      res.setHeader('Cache-Control', 'public, max-age=30');
+      return res.json(cachedStats);
+    }
     const [
       activeTournamentsCount,
       registeredUsersCount,
@@ -68,14 +77,18 @@ router.get('/', async (req, res, next) => {
       return acc;
     }, {} as Record<string, number>);
 
-    res.json({
+    cachedStats = {
       activeTournaments: activeTournamentsCount,
       registeredUsers: registeredUsersCount,
       createdTeams: createdTeamsCount,
       playedMatches: playedMatchesCount,
       usersByRole: roleCounts,
       recentRegistrations
-    });
+    };
+    statsExpiry = Date.now() + STATS_TTL;
+
+    res.setHeader('Cache-Control', 'public, max-age=30');
+    res.json(cachedStats);
   } catch (error) {
     next(error);
   }

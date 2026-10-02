@@ -141,19 +141,19 @@ export function TournamentEditModal({
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div
-        className="bg-[#121A22] rounded-2xl w-full max-w-3xl border border-border shadow-2xl max-h-[90vh] overflow-y-auto"
+        className="tactical-card w-full max-w-3xl border border-border shadow-2xl max-h-[90vh] overflow-y-auto rounded-lg"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="sticky top-0 bg-[#121A22] border-b border-border p-6 flex items-center justify-between z-10">
-          <h2 className="text-2xl font-bold text-foreground">
+        <div className="sticky top-0 bg-card/95 backdrop-blur-md border-b border-border p-6 flex items-center justify-between z-10">
+          <h2 className="text-xl font-display font-bold uppercase tracking-wider text-foreground">
             Verseny szerkesztése
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-secondary/80 rounded-lg transition-colors"
+            className="p-2 hover:bg-secondary/80 rounded transition-colors text-muted-foreground hover:text-foreground"
           >
-            <X size={20} className="text-muted-foreground" />
+            <X size={18} />
           </button>
         </div>
 
@@ -164,15 +164,15 @@ export function TournamentEditModal({
             <div>
               <label
                 htmlFor="edit-tournament-name"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5"
               >
-                Verseny neve <span className="text-red-400">*</span>
+                Verseny neve <span className="text-destructive">*</span>
               </label>
               <input
                 id="edit-tournament-name"
                 type="text"
-                className={`w-full px-4 py-3 bg-[#121A22] border ${errors.name ? "border-red-500" : "border-border"
-                  } rounded-xl text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors`}
+                className={`w-full px-4 py-2.5 bg-secondary/80 border ${errors.name ? "border-destructive" : "border-border"
+                  } rounded text-foreground placeholder:text-muted-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors`}
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
@@ -181,22 +181,22 @@ export function TournamentEditModal({
               />
               <div className="flex justify-between items-center mt-1">
                 {errors.name ? (
-                  <p className="text-red-400 text-sm">{errors.name}</p>
+                  <p className="text-destructive text-xs font-mono">{errors.name}</p>
                 ) : <span></span>}
-                <span className="text-xs text-muted-foreground">{formData.name.length}/100</span>
+                <span className="text-xs font-mono text-muted-foreground">{formData.name.length}/100</span>
               </div>
             </div>
 
             <div>
               <label
                 htmlFor="edit-tournament-status"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5"
               >
                 Státusz
               </label>
               <select
                 id="edit-tournament-status"
-                className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors"
+                className="w-full px-4 py-2.5 bg-secondary/80 border border-border rounded text-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors"
                 value={formData.status}
                 onChange={(e) =>
                   setFormData({
@@ -217,8 +217,8 @@ export function TournamentEditModal({
           {/* Participation Type & Team Size */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Típus <span className="text-red-400">*</span>
+              <label className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5">
+                Típus <span className="text-destructive">*</span>
               </label>
               <div className="grid grid-cols-2 gap-2">
                 <button
@@ -229,9 +229,9 @@ export function TournamentEditModal({
                       participationType: "INDIVIDUAL",
                     })
                   }
-                  className={`px-4 py-3 rounded-xl border font-medium transition-all ${formData.participationType === "INDIVIDUAL"
-                    ? "bg-primary/20 border-primary text-primary"
-                    : "bg-[#121A22] border-border text-muted-foreground hover:border-border"
+                  className={`px-4 py-2.5 rounded border font-mono text-xs uppercase tracking-wider font-semibold transition-all ${formData.participationType === "INDIVIDUAL"
+                    ? "bg-primary/20 border-primary text-primary shadow-sm"
+                    : "bg-secondary/60 border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
                     }`}
                 >
                   Egyéni (1v1)
@@ -241,9 +241,9 @@ export function TournamentEditModal({
                   onClick={() =>
                     setFormData({ ...formData, participationType: "TEAM" })
                   }
-                  className={`px-4 py-3 rounded-xl border font-medium transition-all ${formData.participationType === "TEAM"
-                    ? "bg-primary/20 border-primary text-primary"
-                    : "bg-[#121A22] border-border text-muted-foreground hover:border-border"
+                  className={`px-4 py-2.5 rounded border font-mono text-xs uppercase tracking-wider font-semibold transition-all ${formData.participationType === "TEAM"
+                    ? "bg-primary/20 border-primary text-primary shadow-sm"
+                    : "bg-secondary/60 border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
                     }`}
                 >
                   Csapat
@@ -255,13 +255,13 @@ export function TournamentEditModal({
               <div>
                 <label
                   htmlFor="edit-team-size"
-                  className="block text-sm font-medium text-gray-300 mb-2"
+                  className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5"
                 >
-                  Csapatméret <span className="text-red-400">*</span>
+                  Csapatméret <span className="text-destructive">*</span>
                 </label>
                 <select
                   id="edit-team-size"
-                  className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors"
+                  className="w-full px-4 py-2.5 bg-secondary/80 border border-border rounded text-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors"
                   value={formData.teamSize}
                   onChange={(e) =>
                     setFormData({
@@ -284,13 +284,13 @@ export function TournamentEditModal({
           <div>
             <label
               htmlFor="edit-tournament-description"
-              className="block text-sm font-medium text-gray-300 mb-2"
+              className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5"
             >
               Leírás
             </label>
             <textarea
               id="edit-tournament-description"
-              className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors resize-none"
+              className="w-full px-4 py-2.5 bg-secondary/80 border border-border rounded text-foreground placeholder:text-muted-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors resize-none"
               value={formData.description}
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
@@ -300,7 +300,7 @@ export function TournamentEditModal({
               maxLength={500}
             />
             <div className="text-right mt-1">
-              <span className="text-xs text-muted-foreground">{formData.description.length}/500</span>
+              <span className="text-xs font-mono text-muted-foreground">{formData.description.length}/500</span>
             </div>
           </div>
 
@@ -316,16 +316,16 @@ export function TournamentEditModal({
           {/* Game & Format */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5">
                 Játék
               </label>
               <input
                 type="text"
-                className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-muted-foreground cursor-not-allowed"
+                className="w-full px-4 py-2.5 bg-secondary/40 border border-border rounded text-muted-foreground font-mono text-sm cursor-not-allowed"
                 value={tournament.game?.name || "Ismeretlen"}
                 disabled
               />
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs font-mono text-muted-foreground mt-1">
                 A játék nem módosítható létrehozás után
               </p>
             </div>
@@ -333,13 +333,13 @@ export function TournamentEditModal({
             <div>
               <label
                 htmlFor="edit-tournament-format"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5"
               >
                 Formátum
               </label>
               <select
                 id="edit-tournament-format"
-                className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors"
+                className="w-full px-4 py-2.5 bg-secondary/80 border border-border rounded text-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors"
                 value={formData.format}
                 onChange={(e) =>
                   setFormData({
@@ -361,13 +361,13 @@ export function TournamentEditModal({
           <div>
             <label
               htmlFor="edit-tournament-seeding"
-              className="block text-sm font-medium text-gray-300 mb-2"
+              className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5"
             >
               Kiemelési módszer
             </label>
             <select
               id="edit-tournament-seeding"
-              className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full px-4 py-2.5 bg-secondary/80 border border-border rounded text-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors"
               value={formData.seedingMethod}
               onChange={(e) =>
                 setFormData({
@@ -385,7 +385,7 @@ export function TournamentEditModal({
                 </option>
               ))}
             </select>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs font-mono text-muted-foreground mt-1">
               Standard: 1v8, 2v7. Szekvenciális: 1v2, 3v4. Véletlenszerű: Nincs
               kiemelés.
             </p>
@@ -394,14 +394,14 @@ export function TournamentEditModal({
           <div>
             <label
               htmlFor="edit-tournament-streamUrl"
-              className="block text-sm font-medium text-gray-300 mb-2"
+              className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5"
             >
               Stream URL (Twitch/TikTok/YouTube)
             </label>
             <input
               id="edit-tournament-streamUrl"
               type="text"
-              className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full px-4 py-2.5 bg-secondary/80 border border-border rounded text-foreground placeholder:text-muted-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors"
               value={formData.streamUrl}
               onChange={(e) =>
                 setFormData({ ...formData, streamUrl: e.target.value })
@@ -414,14 +414,14 @@ export function TournamentEditModal({
           <div>
             <label
               htmlFor="edit-tournament-maxTeams"
-              className="block text-sm font-medium text-gray-300 mb-2"
+              className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5"
             >
               Max csapatok
             </label>
             <input
               id="edit-tournament-maxTeams"
               type="number"
-              className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full px-4 py-2.5 bg-secondary/80 border border-border rounded text-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors"
               value={formData.maxTeams}
               onChange={(e) =>
                 setFormData({ ...formData, maxTeams: parseInt(e.target.value) })
@@ -436,17 +436,17 @@ export function TournamentEditModal({
             <div>
               <label
                 htmlFor="edit-tournament-regDeadline"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5"
               >
-                Jelentkezési határidő <span className="text-red-400">*</span>
+                Jelentkezési határidő <span className="text-destructive">*</span>
               </label>
               <input
                 id="edit-tournament-regDeadline"
                 type="datetime-local"
-                className={`w-full px-4 py-3 bg-[#121A22] border ${errors.registrationDeadline
-                  ? "border-red-500"
+                className={`w-full px-4 py-2.5 bg-secondary/80 border ${errors.registrationDeadline
+                  ? "border-destructive"
                   : "border-border"
-                  } rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors`}
+                  } rounded text-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors`}
                 value={formData.registrationDeadline}
                 onChange={(e) =>
                   setFormData({
@@ -457,7 +457,7 @@ export function TournamentEditModal({
                 onClick={(e) => e.currentTarget.showPicker()}
               />
               {errors.registrationDeadline && (
-                <p className="text-red-400 text-sm mt-1">
+                <p className="text-destructive text-xs font-mono mt-1">
                   {errors.registrationDeadline}
                 </p>
               )}
@@ -466,15 +466,15 @@ export function TournamentEditModal({
             <div>
               <label
                 htmlFor="edit-tournament-startDate"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5"
               >
-                Kezdési dátum <span className="text-red-400">*</span>
+                Kezdési dátum <span className="text-destructive">*</span>
               </label>
               <input
                 id="edit-tournament-startDate"
                 type="datetime-local"
-                className={`w-full px-4 py-3 bg-[#121A22] border ${errors.startDate ? "border-red-500" : "border-border"
-                  } rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors`}
+                className={`w-full px-4 py-2.5 bg-secondary/80 border ${errors.startDate ? "border-destructive" : "border-border"
+                  } rounded text-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors`}
                 value={formData.startDate}
                 onChange={(e) =>
                   setFormData({ ...formData, startDate: e.target.value })
@@ -482,13 +482,13 @@ export function TournamentEditModal({
                 onClick={(e) => e.currentTarget.showPicker()}
               />
               {errors.startDate && (
-                <p className="text-red-400 text-sm mt-1">{errors.startDate}</p>
+                <p className="text-destructive text-xs font-mono mt-1">{errors.startDate}</p>
               )}
             </div>
           </div>
 
           {/* Qualifier Settings */}
-          <div className="bg-[#121A22] rounded-xl p-4 border border-border">
+          <div className="bg-secondary/40 rounded border border-border/80 p-4">
             <div className="flex items-center gap-3">
               <button
                 type="button"
@@ -501,7 +501,7 @@ export function TournamentEditModal({
                     hasQualifier: !formData.hasQualifier,
                   })
                 }
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#0f1015] ${formData.hasQualifier ? "bg-primary" : "bg-gray-700"
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-1 focus:ring-primary ${formData.hasQualifier ? "bg-primary" : "bg-secondary"
                   }`}
               >
                 <span
@@ -512,7 +512,7 @@ export function TournamentEditModal({
               <div>
                 <label
                   htmlFor="edit-has-qualifier"
-                  className="text-foreground font-medium cursor-pointer select-none"
+                  className="text-foreground text-sm font-semibold cursor-pointer select-none"
                   onClick={() =>
                     setFormData({
                       ...formData,
@@ -526,18 +526,18 @@ export function TournamentEditModal({
             </div>
 
             {formData.hasQualifier && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-8 border-l-2 border-primary/20 mt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-8 border-l-2 border-primary/40 mt-4">
                 <div>
                   <label
                     htmlFor="edit-qualifier-matches"
-                    className="block text-sm font-medium text-gray-300 mb-2"
+                    className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5"
                   >
                     Kötelező meccsek száma
                   </label>
                   <input
                     id="edit-qualifier-matches"
                     type="number"
-                    className="w-full px-4 py-2 bg-[#121A22] border border-border rounded-lg text-foreground focus:outline-none focus:border-primary/50"
+                    className="w-full px-4 py-2 bg-secondary/80 border border-border rounded text-foreground font-mono text-sm focus:outline-none focus:border-primary"
                     value={formData.qualifierMatches}
                     onChange={(e) =>
                       setFormData({
@@ -551,14 +551,14 @@ export function TournamentEditModal({
                 <div>
                   <label
                     htmlFor="edit-qualifier-points"
-                    className="block text-sm font-medium text-gray-300 mb-2"
+                    className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5"
                   >
                     Minimum pontszám
                   </label>
                   <input
                     id="edit-qualifier-points"
                     type="number"
-                    className="w-full px-4 py-2 bg-[#121A22] border border-border rounded-lg text-foreground focus:outline-none focus:border-primary/50"
+                    className="w-full px-4 py-2 bg-secondary/80 border border-border rounded text-foreground font-mono text-sm focus:outline-none focus:border-primary"
                     value={formData.qualifierMinPoints}
                     onChange={(e) =>
                       setFormData({
@@ -574,7 +574,7 @@ export function TournamentEditModal({
           </div>
 
           {/* Rank Requirement */}
-          <div className="bg-[#121A22] rounded-xl p-4 border border-border">
+          <div className="bg-secondary/40 rounded border border-border/80 p-4">
             <div className="flex items-center gap-3">
               <button
                 type="button"
@@ -587,7 +587,7 @@ export function TournamentEditModal({
                     requireRank: !formData.requireRank,
                   })
                 }
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#0f1015] ${formData.requireRank ? "bg-primary" : "bg-gray-700"
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-1 focus:ring-primary ${formData.requireRank ? "bg-primary" : "bg-secondary"
                   }`}
               >
                 <span
@@ -598,7 +598,7 @@ export function TournamentEditModal({
               <div>
                 <label
                   htmlFor="edit-require-rank"
-                  className="text-foreground font-medium cursor-pointer select-none block"
+                  className="text-foreground text-sm font-semibold cursor-pointer select-none block"
                   onClick={() =>
                     setFormData({
                       ...formData,
@@ -608,7 +608,7 @@ export function TournamentEditModal({
                 >
                   Rang követelmény
                 </label>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs font-mono text-muted-foreground mt-0.5">
                   Ha be van kapcsolva, a jelentkezőknek rendelkezniük kell
                   ranggal a választott játékban.
                 </p>
@@ -620,14 +620,14 @@ export function TournamentEditModal({
           <div>
             <label
               htmlFor="edit-tournament-endDate"
-              className="block text-sm font-medium text-gray-300 mb-2"
+              className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5"
             >
               Befejezési dátum (opcionális)
             </label>
             <input
               id="edit-tournament-endDate"
               type="datetime-local"
-              className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full px-4 py-2.5 bg-secondary/80 border border-border rounded text-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors"
               value={formData.endDate}
               onChange={(e) =>
                 setFormData({ ...formData, endDate: e.target.value })
@@ -640,24 +640,24 @@ export function TournamentEditModal({
           <div className="flex gap-4 pt-6 border-t border-border">
             <button
               type="button"
-              className="flex-1 px-6 py-3 bg-[#121A22] hover:bg-[#121A22] border border-border text-foreground rounded-xl font-semibold transition-all"
+              className="flex-1 px-5 py-2.5 bg-secondary/80 hover:bg-secondary border border-border text-foreground rounded font-mono text-xs uppercase tracking-wider font-semibold transition-all"
               onClick={onClose}
             >
               Mégse
             </button>
             <button
               type="submit"
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-foreground rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded font-mono text-xs uppercase tracking-wider font-bold transition-all shadow-md shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={updateLoading}
             >
               {updateLoading ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
                   Mentés...
                 </>
               ) : (
                 <>
-                  <Save size={18} />
+                  <Save size={16} />
                   Mentés
                 </>
               )}

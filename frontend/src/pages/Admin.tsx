@@ -30,7 +30,6 @@ import {
 // import { fetchTeams } from "../store/slices/teamsSlice";
 
 import { Link } from "react-router-dom";
-import "./Admin.css";
 
 // Lazy load components
 const GameCreateModal = lazy(() =>
@@ -103,7 +102,6 @@ const GradesUploadAdmin = lazy(() =>
     default: module.GradesUploadAdmin,
   })),
 );
-import "./Admin.css";
 import { authService } from "../lib/auth-service";
 import type { Game, Tournament } from "../types";
 
@@ -340,12 +338,16 @@ export function AdminPage() {
   return (
     <div className="min-h-screen animate-fade-in pb-20">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] bg-clip-text text-transparent">
+      <div className="flex flex-col gap-3 border-b border-border/60 pb-6 mb-8">
+        <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-primary">
+          <Settings size={14} className="text-primary" />
+          <span>Központi Rendszer // Adminisztráció</span>
+        </div>
+        <h1 className="text-3xl font-display font-bold uppercase tracking-tight text-foreground">
           Menedzsment Dashboard
         </h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Rendszer kezelés és statisztikák áttekintése
+        <p className="text-sm text-muted-foreground font-mono">
+          Rendszer felügyelet, felhasználói és verseny műveletek központja
         </p>
       </div>
 
@@ -390,7 +392,7 @@ export function AdminPage() {
       </div>
 
       {/* Horizontal Tabs Navigation */}
-      <div className="flex flex-wrap gap-2 mb-6 pb-4 border-b border-white/5 overflow-x-auto">
+      <div className="flex flex-wrap gap-2 mb-6 pb-4 border-b border-border/60 overflow-x-auto">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
           const Icon = tab.icon;
@@ -409,23 +411,23 @@ export function AdminPage() {
       </div>
 
       {/* Main Content Area */}
-      <div className="bg-[#0a1929]/60 backdrop-blur-lg border border-white/5 rounded-2xl p-6 min-h-[500px] shadow-xl">
+      <div className="tactical-card p-6 min-h-[500px]">
         <Suspense
           fallback={
             <div className="flex items-center justify-center h-[400px]">
-              <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+              <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             </div>
           }
         >
           {activeTab === "overview" && (
             <div className="animate-fade-in space-y-6">
-              <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
-                <Settings className="text-primary" size={24} />
+              <h2 className="text-base font-display font-bold uppercase tracking-wider text-foreground mb-6 flex items-center gap-2">
+                <Settings className="text-primary" size={20} />
                 Áttekintés
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Recent Registrations */}
-                <div className="rounded-xl border border-border bg-[#121A22] p-6 flex flex-col">
+                <div className="tactical-card p-6 flex flex-col">
                   <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
                     <span className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500">
                       <Users size={18} />
@@ -516,7 +518,7 @@ export function AdminPage() {
                 </div>
 
                 {/* Active Tournaments */}
-                <div className="rounded-xl border border-border bg-[#121A22] p-6 flex flex-col">
+                <div className="tactical-card p-6 flex flex-col">
                   <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
                     <span className="p-1.5 rounded-lg bg-primary/20 text-primary">
                       <Trophy size={18} />
@@ -628,7 +630,7 @@ export function AdminPage() {
                   games.map((game) => (
                     <div
                       key={game.id}
-                      className="group flex flex-col bg-[#121A22] rounded-2xl overflow-hidden border border-border hover:border-primary/50 hover:shadow-[0_0_15px_hsla(var(--primary),0.1)] transition-all duration-300"
+                      className="group flex flex-col tactical-card overflow-hidden hover:border-primary/50 transition-all duration-300"
                     >
                       {/* Image & Overlay */}
                       <div className="relative w-full aspect-video overflow-hidden bg-gray-900">
@@ -775,11 +777,11 @@ export function AdminPage() {
                       placeholder="Keresés..."
                       value={tournamentSearch}
                       onChange={(e) => setTournamentSearch(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 bg-[#121A22] border border-border rounded-lg text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors text-sm"
+                      className="w-full pl-10 pr-4 py-2 bg-secondary/80 border border-border rounded text-foreground placeholder-muted-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors"
                     />
                   </div>
                   <button
-                    className="flex items-center gap-2 px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary-hover transition-colors shadow-lg shadow-primary/20 whitespace-nowrap"
+                    className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded font-mono text-xs uppercase tracking-wider font-bold transition-all shadow-md shadow-primary/20 whitespace-nowrap"
                     onClick={() => setShowTournamentModal(true)}
                   >
                     <Plus size={18} />
@@ -788,7 +790,7 @@ export function AdminPage() {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-border overflow-hidden bg-[#121A22]/50">
+              <div className="tactical-card rounded-lg border border-border overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
@@ -901,7 +903,7 @@ export function AdminPage() {
                 </div>
                 {/* Pagination */}
                 {tournamentPagination && tournamentPagination.pages > 1 && (
-                  <div className="flex justify-center p-4 border-t border-border gap-2 bg-[#121A22]">
+                  <div className="flex justify-center p-4 border-t border-border gap-2 bg-card/90">
                     {Array.from(
                       { length: tournamentPagination.pages },
                       (_, i) => i + 1,

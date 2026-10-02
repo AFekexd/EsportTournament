@@ -137,57 +137,55 @@ export function BugReportPage() {
 
     if (!isAuthenticated) {
         return (
-            <div className="container mx-auto px-4 py-8">
-                <div className="flex flex-col items-center justify-center py-20 glass-card rounded-2xl">
-                    <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mb-6 neon-border">
-                        <Lock size={40} className="text-muted-foreground" />
-                    </div>
-                    <h3 className="text-xl font-bold text-foreground mb-2 text-glow">
-                        Nem vagy bejelentkezve
-                    </h3>
-                    <p className="text-muted-foreground">
-                        Jelentkezz be a hibajelentés beküldéséhez.
-                    </p>
+            <div className="flex flex-col items-center justify-center py-20 tactical-card text-center my-8">
+                <div className="w-16 h-16 bg-secondary rounded border border-border flex items-center justify-center mb-4 text-muted-foreground">
+                    <Lock size={32} />
                 </div>
+                <h3 className="font-display text-xl font-bold uppercase tracking-wider text-foreground mb-2">
+                    Nem vagy bejelentkezve
+                </h3>
+                <p className="text-muted-foreground text-sm font-mono">
+                    Jelentkezz be a hibajelentés beküldéséhez.
+                </p>
             </div>
         );
     }
 
     return (
-        <div className="container mx-auto px-4 py-12 page">
-            {/* Modern Header with Gradient */}
-            <div className="mb-16 text-center relative animate-fade-in">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-red-500/20 blur-[100px] rounded-full -z-10" />
-                <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-red-300 to-red-500 bg-clip-text text-transparent mb-6 text-glow">
-                    Hibajelentés
+        <div className="flex flex-col gap-8 pb-16">
+            {/* Tactical Header */}
+            <div className="flex flex-col gap-3 border-b border-border/60 pb-6">
+                <div className="inline-flex w-fit items-center gap-2 rounded border border-border bg-secondary/80 px-3 py-1 font-mono text-xs uppercase tracking-wider text-red-400">
+                    <Bug className="h-3.5 w-3.5" />
+                    <span>HIBAJELENTÉSI KÖZPONT // BUG TRACKER</span>
+                </div>
+                <h1 className="font-display text-3xl sm:text-5xl font-bold uppercase tracking-tight text-foreground">
+                    HIBA<span className="text-red-500">JELENTÉS</span>
                 </h1>
-                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                    Találtál hibát? Segíts nekünk jobbá tenni a platformot!
+                <p className="text-muted-foreground text-sm max-w-xl">
+                    Találtál valamilyen rendellenességet vagy hibát? Segíts nekünk fejleszteni az esport platformot!
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Bug Report Form */}
-                <div
-                    className="glass-card rounded-2xl p-8 hover:scale-[1.01] transition-transform animate-slide-up"
-                    style={{ animationDelay: "0.1s" }}
-                >
-                    <div className="flex items-center gap-4 mb-8">
-                        <div className="p-3 bg-red-500/10 rounded-xl border border-red-500/20">
-                            <Bug size={24} className="text-red-400" />
+                <div className="tactical-card p-6 sm:p-8">
+                    <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-border">
+                        <div className="p-2.5 bg-secondary rounded border border-border text-red-400">
+                            <Bug size={20} />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-bold text-foreground">Új Hibajelentés</h2>
-                            <p className="text-sm text-muted-foreground">Írd le részletesen a hibát</p>
+                            <h2 className="font-display text-lg font-bold uppercase tracking-wider text-foreground">Új Hibajelentés</h2>
+                            <p className="text-xs text-muted-foreground">Írd le a tapasztalt rendellenességet</p>
                         </div>
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="space-y-5">
                         {/* Title */}
-                        <div className="space-y-2">
+                        <div className="space-y-1.5">
                             <label
                                 htmlFor="title"
-                                className="text-sm font-medium text-gray-300 ml-1"
+                                className="text-xs font-mono uppercase tracking-wider text-muted-foreground ml-1"
                             >
                                 Hiba címe *
                             </label>
@@ -197,17 +195,17 @@ export function BugReportPage() {
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                                 maxLength={100}
-                                className="w-full px-5 py-4 bg-[#0a0a0f]/50 border border-border rounded-xl text-foreground placeholder-gray-600 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all"
+                                className="w-full px-4 py-2.5 bg-secondary/40 border border-border rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-red-500/50 text-sm"
                                 placeholder="pl. A profilkép nem töltődik be"
                             />
-                            <div className="text-xs text-muted-foreground text-right mr-1">
+                            <div className="text-xs font-mono text-muted-foreground text-right mr-1">
                                 {title.length}/100
                             </div>
                         </div>
 
                         {/* Category */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-gray-300 ml-1">
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground ml-1">
                                 Kategória *
                             </label>
                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -216,21 +214,21 @@ export function BugReportPage() {
                                         key={cat.value}
                                         type="button"
                                         onClick={() => setCategory(cat.value)}
-                                        className={`flex items-center gap-2 px-4 py-3 rounded-xl border transition-all ${category === cat.value
-                                            ? "bg-red-500/20 border-red-500/50 text-red-400"
-                                            : "bg-[#0a0a0f]/50 border-border text-muted-foreground hover:border-border"
+                                        className={`flex items-center gap-2 px-3 py-2.5 rounded border transition-all text-xs font-mono uppercase ${category === cat.value
+                                            ? "bg-red-500/15 border-red-500/50 text-red-400"
+                                            : "bg-secondary/30 border-border text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
                                             }`}
                                     >
                                         {cat.icon}
-                                        <span className="text-sm font-medium">{cat.label}</span>
+                                        <span>{cat.label}</span>
                                     </button>
                                 ))}
                             </div>
                         </div>
 
                         {/* Priority */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-gray-300 ml-1">
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground ml-1">
                                 Prioritás
                             </label>
                             <div className="flex gap-2">
@@ -239,23 +237,23 @@ export function BugReportPage() {
                                         key={p.value}
                                         type="button"
                                         onClick={() => setPriority(p.value)}
-                                        className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border transition-all ${priority === p.value
+                                        className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded border transition-all text-xs font-mono uppercase ${priority === p.value
                                             ? `bg-secondary border-border ${p.color}`
-                                            : "bg-[#0a0a0f]/50 border-border text-muted-foreground hover:border-border"
+                                            : "bg-secondary/30 border-border text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
                                             }`}
                                     >
                                         {p.icon}
-                                        <span className="text-sm font-medium">{p.label}</span>
+                                        <span>{p.label}</span>
                                     </button>
                                 ))}
                             </div>
                         </div>
 
                         {/* Description */}
-                        <div className="space-y-2">
+                        <div className="space-y-1.5">
                             <label
                                 htmlFor="description"
-                                className="text-sm font-medium text-gray-300 ml-1"
+                                className="text-xs font-mono uppercase tracking-wider text-muted-foreground ml-1"
                             >
                                 Részletes leírás *
                             </label>
@@ -265,18 +263,18 @@ export function BugReportPage() {
                                 onChange={(e) => setDescription(e.target.value)}
                                 rows={5}
                                 maxLength={2000}
-                                className="w-full px-5 py-4 bg-[#0a0a0f]/50 border border-border rounded-xl text-foreground placeholder-gray-600 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all resize-none"
+                                className="w-full px-4 py-2.5 bg-secondary/40 border border-border rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-red-500/50 text-sm resize-none"
                                 placeholder="Írd le részletesen, mit tapasztaltál, milyen lépések után jelentkezett a hiba..."
                             />
-                            <div className="text-xs text-muted-foreground text-right mr-1">
+                            <div className="text-xs font-mono text-muted-foreground text-right mr-1">
                                 {description.length}/2000
                             </div>
                         </div>
 
                         {/* Screenshot */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-gray-300 ml-1 flex items-center gap-2">
-                                <ImageIcon size={16} />
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground ml-1 flex items-center gap-1.5">
+                                <ImageIcon size={14} />
                                 Képernyőkép (opcionális)
                             </label>
                             <ImageUpload
@@ -295,16 +293,16 @@ export function BugReportPage() {
                         <button
                             onClick={handleSubmit}
                             disabled={isSubmitting}
-                            className="w-full flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-bold text-lg transition-all bg-gradient-to-r from-red-500 to-orange-500 hover:brightness-110 text-foreground shadow-lg shadow-red-500/25 transform hover:-translate-y-1 disabled:opacity-75 disabled:cursor-wait"
+                            className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded bg-red-600 hover:bg-red-500 text-foreground font-display font-bold uppercase tracking-wider text-base transition-all shadow-lg shadow-red-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
                         >
                             {isSubmitting ? (
                                 <>
-                                    <Loader2 size={20} className="animate-spin" />
+                                    <Loader2 size={18} className="animate-spin" />
                                     Küldés...
                                 </>
                             ) : (
                                 <>
-                                    <Send size={20} />
+                                    <Send size={18} />
                                     Hibajelentés Küldése
                                 </>
                             )}
@@ -313,58 +311,55 @@ export function BugReportPage() {
                 </div>
 
                 {/* My Reports */}
-                <div
-                    className="glass-card rounded-2xl p-8 animate-slide-up"
-                    style={{ animationDelay: "0.2s" }}
-                >
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="p-3 bg-primary/10 rounded-xl neon-border">
-                            <AlertTriangle size={24} className="text-primary" />
+                <div className="tactical-card p-6 sm:p-8">
+                    <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-border">
+                        <div className="p-2.5 bg-secondary rounded border border-border text-primary">
+                            <AlertTriangle size={20} />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-foreground">Korábbi Bejelentéseim</h2>
-                            <p className="text-sm text-muted-foreground">
-                                {myReports.length} bejelentés
+                            <h2 className="font-display text-lg font-bold uppercase tracking-wider text-foreground">Korábbi Bejelentéseim</h2>
+                            <p className="text-xs font-mono text-muted-foreground">
+                                {myReports.length} BEJEGYZÉS
                             </p>
                         </div>
                     </div>
 
                     {isLoadingReports ? (
-                        <div className="flex items-center justify-center py-12">
-                            <Loader2 size={32} className="animate-spin text-primary" />
+                        <div className="flex items-center justify-center py-16 text-muted-foreground">
+                            <Loader2 size={28} className="animate-spin text-primary" />
                         </div>
                     ) : myReports.length === 0 ? (
-                        <div className="text-center py-12">
-                            <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Bug size={32} className="text-muted-foreground" />
+                        <div className="text-center py-16 bg-secondary/20 rounded border border-dashed border-border">
+                            <div className="w-12 h-12 bg-secondary rounded border border-border flex items-center justify-center mx-auto mb-3 text-muted-foreground">
+                                <Bug size={24} />
                             </div>
-                            <p className="text-muted-foreground">Még nincs bejelentésed</p>
+                            <p className="text-muted-foreground text-sm font-mono">Még nincs beküldött hibajelentésed</p>
                         </div>
                     ) : (
-                        <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+                        <div className="space-y-3 max-h-[600px] overflow-y-auto pr-1">
                             {myReports.map((report) => {
                                 const status = statusConfig[report.status] || statusConfig.PENDING;
                                 const priorityConfig = priorities.find((p) => p.value === report.priority);
                                 return (
                                     <div
                                         key={report.id}
-                                        className="p-4 bg-[#0a0a0f]/50 border border-border rounded-xl hover:border-border transition-all"
+                                        className="p-4 bg-secondary/30 border border-border rounded hover:border-primary/40 transition-all"
                                     >
                                         <div className="flex items-start justify-between gap-4 mb-2">
-                                            <h3 className="font-medium text-foreground line-clamp-1">
+                                            <h3 className="font-bold text-foreground line-clamp-1 text-sm">
                                                 {report.title}
                                             </h3>
                                             <span
-                                                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium whitespace-nowrap ${status.color}`}
+                                                className={`tactical-badge flex items-center gap-1.5 ${status.color}`}
                                             >
                                                 {status.icon}
                                                 {status.label}
                                             </span>
                                         </div>
-                                        <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                                        <p className="text-xs text-muted-foreground line-clamp-2 mb-3 leading-relaxed">
                                             {report.description}
                                         </p>
-                                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                                        <div className="flex items-center gap-3 text-xs font-mono text-muted-foreground">
                                             <span className="flex items-center gap-1">
                                                 {categories.find((c) => c.value === report.category)?.icon}
                                                 {categories.find((c) => c.value === report.category)?.label}
@@ -380,9 +375,9 @@ export function BugReportPage() {
                                             </span>
                                         </div>
                                         {report.adminNote && (
-                                            <div className="mt-3 p-3 bg-primary/5 border border-primary/10 rounded-lg">
-                                                <p className="text-xs text-muted-foreground mb-1">Admin válasz:</p>
-                                                <p className="text-sm text-gray-300">{report.adminNote}</p>
+                                            <div className="mt-3 p-3 bg-secondary/50 border border-border rounded">
+                                                <p className="text-xs font-mono uppercase text-primary mb-1">Admin Válasz:</p>
+                                                <p className="text-xs text-secondary-foreground">{report.adminNote}</p>
                                             </div>
                                         )}
                                     </div>

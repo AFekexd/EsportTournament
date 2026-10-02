@@ -90,32 +90,32 @@ export function GameRankModal({ game, onClose }: GameRankModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
       <div
-        className="bg-[#121A22]/95 backdrop-blur-xl rounded-2xl border border-border shadow-[0_0_50px_-12px_rgba(124,58,237,0.25)] w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]"
+        className="tactical-card w-full max-w-2xl overflow-hidden rounded-lg border border-border shadow-2xl flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-6 border-b border-border flex justify-between items-center bg-gradient-to-r from-primary/10 to-transparent flex-shrink-0">
-          <h2 className="text-xl font-bold text-foreground flex items-center gap-3">
-            {game.name} <span className="text-muted-foreground">/</span> Rangok Kezelése
+        <div className="p-6 border-b border-border flex justify-between items-center bg-card/95 backdrop-blur-md flex-shrink-0">
+          <h2 className="text-xl font-display font-bold uppercase tracking-wider text-foreground flex items-center gap-3">
+            {game.name} <span className="text-primary font-mono">/</span> Rangok Kezelése
           </h2>
           <button
-            className="text-muted-foreground hover:text-foreground hover:bg-secondary/80 p-2 rounded-full transition-colors"
+            className="text-muted-foreground hover:text-foreground hover:bg-secondary/80 p-2 rounded transition-colors"
             onClick={onClose}
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
         <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
-          <div className="mb-8 relative overflow-hidden rounded-xl border border-primary/20 bg-blue-500/5 p-4">
+          <div className="mb-6 relative overflow-hidden rounded border border-primary/30 bg-primary/5 p-4">
             <div className="flex items-start gap-4">
-              <div className="p-2 bg-primary/30 rounded-lg text-primary">
+              <div className="p-2 bg-primary/20 rounded text-primary">
                 <Shield size={20} />
               </div>
               <div>
-                <h4 className="text-blue-200 font-bold text-sm mb-1 uppercase tracking-wide">
+                <h4 className="text-foreground font-display font-bold text-xs uppercase tracking-wider mb-1">
                   Rang Rendszer
                 </h4>
-                <p className="text-blue-200/70 text-sm leading-relaxed">
+                <p className="text-muted-foreground text-xs leading-relaxed font-mono">
                   A rangok határozzák meg a játékosok P-ELO (Pollák ELO)
                   pontszámát. Állítsd be a határokat és a hozzájuk tartozó
                   vizuális elemeket.
@@ -125,23 +125,23 @@ export function GameRankModal({ game, onClose }: GameRankModalProps) {
           </div>
 
           {/* Add New Rank Form */}
-          <div className="mb-8 group">
-            <div className="flex items-center gap-2 mb-4">
+          <div className="mb-6 group">
+            <div className="flex items-center gap-2 mb-3">
               <Plus size={16} className="text-primary" />
-              <h4 className="text-foreground font-bold text-sm uppercase tracking-wider">
+              <h4 className="text-foreground font-mono font-bold text-xs uppercase tracking-wider">
                 Új Rang Hozzáadása
               </h4>
             </div>
 
-            <div className="bg-[#121A22] border border-border rounded-xl p-5 hover:border-border transition-colors shadow-lg">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <div className="tactical-card p-5 border border-border rounded shadow-lg">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
                     Megnevezés
                   </label>
                   <input
                     type="text"
-                    className="w-full bg-secondary border border-border rounded-xl px-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground focus:bg-secondary"
+                    className="w-full bg-secondary/80 border border-border rounded px-4 py-2.5 text-foreground font-mono text-xs focus:outline-none focus:border-primary transition-all placeholder:text-muted-foreground"
                     placeholder="Pl. Silver 1"
                     value={newRank.name}
                     onChange={(e) =>
@@ -149,13 +149,13 @@ export function GameRankModal({ game, onClose }: GameRankModalProps) {
                     }
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
                     P-ELO Érték
                   </label>
                   <input
                     type="number"
-                    className="w-full bg-secondary border border-border rounded-xl px-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground focus:bg-secondary"
+                    className="w-full bg-secondary/80 border border-border rounded px-4 py-2.5 text-foreground font-mono text-xs focus:outline-none focus:border-primary transition-all placeholder:text-muted-foreground"
                     placeholder="1000"
                     value={newRank.value}
                     onChange={(e) =>
@@ -166,13 +166,13 @@ export function GameRankModal({ game, onClose }: GameRankModalProps) {
                     }
                   />
                 </div>
-                <div className="space-y-2 md:col-span-2">
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <div className="space-y-1.5 md:col-span-2">
+                  <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
                     Kép URL (Opcionális)
                   </label>
                   <input
                     type="text"
-                    className="w-full bg-secondary border border-border rounded-xl px-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground focus:bg-secondary"
+                    className="w-full bg-secondary/80 border border-border rounded px-4 py-2.5 text-foreground font-mono text-xs focus:outline-none focus:border-primary transition-all placeholder:text-muted-foreground"
                     placeholder="https://..."
                     value={newRank.image}
                     onChange={(e) =>
@@ -181,13 +181,13 @@ export function GameRankModal({ game, onClose }: GameRankModalProps) {
                   />
                 </div>
                 {/* Order is auto-handled usually, but let's keep it if user wants manual override */}
-                <div className="space-y-2 md:col-span-2">
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <div className="space-y-1.5 md:col-span-2">
+                  <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
                     Sorrend
                   </label>
                   <input
                     type="number"
-                    className="w-full bg-secondary border border-border rounded-xl px-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground focus:bg-secondary"
+                    className="w-full bg-secondary/80 border border-border rounded px-4 py-2.5 text-foreground font-mono text-xs focus:outline-none focus:border-primary transition-all placeholder:text-muted-foreground"
                     value={newRank.order}
                     onChange={(e) =>
                       setNewRank({
@@ -199,15 +199,15 @@ export function GameRankModal({ game, onClose }: GameRankModalProps) {
                 </div>
               </div>
               <button
-                className={`w-full py-3 rounded-xl text-sm font-bold text-foreground shadow-lg transition-all duration-300 ${!newRank.name
-                  ? "bg-gray-800 text-muted-foreground cursor-not-allowed shadow-none"
-                  : "bg-gradient-to-r from-primary to-purple-600 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] hover:-translate-y-0.5"
+                className={`w-full py-2.5 rounded font-mono text-xs uppercase tracking-wider font-bold transition-all shadow-md ${!newRank.name
+                  ? "bg-secondary text-muted-foreground cursor-not-allowed shadow-none"
+                  : "bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20"
                   }`}
                 disabled={!newRank.name}
                 onClick={handleAdd}
               >
                 <div className="flex items-center justify-center gap-2">
-                  <Plus size={18} />
+                  <Plus size={16} />
                   <span>Hozzáadás</span>
                 </div>
               </button>
@@ -216,38 +216,38 @@ export function GameRankModal({ game, onClose }: GameRankModalProps) {
 
           {/* Ranks List */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-3">
               <Shield size={16} className="text-primary" />
-              <h4 className="text-foreground font-bold text-sm uppercase tracking-wider">
+              <h4 className="text-foreground font-mono font-bold text-xs uppercase tracking-wider">
                 Jelenlegi Rangok
               </h4>
             </div>
 
             {ranks.length === 0 ? (
-              <div className="text-center py-12 bg-secondary rounded-xl border border-border border-dashed">
-                <Shield size={48} className="mx-auto text-gray-700 mb-4" />
-                <p className="text-muted-foreground font-medium">
+              <div className="text-center py-12 bg-secondary/30 rounded border border-border border-dashed">
+                <Shield size={40} className="mx-auto text-muted-foreground/40 mb-3" />
+                <p className="text-muted-foreground font-medium text-sm">
                   Még nincs rang felvéve ehhez a játékhoz.
                 </p>
-                <p className="text-muted-foreground text-sm mt-1">
+                <p className="text-muted-foreground text-xs font-mono mt-1">
                   Adj hozzá egyet a fenti űrlap segítségével.
                 </p>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {[...ranks]
                   .sort((a, b) => a.order - b.order)
                   .map((rank) => (
                     <div
                       key={rank.id}
-                      className="group bg-[#121A22] hover:bg-[#121A22] border border-border hover:border-primary/30 p-4 rounded-xl flex items-center justify-between transition-all duration-300 hover:shadow-lg hover:shadow-primary/5"
+                      className="group bg-secondary/40 hover:bg-secondary/70 border border-border hover:border-primary/50 p-3 rounded flex items-center justify-between transition-all"
                     >
-                      <div className="flex items-center gap-4">
-                        <div className="text-muted-foreground group-hover:text-muted-foreground cursor-grab active:cursor-grabbing transition-colors">
-                          <GripVertical size={20} />
+                      <div className="flex items-center gap-3">
+                        <div className="text-muted-foreground cursor-grab active:cursor-grabbing transition-colors">
+                          <GripVertical size={18} />
                         </div>
 
-                        <div className="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center border border-border p-2 overflow-hidden group-hover:border-border transition-colors relative">
+                        <div className="w-10 h-10 bg-secondary rounded flex items-center justify-center border border-border p-1.5 overflow-hidden">
                           {rank.image ? (
                             <img
                               src={rank.image}
@@ -255,33 +255,32 @@ export function GameRankModal({ game, onClose }: GameRankModalProps) {
                               className="w-full h-full object-contain"
                             />
                           ) : (
-                            <Shield size={20} className="text-muted-foreground" />
+                            <Shield size={18} className="text-muted-foreground" />
                           )}
-                          <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors" />
                         </div>
 
                         <div>
-                          <div className="font-bold text-foreground text-lg">
+                          <div className="font-display font-bold text-foreground text-sm uppercase">
                             {rank.name}
                           </div>
-                          <div className="flex items-center gap-2 mt-1">
-                            <span className="text-xs font-mono text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20">
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-[10px] font-mono font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded border border-primary/20">
                               {rank.value} ELO
                             </span>
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-4">
-                        <div className="text-sm font-bold text-muted-foreground bg-secondary px-3 py-1.5 rounded-lg border border-border">
+                      <div className="flex items-center gap-3">
+                        <div className="text-xs font-mono font-bold text-muted-foreground bg-secondary px-2.5 py-1 rounded border border-border">
                           #{rank.order}
                         </div>
                         <button
-                          className="w-8 h-8 flex items-center justify-center rounded-lg text-red-500 hover:bg-red-500/10 hover:border hover:border-red-500/20 transition-all opacity-0 group-hover:opacity-100"
+                          className="w-7 h-7 flex items-center justify-center rounded text-destructive hover:bg-destructive/10 hover:border hover:border-destructive/20 transition-all opacity-0 group-hover:opacity-100"
                           onClick={() => handleDelete(rank.id)}
                           title="Törlés"
                         >
-                          <Trash2 size={16} />
+                          <Trash2 size={15} />
                         </button>
                       </div>
                     </div>

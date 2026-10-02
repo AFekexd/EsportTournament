@@ -5,12 +5,34 @@ import prisma from '../lib/prisma.js';
 
 export const leaderboardsRouter: Router = Router();
 
+// In-memory cache for leaderboard queries (20s TTL)
+const leaderboardCache = new Map<string, { data: any; expiresAt: number }>();
+const getCached = (key: string) => {
+    const entry = leaderboardCache.get(key);
+    if (!entry) return null;
+    if (Date.now() > entry.expiresAt) {
+        leaderboardCache.delete(key);
+        return null;
+    }
+    return entry.data;
+};
+const setCached = (key: string, data: any, ttlMs: number = 20000) => {
+    if (leaderboardCache.size > 80) leaderboardCache.clear();
+    leaderboardCache.set(key, { data, expiresAt: Date.now() + ttlMs });
+};
+
 // Get global player leaderboard
 leaderboardsRouter.get(
     '/players',
     optionalAuth,
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
         const { gameId, limit = '50', page = '1' } = req.query;
+        const cacheKey = `players:${gameId || 'all'}:${page}:${limit}`;
+        const cached = getCached(cacheKey);
+        if (cached) {
+            res.setHeader('Cache-Control', 'public, max-age=20');
+            return res.json(cached);
+        }
 
         const where: any = {};
 
@@ -76,7 +98,7 @@ leaderboardsRouter.get(
                     : 0,
         }));
 
-        res.json({
+        const responsePayload = {
             success: true,
             data: rankedPlayers,
             pagination: {
@@ -85,7 +107,11 @@ leaderboardsRouter.get(
                 total,
                 pages: Math.ceil(total / parseInt(limit as string)),
             },
-        });
+        };
+        setCached(cacheKey, responsePayload);
+
+        res.setHeader('Cache-Control', 'public, max-age=20');
+        res.json(responsePayload);
     })
 );
 
@@ -95,6 +121,12 @@ leaderboardsRouter.get(
     optionalAuth,
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
         const { gameId, limit = '50', page = '1' } = req.query;
+        const cacheKey = `teams:${gameId || 'all'}:${page}:${limit}`;
+        const cached = getCached(cacheKey);
+        if (cached) {
+            res.setHeader('Cache-Control', 'public, max-age=20');
+            return res.json(cached);
+        }
 
         const where: any = {};
         if (gameId) {
@@ -164,7 +196,7 @@ leaderboardsRouter.get(
                     : 0,
         }));
 
-        res.json({
+        const responsePayload = {
             success: true,
             data: rankedTeams,
             pagination: {
@@ -173,7 +205,11 @@ leaderboardsRouter.get(
                 total,
                 pages: Math.ceil(total / parseInt(limit as string)),
             },
-        });
+        };
+        setCached(cacheKey, responsePayload);
+
+        res.setHeader('Cache-Control', 'public, max-age=20');
+        res.json(responsePayload);
     })
 );
 
@@ -183,6 +219,12 @@ leaderboardsRouter.get(
     optionalAuth,
     asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
         const { gameId } = req.query;
+        const cacheKey = `players:top:${gameId || 'all'}`;
+        const cached = getCached(cacheKey);
+        if (cached) {
+            res.setHeader('Cache-Control', 'public, max-age=20');
+            return res.json(cached);
+        }
 
         const where: any = {};
 
@@ -239,7 +281,11 @@ leaderboardsRouter.get(
                     : 0,
         }));
 
-        res.json({ success: true, data: rankedPlayers });
+        const responsePayload = { success: true, data: rankedPlayers };
+        setCached(cacheKey, responsePayload);
+
+        res.setHeader('Cache-Control', 'public, max-age=20');
+        res.json(responsePayload);
     })
 );
 

@@ -8,6 +8,7 @@ import {
   Image as ImageIcon,
   Sparkles,
   Shield,
+  Users,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import { createTeam } from "../store/slices/teamsSlice";
@@ -108,20 +109,19 @@ export function TeamCreatePage() {
               <div className="space-y-2">
                 <label
                   htmlFor="name"
-                  className="text-sm font-medium text-gray-300 ml-1"
+                  className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5"
                 >
                   Csapat neve <span className="text-primary">*</span>
                 </label>
-                <div className="relative group">
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-purple-600 rounded-xl blur opacity-20 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
-                  <div className="relative bg-[#121A22] rounded-xl flex items-center">
+                <div className="relative">
+                  <div className="relative bg-secondary/80 border border-border focus-within:border-primary rounded flex items-center transition-colors">
                     <div className="pl-4 text-muted-foreground mr-2">
-                      <Shield size={20} />
+                      <Shield size={18} />
                     </div>
                     <input
                       id="name"
                       type="text"
-                      className={`w-full bg-transparent text-foreground border-0 rounded-xl px-4 py-4 placeholder-gray-600 focus:ring-0 focus:outline-none transition-all ${errors.name ? "text-red-400" : ""
+                      className={`w-full bg-transparent text-foreground border-0 rounded px-4 py-3.5 font-mono text-sm placeholder-muted-foreground focus:ring-0 focus:outline-none transition-all ${errors.name ? "text-red-400" : ""
                         }`}
                       value={formData.name}
                       onChange={(e) =>
@@ -134,11 +134,11 @@ export function TeamCreatePage() {
                   </div>
                 </div>
                 {errors.name ? (
-                  <p className="text-sm text-red-400 mt-1 ml-1">
+                  <p className="text-xs font-mono text-red-400 mt-1 ml-1">
                     {errors.name}
                   </p>
                 ) : (
-                  <p className="text-xs text-muted-foreground text-right">
+                  <p className="text-xs font-mono text-muted-foreground text-right">
                     {formData.name.length}/50
                   </p>
                 )}
@@ -147,15 +147,14 @@ export function TeamCreatePage() {
               <div className="space-y-2">
                 <label
                   htmlFor="description"
-                  className="text-sm font-medium text-gray-300 ml-1"
+                  className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5"
                 >
                   Leírás
                 </label>
-                <div className="relative group">
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-purple-600 rounded-xl blur opacity-20 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
+                <div className="relative">
                   <textarea
                     id="description"
-                    className="relative w-full bg-[#121A22] text-foreground rounded-xl border-0 px-4 py-3 placeholder-gray-600 focus:ring-0 focus:outline-none transition-all min-h-[160px] resize-none"
+                    className="relative w-full bg-secondary/80 text-foreground rounded border border-border focus:border-primary px-4 py-3 font-mono text-sm placeholder-muted-foreground focus:ring-0 focus:outline-none transition-all min-h-[160px] resize-none"
                     value={formData.description}
                     onChange={(e) =>
                       setFormData({ ...formData, description: e.target.value })
@@ -164,7 +163,7 @@ export function TeamCreatePage() {
                     maxLength={500}
                   />
                 </div>
-                <p className="text-xs text-muted-foreground text-right">
+                <p className="text-xs font-mono text-muted-foreground text-right">
                   {formData.description.length}/500
                 </p>
               </div>
@@ -249,13 +248,13 @@ export function TeamCreatePage() {
               </p>
             </div>
 
-            <div className="bg-[#121A22]/80 rounded-2xl border border-border overflow-hidden backdrop-blur-sm relative group hover:border-border transition-colors">
+            <div className="tactical-card rounded-lg border border-border overflow-hidden relative group transition-colors">
               {/* Cover Image Banner */}
               <div className="h-40 w-full relative bg-secondary overflow-hidden">
                 {formData.coverUrl ? (
                   <img src={formData.coverUrl} alt="Cover" className="w-full h-full object-cover opacity-80" />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-r from-gray-900 to-black opacity-50 flex items-center justify-center text-muted-foreground text-sm">
+                  <div className="w-full h-full bg-secondary flex items-center justify-center text-muted-foreground font-mono text-xs">
                     Nincs borítókép
                   </div>
                 )}
@@ -264,8 +263,7 @@ export function TeamCreatePage() {
 
               <div className="px-8 pb-8 -mt-16 relative z-10 flex flex-col md:flex-row items-end gap-6">
                 <div className="relative group-logo">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary to-purple-600 rounded-full blur opacity-50 group-hover:opacity-75 transition duration-500" />
-                  <div className="w-32 h-32 relative rounded-full bg-black border-4 border-border overflow-hidden flex-shrink-0 shadow-2xl">
+                  <div className="w-28 h-28 relative rounded-lg bg-card border-2 border-border overflow-hidden flex-shrink-0 shadow-2xl">
                     {formData.logoUrl ? (
                       <img
                         src={formData.logoUrl}
@@ -273,8 +271,8 @@ export function TeamCreatePage() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-[#121A22]">
-                        <span className="text-4xl font-black text-white/10">
+                      <div className="w-full h-full flex items-center justify-center bg-secondary font-mono">
+                        <span className="text-3xl font-bold text-muted-foreground">
                           {formData.name.charAt(0).toUpperCase()}
                         </span>
                       </div>
@@ -282,12 +280,11 @@ export function TeamCreatePage() {
                   </div>
                 </div>
 
-                <div className="text-center md:text-left flex-1 space-y-3">
-                  <h3 className="text-3xl font-black text-foreground tracking-tight">
+                <div className="text-center md:text-left flex-1 space-y-2">
+                  <h3 className="text-2xl font-display font-bold uppercase tracking-wider text-foreground">
                     {formData.name}
                   </h3>
-                  <div className="h-px w-20 bg-secondary/80 mx-auto md:mx-0" />
-                  <p className="text-muted-foreground leading-relaxed text-lg font-light">
+                  <p className="text-muted-foreground font-mono text-sm leading-relaxed">
                     {formData.description || "Nincs leírás megadva."}
                   </p>
                 </div>
@@ -326,37 +323,31 @@ export function TeamCreatePage() {
             <span className="font-medium">Vissza</span>
           </button>
 
-          <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-secondary border border-border text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            <Sparkles size={12} className="text-primary" />
-            Új Csapat
+          <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded bg-[#121824] border border-border/80 font-mono text-xs font-bold text-primary uppercase tracking-wider">
+            <Users size={12} className="text-primary" />
+            // ÚJ ALAKULAT
           </div>
         </div>
 
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-black text-foreground tracking-tight mb-4">
-            Hozd létre a{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-400 to-pink-500">
-              Csapatodat
-            </span>
+        <div className="text-center mb-12">
+          <h1 className="font-display text-4xl md:text-5xl font-extrabold uppercase tracking-wide text-foreground mb-3">
+            Új Csapat Alapítása
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed">
-            Alapítsd meg saját csapatodat, toborozz tagokat és indulj el a
-            dicsőség felé vezető úton.
+          <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
+            Alapítsd meg saját esport csapatodat, szabd testre a logót és hívd meg a tagokat a versenyekre.
           </p>
         </div>
 
         {/* Main Card */}
-        {/* Main Card */}
-        <div className="bg-[#121A22] border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col min-h-[600px]">
+        <div className="bg-[#121824] border border-border/80 rounded-lg shadow-xl overflow-hidden flex flex-col min-h-[560px]">
           {/* Horizontal Stepper */}
-          <div className="w-full bg-[#121A22] border-b border-border p-8 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-purple-500/5 pointer-events-none" />
-            <div className="relative max-w-4xl mx-auto">
+          <div className="w-full bg-[#0B0F17] border-b border-border/80 p-6 relative overflow-hidden">
+            <div className="relative max-w-3xl mx-auto">
               {/* Progress Bar Background */}
-              <div className="absolute top-1/2 left-0 w-full h-0.5 bg-secondary -translate-y-1/2 rounded-full" />
+              <div className="absolute top-1/2 left-0 w-full h-0.5 bg-secondary -translate-y-1/2" />
               {/* Active Progress Bar */}
               <div
-                className="absolute top-1/2 left-0 h-0.5 bg-primary -translate-y-1/2 rounded-full transition-all duration-500 ease-out"
+                className="absolute top-1/2 left-0 h-0.5 bg-primary -translate-y-1/2 transition-all duration-300"
                 style={{
                   width: `${((currentStep - 1) / (STEPS.length - 1)) * 100}%`,
                 }}
@@ -370,19 +361,19 @@ export function TeamCreatePage() {
                   return (
                     <div
                       key={step.id}
-                      className="group flex flex-col items-center gap-3 cursor-pointer"
+                      className="group flex flex-col items-center gap-2 cursor-pointer"
                       onClick={() => isCompleted && setCurrentStep(step.id)}
                     >
                       <div
                         className={`
-                                                w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-500 border-2 relative
-                                                ${isActive
-                            ? "bg-[#121A22] border-primary text-foreground shadow-[0_0_15px_hsla(var(--primary),0.3)] scale-110 z-20"
+                          w-10 h-10 rounded border flex items-center justify-center transition-all duration-200 relative
+                          ${isActive
+                            ? "bg-[#121824] border-primary text-primary font-bold z-20"
                             : isCompleted
                               ? "bg-primary border-primary text-foreground z-20"
-                              : "bg-[#121A22] border-border text-muted-foreground z-10 group-hover:border-border"
+                              : "bg-[#0B0F17] border-border text-muted-foreground z-10 group-hover:border-border"
                           }
-                                            `}
+                        `}
                       >
                         {isCompleted ? (
                           <Check size={20} />
@@ -423,26 +414,26 @@ export function TeamCreatePage() {
             </div>
 
             {/* Navigation Footer */}
-            <div className="p-8 border-t border-border bg-[#121A22]/50 flex items-center justify-between backdrop-blur-sm sticky bottom-0 z-20">
+            <div className="p-6 md:p-8 border-t border-border bg-card/95 flex items-center justify-between backdrop-blur-sm sticky bottom-0 z-20">
               <button
                 onClick={handleBack}
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-medium transition-all ${currentStep > 1
-                  ? "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                className={`flex items-center gap-2 px-5 py-2.5 rounded font-mono text-xs uppercase tracking-wider font-semibold transition-all ${currentStep > 1
+                  ? "text-muted-foreground hover:text-foreground hover:bg-secondary border border-border"
                   : "opacity-0 pointer-events-none"
                   }`}
               >
-                <ArrowLeft size={18} />
+                <ArrowLeft size={16} />
                 Vissza
               </button>
 
               {currentStep < STEPS.length ? (
                 <button
                   onClick={handleNext}
-                  className="group flex items-center gap-2 px-8 py-3.5 bg-white text-black rounded-xl font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+                  className="group flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded font-mono text-xs uppercase tracking-wider font-bold shadow-md shadow-primary/20 transition-all"
                 >
                   Következő
                   <ArrowRight
-                    size={18}
+                    size={16}
                     className="group-hover:translate-x-1 transition-transform"
                   />
                 </button>
@@ -450,14 +441,14 @@ export function TeamCreatePage() {
                 <button
                   onClick={handleSubmit}
                   disabled={createLoading}
-                  className="group flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-primary to-purple-600 text-foreground rounded-xl font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:pointer-events-none"
+                  className="group flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded font-mono text-xs uppercase tracking-wider font-bold shadow-md shadow-primary/20 transition-all disabled:opacity-50 disabled:pointer-events-none"
                 >
                   {createLoading ? (
-                    <div className="w-5 h-5 border-2 border-border border-t-white rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-border border-t-white rounded-full animate-spin" />
                   ) : (
                     <>
                       Csapat létrehozása
-                      <Sparkles size={18} />
+                      <Sparkles size={16} />
                     </>
                   )}
                 </button>

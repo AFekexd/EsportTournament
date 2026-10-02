@@ -2,7 +2,9 @@ import "dotenv/config";
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import compression from 'compression';
 import morgan from 'morgan';
+import rateLimit from 'express-rate-limit';
 import { createServer } from 'http';
 import { Server } from 'socket.io'; // Socket.IO
 
@@ -17,8 +19,6 @@ import { tournamentsRouter } from './routes/tournaments.js';
 import { gamesRouter } from './routes/games.js';
 import { matchesRouter } from './routes/matches.js';
 import { statsRouter } from './routes/stats.js';
-import { scrimsRouter } from './routes/scrims.js';
-import { newsRouter } from './routes/news.js';
 import { notificationsRouter } from './routes/notifications.js';
 import { leaderboardsRouter } from './routes/leaderboards.js';
 import { discordRouter } from './routes/discordSettings.js';
@@ -92,6 +92,7 @@ app.use(cors({
   origin: corsOrigins,
   credentials: true,
 }));
+app.use(compression());
 app.use(morgan('dev'));
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ limit: '20mb', extended: true }));
@@ -104,6 +105,26 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Rate Limiters to prevent DoS and brute-force
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 1000,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Túl sok kérés erről az IP címről, kérjük próbáld újra később.' },
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Túl sok hitelesítési kísérlet erről az IP címről, kérjük próbáld újra később.' },
+});
+
+app.use('/api/', apiLimiter);
+app.use('/api/auth/', authLimiter);
+
 // API Routes
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
@@ -112,8 +133,6 @@ app.use('/api/tournaments', tournamentsRouter);
 app.use('/api/games', gamesRouter);
 app.use('/api/matches', matchesRouter);
 app.use('/api/stats', statsRouter);
-app.use('/api/scrims', scrimsRouter);
-app.use('/api/news', newsRouter);
 app.use('/api/notifications', notificationsRouter);
 app.use('/api/leaderboards', leaderboardsRouter);
 app.use('/api/discord', discordRouter);

@@ -94,36 +94,36 @@ export function ComputerModal({ computer, onClose }: ComputerModalProps) {
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div
-        className="bg-[#121A22] rounded-2xl w-full max-w-lg border border-border shadow-2xl overflow-hidden"
+        className="tactical-card rounded-lg w-full max-w-lg border border-border shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-[#121A22] border-b border-border p-6 flex items-center justify-between">
+        <div className="bg-card/95 backdrop-blur-md border-b border-border p-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Monitor size={20} className="text-primary" />
+            <div className="p-2 bg-primary/20 rounded">
+              <Monitor size={18} className="text-primary" />
             </div>
-            <h2 className="text-xl font-bold text-foreground">
+            <h2 className="text-xl font-display font-bold uppercase tracking-wider text-foreground">
               {computer ? "Gép szerkesztése" : "Új gép hozzáadása"}
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-secondary/80 rounded-lg transition-colors text-muted-foreground hover:text-foreground"
+            className="p-2 hover:bg-secondary/80 rounded transition-colors text-muted-foreground hover:text-foreground"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Gép neve <span className="text-red-400">*</span>
+            <label className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5">
+              Gép neve <span className="text-destructive">*</span>
             </label>
             <input
               type="text"
-              className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full px-4 py-2.5 bg-secondary/80 border border-border rounded text-foreground placeholder:text-muted-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors"
               value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
@@ -135,12 +135,12 @@ export function ComputerModal({ computer, onClose }: ComputerModalProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Sor <span className="text-red-400">*</span>
+              <label className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5">
+                Sor <span className="text-destructive">*</span>
               </label>
               <input
                 type="number"
-                className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors"
+                className="w-full px-4 py-2.5 bg-secondary/80 border border-border rounded text-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors"
                 value={formData.row + 1}
                 onChange={(e) =>
                   setFormData({
@@ -154,12 +154,12 @@ export function ComputerModal({ computer, onClose }: ComputerModalProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Pozíció <span className="text-red-400">*</span>
+              <label className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5">
+                Pozíció <span className="text-destructive">*</span>
               </label>
               <input
                 type="number"
-                className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors"
+                className="w-full px-4 py-2.5 bg-secondary/80 border border-border rounded text-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors"
                 value={formData.position + 1}
                 onChange={(e) =>
                   setFormData({
@@ -175,11 +175,11 @@ export function ComputerModal({ computer, onClose }: ComputerModalProps) {
 
           {/* Specs */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5">
               Specifikációk
             </label>
             <textarea
-              className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors resize-none"
+              className="w-full px-4 py-2.5 bg-secondary/80 border border-border rounded text-foreground placeholder:text-muted-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors resize-none"
               value={formData.specs}
               onChange={(e) =>
                 setFormData({ ...formData, specs: e.target.value })
@@ -191,11 +191,11 @@ export function ComputerModal({ computer, onClose }: ComputerModalProps) {
 
           {/* Status */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5">
               Státusz
             </label>
             <select
-              className="w-full px-4 py-3 bg-[#121A22] border border-border rounded-xl text-foreground focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full px-4 py-2.5 bg-secondary/80 border border-border rounded text-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors"
               value={formData.status}
               onChange={(e) =>
                 setFormData({ ...formData, status: e.target.value })
@@ -209,16 +209,16 @@ export function ComputerModal({ computer, onClose }: ComputerModalProps) {
           </div>
 
           {/* Checkbox */}
-          <div>
+          <div className="bg-secondary/40 border border-border/80 rounded p-3">
             <label className="flex items-center gap-3 cursor-pointer group select-none">
               <div
-                className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${formData.isActive
+                className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${formData.isActive
                     ? "bg-primary border-primary"
                     : "border-border group-hover:border-primary/50"
                   }`}
               >
                 {formData.isActive && (
-                  <Check size={14} className="text-foreground" />
+                  <Check size={12} className="text-primary-foreground" />
                 )}
               </div>
               <input
@@ -229,31 +229,31 @@ export function ComputerModal({ computer, onClose }: ComputerModalProps) {
                 }
                 className="hidden"
               />
-              <span className="text-sm text-gray-300 group-hover:text-foreground transition-colors">
+              <span className="text-xs font-mono text-muted-foreground group-hover:text-foreground transition-colors">
                 Aktív (foglalható)
               </span>
             </label>
           </div>
 
           {/* Footer */}
-          <div className="flex gap-4 pt-2 border-t border-border mt-6">
+          <div className="flex gap-4 pt-4 border-t border-border">
             <button
               type="button"
-              className="flex-1 px-6 py-3 bg-[#121A22] hover:bg-[#121A22] border border-border text-foreground rounded-xl font-semibold transition-all"
+              className="flex-1 px-5 py-2.5 bg-secondary/80 hover:bg-secondary border border-border text-foreground rounded font-mono text-xs uppercase tracking-wider font-semibold transition-all"
               onClick={onClose}
             >
               Mégse
             </button>
             <button
               type="submit"
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-foreground rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded font-mono text-xs uppercase tracking-wider font-bold transition-all shadow-md shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={loading}
             >
               {loading ? (
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
-                  <Save size={18} />
+                  <Save size={16} />
                   {computer ? "Mentés" : "Létrehozás"}
                 </>
               )}

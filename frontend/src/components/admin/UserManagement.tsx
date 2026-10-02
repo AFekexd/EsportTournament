@@ -383,10 +383,10 @@ export function UserManagement() {
             />
             <input
               type="text"
-              placeholder="Keresés..."
+              placeholder="Keresés felhasználók között..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-[#121A22] border border-border rounded-lg text-foreground placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors text-sm"
+              className="w-full pl-9 pr-4 py-2 bg-secondary/80 border border-border rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary font-mono text-xs transition-colors"
             />
           </div>
 
@@ -395,7 +395,7 @@ export function UserManagement() {
             <select
               value={selectedRole}
               onChange={(e) => setSelectedRole(e.target.value)}
-              className="appearance-none w-full sm:w-auto px-4 py-2 pr-10 bg-[#121A22] border border-border rounded-lg text-foreground focus:outline-none focus:border-primary/50 transition-colors text-sm cursor-pointer"
+              className="appearance-none w-full sm:w-auto px-3.5 py-2 pr-9 bg-secondary/80 border border-border rounded text-foreground font-mono text-xs focus:outline-none focus:border-primary transition-colors cursor-pointer"
               style={{
                 colorScheme: "dark",
               }}
@@ -410,7 +410,7 @@ export function UserManagement() {
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground">
               <svg
-                className="w-4 h-4"
+                className="w-3.5 h-3.5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -458,9 +458,9 @@ export function UserManagement() {
                 }
               });
             }}
-            className="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-500 border border-red-500/20 rounded-lg hover:bg-red-500 hover:text-foreground transition-all whitespace-nowrap"
+            className="flex items-center gap-1.5 px-3 py-2 bg-destructive/10 text-destructive border border-destructive/30 rounded text-xs font-mono uppercase tracking-wider font-bold hover:bg-destructive hover:text-destructive-foreground transition-all whitespace-nowrap"
           >
-            <Shield size={18} />
+            <Shield size={14} />
             Házirend Reset
           </button>
         </div>
@@ -469,40 +469,40 @@ export function UserManagement() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div
-          className="bg-[#121A22] rounded-xl border border-border p-4 cursor-pointer hover:border-primary/50 transition-colors"
+          className="tactical-card p-4 cursor-pointer hover:border-primary/50 transition-colors"
           onClick={() => setSelectedRole("ALL")}
         >
-          <div className="text-2xl font-bold text-foreground">
+          <div className="text-2xl font-display font-bold text-foreground">
             {stats?.registeredUsers || "-"}
           </div>
-          <div className="text-sm text-muted-foreground">Összes felhasználó</div>
+          <div className="text-xs font-mono uppercase tracking-wider text-muted-foreground mt-0.5">Összes felhasználó</div>
         </div>
         <div
-          className="bg-[#121A22] rounded-xl border border-border p-4 cursor-pointer hover:border-red-500/50 transition-colors"
+          className="tactical-card p-4 cursor-pointer hover:border-destructive/50 transition-colors"
           onClick={() => setSelectedRole("ADMIN")}
         >
-          <div className="text-2xl font-bold text-red-400">
+          <div className="text-2xl font-display font-bold text-destructive">
             {stats?.usersByRole?.["ADMIN"] || 0}
           </div>
-          <div className="text-sm text-muted-foreground">Admin</div>
+          <div className="text-xs font-mono uppercase tracking-wider text-muted-foreground mt-0.5">Admin</div>
         </div>
         <div
-          className="bg-[#121A22] rounded-xl border border-border p-4 cursor-pointer hover:border-green-500/50 transition-colors"
+          className="tactical-card p-4 cursor-pointer hover:border-emerald-500/50 transition-colors"
           onClick={() => setSelectedRole("TEACHER")}
         >
-          <div className="text-2xl font-bold text-green-400">
+          <div className="text-2xl font-display font-bold text-emerald-400">
             {stats?.usersByRole?.["TEACHER"] || 0}
           </div>
-          <div className="text-sm text-muted-foreground">Tanár</div>
+          <div className="text-xs font-mono uppercase tracking-wider text-muted-foreground mt-0.5">Tanár</div>
         </div>
         <div
-          className="bg-[#121A22] rounded-xl border border-border p-4 cursor-pointer hover:border-blue-500/50 transition-colors"
+          className="tactical-card p-4 cursor-pointer hover:border-primary/50 transition-colors"
           onClick={() => setSelectedRole("MODERATOR")}
         >
-          <div className="text-2xl font-bold text-primary">
+          <div className="text-2xl font-display font-bold text-primary">
             {stats?.usersByRole?.["MODERATOR"] || 0}
           </div>
-          <div className="text-sm text-muted-foreground">Moderátor</div>
+          <div className="text-xs font-mono uppercase tracking-wider text-muted-foreground mt-0.5">Moderátor</div>
         </div>
       </div>
 
@@ -557,7 +557,7 @@ export function UserManagement() {
               <th className="p-3 w-10 text-center">
                 <input
                   type="checkbox"
-                  className="rounded border-border bg-[#121A22] text-primary focus:ring-primary/50 cursor-pointer w-4 h-4"
+                  className="rounded border-border bg-secondary text-primary focus:ring-primary/50 cursor-pointer w-4 h-4"
                   checked={filteredUsers.length > 0 && selectedUserIds.size === filteredUsers.length}
                   onChange={handleSelectAll}
                 />
@@ -632,7 +632,7 @@ export function UserManagement() {
                   <td className="p-3 text-center">
                     <input
                       type="checkbox"
-                      className="rounded border-border bg-[#121A22] text-primary focus:ring-primary/50 cursor-pointer w-4 h-4"
+                      className="rounded border-border bg-secondary text-primary focus:ring-primary/50 cursor-pointer w-4 h-4"
                       checked={selectedUserIds.has(user.id)}
                       onChange={() => handleSelectUser(user.id)}
                     />

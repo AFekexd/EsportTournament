@@ -132,12 +132,12 @@ export function TimeSlotList({
 
     if (!todaySchedule) {
         return (
-            <div className="bg-[#121A22] rounded-2xl border border-border p-8 text-center">
-                <div className="w-16 h-16 bg-gray-800/50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="tactical-card rounded-lg border border-border p-8 text-center">
+                <div className="w-16 h-16 bg-muted/30 border border-border rounded-lg flex items-center justify-center mx-auto mb-4">
                     <AlertCircle size={32} className="text-muted-foreground" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">Zárva</h3>
-                <p className="text-muted-foreground text-sm">Ezen a napon nincs nyitva a gaming szoba.</p>
+                <h3 className="text-lg font-display font-bold uppercase tracking-wider text-foreground mb-2">Zárva</h3>
+                <p className="text-muted-foreground text-sm font-mono">Ezen a napon nincs nyitva a gaming szoba.</p>
             </div>
         );
     }
@@ -280,16 +280,16 @@ export function TimeSlotList({
     };
 
     return (
-        <div className="bg-[#121A22] rounded-2xl border border-border p-5 mt-4">
+        <div className="tactical-card rounded-lg border border-border p-5 mt-4">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
                 <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center">
+                    <div className="w-8 h-8 bg-primary/20 border border-primary/40 rounded flex items-center justify-center">
                         <Clock size={18} className="text-primary" />
                     </div>
                     <div>
-                        <h3 className="text-base font-semibold text-foreground">Válassz időpontot</h3>
-                        <p className="text-xs text-muted-foreground">
+                        <h3 className="text-base font-display font-bold uppercase tracking-wider text-foreground">Válassz időpontot</h3>
+                        <p className="text-xs font-mono text-muted-foreground">
                             Nyitvatartás: {todaySchedule.startHour}:00 – {todaySchedule.endHour}:00
                         </p>
                     </div>

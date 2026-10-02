@@ -137,42 +137,42 @@ export function DayCalendarStrip({
   };
 
   return (
-    <div className="bg-[#121A22] rounded-2xl border border-border p-5">
+    <div className="tactical-card rounded-lg border border-border p-5">
       {/* Header with legend */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center">
-            <Calendar size={18} className="text-primary" />
+          <div className="w-8 h-8 bg-primary/20 rounded flex items-center justify-center">
+            <Calendar size={16} className="text-primary" />
           </div>
           <div>
-            <h3 className="text-base font-semibold text-foreground">Válassz napot</h3>
-            <p className="text-xs text-muted-foreground">Következő 14 nap</p>
+            <h3 className="text-sm font-display font-bold uppercase tracking-wider text-foreground">Válassz napot</h3>
+            <p className="text-xs font-mono text-muted-foreground">Következő 14 nap</p>
           </div>
         </div>
 
-        {/* Legend - bigger and more readable */}
-        <div className="flex flex-wrap gap-3 text-sm">
-          <span className="flex items-center gap-2 bg-green-500/10 px-3 py-1.5 rounded-lg">
-            <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
-            <span className="text-green-400 font-medium">Szabad</span>
+        {/* Legend */}
+        <div className="flex flex-wrap gap-2 text-xs font-mono">
+          <span className="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 rounded">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span className="text-emerald-400 font-semibold">Szabad</span>
           </span>
-          <span className="flex items-center gap-2 bg-yellow-500/10 px-3 py-1.5 rounded-lg">
-            <span className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
-            <span className="text-yellow-400 font-medium">Korlátozott</span>
+          <span className="flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/30 px-2.5 py-1 rounded">
+            <span className="w-2 h-2 rounded-full bg-amber-500" />
+            <span className="text-amber-400 font-semibold">Korlátozott</span>
           </span>
-          <span className="flex items-center gap-2 bg-indigo-500/10 px-3 py-1.5 rounded-lg">
-            <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
-            <span className="text-indigo-400 font-medium">Csak Ügyelet</span>
+          <span className="flex items-center gap-1.5 bg-indigo-500/10 border border-indigo-500/30 px-2.5 py-1 rounded">
+            <span className="w-2 h-2 rounded-full bg-indigo-500" />
+            <span className="text-indigo-400 font-semibold">Csak Ügyelet</span>
           </span>
-          <span className="flex items-center gap-2 bg-red-500/10 px-3 py-1.5 rounded-lg">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-            <span className="text-red-400 font-medium">Tele</span>
+          <span className="flex items-center gap-1.5 bg-destructive/10 border border-destructive/30 px-2.5 py-1 rounded">
+            <span className="w-2 h-2 rounded-full bg-destructive" />
+            <span className="text-destructive font-semibold">Tele</span>
           </span>
         </div>
       </div>
 
       {/* Day cards */}
-      <div className="flex gap-3 overflow-x-auto touch-pan-x touch-pan-y pb-2 -mx-1 px-1 pt-3">
+      <div className="flex gap-2.5 overflow-x-auto touch-pan-x touch-pan-y pb-2 -mx-1 px-1 pt-3">
         {days.map((day) => {
           const styles = getSaturationStyles(day.saturation, day.isSelected);
           const isDisabled = day.saturation === 'closed';
@@ -183,51 +183,51 @@ export function DayCalendarStrip({
               onClick={() => !isDisabled && onSelectDate(day.date)}
               disabled={isDisabled}
               className={`
-                relative flex-shrink-0 w-[72px] p-3 rounded-xl border-2 transition-all duration-200
+                relative flex-shrink-0 w-[70px] p-2.5 rounded border transition-all duration-200 font-mono
                 ${styles.bg} ${styles.border}
                 ${day.isSelected
-                  ? 'ring-2 ring-primary/50 shadow-lg shadow-primary/10 scale-105'
+                  ? 'border-primary bg-primary/20 shadow-lg shadow-primary/10 scale-105'
                   : isDisabled
                     ? 'opacity-40 cursor-not-allowed'
-                    : 'hover:scale-102 hover:shadow-md cursor-pointer'
+                    : 'hover:border-primary/50 cursor-pointer'
                 }
               `}
             >
               {/* Today indicator */}
               {day.isToday && (
-                <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-primary text-[9px] font-bold text-foreground rounded-full uppercase tracking-wide">
+                <div className="absolute -top-2 left-1/2 -translate-x-1/2 px-1.5 py-0.2 bg-primary text-[9px] font-bold text-primary-foreground rounded uppercase tracking-wider">
                   Ma
                 </div>
               )}
 
               {/* Selected checkmark */}
               {day.isSelected && (
-                <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center shadow-lg">
-                  <Check size={12} className="text-foreground" />
+                <div className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-primary rounded-full flex items-center justify-center shadow-md">
+                  <Check size={10} className="text-primary-foreground" />
                 </div>
               )}
 
               {/* Day name */}
-              <div className={`text-xs font-medium mb-0.5 ${day.isSelected ? 'text-foreground' : 'text-muted-foreground'}`}>
+              <div className={`text-[11px] font-bold uppercase mb-0.5 ${day.isSelected ? 'text-primary' : 'text-muted-foreground'}`}>
                 {day.dayName}
               </div>
 
               {/* Day number */}
-              <div className={`text-2xl font-bold ${day.isSelected ? 'text-foreground' : 'text-gray-200'}`}>
+              <div className={`text-xl font-display font-bold ${day.isSelected ? 'text-foreground' : 'text-gray-200'}`}>
                 {day.dayNumber}
               </div>
 
               {/* Month */}
-              <div className={`text-[10px] uppercase tracking-wider mb-1 ${day.isSelected ? 'text-gray-300' : 'text-muted-foreground'}`}>
+              <div className={`text-[9px] uppercase tracking-wider mb-1 ${day.isSelected ? 'text-primary/80' : 'text-muted-foreground'}`}>
                 {day.monthName}
               </div>
 
               {/* Status dot */}
-              <div className={`w-2 h-2 rounded-full mx-auto ${day.saturation === 'free' ? 'bg-green-500' :
-                day.saturation === 'limited' ? 'bg-yellow-500' :
-                  day.saturation === 'full' ? 'bg-red-500' :
+              <div className={`w-1.5 h-1.5 rounded-full mx-auto ${day.saturation === 'free' ? 'bg-emerald-500' :
+                day.saturation === 'limited' ? 'bg-amber-500' :
+                  day.saturation === 'full' ? 'bg-destructive' :
                     day.saturation === 'supervisor_only' ? 'bg-indigo-500' :
-                      'bg-gray-600'
+                      'bg-muted-foreground'
                 }`} title={styles.label} />
             </button>
           );

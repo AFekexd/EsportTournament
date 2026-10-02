@@ -169,11 +169,11 @@ export function TournamentStandings({
     <div className="space-y-6">
       {/* Custom Tabs Implementation */}
       <div className="w-full">
-        <div className="grid w-full grid-cols-2 bg-[#121A22] border border-border rounded-lg p-1">
+        <div className="grid w-full grid-cols-2 bg-secondary/80 border border-border rounded p-1 font-mono">
           <button
             onClick={() => setActiveTab("standings")}
-            className={`flex items-center justify-center py-2 text-sm font-medium rounded-md transition-all ${activeTab === "standings"
-                ? "bg-primary text-black shadow-sm"
+            className={`flex items-center justify-center py-2 text-xs font-bold uppercase tracking-wider rounded transition-all ${activeTab === "standings"
+                ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
                 : "text-muted-foreground hover:text-foreground hover:bg-secondary"
               }`}
           >
@@ -182,8 +182,8 @@ export function TournamentStandings({
           </button>
           <button
             onClick={() => setActiveTab("matches")}
-            className={`flex items-center justify-center py-2 text-sm font-medium rounded-md transition-all ${activeTab === "matches"
-                ? "bg-primary text-black shadow-sm"
+            className={`flex items-center justify-center py-2 text-xs font-bold uppercase tracking-wider rounded transition-all ${activeTab === "matches"
+                ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
                 : "text-muted-foreground hover:text-foreground hover:bg-secondary"
               }`}
           >
@@ -194,9 +194,9 @@ export function TournamentStandings({
 
         <div className="mt-6">
           {activeTab === "standings" && (
-            <Card className="border-border bg-[#121A22] shadow-xl">
+            <Card className="tactical-card border-border shadow-xl">
               <CardHeader>
-                <CardTitle className="text-foreground flex items-center gap-2">
+                <CardTitle className="text-foreground font-display uppercase tracking-wider flex items-center gap-2">
                   <Trophy className="h-5 w-5 text-primary" />
                   Bajnoki Tabella
                 </CardTitle>
@@ -291,9 +291,9 @@ export function TournamentStandings({
           )}
 
           {activeTab === "matches" && (
-            <Card className="border-border bg-[#121A22] shadow-xl">
+            <Card className="tactical-card border-border shadow-xl">
               <CardHeader>
-                <CardTitle className="text-foreground flex items-center gap-2">
+                <CardTitle className="text-foreground font-display uppercase tracking-wider flex items-center gap-2">
                   <Swords className="h-5 w-5 text-primary" />
                   Mérkőzések
                 </CardTitle>

@@ -238,51 +238,49 @@ export function SettingsPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12 page">
-      {/* Modern Header with Gradient */}
-      <div className="mb-16 text-center relative animate-fade-in">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/20 blur-[100px] rounded-full -z-10" />
-        <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-primary-300 to-primary-500 bg-clip-text text-transparent mb-6 text-glow">
-          Beállítások
+    <div className="flex flex-col gap-8 pb-16">
+      {/* Tactical Header */}
+      <div className="flex flex-col gap-3 border-b border-border/60 pb-6">
+        <div className="inline-flex w-fit items-center gap-2 rounded border border-border bg-secondary/80 px-3 py-1 font-mono text-xs uppercase tracking-wider text-primary">
+          <Shield className="h-3.5 w-3.5" />
+          <span>PROFIL BEÁLLÍTÁSOK // USER CONFIG</span>
+        </div>
+        <h1 className="font-display text-3xl sm:text-5xl font-bold uppercase tracking-tight text-foreground">
+          FIÓK <span className="text-primary">BEÁLLÍTÁSOK</span>
         </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Szabd személyre a profilod és kezeld a fiókod egy helyen.
+        <p className="text-muted-foreground text-sm max-w-xl">
+          Szabd személyre a profilodat, értesítéseidet és kezeld a fiókod biztonsági beállításait.
         </p>
       </div>
 
       {pendingRequest && (
-        <div className="max-w-6xl mx-auto mb-8 animate-fade-in">
-          <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-4 flex items-center gap-4">
-            <div className="p-2 bg-yellow-500/20 rounded-full text-yellow-500">
-              <Clock size={24} />
-            </div>
-            <div className="flex-1">
-              <h3 className="text-lg font-bold text-foreground">
-                Módosítás jóváhagyásra vár
-              </h3>
-              <p className="text-muted-foreground text-sm">
-                A profilodon végzett legutóbbi módosításaidat egy
-                adminisztrátornak jóvá kell hagynia. Amíg a kérelem függőben
-                van, nem indíthatsz újabb módosítást.
-              </p>
-            </div>
+        <div className="tactical-card p-4 border-yellow-500/30 bg-yellow-500/5 flex items-center gap-4">
+          <div className="p-2 bg-yellow-500/20 rounded text-yellow-500">
+            <Clock size={22} />
+          </div>
+          <div className="flex-1">
+            <h3 className="font-display text-base font-bold uppercase tracking-wider text-foreground">
+              Módosítás jóváhagyásra vár
+            </h3>
+            <p className="text-muted-foreground text-xs mt-0.5">
+              A profilodon végzett legutóbbi módosításaidat egy adminisztrátornak jóvá kell hagynia. Amíg a kérelem függőben van, nem indíthatsz újabb módosítást.
+            </p>
           </div>
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Profile Card */}
         <div
-          className={`glass-card rounded-2xl p-8 hover:scale-[1.01] transition-transform animate-slide-up ${pendingRequest ? "opacity-75 pointer-events-none grayscale-[0.3]" : ""}`}
-          style={{ animationDelay: "0.1s" }}
+          className={`tactical-card p-6 sm:p-8 ${pendingRequest ? "opacity-75 pointer-events-none grayscale-[0.3]" : ""}`}
         >
-          <div className="flex items-center gap-4 mb-8">
-            <div className="p-3 bg-primary/10 rounded-xl neon-border">
-              <User size={24} className="text-primary" />
+          <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-border">
+            <div className="p-2.5 bg-secondary rounded border border-border text-primary">
+              <User size={20} />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-foreground">Profil Adatai</h2>
-              <p className="text-sm text-muted-foreground">Hogyan látnak mások téged</p>
+              <h2 className="font-display text-lg font-bold uppercase tracking-wider text-foreground">Profil Adatai</h2>
+              <p className="text-xs text-muted-foreground">Hogyan látnak mások téged a platformon</p>
             </div>
           </div>
 
@@ -320,7 +318,7 @@ export function SettingsPage() {
                   onChange={(e) => setDisplayName(e.target.value)}
                   disabled={!isAdmin || !!pendingRequest}
                   maxLength={50}
-                  className={`w-full px-5 py-4 bg-[#0a0a0f]/50 border border-border rounded-xl text-foreground placeholder-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-lg ${!isAdmin || !!pendingRequest
+                  className={`w-full px-4 py-2.5 bg-secondary/40 border border-border rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 text-base ${!isAdmin || !!pendingRequest
                       ? "opacity-50 cursor-not-allowed"
                       : ""
                     }`}
@@ -328,21 +326,20 @@ export function SettingsPage() {
                 />
                 {!isAdmin && (
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground">
-                    <Lock size={18} />
+                    <Lock size={16} />
                   </div>
                 )}
               </div>
               <div className="flex justify-between items-center mt-1 ml-1">
                 {!isAdmin ? (
                   <p className="text-xs text-muted-foreground">
-                    Biztonsági okokból a nevedet csak adminisztrátor
-                    módosíthatja.
+                    Biztonsági okokból a nevedet csak adminisztrátor módosíthatja.
                   </p>
                 ) : (
                   <span></span>
                 )}
                 {isAdmin && (
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs font-mono text-muted-foreground">
                     {displayName.length}/50
                   </span>
                 )}
@@ -360,7 +357,7 @@ export function SettingsPage() {
                   href="https://steamid.xyz/"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-[10px] text-primary hover:underline flex items-center gap-1"
+                  className="text-xs font-mono text-primary hover:underline flex items-center gap-1"
                 >
                   ID Keresése
                 </a>
@@ -372,105 +369,100 @@ export function SettingsPage() {
                   value={steamId}
                   onChange={(e) => setSteamId(e.target.value)}
                   disabled={!!pendingRequest}
-                  className="flex-1 px-5 py-4 bg-[#0a0a0f]/50 border border-border rounded-xl text-foreground placeholder-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 px-4 py-2.5 bg-secondary/40 border border-border rounded text-foreground font-mono placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 text-sm disabled:opacity-50"
                   placeholder="76561198..."
                 />
                 <button
                   onClick={handleSteamSync}
                   disabled={!steamId || syncLoading || !!pendingRequest}
-                  className="px-4 py-2 bg-[#121A22] border border-border rounded-xl hover:bg-primary/20 hover:border-primary/50 hover:text-foreground transition-all text-muted-foreground disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3.5 py-2 bg-secondary border border-border rounded hover:border-primary/50 hover:text-foreground transition-all text-muted-foreground disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Játékok szinkronizálása"
                 >
                   <RefreshCw
-                    size={24}
+                    size={20}
                     className={syncLoading ? "animate-spin text-primary" : ""}
                   />
                 </button>
               </div>
               <p className="text-xs text-muted-foreground ml-1">
-                Add meg a Steam ID-dat a Platinum játékok megjelenítéséhez.
-                (Privát profil nem működik!)
+                Add meg a Steam ID-dat a Platinum játékok megjelenítéséhez. (Privát profil nem működik!)
               </p>
             </div>
           </div>
         </div>
 
         {/* Right Column: Account & Notifications */}
-        <div
-          className="space-y-8 animate-slide-up"
-          style={{ animationDelay: "0.2s" }}
-        >
+        <div className="space-y-6">
           {/* Account Details */}
-          <div className="glass-card rounded-2xl p-8 hover:border-border">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="p-3 bg-primary/20 rounded-xl border border-primary/20">
-                <Shield size={24} className="text-primary" />
+          <div className="tactical-card p-6 sm:p-8">
+            <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-border">
+              <div className="p-2.5 bg-secondary rounded border border-border text-primary">
+                <Shield size={20} />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-foreground">Fiók Adatok</h2>
-                <p className="text-sm text-muted-foreground">
-                  Biztonsági és azonosítási adatok
+                <h2 className="font-display text-lg font-bold uppercase tracking-wider text-foreground">Fiók Adatok</h2>
+                <p className="text-xs text-muted-foreground">
+                  Biztonsági és hitelesítési azonosítók
                 </p>
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="group">
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block ml-1">
+                <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5 block ml-1">
                   Email Cím
                 </label>
-                <div className="flex items-center gap-3 px-4 py-3 bg-[#0a0a0f] border border-border rounded-xl text-muted-foreground group-hover:border-border transition-colors">
-                  <Mail size={18} className="text-muted-foreground" />
-                  <span className="flex-1 font-mono">{user?.email}</span>
-                  <Lock size={14} className="text-gray-700" />
+                <div className="flex items-center gap-3 px-3.5 py-2.5 bg-secondary/30 border border-border rounded text-muted-foreground">
+                  <Mail size={16} className="text-muted-foreground" />
+                  <span className="flex-1 font-mono text-sm">{user?.email}</span>
+                  <Lock size={14} className="text-muted-foreground/60" />
                 </div>
               </div>
 
               <div className="group">
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block ml-1">
+                <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5 block ml-1">
                   Felhasználónév
                 </label>
-                <div className="flex items-center gap-3 px-4 py-3 bg-[#0a0a0f] border border-border rounded-xl text-muted-foreground group-hover:border-border transition-colors">
-                  <AtSign size={18} className="text-muted-foreground" />
-                  <span className="flex-1 font-mono">{user?.username}</span>
-                  <Lock size={14} className="text-gray-700" />
+                <div className="flex items-center gap-3 px-3.5 py-2.5 bg-secondary/30 border border-border rounded text-muted-foreground">
+                  <AtSign size={16} className="text-muted-foreground" />
+                  <span className="flex-1 font-mono text-sm">{user?.username}</span>
+                  <Lock size={14} className="text-muted-foreground/60" />
                 </div>
               </div>
 
               <div className="mt-2 text-xs text-center text-muted-foreground">
-                Ezek az adatok biztonsági okokból nem módosíthatók ezen az
-                oldalon.
-                <br />
-                Ha szeretnéd módosítani, menj fel az alábbi oldalra:{" "}
+                Ezek az adatok központilag kezeltek. Módosításhoz látogass el a Pollák fiókkezelőbe:{" "}
                 <a
                   href="https://keycloak.pollak.info/realms/master/account/?referrer=security-admin-console"
-                  className="text-primary hover:underline font-bold "
+                  className="text-primary hover:underline font-mono"
+                  target="_blank"
+                  rel="noreferrer"
                 >
-                  Profil
+                  Keycloak Profil
                 </a>
               </div>
             </div>
           </div>
 
           {/* Email Notifications */}
-          <div className="glass-card rounded-2xl p-8 hover:border-border">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="p-3 bg-yellow-500/10 rounded-xl border border-yellow-500/20">
-                <Bell size={24} className="text-yellow-400" />
+          <div className="tactical-card p-6 sm:p-8">
+            <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-border">
+              <div className="p-2.5 bg-secondary rounded border border-border text-yellow-400">
+                <Bell size={20} />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-foreground">
+                <h2 className="font-display text-lg font-bold uppercase tracking-wider text-foreground">
                   Email Értesítések
                 </h2>
-                <p className="text-sm text-muted-foreground">
-                  Válaszd ki, miről szeretnél emailt kapni
+                <p className="text-xs text-muted-foreground">
+                  Válaszd ki, milyen eseményekről szeretnél emailt kapni
                 </p>
               </div>
             </div>
 
             {/* Master Toggle */}
             <div
-              className={`flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-neon-pink/10 border border-primary/20 rounded-xl mb-4 cursor-pointer ${pendingRequest ? "opacity-50 pointer-events-none" : ""}`}
+              className={`flex items-center justify-between p-3.5 bg-secondary/40 border border-border rounded mb-4 cursor-pointer hover:border-primary/40 transition-colors ${pendingRequest ? "opacity-50 pointer-events-none" : ""}`}
               onClick={() => setEmailNotifications(!emailNotifications)}
             >
               <div className="flex items-center gap-4">
@@ -510,14 +502,14 @@ export function SettingsPage() {
               {emailPreferences.map((pref) => (
                 <div
                   key={pref.key}
-                  className="flex items-center justify-between p-3 bg-[#0a0a0f]/50 border border-border rounded-xl hover:bg-[#0a0a0f] transition-all cursor-pointer"
+                  className="flex items-center justify-between p-3 bg-secondary/30 border border-border rounded hover:bg-secondary/60 hover:border-primary/40 transition-all cursor-pointer"
                   onClick={() => pref.setValue(!pref.value)}
                 >
                   <div className="flex items-center gap-3">
                     <div
-                      className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${pref.value
+                      className={`w-8 h-8 rounded flex items-center justify-center transition-colors ${pref.value
                           ? "bg-primary/20 text-primary"
-                          : "bg-gray-800 text-muted-foreground"
+                          : "bg-secondary text-muted-foreground"
                         }`}
                     >
                       {pref.icon}
@@ -546,42 +538,41 @@ export function SettingsPage() {
             </div>
 
             <p className="text-xs text-muted-foreground text-center mt-4">
-              💡 Az email értesítéseket az adott email "Leiratkozás" linkjével
-              is kikapcsolhatod.
+              💡 Az email értesítéseket az adott email "Leiratkozás" linkjével is kikapcsolhatod.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Floating Action Button (Desktop: Bottom Right, Mobile: Sticky Bottom) */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 md:p-8 md:static md:mt-3 flex justify-center md:justify-end max-w-6xl mx-auto z-20 pointer-events-none">
+      {/* Floating Action Button */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 md:p-8 md:static md:mt-4 flex justify-center md:justify-end max-w-6xl mx-auto z-20 pointer-events-none">
         <div className="pointer-events-auto">
           <button
             onClick={handleSave}
             disabled={saveLoading || !!pendingRequest}
-            className={`flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg transform hover:-translate-y-1 ${saveSuccess
-                ? "bg-green-500 hover:bg-green-600 shadow-green-500/25 text-foreground"
-                : "bg-gradient-to-r from-primary to-neon-pink hover:brightness-110 shadow-primary/25 text-foreground"
-              } ${saveLoading || !!pendingRequest ? "opacity-75 cursor-wait grayscale" : ""}`}
+            className={`flex items-center gap-2.5 px-6 py-3 rounded font-display font-bold uppercase tracking-wider text-base transition-all shadow-lg ${saveSuccess
+                ? "bg-emerald-600 hover:bg-emerald-500 shadow-emerald-500/20 text-foreground"
+                : "bg-primary hover:bg-primary-hover shadow-primary/25 text-foreground"
+              } ${saveLoading || !!pendingRequest ? "opacity-60 cursor-not-allowed" : ""}`}
           >
             {saveLoading ? (
               <>
-                <div className="w-5 h-5 border-2 border-border border-t-white rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-border border-t-white rounded-full animate-spin" />
                 Mentés...
               </>
             ) : saveSuccess ? (
               <>
-                <Shield size={20} />
+                <Shield size={18} />
                 Sikeresen Mentve!
               </>
             ) : pendingRequest ? (
               <>
-                <Clock size={20} />
+                <Clock size={18} />
                 Jóváhagyásra Vár...
               </>
             ) : (
               <>
-                <Save size={20} />
+                <Save size={18} />
                 Változtatások Mentése
               </>
             )}

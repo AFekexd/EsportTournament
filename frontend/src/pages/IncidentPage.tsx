@@ -161,7 +161,7 @@ const IncidentPage = () => {
 
     return (
       <span
-        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium whitespace-nowrap ${item.color}`}
+        className={`tactical-badge flex items-center gap-1.5 ${item.color}`}
       >
         <Icon size={12} />
         {item.label}
@@ -171,51 +171,65 @@ const IncidentPage = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col items-center justify-center py-20 glass-card rounded-2xl bg-[#0a0a0f]/50 border border-border">
-          <h3 className="text-xl font-bold text-foreground mb-2">
-            Nem vagy bejelentkezve
-          </h3>
-          <p className="text-muted-foreground">Jelentkezz be a hibajelentéshez.</p>
+      <div className="flex flex-col items-center justify-center py-20 tactical-card text-center my-8">
+        <div className="w-16 h-16 bg-secondary rounded border border-border flex items-center justify-center mb-4 text-muted-foreground">
+          <Monitor size={32} />
         </div>
+        <h3 className="font-display text-xl font-bold uppercase tracking-wider text-foreground mb-2">
+          Nem vagy bejelentkezve
+        </h3>
+        <p className="text-muted-foreground text-sm font-mono">Jelentkezz be az incidensek bejelentéséhez.</p>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-12 animate-fade-in">
-      <div className="mb-12 text-center relative">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-yellow-500/10 blur-[100px] rounded-full -z-10" />
-        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-yellow-200 to-yellow-500 bg-clip-text text-transparent mb-4">
-          Incidens Jelentés
-        </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Hiba a teremben? Probléma a géppel? Jelentsd be itt!
-        </p>
-      </div>
+    <div className="flex flex-col gap-8 pb-16">
+      {/* Tactical Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-border/60 pb-6">
+        <div className="flex flex-col gap-3">
+          <div className="inline-flex w-fit items-center gap-2 rounded border border-border bg-secondary/80 px-3 py-1 font-mono text-xs uppercase tracking-wider text-amber-400">
+            <AlertTriangle className="h-3.5 w-3.5" />
+            <span>LABOR INCIDENSKEZELŐ // HARDWARE & DESK STATUS</span>
+          </div>
+          <h1 className="font-display text-3xl sm:text-5xl font-bold uppercase tracking-tight text-foreground">
+            INCIDENS <span className="text-amber-400">JELENTÉS</span>
+          </h1>
+          <p className="text-muted-foreground text-sm max-w-xl">
+            Hardveres meghibásodás a teremben vagy hiba az esport munkaállomáson? Jelentsd be és a laborfelelősök megoldják.
+          </p>
+        </div>
 
-      <div className="flex justify-end mb-8 max-w-6xl mx-auto">
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-foreground rounded-xl font-medium hover:brightness-110 transition-all shadow-lg shadow-yellow-500/20"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded bg-amber-500 hover:bg-amber-400 text-black font-display font-bold uppercase tracking-wider text-sm transition-all shadow-md shadow-amber-500/20"
         >
-          {showForm ? <XCircle size={20} /> : <Plus size={20} />}
-          {showForm ? "Mégse" : "Új bejelentés"}
+          {showForm ? <XCircle size={16} /> : <Plus size={16} />}
+          <span>{showForm ? "Mégse" : "Új bejelentés"}</span>
         </button>
       </div>
 
       {showForm && (
-        <div className="max-w-3xl mx-auto mb-12 glass-card rounded-2xl p-8 bg-[#121A22] border border-border animate-slide-up">
-          <h2 className="text-2xl font-bold text-foreground mb-6">Új Incidens</h2>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300 ml-1">
-                Tárgy / Probléma *
+        <div className="tactical-card p-6 sm:p-8 max-w-3xl mx-auto w-full">
+          <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-border">
+            <div className="p-2.5 bg-secondary rounded border border-border text-amber-400">
+              <AlertTriangle size={20} />
+            </div>
+            <div>
+              <h2 className="font-display text-lg font-bold uppercase tracking-wider text-foreground">Új Incidens Bejelentése</h2>
+              <p className="text-xs text-muted-foreground">Add meg a meghibásodott eszköz vagy laborprobléma adatait</p>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-1.5">
+              <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground ml-1">
+                Tárgy / Probléma megnevezése *
               </label>
               <input
                 type="text"
-                className="w-full px-5 py-4 bg-[#0a0a0f]/50 border border-border rounded-xl text-foreground placeholder-gray-600 focus:outline-none focus:border-yellow-500/50 transition-all"
-                placeholder="Pl. Nem működik a fejhallgató..."
+                className="w-full px-4 py-2.5 bg-secondary/40 border border-border rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-amber-400/50 text-sm"
+                placeholder="Pl. Nem működik a bal oldali fejhallgató jack aljzata..."
                 value={formData.title}
                 onChange={(e) =>
                   setFormData({ ...formData, title: e.target.value })
@@ -224,29 +238,29 @@ const IncidentPage = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-300 ml-1">
-                  Érintett eszköz
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground ml-1">
+                  Érintett munkaállomás
                 </label>
                 <div className="relative">
                   <Monitor
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
-                    size={18}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+                    size={16}
                   />
                   <select
-                    className="w-full pl-12 pr-5 py-4 bg-[#0a0a0f]/50 border border-border rounded-xl text-foreground appearance-none focus:outline-none focus:border-yellow-500/50 transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 bg-secondary/40 border border-border rounded text-foreground appearance-none focus:outline-none focus:border-amber-400/50 text-sm"
                     value={formData.computerId}
                     onChange={(e) =>
                       setFormData({ ...formData, computerId: e.target.value })
                     }
                   >
-                    <option value="general">Általános / Nem konkrét gép</option>
+                    <option value="general" className="bg-card">Általános / Nem konkrét gép</option>
                     {computers.map((pc) => (
                       <option
                         key={pc.id}
                         value={pc.id}
-                        className="bg-[#0a0a0f]"
+                        className="bg-card"
                       >
                         {pc.name}
                       </option>
@@ -254,41 +268,41 @@ const IncidentPage = () => {
                   </select>
                 </div>
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-300 ml-1">
+              <div className="space-y-1.5">
+                <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground ml-1">
                   Prioritás
                 </label>
                 <select
-                  className="w-full px-5 py-4 bg-[#0a0a0f]/50 border border-border rounded-xl text-foreground appearance-none focus:outline-none focus:border-yellow-500/50 transition-all"
+                  className="w-full px-4 py-2.5 bg-secondary/40 border border-border rounded text-foreground appearance-none focus:outline-none focus:border-amber-400/50 text-sm"
                   value={formData.priority}
                   onChange={(e) =>
                     setFormData({ ...formData, priority: e.target.value })
                   }
                 >
-                  <option value="LOW" className="bg-[#0a0a0f]">
-                    Alacsony (Ráér)
+                  <option value="LOW" className="bg-card">
+                    Alacsony (Nem akadályoz)
                   </option>
-                  <option value="MEDIUM" className="bg-[#0a0a0f]">
+                  <option value="MEDIUM" className="bg-card">
                     Normál
                   </option>
-                  <option value="HIGH" className="bg-[#0a0a0f]">
-                    Magas (Zavaró)
+                  <option value="HIGH" className="bg-card">
+                    Magas (Zavarja a játékot)
                   </option>
-                  <option value="CRITICAL" className="bg-[#0a0a0f]">
-                    Kritikus (Azonnali)
+                  <option value="CRITICAL" className="bg-card">
+                    Kritikus (Használhatatlan PC)
                   </option>
                 </select>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300 ml-1">
+            <div className="space-y-1.5">
+              <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground ml-1">
                 Részletes leírás *
               </label>
               <textarea
-                rows={5}
-                className="w-full px-5 py-4 bg-[#0a0a0f]/50 border border-border rounded-xl text-foreground placeholder-gray-600 focus:outline-none focus:border-yellow-500/50 transition-all resize-none"
-                placeholder="Írd le részletesen, mi történt..."
+                rows={4}
+                className="w-full px-4 py-2.5 bg-secondary/40 border border-border rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-amber-400/50 text-sm resize-none"
+                placeholder="Írd le részletesen, mi a hiba és hogyan lehet reprodukálni..."
                 value={formData.description}
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
@@ -300,13 +314,16 @@ const IncidentPage = () => {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-lg bg-gradient-to-r from-yellow-500 to-orange-500 text-foreground hover:brightness-110 transition-all disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded bg-amber-500 hover:bg-amber-400 text-black font-display font-bold uppercase tracking-wider text-sm transition-all shadow-md shadow-amber-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {submitting ? (
-                <Loader2 className="animate-spin" />
+                <>
+                  <Loader2 className="animate-spin" size={16} />
+                  <span>Beküldés...</span>
+                </>
               ) : (
                 <>
-                  <Send size={20} /> Beküldés
+                  <Send size={16} /> <span>Incidens Beküldése</span>
                 </>
               )}
             </button>
@@ -314,74 +331,67 @@ const IncidentPage = () => {
         </div>
       )}
 
-      <div className="max-w-6xl mx-auto space-y-6">
-        <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-          <Clock className="w-6 h-6 text-yellow-500" /> Korábbi bejelentéseim
+      <div className="space-y-4">
+        <h2 className="font-display text-xl font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
+          <Clock className="w-5 h-5 text-amber-400" /> Korábbi bejelentéseim
         </h2>
 
         {loading ? (
-          <div className="flex justify-center p-12">
-            <Loader2 className="animate-spin text-yellow-500" size={32} />
+          <div className="flex justify-center py-16 text-muted-foreground">
+            <Loader2 className="animate-spin text-amber-400" size={28} />
           </div>
         ) : incidents.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 bg-[#0a0a0f]/30 border border-border rounded-2xl border-dashed">
-            <CheckCircle className="w-12 h-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-medium text-foreground">
-              Nincs bejelentésed
+          <div className="tactical-card p-12 text-center flex flex-col items-center justify-center">
+            <CheckCircle className="w-10 h-10 text-muted-foreground mb-3 opacity-30" />
+            <h3 className="font-display text-base font-bold uppercase tracking-wider text-foreground mb-1">
+              Nincs bejelentett incidens
             </h3>
-            <p className="text-muted-foreground">
-              Még nem jelentettél be egy hibát sem.
+            <p className="text-muted-foreground text-xs font-mono">
+              Még nem jelentettél be hibát, vagy minden incidens megoldódott.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {incidents.map((incident) => (
               <div
                 key={incident.id}
-                className="group relative overflow-hidden bg-[#121A22] border border-border rounded-2xl p-6 hover:border-yellow-500/30 transition-all hover:shadow-[0_0_20px_rgba(234,179,8,0.1)]"
+                className="tactical-card p-5 relative overflow-hidden flex flex-col justify-between"
               >
-                <div
-                  className={`absolute top-0 left-0 w-1 h-full ${incident.status === "RESOLVED"
-                      ? "bg-green-500"
-                      : incident.status === "CLOSED"
-                        ? "bg-gray-500"
-                        : "bg-yellow-500"
-                    }`}
-                />
+                <div>
+                  <div className="flex justify-between items-start mb-3 gap-2">
+                    <h3
+                      className="font-bold text-foreground truncate pr-2 text-sm"
+                      title={incident.title}
+                    >
+                      {incident.title}
+                    </h3>
+                    {getStatusBadge(incident.status)}
+                  </div>
 
-                <div className="flex justify-between items-start mb-4">
-                  <h3
-                    className="text-lg font-bold text-foreground truncate pr-2"
-                    title={incident.title}
-                  >
-                    {incident.title}
-                  </h3>
-                  {getStatusBadge(incident.status)}
-                </div>
-
-                <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4">
-                  <span className="flex items-center gap-1">
-                    <Clock size={12} />
-                    {new Date(incident.createdAt).toLocaleDateString("hu-HU")}
-                  </span>
-                  {incident.computer && (
+                  <div className="flex items-center gap-3 text-xs font-mono text-muted-foreground mb-3">
                     <span className="flex items-center gap-1">
-                      <Monitor size={12} />
-                      {incident.computer.name}
+                      <Clock size={11} />
+                      {new Date(incident.createdAt).toLocaleDateString("hu-HU")}
                     </span>
-                  )}
-                </div>
+                    {incident.computer && (
+                      <span className="flex items-center gap-1 text-primary">
+                        <Monitor size={11} />
+                        {incident.computer.name}
+                      </span>
+                    )}
+                  </div>
 
-                <p className="text-sm text-gray-300 line-clamp-3 mb-4 min-h-[3em]">
-                  {incident.description}
-                </p>
+                  <p className="text-xs text-muted-foreground line-clamp-3 mb-4 leading-relaxed">
+                    {incident.description}
+                  </p>
+                </div>
 
                 {incident.resolutionNote && (
-                  <div className="bg-secondary p-3 rounded-lg border border-border">
-                    <span className="block text-xs font-semibold uppercase text-green-400 mb-1">
+                  <div className="bg-secondary/60 p-3 rounded border border-border mt-auto">
+                    <span className="block text-[11px] font-mono font-semibold uppercase text-emerald-400 mb-0.5">
                       Megoldás / Válasz:
                     </span>
-                    <p className="text-sm text-gray-300">
+                    <p className="text-xs text-secondary-foreground">
                       {incident.resolutionNote}
                     </p>
                   </div>

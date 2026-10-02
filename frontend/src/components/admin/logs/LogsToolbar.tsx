@@ -38,15 +38,15 @@ export function LogsToolbar({
         {/* Search */}
         <div className="relative flex-1">
           <Search
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-            size={16}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+            size={14}
           />
           <input
             type="text"
             placeholder="Keresés üzenetben, felhasználóban..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full bg-[#121A22] border border-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-all shadow-sm"
+            className="w-full bg-secondary/80 border border-border rounded pl-9 pr-4 py-2 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all"
           />
         </div>
 
@@ -54,12 +54,12 @@ export function LogsToolbar({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all text-sm font-medium ${showFilters || hasActiveFilters
-                ? "bg-primary/10 border-primary/30 text-primary"
-                : "bg-[#121A22] border-border text-muted-foreground hover:text-foreground"
+            className={`flex items-center gap-2 px-3.5 py-2 rounded border transition-all text-xs font-mono font-bold uppercase tracking-wider ${showFilters || hasActiveFilters
+                ? "bg-primary/20 border-primary text-primary"
+                : "bg-secondary/80 border border-border text-muted-foreground hover:text-foreground hover:bg-secondary"
               }`}
           >
-            <Filter size={16} />
+            <Filter size={14} />
             Szűrők
             {hasActiveFilters && (
               <span className="w-1.5 h-1.5 rounded-full bg-primary" />
@@ -68,10 +68,10 @@ export function LogsToolbar({
 
           <button
             onClick={onExport}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#121A22] border border-border text-muted-foreground hover:text-foreground hover:border-border transition-all text-sm font-medium"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded bg-secondary/80 border border-border text-muted-foreground hover:text-foreground hover:bg-secondary transition-all text-xs font-mono font-bold uppercase tracking-wider"
             title="Exportálás CSV-be"
           >
-            <Download size={16} />
+            <Download size={14} />
             <span className="hidden sm:inline">Export</span>
           </button>
         </div>
@@ -79,7 +79,7 @@ export function LogsToolbar({
 
       {/* Expanded Filters */}
       {(showFilters || hasActiveFilters) && (
-        <div className="p-4 bg-[#121A22] border border-border rounded-xl animate-fade-in grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="tactical-card p-4 animate-fade-in grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Type Filter */}
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-muted-foreground">

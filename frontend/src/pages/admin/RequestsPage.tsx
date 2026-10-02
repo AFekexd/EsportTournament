@@ -169,36 +169,42 @@ export default function RequestsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-7xl animate-fade-in">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div className="flex flex-col gap-8 pb-16">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-border/60 pb-6">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Kérelmek</h1>
-          <p className="text-muted-foreground">
-            Jóváhagyásra váró profil és csapat módosítások
+          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-primary mb-2">
+            <Shield size={14} className="text-primary" />
+            <span>Rendszerkezelés // Profil Jóváhagyás</span>
+          </div>
+          <h1 className="text-3xl font-display font-bold uppercase tracking-tight text-foreground">
+            Kérelmek
+          </h1>
+          <p className="text-sm text-muted-foreground font-mono mt-1">
+            Jóváhagyásra váró profil és csapat módosítások moderációja
           </p>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="flex bg-secondary rounded-lg p-1 border border-border">
+        <div className="flex items-center gap-3">
+          <div className="flex bg-secondary/80 rounded p-1 border border-border">
             <button
               onClick={() => setActiveTab("pending")}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${activeTab === "pending"
-                ? "bg-primary text-foreground shadow-lg"
+              className={`px-3 py-1.5 rounded text-xs font-mono font-bold uppercase tracking-wider transition-all ${activeTab === "pending"
+                ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:text-foreground"
                 }`}
             >
-              Váratlanok
+              Függőben
             </button>
             <button
               onClick={() => setActiveTab("history")}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${activeTab === "history"
-                ? "bg-primary text-foreground shadow-lg"
+              className={`px-3 py-1.5 rounded text-xs font-mono font-bold uppercase tracking-wider transition-all ${activeTab === "history"
+                ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:text-foreground"
                 }`}
             >
@@ -207,26 +213,26 @@ export default function RequestsPage() {
           </div>
           <button
             onClick={fetchRequests}
-            className="flex items-center gap-2 p-2.5 bg-secondary hover:bg-secondary/80 rounded-lg transition-colors text-foreground border border-border"
+            className="flex items-center justify-center p-2 bg-secondary/80 hover:bg-secondary rounded transition-colors text-muted-foreground hover:text-foreground border border-border"
             title="Frissítés"
           >
-            <RefreshCw size={20} />
+            <RefreshCw size={16} />
           </button>
         </div>
       </div>
 
       {requests.length === 0 ? (
-        <div className="bg-[#121A22] border border-border rounded-2xl p-12 text-center animate-fade-in">
-          <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
-            <Check className="text-green-500" size={32} />
+        <div className="tactical-card p-12 text-center">
+          <div className="w-12 h-12 bg-secondary/80 border border-border rounded flex items-center justify-center mx-auto mb-4 text-emerald-400">
+            <Check size={24} />
           </div>
-          <h3 className="text-xl font-medium text-foreground mb-2">
+          <h3 className="text-base font-display font-bold uppercase tracking-wider text-foreground mb-1">
             Nincs {activeTab === "pending" ? "függőben lévő" : ""} kérelem
           </h3>
-          <p className="text-muted-foreground">
+          <p className="text-sm font-mono text-muted-foreground">
             {activeTab === "pending"
-              ? "Jelenleg minden kérelem fel van dolgozva."
-              : "Még nincsenek előzmények."}
+              ? "Jelenleg minden kérelem feldolgozásra került."
+              : "Még nincsenek korábbi előzmények."}
           </p>
         </div>
       ) : (
@@ -234,34 +240,34 @@ export default function RequestsPage() {
           {requests.map((request) => (
             <div
               key={request.id}
-              className="bg-[#121A22] border border-border rounded-2xl overflow-hidden hover:border-border transition-colors animate-slide-up"
+              className="tactical-card overflow-hidden"
             >
               <div className="p-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                   <div className="flex items-center gap-4">
                     {request.type === "USER_PROFILE" ? (
-                      <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                        <User size={20} />
+                      <div className="w-10 h-10 rounded bg-primary/10 border border-primary/30 flex items-center justify-center text-primary">
+                        <User size={18} />
                       </div>
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                        <Shield size={20} />
+                      <div className="w-10 h-10 rounded bg-accent/10 border border-accent/30 flex items-center justify-center text-accent">
+                        <Shield size={18} />
                       </div>
                     )}
                     <div>
-                      <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                      <h3 className="text-base font-display font-bold uppercase tracking-wide text-foreground flex items-center gap-2">
                         {request.type === "USER_PROFILE"
                           ? "Felhasználói Profil"
                           : "Csapat Profil"}
-                        <span className="text-muted-foreground font-normal text-sm">
-                          • {request.requester.displayName || request.entityName}
+                        <span className="text-muted-foreground font-mono font-normal text-xs">
+                          // {request.requester.displayName || request.entityName}
                         </span>
                         {/* Status Badge for History Tab */}
                         {activeTab === "history" && (
                           <span
-                            className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border ml-2 ${request.status === "APPROVED"
-                              ? "bg-green-500/10 text-green-500 border-green-500/20"
-                              : "bg-red-500/10 text-red-500 border-red-500/20"
+                            className={`tactical-badge text-[10px] ml-2 ${request.status === "APPROVED"
+                              ? "border-emerald-500/40 text-emerald-400 bg-emerald-500/10"
+                              : "border-destructive/40 text-destructive bg-destructive/10"
                               }`}
                           >
                             {request.status === "APPROVED"
@@ -270,7 +276,7 @@ export default function RequestsPage() {
                           </span>
                         )}
                       </h3>
-                      <div className="text-sm text-muted-foreground flex items-center gap-2">
+                      <div className="text-xs font-mono text-muted-foreground flex items-center gap-2 mt-1">
                         <span>Kérelmező: {request.requester.displayName || request.requester.username}</span>
                         <span>•</span>
                         <span>
@@ -284,7 +290,7 @@ export default function RequestsPage() {
 
                       {/* Processed By info for History */}
                       {activeTab === "history" && request.processedAt && (
-                        <div className="text-xs text-muted-foreground mt-1">
+                        <div className="text-xs font-mono text-muted-foreground mt-1">
                           Feldolgozva:{" "}
                           {format(
                             new Date(request.processedAt),
@@ -297,18 +303,18 @@ export default function RequestsPage() {
                   </div>
 
                   {activeTab === "pending" && (
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleAction(request, "reject")}
-                        className="px-4 py-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors flex items-center gap-2 font-medium"
+                        className="px-3 py-1.5 rounded bg-destructive/10 border border-destructive/30 text-destructive hover:bg-destructive/20 text-xs font-mono font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors"
                       >
-                        <X size={18} /> Elutasítás
+                        <X size={14} /> Elutasítás
                       </button>
                       <button
                         onClick={() => handleAction(request, "approve")}
-                        className="px-4 py-2 rounded-lg bg-green-500/10 text-green-500 hover:bg-green-500/20 transition-colors flex items-center gap-2 font-medium"
+                        className="px-3 py-1.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 text-xs font-mono font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors"
                       >
-                        <Check size={18} /> Jóváhagyás
+                        <Check size={14} /> Jóváhagyás
                       </button>
                     </div>
                   )}
@@ -318,21 +324,21 @@ export default function RequestsPage() {
                 {activeTab === "history" &&
                   request.status === "REJECTED" &&
                   request.rejectionReason && (
-                    <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-4 mb-4">
-                      <div className="text-red-400 text-xs font-bold uppercase tracking-wider mb-1">
+                    <div className="bg-destructive/10 border border-destructive/30 rounded p-3 mb-4 font-mono text-xs">
+                      <div className="text-destructive font-bold uppercase tracking-wider mb-1">
                         Elutasítás indoka
                       </div>
-                      <div className="text-foreground text-sm">
+                      <div className="text-foreground">
                         {request.rejectionReason}
                       </div>
                     </div>
                   )}
 
-                <div className="bg-secondary rounded-xl p-5 border border-border">
-                  <h4 className="text-sm font-medium text-muted-foreground mb-4 uppercase tracking-wider">
-                    Változtatások
+                <div className="bg-secondary/40 rounded p-4 border border-border">
+                  <h4 className="text-xs font-mono font-bold text-muted-foreground mb-3 uppercase tracking-wider">
+                    Változtatási Adatok
                   </h4>
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {Object.entries(request.data).map(([key, value]) => {
                       const oldValue = request.currentData?.[key];
                       const isUrl = key.toLowerCase().endsWith("url");
@@ -340,54 +346,48 @@ export default function RequestsPage() {
                       return (
                         <div
                           key={key}
-                          className="bg-[#121A22] rounded-xl p-4 border border-border"
+                          className="bg-card rounded p-3 border border-border"
                         >
-                          <div className="text-sm font-semibold text-primary mb-3">
+                          <div className="text-xs font-mono font-bold text-primary uppercase tracking-wider mb-2">
                             {dict[key as keyof typeof dict] || key}
                           </div>
                           <div className="text-foreground">
                             {isUrl && typeof value === "string" ? (
-                              <div className="flex flex-col gap-4">
-                                <div className="flex flex-wrap items-center gap-6">
+                              <div className="flex flex-col gap-3">
+                                <div className="flex flex-wrap items-center gap-4">
                                   {/* Old Image */}
                                   {oldValue && (
-                                    <div className="flex flex-col items-center gap-2">
-                                      <span className="text-xs font-bold text-red-400 uppercase tracking-wider bg-red-500/10 px-2 py-1 rounded">
+                                    <div className="flex flex-col items-center gap-1.5">
+                                      <span className="text-[10px] font-mono font-bold text-destructive uppercase tracking-wider bg-destructive/10 border border-destructive/30 px-1.5 py-0.5 rounded">
                                         Régi
                                       </span>
-                                      <div className="relative">
-                                        <img
-                                          src={oldValue}
-                                          alt="Old"
-                                          className="h-24 w-24 rounded-xl object-cover bg-secondary border-2 border-red-500/30 opacity-70"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-red-500/20 to-transparent rounded-xl" />
-                                      </div>
+                                      <img
+                                        src={oldValue}
+                                        alt="Old"
+                                        className="h-20 w-20 rounded object-cover bg-secondary border border-destructive/40 opacity-70"
+                                      />
                                     </div>
                                   )}
 
                                   {oldValue && (
-                                    <div className="text-2xl text-muted-foreground">→</div>
+                                    <div className="text-xl text-muted-foreground font-mono">→</div>
                                   )}
 
                                   {/* New Image */}
                                   {value && (
-                                    <div className="flex flex-col items-center gap-2">
-                                      <span className="text-xs font-bold text-green-400 uppercase tracking-wider bg-green-500/10 px-2 py-1 rounded">
+                                    <div className="flex flex-col items-center gap-1.5">
+                                      <span className="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.5 rounded">
                                         Új
                                       </span>
-                                      <div className="relative">
-                                        <img
-                                          src={value}
-                                          alt="New"
-                                          className="h-24 w-24 rounded-xl object-cover bg-secondary border-2 border-green-500/50 shadow-lg shadow-green-500/10"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-green-500/10 to-transparent rounded-xl" />
-                                      </div>
+                                      <img
+                                        src={value}
+                                        alt="New"
+                                        className="h-20 w-20 rounded object-cover bg-secondary border border-emerald-500/50"
+                                      />
                                     </div>
                                   )}
                                 </div>
-                                <span className="text-xs text-muted-foreground font-medium">
+                                <span className="text-xs font-mono text-muted-foreground">
                                   {value
                                     ? oldValue
                                       ? "Kép lecserélése"
@@ -396,28 +396,28 @@ export default function RequestsPage() {
                                 </span>
                               </div>
                             ) : (
-                              <div className="flex flex-wrap items-center gap-3">
+                              <div className="flex flex-wrap items-center gap-3 font-mono text-xs">
                                 {oldValue !== undefined &&
                                   oldValue !== value && (
                                     <>
                                       <div className="flex flex-col gap-1">
-                                        <span className="text-[10px] font-bold text-red-400 uppercase tracking-wider">Régi</span>
-                                        <span className="line-through text-muted-foreground decoration-red-500/50 decoration-2 bg-red-500/10 px-3 py-1.5 rounded-lg">
+                                        <span className="text-[10px] font-bold text-destructive uppercase tracking-wider">Régi</span>
+                                        <span className="line-through text-muted-foreground decoration-destructive/50 decoration-2 bg-destructive/10 px-2.5 py-1 rounded border border-destructive/20">
                                           {String(oldValue)}
                                         </span>
                                       </div>
-                                      <span className="text-xl text-muted-foreground">→</span>
+                                      <span className="text-base text-muted-foreground">→</span>
                                     </>
                                   )}
                                 <div className="flex flex-col gap-1">
                                   {oldValue !== undefined && oldValue !== value && (
-                                    <span className="text-[10px] font-bold text-green-400 uppercase tracking-wider">Új</span>
+                                    <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Új</span>
                                   )}
                                   <span
                                     className={
                                       oldValue !== undefined && oldValue !== value
-                                        ? "text-green-400 font-semibold bg-green-400/10 px-3 py-1.5 rounded-lg border border-green-500/30"
-                                        : ""
+                                        ? "text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-1 rounded border border-emerald-500/30"
+                                        : "text-foreground"
                                     }
                                   >
                                     {String(value)}
@@ -440,13 +440,12 @@ export default function RequestsPage() {
       {/* Reject Modal */}
       {rejectModal.isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-fade-in">
-          <div className="bg-[#121A22] border border-border rounded-2xl w-full max-w-md shadow-2xl p-6 animate-scale-in">
-            <h3 className="text-xl font-bold text-foreground mb-2">
+          <div className="tactical-card w-full max-w-md p-6">
+            <h3 className="text-lg font-display font-bold uppercase tracking-tight text-foreground mb-1">
               Kérelem elutasítása
             </h3>
-            <p className="text-muted-foreground text-sm mb-4">
-              Kérlek pótold az elutasítás okát, amit a felhasználó is meg fog
-              kapni.
+            <p className="text-muted-foreground font-mono text-xs mb-4">
+              Kérlek add meg az elutasítás pontos okát, amit a felhasználó is meg fog kapni.
             </p>
 
             <textarea
@@ -454,8 +453,8 @@ export default function RequestsPage() {
               onChange={(e) =>
                 setRejectModal((prev) => ({ ...prev, reason: e.target.value }))
               }
-              className="w-full bg-secondary border border-border rounded-xl p-3 text-foreground placeholder-gray-600 focus:outline-none focus:border-red-500/50 min-h-[100px] mb-6 resize-none"
-              placeholder="Pl.: Nem megfelelő profilkép, trágár kifejezés..."
+              className="w-full bg-secondary/80 border border-border rounded p-3 text-foreground font-mono text-sm placeholder:text-muted-foreground focus:outline-none focus:border-destructive min-h-[100px] mb-6 resize-none"
+              placeholder="Pl.: Nem megfelelő profilkép, szabálytalan csapatnév..."
               autoFocus
             />
 
@@ -464,14 +463,14 @@ export default function RequestsPage() {
                 onClick={() =>
                   setRejectModal((prev) => ({ ...prev, isOpen: false }))
                 }
-                className="px-4 py-2 hover:bg-secondary rounded-lg text-muted-foreground transition-colors"
+                className="px-3.5 py-1.5 bg-secondary border border-border rounded text-xs font-mono uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
               >
                 Mégse
               </button>
               <button
                 onClick={handleRejectConfirm}
                 disabled={!rejectModal.reason.trim()}
-                className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg text-foreground font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3.5 py-1.5 bg-destructive hover:bg-destructive/90 rounded text-xs font-mono font-bold uppercase tracking-wider text-destructive-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Elutasítás
               </button>
