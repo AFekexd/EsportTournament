@@ -30,7 +30,7 @@ export function ComputerCardGrid({
             const startOfSlot = new Date(selectedDate);
             startOfSlot.setHours(selectedHour, selectedMinute, 0, 0);
             const endOfSlot = new Date(startOfSlot);
-            endOfSlot.setMinutes(startOfSlot.getMinutes() + 30);
+            endOfSlot.setMinutes(startOfSlot.getMinutes() + 60);
 
             const booking = bookings.find(b => {
                 if (b.computerId !== computer.id) return false;
@@ -114,7 +114,7 @@ export function ComputerCardGrid({
             <div className="flex items-center gap-2 mb-4">
                 <Monitor size={18} className="text-primary" />
                 <h3 className="text-sm font-medium text-gray-300">
-                    Válassz gépet – {selectedHour}:{selectedMinute.toString().padStart(2, '0')}
+                    Válassz gépet – {selectedHour}:00 – {selectedHour + 1}:00
                 </h3>
             </div>
 

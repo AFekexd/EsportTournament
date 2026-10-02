@@ -35,7 +35,6 @@ import { changeRequestsRouter } from './routes/changeRequests.js';
 // Kiosk Routes
 import { kioskRouter } from './routes/kiosk.js';
 import { adminKioskRouter } from './routes/admin-kiosk.js';
-import { clientUpdateRouter } from './routes/clientUpdate.js';
 import { adminEmailRouter } from './routes/admin-email.js';
 import { adminDiscordRouter } from './routes/admin-discord.js';
 import { digestService } from './services/digestService.js';
@@ -154,7 +153,6 @@ app.use('/api/admin/email', adminEmailRouter);
 app.use('/api/admin/discord', adminDiscordRouter);
 
 app.use('/api/admin/students', adminStudentsRouter);
-app.use('/api/client/update', clientUpdateRouter);
 
 app.use('/api/unsubscribe', unsubscribeRouter);
 

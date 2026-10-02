@@ -2,7 +2,7 @@ import { Router, Response } from 'express';
 import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest, requireRole } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
-import { processAndValidateImage } from '../utils/imageProcessor.js';
+import { processAndValidateImage, processRawgImage } from '../utils/imageProcessor.js';
 import { isBase64Pdf, validatePdfSize } from '../utils/pdfProcessor.js';
 import { notificationService } from '../services/notificationService.js';
 import { logSystemActivity } from '../services/logService.js';
@@ -123,7 +123,7 @@ gamesRouter.post(
             throw new ApiError('Csak adminisztrátorok és szervezők választhatnak ki globális játékot', 403, 'FORBIDDEN');
         }
 
-        const { name, imageUrl, description, teamSize } = req.body;
+        const { name, imageUrl, description, teamSize } = req.body || {};
 
         if (!name || typeof name !== 'string' || name.trim().length === 0) {
             throw new ApiError('A játék neve kötelező', 400, 'INVALID_NAME');
@@ -135,7 +135,11 @@ gamesRouter.post(
         let safeImageUrl: string | null = null;
         if (imageUrl && typeof imageUrl === 'string') {
             try {
-                safeImageUrl = (await processAndValidateImage(imageUrl, 10)) || null;
+                if (/^(https?:|\/\/)/i.test(imageUrl.trim())) {
+                    safeImageUrl = await processRawgImage(imageUrl);
+                } else {
+                    safeImageUrl = (await processAndValidateImage(imageUrl, 10)) || null;
+                }
             } catch {
                 safeImageUrl = null;
             }

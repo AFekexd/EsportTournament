@@ -161,3 +161,58 @@ export async function processAndValidateImage(
 
     throw new Error('Érvénytelen képformátum. Csak közvetlenül feltöltött kép vagy helyi fájl engedélyezett.');
 }
+
+/**
+ * Safely fetches, validates, and processes an image from RAWG API (media.rawg.io)
+ * Converts it to a base64 data URL so no client ever loads external URLs directly,
+ * preventing any IP grabbing or tracking.
+ */
+export async function processRawgImage(url: string | null | undefined): Promise<string | null> {
+    if (!url) return null;
+    const trimmed = url.trim();
+    if (!trimmed) return null;
+
+    try {
+        const parsed = new URL(trimmed);
+        const host = parsed.hostname.toLowerCase();
+        // Allow official RAWG media CDNs
+        const allowedHosts = ['media.rawg.io', 'images.rawg.io', 'rawg.io'];
+        if (!allowedHosts.some(h => host === h || host.endsWith('.' + h))) {
+            return null;
+        }
+
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8000);
+
+        const response = await fetch(trimmed, {
+            signal: controller.signal,
+            headers: {
+                'User-Agent': 'PollakEsport/1.0',
+            },
+        });
+        clearTimeout(timeout);
+
+        if (!response.ok) return null;
+
+        const arrayBuffer = await response.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        // Process through Sharp
+        const processedBuffer = await sharp(buffer)
+            .resize(IMAGE_CONFIG.MAX_WIDTH, IMAGE_CONFIG.MAX_HEIGHT, {
+                fit: 'inside',
+                withoutEnlargement: true,
+            })
+            .jpeg({
+                quality: IMAGE_CONFIG.QUALITY,
+                progressive: true,
+            })
+            .toBuffer();
+
+        const base64Result = processedBuffer.toString('base64');
+        return `data:image/jpeg;base64,${base64Result}`;
+    } catch (error) {
+        console.warn('Failed to process RAWG image:', error);
+        return null;
+    }
+}

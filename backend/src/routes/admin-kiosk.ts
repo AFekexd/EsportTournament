@@ -15,49 +15,6 @@ adminKioskRouter.get('/machines', authenticate, requireRole('ADMIN', 'TEACHER'),
     res.json(machines);
 });
 
-// Admin Remote Unlock / Lock 
-adminKioskRouter.post('/machines/:id/lock', authenticate, requireRole('ADMIN'), async (req: any, res: any) => {
-    const { id } = req.params;
-    const { locked } = req.body; // boolean
-    const user = req.user;
-
-    try {
-        const machine = await prisma.computer.update({
-            where: { id },
-            data: { isLocked: locked }
-        });
-
-        // Log lock/unlock
-        await prisma.log.create({
-            data: {
-                type: locked ? 'LOCK' : 'UNLOCK',
-                message: `Machine ${machine.name} was ${locked ? 'locked' : 'unlocked'} by admin`,
-                computerId: id,
-                adminId: user?.sub ? (await prisma.user.findUnique({ where: { keycloakId: user.sub } }))?.id : undefined
-            }
-        });
-
-        // Emit live update to machine
-        if (machine.hostname) {
-            // We can emit a specific event if the client listens to it, 
-            // or the client polls /status which will pick up the lock state.
-            emitMachineUpdate(machine.hostname, { locked });
-        }
-
-        // Notify all users if the machine is locked (as per request)
-        if (locked) {
-            notificationService.notifyAllUsersSystemMessage(
-                'Gép lezárva',
-                `A(z) ${machine.name} gépet lezárta az adminisztrátor.`
-            ).catch(err => console.error('Failed to broadcast lock notification:', err));
-        }
-
-        res.json(machine);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to update machine' });
-    }
-});
-
 // Add time to user
 adminKioskRouter.post('/users/:id/add-time', authenticate, requireRole('ADMIN', 'TEACHER'), async (req: any, res: any) => {
     const { id } = req.params;
@@ -215,33 +172,6 @@ adminKioskRouter.post('/users/bulk-time', authenticate, requireRole('ADMIN', 'TE
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Failed to update users' });
-    }
-});
-
-// Toggle Competition Mode
-adminKioskRouter.post('/machines/:id/competition-mode', authenticate, requireRole('ADMIN'), async (req: any, res: any) => {
-    const { id } = req.params;
-    const { enabled } = req.body; // boolean
-
-    try {
-        const machine = await prisma.computer.update({
-            where: { id },
-            data: { isCompetitionMode: enabled }
-        });
-
-        // Log
-        await prisma.log.create({
-            data: {
-                type: 'COMPETITION_MODE',
-                message: `Machine ${machine.name} competition mode ${enabled ? 'enabled' : 'disabled'} by admin`,
-                computerId: id,
-                adminId: (await prisma.user.findUnique({ where: { keycloakId: req.user!.sub } }))?.id
-            }
-        });
-
-        res.json(machine);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to update machine' });
     }
 });
 

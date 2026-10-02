@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { createTournament } from "../../store/slices/tournamentsSlice";
 import { fetchGames, searchGlobalGames, selectGlobalGame, type GlobalGame } from "../../store/slices/gamesSlice";
 import { ImageUpload } from "../common/ImageUpload";
+import { toast } from "sonner";
 
 interface TournamentCreateModalProps {
   onClose: () => void;
@@ -72,8 +73,10 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
         participationType: (savedGame.teamSize === 1) ? "INDIVIDUAL" : "TEAM"
       }));
       setShowGlobalPicker(false);
-    } catch (err) {
+      toast.success(`Játék kiválasztva: ${savedGame.name}`);
+    } catch (err: any) {
       console.error("Failed to select global game:", err);
+      toast.error(err?.message || "Nem sikerült kiválasztani a globális játékot");
     } finally {
       setSelectingGlobal(false);
     }

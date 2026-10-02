@@ -80,6 +80,9 @@ export const selectGlobalGame = createAsyncThunk(
     async (game: { name: string; imageUrl?: string | null; description?: string | null; teamSize?: number }) => {
         const res = await apiFetch(`${API_URL}/games/global/select`, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify(game),
         });
         const data = await res.json();

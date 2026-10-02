@@ -238,7 +238,8 @@ export function WeeklyCalendar({
 
                     const isMySupervision = user && hourSupervisors.some(s => s.userId === user.id);
                     const hasSupervisor = hourSupervisors.length > 0;
-                    const canSupervise = minute === 0 && isActive && !isPast && !hasSupervisor;
+                    const canSuperviseRole = user && user.role !== 'STUDENT';
+                    const canSupervise = canSuperviseRole && minute === 0 && isActive && !isPast && !hasSupervisor;
 
                     return (
                       <div
