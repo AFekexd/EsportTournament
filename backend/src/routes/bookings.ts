@@ -339,6 +339,7 @@ bookingsRouter.get(
                     gte: startOfDay,
                     lte: endOfDay,
                 },
+                status: { notIn: ['CANCELLED', 'REJECTED'] },
             },
             include: {
                 computer: true,
@@ -481,7 +482,7 @@ bookingsRouter.post(
                     // Check logic: (StartA < EndB) and (EndA > StartB)
                     startTime: { lt: end },
                     endTime: { gt: start },
-                    // Make sure we only check active bookings if we have a cancelled status later, currently deletion handles cancellation
+                    status: { notIn: ['CANCELLED', 'REJECTED'] },
                 }
             });
 
@@ -507,6 +508,7 @@ bookingsRouter.post(
                     where: {
                         userId: user.id,
                         date: { gte: startOfWeek, lte: endOfWeek },
+                        status: { notIn: ['CANCELLED', 'REJECTED'] },
                     },
                 });
 
@@ -523,6 +525,7 @@ bookingsRouter.post(
                     where: {
                         userId: user.id,
                         date: { gte: startOfDay, lte: endOfDay },
+                        status: { notIn: ['CANCELLED', 'REJECTED'] },
                     },
                 });
 
@@ -683,6 +686,26 @@ bookingsRouter.patch(
         }
 
         const approverName = user.displayName || user.username;
+        const { notificationService } = await import('../services/notificationService.js');
+
+        if (status === 'REJECTED' || status === 'CANCELLED') {
+            await prisma.booking.delete({
+                where: { id: booking.id }
+            });
+
+            await notificationService.createNotification({
+                userId: booking.userId,
+                type: 'SYSTEM',
+                title: status === 'REJECTED' ? 'Gépfoglalási kérelem elutasítva' : 'Foglalás törölve',
+                message: `A(z) ${booking.computer.name} gépre leadott foglalásod törlésre került (${approverName} által). A hely felszabadult, a heti kereted nem csökkent.`,
+                link: '/booking',
+                sendEmail: true
+            });
+
+            res.json({ success: true, data: { ...booking, status, deleted: true } });
+            return;
+        }
+
         const updated = await prisma.booking.update({
             where: { id: booking.id },
             data: {
@@ -693,22 +716,12 @@ bookingsRouter.patch(
             include: { computer: true, user: true }
         });
 
-        const { notificationService } = await import('../services/notificationService.js');
         if (status === 'CONFIRMED') {
             await notificationService.createNotification({
                 userId: booking.userId,
                 type: 'SYSTEM',
                 title: 'Gépfoglalásod Jóváhagyva!',
                 message: `A(z) ${booking.computer.name} gépre szóló foglalásodat jóváhagyta ${approverName}. Lesz felügyelet, jó játékot!`,
-                link: '/booking',
-                sendEmail: true
-            });
-        } else if (status === 'REJECTED') {
-            await notificationService.createNotification({
-                userId: booking.userId,
-                type: 'SYSTEM',
-                title: 'Gépfoglalási kérelem elutasítva',
-                message: `A(z) ${booking.computer.name} gépre leadott foglalásod elutasításra került (${approverName} által).`,
                 link: '/booking',
                 sendEmail: true
             });
@@ -1002,6 +1015,7 @@ bookingsRouter.get(
                     gte: startDate,
                     lt: endDate,
                 },
+                status: { notIn: ['CANCELLED', 'REJECTED'] },
             },
             include: {
                 computer: true,
@@ -1056,6 +1070,7 @@ bookingsRouter.patch(
                 id: { not: booking.id },
                 computerId: targetComputerId,
                 date: { gte: startOfDay, lte: endOfDay },
+                status: { notIn: ['CANCELLED', 'REJECTED'] },
                 OR: [{ startTime: { lt: end }, endTime: { gt: start } }],
             },
         });

@@ -1663,25 +1663,21 @@ class DiscordService {
             const rejectorTag = interaction.user.tag || interaction.user.username;
             const rejectorMention = `<@${interaction.user.id}>`;
 
-            await prisma.booking.update({
-                where: { id: bookingId },
-                data: {
-                    status: 'REJECTED',
-                    approvedBy: rejectorTag,
-                    approvedAt: new Date(),
-                }
+            // Delete the booking from database so the computer and student's quota are immediately freed
+            await prisma.booking.delete({
+                where: { id: bookingId }
             });
 
             const oldEmbed = interaction.message.embeds[0];
             const updatedEmbed = EmbedBuilder.from(oldEmbed)
                 .setColor(0xEF4444)
-                .setTitle(`❌ Gépfoglalási Kérelem Elutasítva`)
+                .setTitle(`❌ Gépfoglalási Kérelem Elutasítva & Törölve`)
                 .setFields(
                     (oldEmbed?.fields || []).map(f => {
                         if (f.name === '📌 Státusz') {
                             return {
                                 name: '📌 Státusz',
-                                value: `❌ **Elutasítva** (${rejectorMention} által: Nincs felügyelet)`,
+                                value: `❌ **Elutasítva és törölve** (${rejectorMention} által: Nincs felügyelet)\n*A foglalás törölve lett, a gép és az idősáv szabad maradt.*`,
                                 inline: false
                             };
                         }
@@ -1690,7 +1686,7 @@ class DiscordService {
                 );
 
             await interaction.editReply({
-                content: `❌ **A foglalás elutasítva:** ${rejectorMention} által (Nem lesz felügyelet).`,
+                content: `❌ **A foglalási kérelmet elutasította és törölte:** ${rejectorMention} (Nem lesz felügyelet).`,
                 embeds: [updatedEmbed],
                 components: [],
             });
@@ -1699,8 +1695,8 @@ class DiscordService {
             await notificationService.createNotification({
                 userId: booking.userId,
                 type: 'SYSTEM',
-                title: 'Foglalás elutasítva',
-                message: `Sajnos a(z) ${booking.computer.name} gépre leadott foglalásodhoz nem tudunk felügyeletet biztosítani erre az időpontra.`,
+                title: 'Foglalási kérelem elutasítva',
+                message: `A(z) ${booking.computer.name} gépre leadott foglalásodhoz a DÖK sajnos nem tudott felügyeletet biztosítani erre az időpontra. A kérelem törölve lett, így a heti kereted nem csökkent és szabadon választhatsz másik időpontot.`,
                 link: '/booking',
                 sendEmail: true
             });
