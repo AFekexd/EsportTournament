@@ -1,55 +1,84 @@
 /**
  * Email HTML Templates Service
- * Provides consistent, responsive, and branded email templates
+ * Provides consistent, responsive, bulletproof, and esports-branded dark tactical email templates.
  */
 
-interface ButtonParams {
+export interface ButtonParams {
     text: string;
     url: string;
 }
 
-interface EmailTemplateOptions {
+export interface EmailTemplateOptions {
     title: string;
     preheader?: string;
     content: string;
     button?: ButtonParams;
     footer?: string;
     unsubscribeUrl?: string;
+    badgeText?: string;
+    badgeColor?: string; // 'cyan' | 'emerald' | 'amber' | 'rose' | 'purple'
 }
 
 /**
- * Base email template with consistent branding
+ * Base email template with modern Pollák Esport tactical branding
  */
 export function generateEmailTemplate(options: EmailTemplateOptions): string {
-    const { title, preheader, content, button, footer, unsubscribeUrl } = options;
+    const {
+        title,
+        preheader,
+        content,
+        button,
+        footer,
+        unsubscribeUrl,
+        badgeText = 'POLLÁK ESPORT // LABOR',
+        badgeColor = 'cyan'
+    } = options;
+
+    const badgeBorderColor = 
+        badgeColor === 'emerald' ? '#10B981' :
+        badgeColor === 'amber' ? '#F59E0B' :
+        badgeColor === 'rose' ? '#EF4444' :
+        badgeColor === 'purple' ? '#A855F7' : '#06B6D4';
 
     const buttonHtml = button ? `
-        <table border="0" cellpadding="0" cellspacing="0" style="margin: 24px 0;">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin: 28px 0 12px;">
             <tr>
-                <td style="border-radius: 8px; background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);">
-                    <a href="${button.url}" target="_blank" style="display: inline-block; padding: 14px 32px; font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 8px;">
-                        ${button.text}
-                    </a>
+                <td align="center">
+                    <table border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td align="center" style="border-radius: 8px; background-color: #06B6D4; background: linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%);">
+                                <a href="${button.url}" target="_blank" style="display: inline-block; padding: 14px 32px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 700; color: #020617; text-decoration: none; border-radius: 8px; letter-spacing: 0.5px; text-transform: uppercase;">
+                                    ${button.text}
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
         </table>
     ` : '';
 
     const unsubscribeHtml = unsubscribeUrl ? `
-        <p style="margin: 12px 0 0; font-size: 12px; color: #444; text-align: center;">
-            <a href="${unsubscribeUrl}" style="color: #666; text-decoration: underline;">Leiratkozás</a>
+        <p style="margin: 12px 0 0; font-size: 12px; color: #64748B; text-align: center;">
+            <a href="${unsubscribeUrl}" style="color: #94A3B8; text-decoration: underline;">Értesítési beállítások / Leiratkozás</a>
         </p>
     ` : '';
 
     return `
-<!DOCTYPE html>
-<html lang="hu">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="hu">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>${title}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="supported-color-schemes" content="dark" />
+    <title>${title} | Pollák Esport</title>
     <!--[if mso]>
+    <style type="text/css">
+        table {border-collapse:collapse;border-spacing:0;margin:0;}
+        div, td {padding:0;}
+        div {margin:0 !important;}
+    </style>
     <noscript>
         <xml>
             <o:OfficeDocumentSettings>
@@ -58,63 +87,94 @@ export function generateEmailTemplate(options: EmailTemplateOptions): string {
         </xml>
     </noscript>
     <![endif]-->
-    <style>
-        @media only screen and (max-width: 600px) {
-            .container { width: 100% !important; padding: 16px !important; }
-            .content { padding: 24px !important; }
-        }
-        @media (prefers-color-scheme: dark) {
-            body { background-color: #0a0a0f !important; }
-            .container { background-color: #111118 !important; }
-            .content { background-color: #1a1a24 !important; }
+    <style type="text/css">
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse; }
+        img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; }
+        @media only screen and (max-width: 620px) {
+            .container { width: 100% !important; max-width: 100% !important; }
+            .content-padding { padding: 24px 16px !important; }
+            .col-half { width: 100% !important; display: block !important; box-sizing: border-box !important; }
+            .col-third { width: 100% !important; display: block !important; margin-bottom: 8px !important; box-sizing: border-box !important; }
+            .hero-title { font-size: 22px !important; line-height: 28px !important; }
         }
     </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #0a0a0f; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-    ${preheader ? `<div style="display: none; max-height: 0; overflow: hidden;">${preheader}</div>` : ''}
-    
-    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #0a0a0f;">
+<body style="margin: 0; padding: 0; background-color: #080B11; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #E2E8F0;">
+    ${preheader ? `<div style="display: none; max-height: 0; overflow: hidden; font-size: 1px; line-height: 1px; color: #080B11;">${preheader}</div>` : ''}
+
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #080B11; width: 100%;">
         <tr>
-            <td align="center" style="padding: 40px 16px;">
-                <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="container" style="max-width: 600px; width: 100%; background-color: #111118; border-radius: 16px; overflow: hidden; border: 1px solid rgba(139, 92, 246, 0.2);">
+            <td align="center" style="padding: 32px 12px;">
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="container" style="max-width: 580px; width: 100%; margin: 0 auto;">
                     
-                    <!-- Header -->
+                    <!-- Top Status Bar -->
                     <tr>
-                        <td style="padding: 32px 32px 0; text-align: center;">
-                            <div style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%); border-radius: 50px; border: 1px solid rgba(139, 92, 246, 0.3);">
-                                <span style="font-size: 18px; font-weight: 700; color: #ffffff; text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);">
-                                    🎮 Esport Hub
-                                </span>
-                            </div>
+                        <td align="center" style="padding-bottom: 16px;">
+                            <table border="0" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td style="background-color: #0F1626; border: 1px solid ${badgeBorderColor}40; border-radius: 9999px; padding: 6px 16px; text-align: center;">
+                                        <span style="font-family: 'Courier New', Courier, monospace; font-size: 11px; font-weight: 700; color: ${badgeBorderColor}; letter-spacing: 1.5px; text-transform: uppercase;">
+                                            ⚡ ${badgeText}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
-                    
-                    <!-- Content -->
+
+                    <!-- Main Tactical Card Container -->
                     <tr>
-                        <td class="content" style="padding: 32px;">
-                            <h1 style="margin: 0 0 24px; font-size: 28px; font-weight: 700; color: #ffffff; line-height: 1.3;">
-                                ${title}
-                            </h1>
-                            <div style="color: #a0a0a0; font-size: 16px; line-height: 1.6;">
-                                ${content}
-                            </div>
-                            ${buttonHtml}
+                        <td style="background-color: #0E1422; border-radius: 14px; border: 1px solid #1E293B; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6);">
+                            
+                            <!-- Neon Accent Strip -->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td height="3" style="background: linear-gradient(90deg, #06B6D4 0%, #3B82F6 50%, #8B5CF6 100%); line-height: 3px; font-size: 3px;">&nbsp;</td>
+                                </tr>
+                            </table>
+
+                            <!-- Main Content -->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td class="content-padding" style="padding: 32px 28px;">
+                                        
+                                        <!-- Header Title -->
+                                        <h1 class="hero-title" style="margin: 0 0 20px; font-size: 24px; font-weight: 800; color: #FFFFFF; letter-spacing: 0.5px; line-height: 1.3; text-transform: uppercase;">
+                                            ${title}
+                                        </h1>
+
+                                        <!-- Dynamic Body Content -->
+                                        <div style="color: #CBD5E1; font-size: 15px; line-height: 1.6;">
+                                            ${content}
+                                        </div>
+
+                                        <!-- Bulletproof Button -->
+                                        ${buttonHtml}
+
+                                    </td>
+                                </tr>
+                            </table>
+
                         </td>
                     </tr>
-                    
+
                     <!-- Footer -->
                     <tr>
-                        <td style="padding: 24px 32px 32px; border-top: 1px solid rgba(255,255,255,0.05);">
-                            <p style="margin: 0; font-size: 13px; color: #666; text-align: center;">
-                                ${footer || 'Ez egy automatikus üzenet. Kérjük, ne válaszolj erre az emailre.'}
+                        <td style="padding: 24px 16px 0; text-align: center;">
+                            <p style="margin: 0 0 6px; font-size: 13px; color: #94A3B8; font-weight: 600;">
+                                Pollák Antal Technikum • Esport Labor & Bajnokság
                             </p>
-                            <p style="margin: 12px 0 0; font-size: 12px; color: #444; text-align: center;">
-                                © ${new Date().getFullYear()} Pollák - Esport
+                            <p style="margin: 0; font-size: 12px; color: #64748B;">
+                                ${footer || 'Ez egy automatikus rendszerüzenet. Kérjük, ne válaszolj erre az emailre.'}
+                            </p>
+                            <p style="margin: 12px 0 0; font-size: 11px; color: #475569; font-family: 'Courier New', Courier, monospace;">
+                                © ${new Date().getFullYear()} POLLÁK ESPORT. MINDEN JOG FENNTARTVA.
                             </p>
                             ${unsubscribeHtml}
                         </td>
                     </tr>
-                    
+
                 </table>
             </td>
         </tr>
@@ -128,25 +188,39 @@ export function generateEmailTemplate(options: EmailTemplateOptions): string {
 // TOURNAMENT TEMPLATES
 // ===================================
 
-export function tournamentInviteTemplate(tournamentName: string, tournamentUrl: string): string {
+export function tournamentInviteTemplate(tournamentName: string, tournamentUrl: string, unsubscribeUrl?: string): string {
     return generateEmailTemplate({
-        title: 'Verseny meghívó',
-        preheader: `Meghívtak a ${tournamentName} versenyre!`,
+        title: 'Verseny Meghívó',
+        badgeText: 'ESPORT VERSENY // MEGHÍVÓ',
+        badgeColor: 'purple',
+        preheader: `Meghívtak a(z) ${tournamentName} esport versenyre!`,
         content: `
-            <p style="margin: 0 0 16px; color: #ffffff;">Meghívtak a következő versenyre:</p>
-            <div style="padding: 16px; background: rgba(139, 92, 246, 0.1); border-radius: 12px; border-left: 4px solid #8b5cf6; margin-bottom: 16px;">
-                <span style="font-size: 20px; font-weight: 600; color: #8b5cf6;">${tournamentName}</span>
-            </div>
-            <p style="margin: 0; color: #888;">Kattints az alábbi gombra a részletek megtekintéséhez és a regisztrációhoz!</p>
+            <p style="margin: 0 0 16px; color: #E2E8F0;">
+                Hivatalos meghívást kaptál a Pollák Esport Labor következő versenyére:
+            </p>
+            
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #141B2D; border: 1px solid #8B5CF6; border-left: 4px solid #8B5CF6; border-radius: 8px; margin-bottom: 20px;">
+                <tr>
+                    <td style="padding: 16px 18px;">
+                        <span style="font-size: 11px; font-family: 'Courier New', Courier, monospace; color: #A78BFA; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 4px;">Verseny neve</span>
+                        <span style="font-size: 20px; font-weight: 800; color: #FFFFFF; display: block;">${tournamentName}</span>
+                    </td>
+                </tr>
+            </table>
+
+            <p style="margin: 0; color: #94A3B8; font-size: 14px;">
+                A regisztrációhoz és a szabályzat megtekintéséhez kattints az alábbi gombra:
+            </p>
         `,
         button: {
             text: 'Verseny megtekintése →',
             url: tournamentUrl
-        }
+        },
+        unsubscribeUrl
     });
 }
 
-export function newTournamentTemplate(tournamentName: string, tournamentUrl: string, startDate: Date): string {
+export function newTournamentTemplate(tournamentName: string, tournamentUrl: string, startDate: Date, unsubscribeUrl?: string): string {
     const formattedDate = startDate.toLocaleDateString('hu-HU', {
         year: 'numeric',
         month: 'long',
@@ -157,22 +231,38 @@ export function newTournamentTemplate(tournamentName: string, tournamentUrl: str
     });
 
     return generateEmailTemplate({
-        title: 'Új verseny elérhető!',
-        preheader: `Új verseny: ${tournamentName}`,
+        title: 'Új Esport Verseny Indul!',
+        badgeText: 'ESPORT // ÚJ KIÍRÁS',
+        badgeColor: 'cyan',
+        preheader: `Új verseny indult: ${tournamentName} (${formattedDate})`,
         content: `
-            <p style="margin: 0 0 16px; color: #ffffff;">Új verseny lett létrehozva, amire regisztrálhatsz:</p>
-            <div style="padding: 20px; background: rgba(139, 92, 246, 0.1); border-radius: 12px; margin-bottom: 16px;">
-                <p style="margin: 0 0 8px; font-size: 22px; font-weight: 700; color: #8b5cf6;">${tournamentName}</p>
-                <p style="margin: 0; font-size: 14px; color: #888;">
-                    📅 Kezdés: <span style="color: #fff;">${formattedDate}</span>
-                </p>
-            </div>
-            <p style="margin: 0; color: #888;">Ne maradj le, regisztrálj most!</p>
+            <p style="margin: 0 0 16px; color: #E2E8F0;">
+                Új esport bajnokság nyílt meg a Pollák laborban, amelyre már megnyílt a jelentkezés:
+            </p>
+            
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #141B2D; border: 1px solid #1E293B; border-left: 4px solid #06B6D4; border-radius: 8px; margin-bottom: 20px;">
+                <tr>
+                    <td style="padding: 18px 20px;">
+                        <span style="font-size: 20px; font-weight: 800; color: #06B6D4; display: block; margin-bottom: 8px;">${tournamentName}</span>
+                        <table border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td style="color: #94A3B8; font-size: 13px;">📅 Kezdés időpontja:</td>
+                                <td style="color: #FFFFFF; font-size: 13px; font-weight: 700; padding-left: 8px;">${formattedDate}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <p style="margin: 0; color: #94A3B8; font-size: 14px;">
+                A helyek száma korlátozott! Csatlakozz a csapattársaiddal vagy szólóban még ma:
+            </p>
         `,
         button: {
-            text: 'Regisztráció →',
+            text: 'Nevezés a versenyre →',
             url: tournamentUrl
-        }
+        },
+        unsubscribeUrl
     });
 }
 
@@ -180,7 +270,7 @@ export function newTournamentTemplate(tournamentName: string, tournamentUrl: str
 // MATCH TEMPLATES
 // ===================================
 
-export function matchReminderTemplate(tournamentName: string, opponent: string, scheduledAt: Date, matchUrl: string): string {
+export function matchReminderTemplate(tournamentName: string, opponent: string, scheduledAt: Date, matchUrl: string, unsubscribeUrl?: string): string {
     const formattedDate = scheduledAt.toLocaleDateString('hu-HU', {
         month: 'short',
         day: 'numeric',
@@ -190,63 +280,94 @@ export function matchReminderTemplate(tournamentName: string, opponent: string, 
     });
 
     return generateEmailTemplate({
-        title: 'Meccs emlékeztető',
-        preheader: `Közelgő meccsed ${opponent} ellen`,
+        title: 'Meccs Emlékeztető',
+        badgeText: 'ESPORT // KÖZELGŐ MECCS',
+        badgeColor: 'amber',
+        preheader: `Hamarosan kezdődik a meccsed: ${tournamentName} vs ${opponent}`,
         content: `
-            <p style="margin: 0 0 16px; color: #ffffff;">A következő meccsed hamarosan kezdődik:</p>
-            <div style="padding: 20px; background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%); border-radius: 12px; margin-bottom: 16px;">
-                <p style="margin: 0 0 12px; font-size: 14px; color: #888;">Verseny</p>
-                <p style="margin: 0 0 16px; font-size: 18px; font-weight: 600; color: #fff;">${tournamentName}</p>
-                
-                <div style="display: flex; align-items: center; gap: 16px;">
-                    <div style="flex: 1; text-align: center;">
-                        <p style="margin: 0 0 4px; font-size: 12px; color: #888;">Ellenfél</p>
-                        <p style="margin: 0; font-size: 16px; font-weight: 600; color: #ec4899;">${opponent}</p>
-                    </div>
-                    <div style="flex: 1; text-align: center;">
-                        <p style="margin: 0 0 4px; font-size: 12px; color: #888;">Időpont</p>
-                        <p style="margin: 0; font-size: 16px; font-weight: 600; color: #fff;">${formattedDate}</p>
-                    </div>
-                </div>
-            </div>
-            <p style="margin: 0; color: #888;">Készülj fel és sok sikert! 🎮</p>
-        `,
-        button: {
-            text: 'Meccs részletei →',
-            url: matchUrl
-        }
-    });
-}
+            <p style="margin: 0 0 16px; color: #E2E8F0;">
+                A versenymérkőzésed hamarosan kezdődik a Pollák Esport laborban:
+            </p>
 
-export function matchResultTemplate(tournamentName: string, won: boolean, score: string, tournamentUrl: string): string {
-    const emoji = won ? '🏆' : '💪';
-    const statusColor = won ? '#22c55e' : '#ef4444';
-    const statusText = won ? 'Győzelem!' : 'Vereség';
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #141B2D; border: 1px solid #1E293B; border-radius: 10px; margin-bottom: 20px;">
+                <tr>
+                    <td style="padding: 16px 20px; border-bottom: 1px solid #1E293B;">
+                        <span style="font-size: 11px; font-family: 'Courier New', Courier, monospace; color: #94A3B8; text-transform: uppercase;">Verseny</span>
+                        <div style="font-size: 17px; font-weight: 700; color: #FFFFFF; margin-top: 2px;">${tournamentName}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 16px 20px;">
+                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                            <tr>
+                                <td width="50%" class="col-half" style="vertical-align: top; padding-right: 8px;">
+                                    <span style="font-size: 11px; font-family: 'Courier New', Courier, monospace; color: #94A3B8; text-transform: uppercase;">Ellenfél</span>
+                                    <div style="font-size: 16px; font-weight: 700; color: #F43F5E; margin-top: 2px;">${opponent}</div>
+                                </td>
+                                <td width="50%" class="col-half" style="vertical-align: top; padding-left: 8px;">
+                                    <span style="font-size: 11px; font-family: 'Courier New', Courier, monospace; color: #94A3B8; text-transform: uppercase;">Kezdés</span>
+                                    <div style="font-size: 16px; font-weight: 700; color: #F59E0B; margin-top: 2px;">${formattedDate}</div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
 
-    return generateEmailTemplate({
-        title: won ? '🏆 Győzelem!' : 'Meccs eredmény',
-        preheader: `${statusText} - ${score}`,
-        content: `
-            <div style="text-align: center; margin-bottom: 24px;">
-                <div style="display: inline-block; width: 80px; height: 80px; line-height: 80px; font-size: 40px; background: ${won ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)'}; border-radius: 50%; border: 2px solid ${statusColor};">
-                    ${emoji}
-                </div>
-            </div>
-            <h2 style="margin: 0 0 16px; font-size: 32px; font-weight: 700; color: ${statusColor}; text-align: center;">
-                ${statusText}
-            </h2>
-            <div style="padding: 16px; background: rgba(255,255,255,0.05); border-radius: 12px; text-align: center; margin-bottom: 16px;">
-                <p style="margin: 0 0 8px; font-size: 14px; color: #888;">${tournamentName}</p>
-                <p style="margin: 0; font-size: 28px; font-weight: 700; color: #fff;">${score}</p>
-            </div>
-            <p style="margin: 0; color: #888; text-align: center;">
-                ${won ? 'Gratulálunk a győzelemhez!' : 'Következőre több szerencsét!'}
+            <p style="margin: 0; color: #94A3B8; font-size: 13px;">
+                Kérjük, ellenőrizd a meccs lobbyt és a Discord szobát legalább 10 perccel kezdés előtt!
             </p>
         `,
         button: {
-            text: 'Verseny állás →',
+            text: 'Meccs megtekintése →',
+            url: matchUrl
+        },
+        unsubscribeUrl
+    });
+}
+
+export function matchResultTemplate(tournamentName: string, won: boolean, score: string, tournamentUrl: string, unsubscribeUrl?: string): string {
+    const statusColor = won ? '#10B981' : '#EF4444';
+    const statusText = won ? 'Győzelem!' : 'Vereség';
+    const badgeEmoji = won ? '🏆' : '⚔️';
+
+    return generateEmailTemplate({
+        title: won ? '🏆 Győzelem!' : 'Meccs Eredmény',
+        badgeText: `ESPORT MECCS // ${won ? 'GYŐZELEM' : 'LEZÁRVA'}`,
+        badgeColor: won ? 'emerald' : 'rose',
+        preheader: `${statusText} a(z) ${tournamentName} versenyen! Végeredmény: ${score}`,
+        content: `
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #141B2D; border: 1px solid ${statusColor}40; border-radius: 12px; margin-bottom: 20px; text-align: center;">
+                <tr>
+                    <td style="padding: 24px 16px;">
+                        <div style="font-size: 40px; line-height: 1; margin-bottom: 8px;">${badgeEmoji}</div>
+                        <h2 style="margin: 0 0 6px; font-size: 26px; font-weight: 800; color: ${statusColor}; text-transform: uppercase; letter-spacing: 1px;">
+                            ${statusText}
+                        </h2>
+                        <div style="color: #94A3B8; font-size: 13px; margin-bottom: 14px;">${tournamentName}</div>
+                        
+                        <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
+                            <tr>
+                                <td style="background-color: #0E1422; border: 1px solid #1E293B; border-radius: 8px; padding: 10px 24px;">
+                                    <span style="font-family: 'Courier New', Courier, monospace; font-size: 28px; font-weight: 800; color: #FFFFFF; letter-spacing: 2px;">
+                                        ${score}
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <p style="margin: 0; color: #94A3B8; font-size: 14px; text-align: center;">
+                ${won ? 'Gratulálunk a remek teljesítményhez és a továbbjutáshoz!' : 'Szoros meccs volt, sok sikert a következő fordulóban vagy a vigaszágon!'}
+            </p>
+        `,
+        button: {
+            text: 'Bajnokság állás megtekintése →',
             url: tournamentUrl
-        }
+        },
+        unsubscribeUrl
     });
 }
 
@@ -254,124 +375,165 @@ export function matchResultTemplate(tournamentName: string, won: boolean, score:
 // BOOKING TEMPLATES
 // ===================================
 
-export function bookingConfirmationTemplate(computerName: string, date: string, startTime: string, endTime: string, qrCode?: string): string {
+export function bookingConfirmationTemplate(
+    computerName: string,
+    date: string,
+    startTime: string,
+    endTime: string,
+    qrCode?: string,
+    unsubscribeUrl?: string
+): string {
     return generateEmailTemplate({
-        title: 'Foglalás megerősítve',
-        preheader: `Sikeres foglalás: ${computerName} - ${date} ${startTime}`,
+        title: 'Gépfoglalás Megerősítve',
+        badgeText: 'ESPORT LABOR // FOGLALÁS',
+        badgeColor: 'emerald',
+        preheader: `Sikeres gépfoglalás: ${computerName} (${date} ${startTime}-${endTime})`,
         content: `
-            <div style="text-align: center; margin-bottom: 24px;">
-                <div style="display: inline-block; width: 64px; height: 64px; line-height: 64px; font-size: 32px; background: rgba(34, 197, 94, 0.2); border-radius: 50%; border: 2px solid #22c55e;">
-                    ✅
-                </div>
-            </div>
-            <p style="margin: 0 0 16px; color: #ffffff; text-align: center;">A foglalásodat sikeresen rögzítettük!</p>
-            
-            <div style="padding: 20px; background: rgba(139, 92, 246, 0.1); border-radius: 12px; margin-bottom: 16px;">
-                <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                    <tr>
-                        <td style="padding: 8px 0; color: #888; font-size: 14px;">🖥️ Gép:</td>
-                        <td style="padding: 8px 0; color: #fff; font-weight: 600; text-align: right;">${computerName}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px 0; color: #888; font-size: 14px;">📅 Dátum:</td>
-                        <td style="padding: 8px 0; color: #fff; font-weight: 600; text-align: right;">${date}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px 0; color: #888; font-size: 14px;">⏰ Időpont:</td>
-                        <td style="padding: 8px 0; color: #fff; font-weight: 600; text-align: right;">${startTime} - ${endTime}</td>
-                    </tr>
-                </table>
-            </div>
-            
-          
-            
-            <p style="margin: 0; color: #666; font-size: 13px; text-align: center;">
-                ⚠️ Kérjük, érkezz időben! A foglalás automatikusan törlődik, ha 15 perccel a kezdés után nem jelentkezel be.
+            <p style="margin: 0 0 16px; color: #E2E8F0;">
+                A gépfoglalási igényedet sikeresen rögzítettük és megerősítettük a Pollák Esport laborban:
             </p>
-        `
+            
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #141B2D; border: 1px solid #1E293B; border-radius: 10px; margin-bottom: 20px;">
+                <tr>
+                    <td style="padding: 14px 18px; border-bottom: 1px solid #1E293B;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                            <tr>
+                                <td style="color: #94A3B8; font-size: 13px; font-family: 'Courier New', Courier, monospace;">🖥️ MUNKAÁLLOMÁS</td>
+                                <td align="right" style="color: #10B981; font-size: 15px; font-weight: 700;">${computerName}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 14px 18px; border-bottom: 1px solid #1E293B;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                            <tr>
+                                <td style="color: #94A3B8; font-size: 13px; font-family: 'Courier New', Courier, monospace;">📅 DÁTUM</td>
+                                <td align="right" style="color: #FFFFFF; font-size: 14px; font-weight: 600;">${date}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 14px 18px;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                            <tr>
+                                <td style="color: #94A3B8; font-size: 13px; font-family: 'Courier New', Courier, monospace;">⏰ IDŐSÁV</td>
+                                <td align="right" style="color: #06B6D4; font-size: 14px; font-weight: 700;">${startTime} – ${endTime}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #162032; border-left: 3px solid #06B6D4; border-radius: 6px; margin-bottom: 16px;">
+                <tr>
+                    <td style="padding: 12px 14px; font-size: 12px; color: #94A3B8; line-height: 1.5;">
+                        💡 <strong>Fontos infó:</strong> A géphez a saját iskolai felhő felhasználóneveddel és jelszavaddal tudsz bejelentkezni. Kérjük, érkezz pontosan!
+                    </td>
+                </tr>
+            </table>
+        `,
+        unsubscribeUrl
     });
 }
 
-export function bookingReminderTemplate(computerName: string, startTime: string): string {
+export function bookingReminderTemplate(computerName: string, startTime: string, unsubscribeUrl?: string): string {
     return generateEmailTemplate({
-        title: 'Foglalás emlékeztető',
-        preheader: `A foglalásod 30 perc múlva kezdődik!`,
+        title: 'Foglalás Emlékeztető (30 perc)',
+        badgeText: 'ESPORT LABOR // EMLÉKEZTETŐ',
+        badgeColor: 'amber',
+        preheader: `A gépfoglalásod 30 perc múlva kezdődik a laborban (${computerName})`,
         content: `
-            <div style="text-align: center; margin-bottom: 24px;">
-                <div style="display: inline-block; width: 64px; height: 64px; line-height: 64px; font-size: 32px; background: rgba(251, 191, 36, 0.2); border-radius: 50%; border: 2px solid #fbbf24;">
-                    ⏰
-                </div>
-            </div>
-            <p style="margin: 0 0 16px; color: #ffffff; text-align: center;">A foglalásod hamarosan kezdődik!</p>
-            
-            <div style="padding: 20px; background: rgba(251, 191, 36, 0.1); border-radius: 12px; margin-bottom: 16px; text-align: center;">
-                <p style="margin: 0 0 8px; font-size: 14px; color: #888;">30 perc múlva</p>
-                <p style="margin: 0 0 8px; font-size: 24px; font-weight: 700; color: #fff;">${computerName}</p>
-                <p style="margin: 0; font-size: 18px; color: #fbbf24;">${startTime}</p>
-            </div>
-            
-            <p style="margin: 0; color: #888; text-align: center;">
-                Ne felejtsd el időben bejelentkezni! 🎮
+            <p style="margin: 0 0 16px; color: #E2E8F0;">
+                Hamarosan kezdődik a lefoglalt idősávod a Pollák Esport laborban:
             </p>
-        `
+            
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #141B2D; border: 1px solid #F59E0B40; border-radius: 10px; margin-bottom: 20px; text-align: center;">
+                <tr>
+                    <td style="padding: 24px 18px;">
+                        <span style="font-size: 12px; font-family: 'Courier New', Courier, monospace; color: #F59E0B; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;">30 perc múlva</span>
+                        <div style="font-size: 22px; font-weight: 800; color: #FFFFFF; margin: 4px 0 6px;">${computerName}</div>
+                        <div style="font-size: 18px; font-weight: 700; color: #38BDF8;">Kezdés: ${startTime}</div>
+                    </td>
+                </tr>
+            </table>
+
+            <p style="margin: 0; color: #94A3B8; font-size: 13px; text-align: center;">
+                Jó játékot és eredményes gyakorlást kívánunk! 🎮
+            </p>
+        `,
+        unsubscribeUrl
     });
 }
 
-export function bookingCancelledTemplate(computerName: string, date: string, startTime: string, reason?: string): string {
+export function bookingCancelledTemplate(computerName: string, date: string, startTime: string, reason?: string, unsubscribeUrl?: string): string {
     return generateEmailTemplate({
-        title: 'Foglalás törölve',
-        preheader: `A foglalásod törölve lett: ${computerName}`,
+        title: 'Foglalási Kérelem Törölve',
+        badgeText: 'ESPORT LABOR // TÖRLÉS',
+        badgeColor: 'rose',
+        preheader: `A(z) ${computerName} gépre szóló foglalásod törlésre került`,
         content: `
-            <div style="text-align: center; margin-bottom: 24px;">
-                <div style="display: inline-block; width: 64px; height: 64px; line-height: 64px; font-size: 32px; background: rgba(239, 68, 68, 0.2); border-radius: 50%; border: 2px solid #ef4444;">
-                    ❌
-                </div>
-            </div>
-            <p style="margin: 0 0 16px; color: #ffffff; text-align: center;">A következő foglalásod törölve lett:</p>
+            <p style="margin: 0 0 16px; color: #E2E8F0;">
+                A(z) <strong>${computerName}</strong> munkaállomásra leadott foglalásod törlésre került a rendszerből:
+            </p>
             
-            <div style="padding: 16px; background: rgba(239, 68, 68, 0.1); border-radius: 12px; margin-bottom: 16px; text-align: center;">
-                <p style="margin: 0 0 8px; font-size: 18px; font-weight: 600; color: #fff;">${computerName}</p>
-                <p style="margin: 0; font-size: 14px; color: #888;">${date} - ${startTime}</p>
-            </div>
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #141B2D; border: 1px solid #EF444440; border-radius: 8px; margin-bottom: 16px;">
+                <tr>
+                    <td style="padding: 14px 18px;">
+                        <div style="font-size: 16px; font-weight: 700; color: #FFFFFF;">${computerName}</div>
+                        <div style="font-size: 13px; color: #94A3B8; margin-top: 2px;">${date} • ${startTime}</div>
+                    </td>
+                </tr>
+            </table>
             
             ${reason ? `
-            <div style="padding: 12px 16px; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 16px;">
-                <p style="margin: 0; font-size: 14px; color: #888;">Indoklás: <span style="color: #fff;">${reason}</span></p>
-            </div>
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #162032; border-left: 3px solid #EF4444; border-radius: 6px; margin-bottom: 16px;">
+                <tr>
+                    <td style="padding: 12px 14px; font-size: 13px; color: #CBD5E1;">
+                        <strong>Indoklás / ok:</strong> ${reason}
+                    </td>
+                </tr>
+            </table>
             ` : ''}
-            
-            <p style="margin: 0; color: #888; text-align: center;">
-                Foglalj új időpontot a rendszerben!
+
+            <p style="margin: 0; color: #94A3B8; font-size: 13px;">
+                A kérelem törlésével a heti limitkereted nem csökkent, így szabadon választhatsz egy másik elérhető időpontot a felületen.
             </p>
-        `
+        `,
+        unsubscribeUrl
     });
 }
 
-export function waitlistNotificationTemplate(computerName: string, availableTime: string, bookingUrl: string): string {
+export function waitlistNotificationTemplate(computerName: string, availableTime: string, bookingUrl: string, unsubscribeUrl?: string): string {
     return generateEmailTemplate({
-        title: 'Felszabadult hely!',
-        preheader: `Szabad lett egy hely: ${computerName}`,
+        title: 'Felszabadult Gép a Laborban!',
+        badgeText: 'ESPORT LABOR // FELSZABADULT GÉP',
+        badgeColor: 'emerald',
+        preheader: `Szabad lett a(z) ${computerName} gép a laborban: ${availableTime}`,
         content: `
-            <div style="text-align: center; margin-bottom: 24px;">
-                <div style="display: inline-block; width: 64px; height: 64px; line-height: 64px; font-size: 32px; background: rgba(34, 197, 94, 0.2); border-radius: 50%; border: 2px solid #22c55e;">
-                    🎉
-                </div>
-            </div>
-            <p style="margin: 0 0 16px; color: #ffffff; text-align: center;">Jó hír! Felszabadult egy gép, amire vártál:</p>
+            <p style="margin: 0 0 16px; color: #E2E8F0;">
+                Jó hír! Egy korábban lefoglalt számítógép megüresedett, amelyre várólistán voltál:
+            </p>
             
-            <div style="padding: 20px; background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%); border-radius: 12px; margin-bottom: 16px; text-align: center;">
-                <p style="margin: 0 0 8px; font-size: 24px; font-weight: 700; color: #22c55e;">${computerName}</p>
-                <p style="margin: 0; font-size: 16px; color: #fff;">${availableTime}</p>
-            </div>
-            
-            <p style="margin: 0; color: #888; text-align: center;">
-                Siess, mert valaki más is lefoglalhatja!
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #141B2D; border: 1px solid #10B98140; border-radius: 10px; margin-bottom: 20px; text-align: center;">
+                <tr>
+                    <td style="padding: 20px;">
+                        <div style="font-size: 22px; font-weight: 800; color: #10B981; margin-bottom: 4px;">${computerName}</div>
+                        <div style="font-size: 15px; font-weight: 600; color: #FFFFFF;">${availableTime}</div>
+                    </td>
+                </tr>
+            </table>
+
+            <p style="margin: 0; color: #94A3B8; font-size: 13px; text-align: center;">
+                Kattints a foglalás gombra minél előbb, mielőtt más lefoglalná a szabad helyet!
             </p>
         `,
         button: {
-            text: 'Foglalás most →',
+            text: 'Gép lefoglalása most →',
             url: bookingUrl
-        }
+        },
+        unsubscribeUrl
     });
 }
 
@@ -379,14 +541,21 @@ export function waitlistNotificationTemplate(computerName: string, availableTime
 // SYSTEM TEMPLATES
 // ===================================
 
-export function systemNotificationTemplate(title: string, message: string, link?: string): string {
+export function systemNotificationTemplate(title: string, message: string, link?: string, unsubscribeUrl?: string): string {
     return generateEmailTemplate({
         title,
-        content: `<p style="margin: 0; color: #fff;">${message}</p>`,
+        badgeText: 'ESPORT // RENDSZERÉRTESÍTÉS',
+        badgeColor: 'cyan',
+        content: `
+            <div style="background-color: #141B2D; border: 1px solid #1E293B; border-radius: 8px; padding: 18px 20px; color: #E2E8F0; line-height: 1.6;">
+                ${message.replace(/\n/g, '<br>')}
+            </div>
+        `,
         button: link ? {
-            text: 'Megtekintés →',
+            text: 'Megtekintés az oldalon →',
             url: link
-        } : undefined
+        } : undefined,
+        unsubscribeUrl
     });
 }
 
@@ -394,13 +563,13 @@ export function systemNotificationTemplate(title: string, message: string, link?
 // DIGEST TEMPLATE
 // ===================================
 
-interface DigestTournament {
+export interface DigestTournament {
     name: string;
     startDate: Date;
     url: string;
 }
 
-interface DigestStats {
+export interface DigestStats {
     totalMatches: number;
     wins: number;
     losses: number;
@@ -410,64 +579,68 @@ export function weeklyDigestTemplate(
     userName: string,
     upcomingTournaments: DigestTournament[],
     stats: DigestStats,
-    dashboardUrl: string
+    dashboardUrl: string,
+    unsubscribeUrl?: string
 ): string {
-    const tournamentsList = upcomingTournaments.length > 0
-        ? upcomingTournaments.map(t => `
-            <tr>
-                <td style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <a href="${t.url}" style="color: #8b5cf6; text-decoration: none; font-weight: 600;">${t.name}</a>
-                </td>
-                <td style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #888; text-align: right;">
-                    ${t.startDate.toLocaleDateString('hu-HU', { month: 'short', day: 'numeric', timeZone: 'Europe/Budapest' })}
-                </td>
-            </tr>
-        `).join('')
-        : `<tr><td colspan="2" style="padding: 16px; color: #666; text-align: center;">Nincsenek közelgő versenyek</td></tr>`;
-
     const winRate = stats.totalMatches > 0
         ? Math.round((stats.wins / stats.totalMatches) * 100)
         : 0;
 
+    const tournamentsList = upcomingTournaments.length > 0
+        ? upcomingTournaments.map(t => `
+            <tr>
+                <td style="padding: 12px 14px; border-bottom: 1px solid #1E293B;">
+                    <a href="${t.url}" style="color: #38BDF8; text-decoration: none; font-weight: 700; font-size: 14px;">${t.name}</a>
+                </td>
+                <td align="right" style="padding: 12px 14px; border-bottom: 1px solid #1E293B; color: #94A3B8; font-size: 13px;">
+                    ${t.startDate.toLocaleDateString('hu-HU', { month: 'short', day: 'numeric', timeZone: 'Europe/Budapest' })}
+                </td>
+            </tr>
+        `).join('')
+        : `<tr><td colspan="2" style="padding: 16px; color: #64748B; text-align: center; font-size: 13px;">Nincsenek aktív versenyek erre a hétre</td></tr>`;
+
     return generateEmailTemplate({
-        title: `Heti összefoglaló`,
-        preheader: `Szia ${userName}! Itt a heti összefoglalód.`,
+        title: 'Heti Esport Összefoglaló',
+        badgeText: 'ESPORT // HETI JELENTÉS',
+        badgeColor: 'purple',
+        preheader: `Szia ${userName}! Itt a heti összefoglalód az Esport Laborból.`,
         content: `
-            <p style="margin: 0 0 24px; color: #fff;">Szia <strong>${userName}</strong>! 👋</p>
-            <p style="margin: 0 0 24px; color: #888;">Itt a heti összefoglalód az Esport Tournament rendszerből.</p>
-            
-            <!-- Stats -->
-            <h3 style="margin: 0 0 16px; font-size: 16px; color: #8b5cf6; text-transform: uppercase; letter-spacing: 1px;">📊 Statisztikák</h3>
-            <div style="display: flex; gap: 12px; margin-bottom: 24px;">
-                <div style="flex: 1; padding: 16px; background: rgba(139, 92, 246, 0.1); border-radius: 12px; text-align: center;">
-                    <p style="margin: 0 0 4px; font-size: 24px; font-weight: 700; color: #fff;">${stats.totalMatches}</p>
-                    <p style="margin: 0; font-size: 12px; color: #888;">Meccs</p>
-                </div>
-                <div style="flex: 1; padding: 16px; background: rgba(34, 197, 94, 0.1); border-radius: 12px; text-align: center;">
-                    <p style="margin: 0 0 4px; font-size: 24px; font-weight: 700; color: #22c55e;">${stats.wins}</p>
-                    <p style="margin: 0; font-size: 12px; color: #888;">Győzelem</p>
-                </div>
-                <div style="flex: 1; padding: 16px; background: rgba(251, 191, 36, 0.1); border-radius: 12px; text-align: center;">
-                    <p style="margin: 0 0 4px; font-size: 24px; font-weight: 700; color: #fbbf24;">${winRate}%</p>
-                    <p style="margin: 0; font-size: 12px; color: #888;">Win Rate</p>
-                </div>
-            </div>
-            
-            <!-- Upcoming Tournaments -->
-            <h3 style="margin: 0 0 16px; font-size: 16px; color: #8b5cf6; text-transform: uppercase; letter-spacing: 1px;">🏆 Közelgő versenyek</h3>
-            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background: rgba(255,255,255,0.02); border-radius: 12px; margin-bottom: 24px;">
+            <p style="margin: 0 0 20px; color: #E2E8F0;">
+                Szia <strong>${userName}</strong>! 👋 Íme a heti összefoglalód a Pollák Esport bajnokságokról és statisztikáidról:
+            </p>
+
+            <!-- Table-based 3-column stats -->
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 24px;">
+                <tr>
+                    <td width="32%" class="col-third" style="background-color: #141B2D; border: 1px solid #1E293B; border-radius: 8px; padding: 14px 8px; text-align: center;">
+                        <span style="font-size: 10px; font-family: 'Courier New', Courier, monospace; color: #94A3B8; text-transform: uppercase;">Összes meccs</span>
+                        <div style="font-size: 22px; font-weight: 800; color: #FFFFFF; margin-top: 2px;">${stats.totalMatches}</div>
+                    </td>
+                    <td width="2%">&nbsp;</td>
+                    <td width="32%" class="col-third" style="background-color: #141B2D; border: 1px solid #1E293B; border-radius: 8px; padding: 14px 8px; text-align: center;">
+                        <span style="font-size: 10px; font-family: 'Courier New', Courier, monospace; color: #94A3B8; text-transform: uppercase;">Győzelmek</span>
+                        <div style="font-size: 22px; font-weight: 800; color: #10B981; margin-top: 2px;">${stats.wins}</div>
+                    </td>
+                    <td width="2%">&nbsp;</td>
+                    <td width="32%" class="col-third" style="background-color: #141B2D; border: 1px solid #1E293B; border-radius: 8px; padding: 14px 8px; text-align: center;">
+                        <span style="font-size: 10px; font-family: 'Courier New', Courier, monospace; color: #94A3B8; text-transform: uppercase;">Win Rate</span>
+                        <div style="font-size: 22px; font-weight: 800; color: #F59E0B; margin-top: 2px;">${winRate}%</div>
+                    </td>
+                </tr>
+            </table>
+
+            <h3 style="margin: 0 0 10px; font-size: 13px; font-family: 'Courier New', Courier, monospace; color: #38BDF8; text-transform: uppercase; letter-spacing: 1px;">
+                🏆 Közelgő Bajnokságok
+            </h3>
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #141B2D; border: 1px solid #1E293B; border-radius: 8px; margin-bottom: 20px;">
                 ${tournamentsList}
             </table>
-            
-            <p style="margin: 0; color: #666; font-size: 13px; text-align: center;">
-                Jó játékot kívánunk a hétre! 🎮
-            </p>
         `,
         button: {
-            text: 'Irány a dashboard →',
+            text: 'Irány a vezérlőpult →',
             url: dashboardUrl
         },
-        footer: 'Ezt az emailt hetente egyszer küldjük. Leiratkozhatsz a Beállításokban.'
+        unsubscribeUrl
     });
 }
 
@@ -478,37 +651,26 @@ export function weeklyDigestTemplate(
 export function announcementTemplate(title: string, message: string, senderName: string): string {
     return generateEmailTemplate({
         title,
+        badgeText: 'ESPORT // HIVATALOS HIRDETMÉNY',
+        badgeColor: 'cyan',
         content: `
-            <div style="padding: 16px; background: rgba(59, 130, 246, 0.1); border-radius: 12px; border-left: 4px solid #3b82f6; margin-bottom: 16px;">
-                <p style="margin: 0; font-size: 14px; font-weight: 700; color: #3b82f6; text-transform: uppercase; letter-spacing: 1.5px;">📢 Hirdetmény</p>
-            </div>
-            <div style="color: #fff; line-height: 1.8; font-size: 16px;">
-                ${message.replace(/\n/g, '<br>')}
-            </div>
-            <p style="margin: 24px 0 0; font-size: 13px; color: #666; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 16px;">
-                Küldte: <strong style="color: #fff;">${senderName}</strong> | EsportHub Admin
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #141B2D; border: 1px solid #1E293B; border-left: 4px solid #06B6D4; border-radius: 8px; margin-bottom: 16px;">
+                <tr>
+                    <td style="padding: 16px 20px; color: #F8FAFC; line-height: 1.7; font-size: 15px;">
+                        ${message.replace(/\n/g, '<br>')}
+                    </td>
+                </tr>
+            </table>
+            <p style="margin: 0; font-size: 13px; color: #94A3B8;">
+                Küldte: <strong style="color: #FFFFFF;">${senderName}</strong> • Pollák Esport Vezetőség
             </p>
         `,
-        footer: 'Ezt az üzenetet az EsportHub adminisztrátora küldte.'
+        footer: 'Hivatalos rendszerhirdetmény minden regisztrált felhasználónak.'
     });
 }
 
 export function adminBroadcastTemplate(title: string, message: string, senderName: string): string {
-    return generateEmailTemplate({
-        title,
-        content: `
-            <div style="padding: 16px; background: rgba(239, 68, 68, 0.1); border-radius: 12px; border-left: 4px solid #ef4444; margin-bottom: 16px;">
-                <p style="margin: 0; font-size: 12px; color: #ef4444; text-transform: uppercase; letter-spacing: 1px;">📢 Admin üzenet</p>
-            </div>
-            <div style="color: #fff; line-height: 1.8;">
-                ${message.replace(/\n/g, '<br>')}
-            </div>
-            <p style="margin: 24px 0 0; font-size: 13px; color: #666;">
-                Küldő: ${senderName}
-            </p>
-        `,
-        footer: 'Ez egy adminisztrátori közlemény.'
-    });
+    return announcementTemplate(title, message, senderName);
 }
 
 // ===================================
@@ -517,14 +679,9 @@ export function adminBroadcastTemplate(title: string, message: string, senderNam
 
 export function timeBalanceUpdateTemplate(userName: string, amount: number, newBalance: number, reason: string): string {
     const isPositive = amount >= 0;
-    const color = isPositive ? '#22c55e' : '#ef4444';
-    const bg = isPositive ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)';
-    const emoji = isPositive ? '⏱️' : '⏳';
-    const title = isPositive ? 'Idő jóváírás' : 'Idő levonás';
+    const color = isPositive ? '#10B981' : '#EF4444';
+    const title = isPositive ? 'Időkeret Jóváírás' : 'Időkeret Levonás';
     
-    // Format seconds to HH:MM:SS or similar readable format if feasible, 
-    // but typically balance is stored in seconds. Let's just show minutes if practical or raw seconds / formatted.
-    // Let's stick to a simple formatted string for the amount.
     const formatTime = (seconds: number) => {
         const absSeconds = Math.abs(seconds);
         const hours = Math.floor(absSeconds / 3600);
@@ -541,33 +698,43 @@ export function timeBalanceUpdateTemplate(userName: string, amount: number, newB
 
     return generateEmailTemplate({
         title,
+        badgeText: 'ESPORT LABOR // IDŐEGYENLEG',
+        badgeColor: isPositive ? 'emerald' : 'rose',
         content: `
-            <div style="text-align: center; margin-bottom: 24px;">
-                <div style="display: inline-block; width: 64px; height: 64px; line-height: 64px; font-size: 32px; background: ${bg}; border-radius: 50%; border: 2px solid ${color};">
-                    ${emoji}
-                </div>
-            </div>
-            
-            <p style="margin: 0 0 16px; color: #fff; text-align: center;">
-                ${isPositive ? 'Időt írtak jóvá a számládon.' : 'Időt vontak le a számládról.'}
+            <p style="margin: 0 0 16px; color: #E2E8F0;">
+                Szia <strong>${userName}</strong>! Időkeret tranzakció történt a fiókodon a laborban:
             </p>
-            
-            <div style="padding: 20px; background: ${bg}; border-radius: 12px; margin-bottom: 24px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                    <span style="color: #888;">Változás</span>
-                    <span style="font-weight: 700; color: ${color}; font-size: 18px;">${amountText}</span>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: #888;">Új egyenleg</span>
-                    <span style="font-weight: 700; color: #fff;">${balanceText}</span>
-                </div>
-            </div>
-            
-            <div style="padding: 16px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-                <p style="margin: 0 0 4px; font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px;">Indoklás</p>
-                <p style="margin: 0; color: #fff; font-style: italic;">"${reason}"</p>
-            </div>
-        `,
-        footer: 'Ezt az értesítést a rendszer küldte az egyenleg változásáról.'
+
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #141B2D; border: 1px solid #1E293B; border-radius: 8px; margin-bottom: 16px;">
+                <tr>
+                    <td style="padding: 14px 18px; border-bottom: 1px solid #1E293B;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                            <tr>
+                                <td style="color: #94A3B8; font-size: 13px;">Változás:</td>
+                                <td align="right" style="color: ${color}; font-size: 16px; font-weight: 800;">${amountText}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 14px 18px;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                            <tr>
+                                <td style="color: #94A3B8; font-size: 13px;">Új egyenleged:</td>
+                                <td align="right" style="color: #FFFFFF; font-size: 16px; font-weight: 800;">${balanceText}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #162032; border-left: 3px solid #06B6D4; border-radius: 6px;">
+                <tr>
+                    <td style="padding: 12px 14px; font-size: 13px; color: #CBD5E1;">
+                        <strong>Indoklás:</strong> "${reason}"
+                    </td>
+                </tr>
+            </table>
+        `
     });
 }

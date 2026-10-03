@@ -4,6 +4,7 @@ import { authenticate, AuthenticatedRequest } from '../middleware/auth.js';
 import { ApiError, asyncHandler } from '../middleware/errorHandler.js';
 import { UserRole } from '../utils/enums.js';
 import { emailService } from '../services/emailService.js';
+import { generateEmailTemplate } from '../services/emailTemplates.js';
 import { discordService } from '../services/discordService.js';
 import { processAndValidateImage } from '../utils/imageProcessor.js';
 
@@ -58,29 +59,45 @@ async function notifyAdminsAboutBugReport(bugReport: any, reporter: any) {
         for (const setting of settings) {
             // Send email notification
             if (setting.receiveEmail && setting.user.email) {
+                const adminUrl = `${process.env.FRONTEND_URL || 'https://esport.pollak.info'}/admin?tab=bug-reports`;
                 emailService.sendEmail({
                     to: setting.user.email,
-                    subject: `🐛 Új hibajelentés: ${bugReport.title}`,
+                    subject: `[Pollák Esport] 🐛 Új hibajelentés: ${bugReport.title}`,
                     type: 'SYSTEM',
-                    html: `
-                        <div style="font-family: sans-serif; color: #333;">
-                            <h2 style="color: #e74c3c;">🐛 Új hibajelentés érkezett</h2>
-                            <p><strong>Bejelentő:</strong> ${safeReporterName}</p>
-                            <p><strong>Cím:</strong> ${safeTitle}</p>
-                            <p><strong>Kategória:</strong> ${safeCategory}</p>
-                            <p><strong>Prioritás:</strong> ${safePriority}</p>
-                            <p><strong>Leírás:</strong></p>
-                            <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                                ${safeDescription}
-                            </div>
-                            <p style="margin-top: 20px;">
-                                <a href="${process.env.FRONTEND_URL || 'https://esport.pollak.info'}/admin?tab=bug-reports" 
-                                   style="background: #8b5cf6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px;">
-                                    Megtekintés az Admin felületen
-                                </a>
+                    html: generateEmailTemplate({
+                        title: 'Új Hibajelentés Érkezett',
+                        badgeText: 'ESPORT // HIBAJELENTÉS',
+                        badgeColor: 'rose',
+                        content: `
+                            <p style="margin: 0 0 16px; color: #E2E8F0;">
+                                Új hibajelentést rögzített egy felhasználó az Esport rendszerben:
                             </p>
-                        </div>
-                    `
+                            
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #141B2D; border: 1px solid #1E293B; border-radius: 8px; margin-bottom: 16px;">
+                                <tr>
+                                    <td style="padding: 10px 16px; border-bottom: 1px solid #1E293B; color: #94A3B8; font-size: 13px;">Bejelentő:</td>
+                                    <td style="padding: 10px 16px; border-bottom: 1px solid #1E293B; color: #FFFFFF; font-weight: 700; font-size: 13px;" align="right">${safeReporterName}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px 16px; border-bottom: 1px solid #1E293B; color: #94A3B8; font-size: 13px;">Kategória:</td>
+                                    <td style="padding: 10px 16px; border-bottom: 1px solid #1E293B; color: #38BDF8; font-size: 13px;" align="right">${safeCategory}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px 16px; color: #94A3B8; font-size: 13px;">Prioritás:</td>
+                                    <td style="padding: 10px 16px; color: #EF4444; font-weight: 700; font-size: 13px;" align="right">${safePriority}</td>
+                                </tr>
+                            </table>
+
+                            <div style="background-color: #162032; border: 1px solid #1E293B; border-radius: 6px; padding: 14px 16px; margin-bottom: 16px;">
+                                <div style="font-size: 11px; font-family: 'Courier New', Courier, monospace; color: #94A3B8; text-transform: uppercase; margin-bottom: 6px;">Leírás</div>
+                                <div style="color: #F8FAFC; line-height: 1.6; font-size: 14px;">${safeDescription}</div>
+                            </div>
+                        `,
+                        button: {
+                            text: 'Megtekintés az Admin felületen →',
+                            url: adminUrl
+                        }
+                    })
                 }).catch(err => console.error('Bug report email notification failed:', err));
             }
 
