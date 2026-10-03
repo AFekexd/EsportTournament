@@ -207,7 +207,7 @@ export type IncidentGroupByOutputType = {
   _max: IncidentMaxAggregateOutputType | null
 }
 
-type GetIncidentGroupByPayload<T extends IncidentGroupByArgs> = Prisma.PrismaPromise<
+export type GetIncidentGroupByPayload<T extends IncidentGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<IncidentGroupByOutputType, T['by']> &
       {
@@ -1537,6 +1537,11 @@ export type IncidentFindManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Skip the first `n` Incidents.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Incidents.
+   */
   distinct?: Prisma.IncidentScalarFieldEnum | Prisma.IncidentScalarFieldEnum[]
 }
 

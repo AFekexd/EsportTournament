@@ -158,7 +158,7 @@ export type UserRankGroupByOutputType = {
   _max: UserRankMaxAggregateOutputType | null
 }
 
-type GetUserRankGroupByPayload<T extends UserRankGroupByArgs> = Prisma.PrismaPromise<
+export type GetUserRankGroupByPayload<T extends UserRankGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<UserRankGroupByOutputType, T['by']> &
       {
@@ -1368,6 +1368,11 @@ export type UserRankFindManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Skip the first `n` UserRanks.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of UserRanks.
+   */
   distinct?: Prisma.UserRankScalarFieldEnum | Prisma.UserRankScalarFieldEnum[]
 }
 

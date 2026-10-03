@@ -228,7 +228,7 @@ export type BookingScheduleGroupByOutputType = {
   _max: BookingScheduleMaxAggregateOutputType | null
 }
 
-type GetBookingScheduleGroupByPayload<T extends BookingScheduleGroupByArgs> = Prisma.PrismaPromise<
+export type GetBookingScheduleGroupByPayload<T extends BookingScheduleGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<BookingScheduleGroupByOutputType, T['by']> &
       {
@@ -1122,6 +1122,11 @@ export type BookingScheduleFindManyArgs<ExtArgs extends runtime.Types.Extensions
    * Skip the first `n` BookingSchedules.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of BookingSchedules.
+   */
   distinct?: Prisma.BookingScheduleScalarFieldEnum | Prisma.BookingScheduleScalarFieldEnum[]
 }
 

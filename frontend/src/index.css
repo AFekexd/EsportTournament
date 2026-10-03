@@ -130,6 +130,18 @@
     transform: translateY(-2px);
   }
 
+  /* Modals, dialogs, and fixed overlays must NEVER shift or translate on hover */
+  .fixed .tactical-card,
+  .fixed .tactical-card:hover,
+  [role="dialog"],
+  [role="dialog"]:hover,
+  .modal-dialog,
+  .modal-dialog:hover,
+  .modal-content,
+  .modal-content:hover {
+    transform: none !important;
+  }
+
   .tactical-badge {
     font-family: var(--font-mono);
     text-transform: uppercase;
@@ -190,6 +202,7 @@ html {
   font-size: 16px;
   scroll-behavior: smooth;
   color-scheme: dark;
+  scrollbar-gutter: stable;
 }
 
 /* Ensure date picker icon is visible in dark mode */

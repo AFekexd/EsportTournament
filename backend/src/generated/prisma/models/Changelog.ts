@@ -161,7 +161,7 @@ export type ChangelogGroupByOutputType = {
   _max: ChangelogMaxAggregateOutputType | null
 }
 
-type GetChangelogGroupByPayload<T extends ChangelogGroupByArgs> = Prisma.PrismaPromise<
+export type GetChangelogGroupByPayload<T extends ChangelogGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ChangelogGroupByOutputType, T['by']> &
       {
@@ -1164,6 +1164,11 @@ export type ChangelogFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Skip the first `n` Changelogs.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Changelogs.
+   */
   distinct?: Prisma.ChangelogScalarFieldEnum | Prisma.ChangelogScalarFieldEnum[]
 }
 

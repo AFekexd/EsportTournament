@@ -203,7 +203,7 @@ export type DiscordLogGroupByOutputType = {
   _max: DiscordLogMaxAggregateOutputType | null
 }
 
-type GetDiscordLogGroupByPayload<T extends DiscordLogGroupByArgs> = Prisma.PrismaPromise<
+export type GetDiscordLogGroupByPayload<T extends DiscordLogGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<DiscordLogGroupByOutputType, T['by']> &
       {
@@ -1369,6 +1369,11 @@ export type DiscordLogFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Skip the first `n` DiscordLogs.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of DiscordLogs.
+   */
   distinct?: Prisma.DiscordLogScalarFieldEnum | Prisma.DiscordLogScalarFieldEnum[]
 }
 

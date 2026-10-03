@@ -34,6 +34,9 @@ export type BookingMinAggregateOutputType = {
   checkInCode: string | null
   checkedInAt: Date | null
   reminderSent: boolean | null
+  status: string | null
+  approvedBy: string | null
+  approvedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -48,6 +51,9 @@ export type BookingMaxAggregateOutputType = {
   checkInCode: string | null
   checkedInAt: Date | null
   reminderSent: boolean | null
+  status: string | null
+  approvedBy: string | null
+  approvedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -62,6 +68,9 @@ export type BookingCountAggregateOutputType = {
   checkInCode: number
   checkedInAt: number
   reminderSent: number
+  status: number
+  approvedBy: number
+  approvedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -78,6 +87,9 @@ export type BookingMinAggregateInputType = {
   checkInCode?: true
   checkedInAt?: true
   reminderSent?: true
+  status?: true
+  approvedBy?: true
+  approvedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -92,6 +104,9 @@ export type BookingMaxAggregateInputType = {
   checkInCode?: true
   checkedInAt?: true
   reminderSent?: true
+  status?: true
+  approvedBy?: true
+  approvedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -106,6 +121,9 @@ export type BookingCountAggregateInputType = {
   checkInCode?: true
   checkedInAt?: true
   reminderSent?: true
+  status?: true
+  approvedBy?: true
+  approvedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -193,6 +211,9 @@ export type BookingGroupByOutputType = {
   checkInCode: string | null
   checkedInAt: Date | null
   reminderSent: boolean
+  status: string
+  approvedBy: string | null
+  approvedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: BookingCountAggregateOutputType | null
@@ -200,7 +221,7 @@ export type BookingGroupByOutputType = {
   _max: BookingMaxAggregateOutputType | null
 }
 
-type GetBookingGroupByPayload<T extends BookingGroupByArgs> = Prisma.PrismaPromise<
+export type GetBookingGroupByPayload<T extends BookingGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<BookingGroupByOutputType, T['by']> &
       {
@@ -228,6 +249,9 @@ export type BookingWhereInput = {
   checkInCode?: Prisma.StringNullableFilter<"Booking"> | string | null
   checkedInAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   reminderSent?: Prisma.BoolFilter<"Booking"> | boolean
+  status?: Prisma.StringFilter<"Booking"> | string
+  approvedBy?: Prisma.StringNullableFilter<"Booking"> | string | null
+  approvedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   computer?: Prisma.XOR<Prisma.ComputerScalarRelationFilter, Prisma.ComputerWhereInput>
@@ -244,6 +268,9 @@ export type BookingOrderByWithRelationInput = {
   checkInCode?: Prisma.SortOrderInput | Prisma.SortOrder
   checkedInAt?: Prisma.SortOrderInput | Prisma.SortOrder
   reminderSent?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  approvedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   computer?: Prisma.ComputerOrderByWithRelationInput
@@ -263,6 +290,9 @@ export type BookingWhereUniqueInput = Prisma.AtLeast<{
   endTime?: Prisma.DateTimeFilter<"Booking"> | Date | string
   checkedInAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   reminderSent?: Prisma.BoolFilter<"Booking"> | boolean
+  status?: Prisma.StringFilter<"Booking"> | string
+  approvedBy?: Prisma.StringNullableFilter<"Booking"> | string | null
+  approvedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   computer?: Prisma.XOR<Prisma.ComputerScalarRelationFilter, Prisma.ComputerWhereInput>
@@ -279,6 +309,9 @@ export type BookingOrderByWithAggregationInput = {
   checkInCode?: Prisma.SortOrderInput | Prisma.SortOrder
   checkedInAt?: Prisma.SortOrderInput | Prisma.SortOrder
   reminderSent?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  approvedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BookingCountOrderByAggregateInput
@@ -299,6 +332,9 @@ export type BookingScalarWhereWithAggregatesInput = {
   checkInCode?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
   checkedInAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
   reminderSent?: Prisma.BoolWithAggregatesFilter<"Booking"> | boolean
+  status?: Prisma.StringWithAggregatesFilter<"Booking"> | string
+  approvedBy?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
+  approvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Booking"> | Date | string
 }
@@ -311,6 +347,9 @@ export type BookingCreateInput = {
   checkInCode?: string | null
   checkedInAt?: Date | string | null
   reminderSent?: boolean
+  status?: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   computer: Prisma.ComputerCreateNestedOneWithoutBookingsInput
@@ -327,6 +366,9 @@ export type BookingUncheckedCreateInput = {
   checkInCode?: string | null
   checkedInAt?: Date | string | null
   reminderSent?: boolean
+  status?: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -339,6 +381,9 @@ export type BookingUpdateInput = {
   checkInCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reminderSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   computer?: Prisma.ComputerUpdateOneRequiredWithoutBookingsNestedInput
@@ -355,6 +400,9 @@ export type BookingUncheckedUpdateInput = {
   checkInCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reminderSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -369,6 +417,9 @@ export type BookingCreateManyInput = {
   checkInCode?: string | null
   checkedInAt?: Date | string | null
   reminderSent?: boolean
+  status?: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -381,6 +432,9 @@ export type BookingUpdateManyMutationInput = {
   checkInCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reminderSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -395,6 +449,9 @@ export type BookingUncheckedUpdateManyInput = {
   checkInCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reminderSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -419,6 +476,9 @@ export type BookingCountOrderByAggregateInput = {
   checkInCode?: Prisma.SortOrder
   checkedInAt?: Prisma.SortOrder
   reminderSent?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  approvedBy?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -433,6 +493,9 @@ export type BookingMaxOrderByAggregateInput = {
   checkInCode?: Prisma.SortOrder
   checkedInAt?: Prisma.SortOrder
   reminderSent?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  approvedBy?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -447,6 +510,9 @@ export type BookingMinOrderByAggregateInput = {
   checkInCode?: Prisma.SortOrder
   checkedInAt?: Prisma.SortOrder
   reminderSent?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  approvedBy?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -543,6 +609,9 @@ export type BookingCreateWithoutUserInput = {
   checkInCode?: string | null
   checkedInAt?: Date | string | null
   reminderSent?: boolean
+  status?: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   computer: Prisma.ComputerCreateNestedOneWithoutBookingsInput
@@ -557,6 +626,9 @@ export type BookingUncheckedCreateWithoutUserInput = {
   checkInCode?: string | null
   checkedInAt?: Date | string | null
   reminderSent?: boolean
+  status?: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -600,6 +672,9 @@ export type BookingScalarWhereInput = {
   checkInCode?: Prisma.StringNullableFilter<"Booking"> | string | null
   checkedInAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   reminderSent?: Prisma.BoolFilter<"Booking"> | boolean
+  status?: Prisma.StringFilter<"Booking"> | string
+  approvedBy?: Prisma.StringNullableFilter<"Booking"> | string | null
+  approvedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
 }
@@ -612,6 +687,9 @@ export type BookingCreateWithoutComputerInput = {
   checkInCode?: string | null
   checkedInAt?: Date | string | null
   reminderSent?: boolean
+  status?: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutBookingsInput
@@ -626,6 +704,9 @@ export type BookingUncheckedCreateWithoutComputerInput = {
   checkInCode?: string | null
   checkedInAt?: Date | string | null
   reminderSent?: boolean
+  status?: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -665,6 +746,9 @@ export type BookingCreateManyUserInput = {
   checkInCode?: string | null
   checkedInAt?: Date | string | null
   reminderSent?: boolean
+  status?: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -677,6 +761,9 @@ export type BookingUpdateWithoutUserInput = {
   checkInCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reminderSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   computer?: Prisma.ComputerUpdateOneRequiredWithoutBookingsNestedInput
@@ -691,6 +778,9 @@ export type BookingUncheckedUpdateWithoutUserInput = {
   checkInCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reminderSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -704,6 +794,9 @@ export type BookingUncheckedUpdateManyWithoutUserInput = {
   checkInCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reminderSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -717,6 +810,9 @@ export type BookingCreateManyComputerInput = {
   checkInCode?: string | null
   checkedInAt?: Date | string | null
   reminderSent?: boolean
+  status?: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -729,6 +825,9 @@ export type BookingUpdateWithoutComputerInput = {
   checkInCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reminderSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutBookingsNestedInput
@@ -743,6 +842,9 @@ export type BookingUncheckedUpdateWithoutComputerInput = {
   checkInCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reminderSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -756,6 +858,9 @@ export type BookingUncheckedUpdateManyWithoutComputerInput = {
   checkInCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reminderSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -772,6 +877,9 @@ export type BookingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   checkInCode?: boolean
   checkedInAt?: boolean
   reminderSent?: boolean
+  status?: boolean
+  approvedBy?: boolean
+  approvedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   computer?: boolean | Prisma.ComputerDefaultArgs<ExtArgs>
@@ -788,6 +896,9 @@ export type BookingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   checkInCode?: boolean
   checkedInAt?: boolean
   reminderSent?: boolean
+  status?: boolean
+  approvedBy?: boolean
+  approvedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   computer?: boolean | Prisma.ComputerDefaultArgs<ExtArgs>
@@ -804,6 +915,9 @@ export type BookingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   checkInCode?: boolean
   checkedInAt?: boolean
   reminderSent?: boolean
+  status?: boolean
+  approvedBy?: boolean
+  approvedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   computer?: boolean | Prisma.ComputerDefaultArgs<ExtArgs>
@@ -820,11 +934,14 @@ export type BookingSelectScalar = {
   checkInCode?: boolean
   checkedInAt?: boolean
   reminderSent?: boolean
+  status?: boolean
+  approvedBy?: boolean
+  approvedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "computerId" | "userId" | "date" | "startTime" | "endTime" | "checkInCode" | "checkedInAt" | "reminderSent" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
+export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "computerId" | "userId" | "date" | "startTime" | "endTime" | "checkInCode" | "checkedInAt" | "reminderSent" | "status" | "approvedBy" | "approvedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
 export type BookingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   computer?: boolean | Prisma.ComputerDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -854,6 +971,9 @@ export type $BookingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     checkInCode: string | null
     checkedInAt: Date | null
     reminderSent: boolean
+    status: string
+    approvedBy: string | null
+    approvedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["booking"]>
@@ -1290,6 +1410,9 @@ export interface BookingFieldRefs {
   readonly checkInCode: Prisma.FieldRef<"Booking", 'String'>
   readonly checkedInAt: Prisma.FieldRef<"Booking", 'DateTime'>
   readonly reminderSent: Prisma.FieldRef<"Booking", 'Boolean'>
+  readonly status: Prisma.FieldRef<"Booking", 'String'>
+  readonly approvedBy: Prisma.FieldRef<"Booking", 'String'>
+  readonly approvedAt: Prisma.FieldRef<"Booking", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Booking", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Booking", 'DateTime'>
 }
@@ -1488,6 +1611,11 @@ export type BookingFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Skip the first `n` Bookings.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Bookings.
+   */
   distinct?: Prisma.BookingScalarFieldEnum | Prisma.BookingScalarFieldEnum[]
 }
 

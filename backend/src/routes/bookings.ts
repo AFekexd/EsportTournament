@@ -34,26 +34,80 @@ bookingsRouter.post(
             throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
         }
 
-        const { name, row, position, specs, status, isActive } = req.body;
+        const { name, row, position, specs, status, isActive, installedGames, hostname } = req.body;
 
         if (!name || row === undefined || position === undefined) {
             throw new ApiError('Név, sor és pozíció kötelező', 400, 'MISSING_FIELDS');
         }
 
+        const parsedRow = Number(row);
+        const parsedPos = Number(position);
+
+        const conflict = await prisma.computer.findFirst({
+            where: { row: parsedRow, position: parsedPos },
+        });
+
+        if (conflict) {
+            throw new ApiError(`A megadott pozíció (${parsedRow + 1}. sor, ${parsedPos + 1}. gép) már foglalt (${conflict.name})`, 400, 'POSITION_OCCUPIED');
+        }
+
         const computer = await prisma.computer.create({
             data: {
-                name,
-                row,
-                position,
+                name: name.trim(),
+                hostname: hostname ? hostname.trim() : null,
+                row: parsedRow,
+                position: parsedPos,
                 specs: specs || null,
-                status: status || null,
+                status: status || 'AVAILABLE',
                 isActive: isActive !== undefined ? isActive : true,
+                installedGames: Array.isArray(installedGames) ? installedGames : [],
             },
         });
 
         await logSystemActivity('COMPUTER_CREATE', `Computer ${computer.name} created by ${user.username}`, { adminId: user.id, computerId: computer.id });
 
         res.status(201).json({ success: true, data: computer });
+    })
+);
+
+// Bulk update installed games (admin only)
+bookingsRouter.post(
+    '/computers/bulk-games',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user || user.role !== 'ADMIN') {
+            throw new ApiError('Adminisztrátori hozzáférés szükséges', 403, 'FORBIDDEN');
+        }
+
+        const { installedGames, computerIds, row } = req.body;
+
+        if (!Array.isArray(installedGames)) {
+            throw new ApiError('Érvénytelen játéklista', 400, 'INVALID_GAMES');
+        }
+
+        const where: any = {};
+        if (Array.isArray(computerIds) && computerIds.length > 0) {
+            where.id = { in: computerIds };
+        } else if (row !== undefined && row !== null) {
+            where.row = Number(row);
+        }
+
+        const result = await prisma.computer.updateMany({
+            where,
+            data: { installedGames },
+        });
+
+        await logSystemActivity(
+            'COMPUTER_BULK_GAMES',
+            `Bulk updated games for ${result.count} computers by ${user.username}`,
+            { adminId: user.id, metadata: { count: result.count } }
+        );
+
+        res.json({ success: true, count: result.count });
     })
 );
 
@@ -510,17 +564,20 @@ bookingsRouter.post(
             });
 
             // Validate each touched hour
+            let hasMissingSupervisor = false;
             for (const hour of touchedHours) {
                 const supervisorIds = supervisorMap.get(hour);
 
                 if (!supervisorIds || supervisorIds.length === 0) {
-                    throw new ApiError(`Erre az időszakra (${hour}:00) még nincs felelős kijelölve, nem lehet foglalni.`, 400, 'NO_SUPERVISOR');
+                    hasMissingSupervisor = true;
                 }
 
-                if (supervisorIds.includes(user.id)) {
+                if (supervisorIds && supervisorIds.includes(user.id)) {
                     throw new ApiError(`Te vagy a(z egyik) felelős a(z) ${hour}:00 órában, nem foglalhatsz gépet.`, 400, 'IS_SUPERVISOR');
                 }
             }
+
+            const initialStatus = hasMissingSupervisor ? 'PENDING' : 'CONFIRMED';
 
             // 4. Check Computer Availability (Race Condition Protection)
             const computerOverlap = await tx.booking.findFirst({
@@ -529,6 +586,7 @@ bookingsRouter.post(
                     date: { gte: startOfDay, lte: endOfDay },
                     startTime: { lt: end },
                     endTime: { gt: start },
+                    status: { notIn: ['CANCELLED', 'REJECTED'] }
                 },
             });
 
@@ -546,6 +604,7 @@ bookingsRouter.post(
                     startTime: start,
                     endTime: end,
                     checkInCode,
+                    status: initialStatus,
                 },
                 include: {
                     computer: true,
@@ -556,12 +615,13 @@ bookingsRouter.post(
 
         await logSystemActivity(
             'BOOKING_CREATE',
-            `Booking created for ${booking.computer?.name} on ${booking.date.toISOString().split('T')[0]} (${booking.startTime.toISOString().split('T')[1].substring(0, 5)}-${booking.endTime.toISOString().split('T')[1].substring(0, 5)}) by ${user.username}`,
+            `Booking created for ${booking.computer?.name} on ${booking.date.toISOString().split('T')[0]} (${booking.startTime.toISOString().split('T')[1].substring(0, 5)}-${booking.endTime.toISOString().split('T')[1].substring(0, 5)}) by ${user.username} [Status: ${booking.status}]`,
             {
                 userId: user.id,
                 computerId: computerId,
                 metadata: {
                     bookingId: booking.id,
+                    status: booking.status,
                     date: booking.date,
                     startTime: booking.startTime,
                     endTime: booking.endTime,
@@ -570,10 +630,91 @@ bookingsRouter.post(
             }
         );
 
-        // Send notification
+        // Send Discord notification to DÖK channel (1555878350843678841)
+        try {
+            const { discordService } = await import('../services/discordService.js');
+            await discordService.sendBookingRequestNotification({
+                bookingId: booking.id,
+                computerName: booking.computer.name,
+                userName: booking.user.displayName || booking.user.username,
+                userDiscordId: user.discordId,
+                date: booking.date.toLocaleDateString('hu-HU', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }),
+                startTime: `${localStart.getHours().toString().padStart(2, '0')}:${localStart.getMinutes().toString().padStart(2, '0')}`,
+                endTime: `${localEnd.getHours().toString().padStart(2, '0')}:${localEnd.getMinutes().toString().padStart(2, '0')}`,
+                durationMinutes: Math.round((booking.endTime.getTime() - booking.startTime.getTime()) / 60000),
+                status: booking.status as 'PENDING' | 'CONFIRMED',
+            });
+        } catch (discordErr) {
+            console.error('Failed to send Discord booking notification:', discordErr);
+        }
+
+        // Send standard notification
         await BookingNotificationService.createdBooking(booking);
 
         res.status(201).json({ success: true, data: booking });
+    })
+);
+
+// Update booking status (Admin / Supervisor / DÖK)
+bookingsRouter.patch(
+    '/:id/status',
+    authenticate,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const user = await prisma.user.findUnique({
+            where: { keycloakId: req.user!.sub },
+        });
+
+        if (!user || !['ADMIN', 'ORGANIZER', 'TEACHER'].includes(user.role)) {
+            throw new ApiError('Nincs jogosultságod a foglalás állapotának módosításához', 403, 'FORBIDDEN');
+        }
+
+        const { status } = req.body;
+        if (!['CONFIRMED', 'REJECTED', 'CANCELLED'].includes(status)) {
+            throw new ApiError('Érvénytelen státusz. Megengedett: CONFIRMED, REJECTED, CANCELLED', 400, 'INVALID_STATUS');
+        }
+
+        const booking = await prisma.booking.findUnique({
+            where: { id: req.params.id as string },
+            include: { computer: true, user: true }
+        });
+
+        if (!booking) {
+            throw new ApiError('A foglalás nem található', 404, 'NOT_FOUND');
+        }
+
+        const approverName = user.displayName || user.username;
+        const updated = await prisma.booking.update({
+            where: { id: booking.id },
+            data: {
+                status,
+                approvedBy: approverName,
+                approvedAt: new Date(),
+            },
+            include: { computer: true, user: true }
+        });
+
+        const { notificationService } = await import('../services/notificationService.js');
+        if (status === 'CONFIRMED') {
+            await notificationService.createNotification({
+                userId: booking.userId,
+                type: 'SYSTEM',
+                title: 'Gépfoglalásod Jóváhagyva!',
+                message: `A(z) ${booking.computer.name} gépre szóló foglalásodat jóváhagyta ${approverName}. Lesz felügyelet, jó játékot!`,
+                link: '/booking',
+                sendEmail: true
+            });
+        } else if (status === 'REJECTED') {
+            await notificationService.createNotification({
+                userId: booking.userId,
+                type: 'SYSTEM',
+                title: 'Gépfoglalási kérelem elutasítva',
+                message: `A(z) ${booking.computer.name} gépre leadott foglalásod elutasításra került (${approverName} által).`,
+                link: '/booking',
+                sendEmail: true
+            });
+        }
+
+        res.json({ success: true, data: updated });
     })
 );
 
@@ -1052,7 +1193,7 @@ bookingsRouter.patch(
         }
 
         console.log('Update computer request:', req.body);
-        const { specs, installedGames, status, isActive, name, row, position } = req.body;
+        const { specs, installedGames, status, isActive, name, row, position, hostname } = req.body;
 
         // Check for position conflict
         if (row !== undefined || position !== undefined) {
@@ -1077,7 +1218,7 @@ bookingsRouter.patch(
             });
 
             if (conflict) {
-                throw new ApiError(`A megadott sor/pozíció (${targetRow}/${targetPosition}) már foglalt`, 400, 'POSITION_OCCUPIED');
+                throw new ApiError(`A megadott sor/pozíció (${targetRow + 1}. sor, ${targetPosition + 1}. gép) már foglalt`, 400, 'POSITION_OCCUPIED');
             }
         }
 
@@ -1085,6 +1226,7 @@ bookingsRouter.patch(
             where: { id: req.params.id as string },
             data: {
                 ...(name !== undefined && { name }),
+                ...(hostname !== undefined && { hostname: hostname ? hostname.trim() : null }),
                 ...(row !== undefined && { row: parseInt(row) }),
                 ...(position !== undefined && { position: parseInt(position) }),
                 ...(specs !== undefined && { specs }),

@@ -168,7 +168,7 @@ export type GameStatsGroupByOutputType = {
   _max: GameStatsMaxAggregateOutputType | null
 }
 
-type GetGameStatsGroupByPayload<T extends GameStatsGroupByArgs> = Prisma.PrismaPromise<
+export type GetGameStatsGroupByPayload<T extends GameStatsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<GameStatsGroupByOutputType, T['by']> &
       {
@@ -1324,6 +1324,11 @@ export type GameStatsFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Skip the first `n` GameStats.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of GameStats.
+   */
   distinct?: Prisma.GameStatsScalarFieldEnum | Prisma.GameStatsScalarFieldEnum[]
 }
 

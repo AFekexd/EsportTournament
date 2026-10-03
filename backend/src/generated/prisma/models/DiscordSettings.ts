@@ -207,7 +207,7 @@ export type DiscordSettingsGroupByOutputType = {
   _max: DiscordSettingsMaxAggregateOutputType | null
 }
 
-type GetDiscordSettingsGroupByPayload<T extends DiscordSettingsGroupByArgs> = Prisma.PrismaPromise<
+export type GetDiscordSettingsGroupByPayload<T extends DiscordSettingsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<DiscordSettingsGroupByOutputType, T['by']> &
       {
@@ -1296,6 +1296,11 @@ export type DiscordSettingsFindManyArgs<ExtArgs extends runtime.Types.Extensions
    * Skip the first `n` DiscordSettings.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of DiscordSettings.
+   */
   distinct?: Prisma.DiscordSettingsScalarFieldEnum | Prisma.DiscordSettingsScalarFieldEnum[]
 }
 

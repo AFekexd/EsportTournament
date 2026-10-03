@@ -48,6 +48,7 @@ Ha még nem regisztráltál, akkor kérlek menj fel a https://esport.pollak.info
 Ha már regisztráltál, kattints a gombra, és add meg az OM azonosítódat a felugró ablakban.`;
 
 const DEFAULT_VERIFICATION_CHANNEL_ID = '1461056761988382862';
+const DEFAULT_BOOKING_CHANNEL_ID = '1555878350843678841';
 
 class DiscordService {
     private client: Client;
@@ -55,6 +56,7 @@ class DiscordService {
     private guildId: string = '';
     private categoryId: string = '';
     private verificationChannelId: string = DEFAULT_VERIFICATION_CHANNEL_ID;
+    private bookingChannelId: string = DEFAULT_BOOKING_CHANNEL_ID;
 
     constructor() {
         this.client = new Client({
@@ -70,7 +72,7 @@ class DiscordService {
     }
 
     private async initialize() {
-        const { DISCORD_BOT_TOKEN, DISCORD_GUILD_ID, DISCORD_CATEGORY_ID, DISCORD_VERIFICATION_CHANNEL_ID } = process.env;
+        const { DISCORD_BOT_TOKEN, DISCORD_GUILD_ID, DISCORD_CATEGORY_ID, DISCORD_VERIFICATION_CHANNEL_ID, DISCORD_BOOKING_CHANNEL_ID } = process.env;
 
         if (!DISCORD_BOT_TOKEN || !DISCORD_GUILD_ID) {
             console.warn('⚠️ Discord Bot Token or Guild ID not configured. Discord service disabled.');
@@ -80,6 +82,7 @@ class DiscordService {
         this.guildId = DISCORD_GUILD_ID;
         this.categoryId = DISCORD_CATEGORY_ID || '';
         this.verificationChannelId = DISCORD_VERIFICATION_CHANNEL_ID || DEFAULT_VERIFICATION_CHANNEL_ID;
+        this.bookingChannelId = DISCORD_BOOKING_CHANNEL_ID || DEFAULT_BOOKING_CHANNEL_ID;
 
         this.client.once('ready', async () => {
             console.log(`✅ Discord Bot logged in as ${this.client.user?.tag}`);
@@ -174,7 +177,15 @@ class DiscordService {
     private setupInteractionHandler() {
         this.client.on('interactionCreate', async (interaction: Interaction<CacheType>) => {
             if (interaction.isButton()) {
-                if (interaction.customId.startsWith('toggle_role_')) {
+                if (interaction.customId.startsWith('booking_approve_')) {
+                    const bookingId = interaction.customId.replace('booking_approve_', '');
+                    await this.handleBookingApproval(interaction as ButtonInteraction, bookingId);
+                    return;
+                } else if (interaction.customId.startsWith('booking_reject_')) {
+                    const bookingId = interaction.customId.replace('booking_reject_', '');
+                    await this.handleBookingRejection(interaction as ButtonInteraction, bookingId);
+                    return;
+                } else if (interaction.customId.startsWith('toggle_role_')) {
                     const roleName = interaction.customId.replace('toggle_role_', '');
                     await this.handleRoleToggle(interaction, roleName);
                 } else if (interaction.customId === 'verify_button') {
@@ -1419,6 +1430,284 @@ class DiscordService {
         } catch (error) {
             console.error('Failed to get available channels:', error);
             return [];
+        }
+    }
+
+    /**
+     * Sends a booking notification to the DÖK / booking Discord channel (1555878350843678841)
+     */
+    async sendBookingRequestNotification(params: {
+        bookingId: string;
+        computerName: string;
+        userName: string;
+        userDiscordId?: string | null;
+        date: string;
+        startTime: string;
+        endTime: string;
+        durationMinutes: number;
+        status: 'PENDING' | 'CONFIRMED';
+    }): Promise<boolean> {
+        if (!this.isReady) return false;
+
+        try {
+            const channel = await this.client.channels.fetch(this.bookingChannelId);
+            if (!channel || !channel.isTextBased()) {
+                console.warn(`Booking channel ${this.bookingChannelId} not found or not text-based`);
+                return false;
+            }
+
+            const isPending = params.status === 'PENDING';
+            const embed = new EmbedBuilder()
+                .setTitle(isPending ? '🎮 Új Gépfoglalási Kérelem (Felügyeletre vár)' : '🎮 Új Gépfoglalás (Jóváhagyva)')
+                .setDescription(
+                    isPending
+                        ? 'Egy diák gépfoglalást adott le olyan időpontra, ahol **még nincs kijelölt felügyelő**.\nHa tudsz ügyeletet vállalni, fogadd el az alábbi gombbal, hogy a diák tudjon jönni játszani!'
+                        : 'Új gépfoglalás lett rögzítve. Erre az időszakra a felügyelet már biztosított.'
+                )
+                .setColor(isPending ? 0xF59E0B : 0x10B981)
+                .addFields([
+                    {
+                        name: '👤 Diák',
+                        value: params.userDiscordId ? `<@${params.userDiscordId}> (${params.userName})` : params.userName,
+                        inline: true
+                    },
+                    {
+                        name: '🖥️ Munkaállomás',
+                        value: `**${params.computerName}**`,
+                        inline: true
+                    },
+                    {
+                        name: '📅 Dátum',
+                        value: params.date,
+                        inline: true
+                    },
+                    {
+                        name: '⏰ Időtartam',
+                        value: `**${params.startTime} – ${params.endTime}** (${params.durationMinutes} perc)`,
+                        inline: true
+                    },
+                    {
+                        name: '📌 Státusz',
+                        value: isPending
+                            ? '⏳ **Felügyeletre vár (DÖK jóváhagyás szükséges)**'
+                            : '✅ **Jóváhagyva (Felelős biztosítva)**',
+                        inline: false
+                    }
+                ])
+                .setFooter({ text: 'Pollák Esport Hub // Gépfoglalási Rendszer' })
+                .setTimestamp(new Date());
+
+            const components: any[] = [];
+            if (isPending) {
+                const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`booking_approve_${params.bookingId}`)
+                        .setLabel('✅ Elfogadás (Lesz felügyelet)')
+                        .setStyle(ButtonStyle.Success),
+                    new ButtonBuilder()
+                        .setCustomId(`booking_reject_${params.bookingId}`)
+                        .setLabel('❌ Elutasítás')
+                        .setStyle(ButtonStyle.Danger)
+                );
+                components.push(row);
+            }
+
+            await (channel as TextChannel).send({
+                content: isPending ? '📢 **Új gépfoglalási igény érkezett!** @here' : undefined,
+                embeds: [embed],
+                components,
+            });
+
+            return true;
+        } catch (error) {
+            console.error('Failed to send booking notification to Discord:', error);
+            return false;
+        }
+    }
+
+    /**
+     * Handles DÖK approval via Discord button
+     */
+    private async handleBookingApproval(interaction: ButtonInteraction, bookingId: string) {
+        try {
+            await interaction.deferUpdate();
+
+            const booking = await prisma.booking.findUnique({
+                where: { id: bookingId },
+                include: { computer: true, user: true }
+            });
+
+            if (!booking) {
+                await interaction.followUp({ content: '❌ A foglalás nem található az adatbázisban.', ephemeral: true });
+                return;
+            }
+
+            if (booking.status === 'CONFIRMED') {
+                await interaction.followUp({ content: 'ℹ️ Ezt a foglalást már korábban elfogadták!', ephemeral: true });
+                return;
+            }
+
+            if (booking.status === 'REJECTED' || booking.status === 'CANCELLED') {
+                await interaction.followUp({ content: `⚠️ Ez a foglalás már nem aktív (${booking.status}).`, ephemeral: true });
+                return;
+            }
+
+            const approverDiscordTag = interaction.user.tag || interaction.user.username;
+            const approverMention = `<@${interaction.user.id}>`;
+
+            const esportUser = await prisma.user.findFirst({
+                where: { discordId: interaction.user.id }
+            });
+
+            const approverName = esportUser?.displayName || esportUser?.username || approverDiscordTag;
+
+            const getHungaryDate = (d: Date) => {
+                const dateString = d.toLocaleString('en-US', { timeZone: 'Europe/Budapest' });
+                return new Date(dateString);
+            };
+
+            const localStart = getHungaryDate(booking.startTime);
+            const localEnd = getHungaryDate(booking.endTime);
+            const supervisorStartHour = localStart.getHours();
+            const supervisorEndHour = localEnd.getMinutes() === 0 ? localEnd.getHours() - 1 : localEnd.getHours();
+
+            await prisma.$transaction(async (tx) => {
+                await tx.booking.update({
+                    where: { id: bookingId },
+                    data: {
+                        status: 'CONFIRMED',
+                        approvedBy: `${approverName} (${approverDiscordTag})`,
+                        approvedAt: new Date(),
+                    }
+                });
+
+                if (esportUser) {
+                    for (let h = supervisorStartHour; h <= supervisorEndHour; h++) {
+                        const existing = await tx.bookingSupervisor.findUnique({
+                            where: { date_hour: { date: booking.date, hour: h } }
+                        });
+                        if (!existing) {
+                            await tx.bookingSupervisor.create({
+                                data: {
+                                    date: booking.date,
+                                    hour: h,
+                                    userId: esportUser.id
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+
+            const oldEmbed = interaction.message.embeds[0];
+            const updatedEmbed = EmbedBuilder.from(oldEmbed)
+                .setColor(0x22C55E)
+                .setTitle(`🎮 Gépfoglalás Jóváhagyva (Lesz felügyelet)`)
+                .setFields(
+                    (oldEmbed?.fields || []).map(f => {
+                        if (f.name === '📌 Státusz') {
+                            return {
+                                name: '📌 Státusz',
+                                value: `✅ **Jóváhagyva**\nFelelős: ${approverMention} (${approverName})`,
+                                inline: false
+                            };
+                        }
+                        return f;
+                    })
+                );
+
+            await interaction.editReply({
+                content: `✅ **A foglalást jóváhagyta:** ${approverMention} (Lesz felügyelet!)`,
+                embeds: [updatedEmbed],
+                components: [],
+            });
+
+            const { notificationService } = await import('./notificationService.js');
+            await notificationService.createNotification({
+                userId: booking.userId,
+                type: 'SYSTEM',
+                title: 'Foglalásod jóváhagyva!',
+                message: `A(z) ${booking.computer.name} gépre leadott foglalásodat elfogadta a DÖK (${approverName}). Lesz felügyelet, jó játékot!`,
+                link: '/booking',
+                sendEmail: true
+            });
+
+        } catch (error) {
+            console.error('Error handling booking approval:', error);
+            await interaction.followUp({ content: '❌ Hiba történt a jóváhagyás során.', ephemeral: true });
+        }
+    }
+
+    /**
+     * Handles DÖK rejection via Discord button
+     */
+    private async handleBookingRejection(interaction: ButtonInteraction, bookingId: string) {
+        try {
+            await interaction.deferUpdate();
+
+            const booking = await prisma.booking.findUnique({
+                where: { id: bookingId },
+                include: { computer: true, user: true }
+            });
+
+            if (!booking) {
+                await interaction.followUp({ content: '❌ A foglalás nem található.', ephemeral: true });
+                return;
+            }
+
+            if (booking.status === 'CONFIRMED' || booking.status === 'REJECTED') {
+                await interaction.followUp({ content: `ℹ️ Ez a foglalás már kezelve lett (${booking.status}).`, ephemeral: true });
+                return;
+            }
+
+            const rejectorTag = interaction.user.tag || interaction.user.username;
+            const rejectorMention = `<@${interaction.user.id}>`;
+
+            await prisma.booking.update({
+                where: { id: bookingId },
+                data: {
+                    status: 'REJECTED',
+                    approvedBy: rejectorTag,
+                    approvedAt: new Date(),
+                }
+            });
+
+            const oldEmbed = interaction.message.embeds[0];
+            const updatedEmbed = EmbedBuilder.from(oldEmbed)
+                .setColor(0xEF4444)
+                .setTitle(`❌ Gépfoglalási Kérelem Elutasítva`)
+                .setFields(
+                    (oldEmbed?.fields || []).map(f => {
+                        if (f.name === '📌 Státusz') {
+                            return {
+                                name: '📌 Státusz',
+                                value: `❌ **Elutasítva** (${rejectorMention} által: Nincs felügyelet)`,
+                                inline: false
+                            };
+                        }
+                        return f;
+                    })
+                );
+
+            await interaction.editReply({
+                content: `❌ **A foglalás elutasítva:** ${rejectorMention} által (Nem lesz felügyelet).`,
+                embeds: [updatedEmbed],
+                components: [],
+            });
+
+            const { notificationService } = await import('./notificationService.js');
+            await notificationService.createNotification({
+                userId: booking.userId,
+                type: 'SYSTEM',
+                title: 'Foglalás elutasítva',
+                message: `Sajnos a(z) ${booking.computer.name} gépre leadott foglalásodhoz nem tudunk felügyeletet biztosítani erre az időpontra.`,
+                link: '/booking',
+                sendEmail: true
+            });
+
+        } catch (error) {
+            console.error('Error handling booking rejection:', error);
+            await interaction.followUp({ content: '❌ Hiba történt az elutasítás során.', ephemeral: true });
         }
     }
 

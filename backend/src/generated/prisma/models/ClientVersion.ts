@@ -158,7 +158,7 @@ export type ClientVersionGroupByOutputType = {
   _max: ClientVersionMaxAggregateOutputType | null
 }
 
-type GetClientVersionGroupByPayload<T extends ClientVersionGroupByArgs> = Prisma.PrismaPromise<
+export type GetClientVersionGroupByPayload<T extends ClientVersionGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ClientVersionGroupByOutputType, T['by']> &
       {
@@ -958,6 +958,11 @@ export type ClientVersionFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Skip the first `n` ClientVersions.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of ClientVersions.
+   */
   distinct?: Prisma.ClientVersionScalarFieldEnum | Prisma.ClientVersionScalarFieldEnum[]
 }
 

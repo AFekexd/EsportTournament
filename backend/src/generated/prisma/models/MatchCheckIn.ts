@@ -158,7 +158,7 @@ export type MatchCheckInGroupByOutputType = {
   _max: MatchCheckInMaxAggregateOutputType | null
 }
 
-type GetMatchCheckInGroupByPayload<T extends MatchCheckInGroupByArgs> = Prisma.PrismaPromise<
+export type GetMatchCheckInGroupByPayload<T extends MatchCheckInGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<MatchCheckInGroupByOutputType, T['by']> &
       {
@@ -1248,6 +1248,11 @@ export type MatchCheckInFindManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Skip the first `n` MatchCheckIns.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of MatchCheckIns.
+   */
   distinct?: Prisma.MatchCheckInScalarFieldEnum | Prisma.MatchCheckInScalarFieldEnum[]
 }
 

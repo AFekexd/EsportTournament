@@ -217,7 +217,7 @@ export type RankGroupByOutputType = {
   _max: RankMaxAggregateOutputType | null
 }
 
-type GetRankGroupByPayload<T extends RankGroupByArgs> = Prisma.PrismaPromise<
+export type GetRankGroupByPayload<T extends RankGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<RankGroupByOutputType, T['by']> &
       {
@@ -1402,6 +1402,11 @@ export type RankFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Skip the first `n` Ranks.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Ranks.
+   */
   distinct?: Prisma.RankScalarFieldEnum | Prisma.RankScalarFieldEnum[]
 }
 

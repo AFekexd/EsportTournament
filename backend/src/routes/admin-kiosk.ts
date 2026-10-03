@@ -10,7 +10,7 @@ export const adminKioskRouter: Router = Router();
 // Get all machines
 adminKioskRouter.get('/machines', authenticate, requireRole('ADMIN', 'TEACHER'), async (req, res) => {
     const machines = await prisma.computer.findMany({
-        orderBy: { position: 'asc' }
+        orderBy: [{ row: 'asc' }, { position: 'asc' }]
     });
     res.json(machines);
 });

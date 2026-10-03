@@ -165,7 +165,7 @@ export type BugReportNotificationSettingGroupByOutputType = {
   _max: BugReportNotificationSettingMaxAggregateOutputType | null
 }
 
-type GetBugReportNotificationSettingGroupByPayload<T extends BugReportNotificationSettingGroupByArgs> = Prisma.PrismaPromise<
+export type GetBugReportNotificationSettingGroupByPayload<T extends BugReportNotificationSettingGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<BugReportNotificationSettingGroupByOutputType, T['by']> &
       {
@@ -1104,6 +1104,11 @@ export type BugReportNotificationSettingFindManyArgs<ExtArgs extends runtime.Typ
    * Skip the first `n` BugReportNotificationSettings.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of BugReportNotificationSettings.
+   */
   distinct?: Prisma.BugReportNotificationSettingScalarFieldEnum | Prisma.BugReportNotificationSettingScalarFieldEnum[]
 }
 

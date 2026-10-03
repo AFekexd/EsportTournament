@@ -228,7 +228,7 @@ export type MatchPredictionGroupByOutputType = {
   _max: MatchPredictionMaxAggregateOutputType | null
 }
 
-type GetMatchPredictionGroupByPayload<T extends MatchPredictionGroupByArgs> = Prisma.PrismaPromise<
+export type GetMatchPredictionGroupByPayload<T extends MatchPredictionGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<MatchPredictionGroupByOutputType, T['by']> &
       {
@@ -1472,6 +1472,11 @@ export type MatchPredictionFindManyArgs<ExtArgs extends runtime.Types.Extensions
    * Skip the first `n` MatchPredictions.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of MatchPredictions.
+   */
   distinct?: Prisma.MatchPredictionScalarFieldEnum | Prisma.MatchPredictionScalarFieldEnum[]
 }
 

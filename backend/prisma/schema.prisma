@@ -499,6 +499,9 @@ model Booking {
   checkInCode  String?   @unique // QR kód tartalom
   checkedInAt  DateTime? // Bejelentkezés időpontja
   reminderSent Boolean   @default(false)
+  status       String    @default("CONFIRMED") // PENDING, CONFIRMED, CANCELLED, REJECTED
+  approvedBy   String?   // User or Discord member who approved
+  approvedAt   DateTime?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 

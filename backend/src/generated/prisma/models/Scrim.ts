@@ -227,7 +227,7 @@ export type ScrimGroupByOutputType = {
   _max: ScrimMaxAggregateOutputType | null
 }
 
-type GetScrimGroupByPayload<T extends ScrimGroupByArgs> = Prisma.PrismaPromise<
+export type GetScrimGroupByPayload<T extends ScrimGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ScrimGroupByOutputType, T['by']> &
       {
@@ -1645,6 +1645,11 @@ export type ScrimFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Skip the first `n` Scrims.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Scrims.
+   */
   distinct?: Prisma.ScrimScalarFieldEnum | Prisma.ScrimScalarFieldEnum[]
 }
 

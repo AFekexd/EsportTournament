@@ -26,7 +26,10 @@ export class BookingNotificationService {
      * Called when a booking is created - sends confirmation email and in-app notification
      */
     static async createdBooking(booking: any) {
-        const message = `Sikeres foglalás! Gép: ${booking.computer.name}, Időpont: ${new Date(booking.startTime).toLocaleString('hu-HU', { timeZone: 'Europe/Budapest' })}`;
+        const isPending = booking.status === 'PENDING';
+        const message = isPending
+            ? `Foglalási kérelem elküldve! Gép: ${booking.computer.name}, Időpont: ${new Date(booking.startTime).toLocaleString('hu-HU', { timeZone: 'Europe/Budapest' })}. A DÖK értesítést kapott a felügyelet vállalására!`
+            : `Sikeres foglalás! Gép: ${booking.computer.name}, Időpont: ${new Date(booking.startTime).toLocaleString('hu-HU', { timeZone: 'Europe/Budapest' })}`;
         await this.createNotification(booking.userId, 'BOOKING_CONFIRMED', message);
 
         // Send confirmation email

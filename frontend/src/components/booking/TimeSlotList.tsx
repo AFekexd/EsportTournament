@@ -183,16 +183,38 @@ export function TimeSlotList({
 
         const isSupervisor = slot.supervisor && user && slot.supervisor.userId === user.id;
 
-        // If NO supervisor, booking is disabled for everyone
+        // If NO supervisor, booking is allowed (will create PENDING booking request for DÖK)
         if (!slot.supervisor) {
+            if (slot.isSelected) {
+                return {
+                    bg: 'bg-primary/10',
+                    border: 'border-primary ring-2 ring-primary/40 shadow-lg shadow-primary/10',
+                    text: 'text-primary',
+                    badgeBg: 'bg-primary text-black font-bold border-primary',
+                    label: 'Kiválasztva',
+                    disabled: false,
+                    bookable: true,
+                };
+            }
+            if (slot.freeCount === 0) {
+                return {
+                    bg: 'bg-[#121824]/60',
+                    border: 'border-red-500/20',
+                    text: 'text-red-400',
+                    badgeBg: 'bg-red-500/10 text-red-400 border-red-500/30',
+                    label: 'Megtelt',
+                    disabled: true,
+                    bookable: false,
+                };
+            }
             return {
                 bg: 'bg-[#121824]/80 hover:bg-[#151e2e]',
-                border: 'border-indigo-500/20 hover:border-indigo-500/40',
-                text: 'text-indigo-400',
-                badgeBg: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30',
-                label: 'Nincs felelős',
-                disabled: true,
-                bookable: false,
+                border: 'border-amber-500/25 hover:border-amber-500/50',
+                text: 'text-amber-400',
+                badgeBg: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+                label: 'Felügyelet kérése',
+                disabled: false,
+                bookable: true,
                 needsSupervisor: true,
             };
         }
@@ -307,9 +329,9 @@ export function TimeSlotList({
                         <span className="w-2 h-2 rounded-full bg-red-500" />
                         <span>Megtelt</span>
                     </div>
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#121824] border border-border/80 text-indigo-400">
-                        <span className="w-2 h-2 rounded-full bg-indigo-500" />
-                        <span>Nincs felelős</span>
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#121824] border border-border/80 text-amber-400">
+                        <span className="w-2 h-2 rounded-full bg-amber-500" />
+                        <span>Felügyelet kérése</span>
                     </div>
                     <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#121824] border border-border/80 text-teal-400">
                         <span className="w-2 h-2 rounded-full bg-teal-500" />
@@ -540,8 +562,8 @@ export function TimeSlotList({
                                         ) : (
                                             /* Regular student or past slot */
                                             <div className="flex items-center gap-1.5 text-[11px] font-mono text-amber-400/90 py-0.5">
-                                                <AlertCircle size={13} className="shrink-0 text-amber-400" />
-                                                <span className="truncate">Ügyelet nélkül nem foglalható</span>
+                                                <Clock size={13} className="shrink-0 text-amber-400" />
+                                                <span className="truncate">DÖK felügyelet kérhető</span>
                                             </div>
                                         )}
                                     </div>

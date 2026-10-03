@@ -10,6 +10,7 @@ import {
   CalendarDays,
   List,
   Map,
+  Send,
 } from "lucide-react";
 import { toast } from "sonner";
 import { ConfirmationModal } from "../components/common/ConfirmationModal";
@@ -150,7 +151,7 @@ export function BookingPage() {
     endTime.setMinutes(endTime.getMinutes() + selectedDuration);
 
     try {
-      await dispatch(
+      const created = await dispatch(
         createBooking({
           computerId: selectedComputer.id,
           date: selectedDate, // API expects YYYY-MM-DD
@@ -162,6 +163,12 @@ export function BookingPage() {
       setShowBookingModal(false);
       setSelectedComputer(null);
       setSelectedStartHour(null);
+
+      if (created.status === 'PENDING') {
+        toast.success("Foglalási kérelem leadva! Értesítettük a DÖK-öt Discordon.");
+      } else {
+        toast.success("Sikeres foglalás!");
+      }
 
       // Refresh data
       if (viewMode === "weekly") {
@@ -465,6 +472,17 @@ export function BookingPage() {
               )}
             </div>
 
+            {/* Show notice if there is no supervisor assigned */}
+            {!supervisors.some((s) => s.date === selectedDate && s.hour === selectedStartHour) && (
+              <div className="mb-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg text-amber-300 text-xs font-mono flex items-start gap-2.5">
+                <Clock size={16} className="text-amber-400 shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-semibold text-amber-200 block mb-0.5">Felügyeleti jóváhagyás szükséges</span>
+                  Erre az időpontra még nincs beosztott felügyelő. A leadott kérelemről a DÖK azonnal értesítést kap Discordon, és amint valaki elvállalja, a foglalásod jóváhagyásra kerül!
+                </div>
+              </div>
+            )}
+
             {bookingError && (
               <div className="mb-4 flex items-start gap-3 p-3 bg-red-500/10 border border-red-500/30 rounded text-red-400 text-xs font-mono animate-in fade-in slide-in-from-top-2 duration-200">
                 <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />
@@ -484,8 +502,17 @@ export function BookingPage() {
                 onClick={handleBooking}
                 disabled={isLoading}
               >
-                <Check size={16} />
-                Foglalás
+                {supervisors.some((s) => s.date === selectedDate && s.hour === selectedStartHour) ? (
+                  <>
+                    <Check size={16} />
+                    Foglalás
+                  </>
+                ) : (
+                  <>
+                    <Send size={16} />
+                    Kérelem küldése
+                  </>
+                )}
               </button>
             </div>
           </div>

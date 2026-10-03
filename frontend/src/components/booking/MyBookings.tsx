@@ -79,7 +79,10 @@ export function MyBookings() {
 
   const getBookingStatus = (
     booking: Booking
-  ): "upcoming" | "active" | "checked-in" => {
+  ): "pending" | "rejected" | "upcoming" | "active" | "checked-in" => {
+    if (booking.status === "PENDING") return "pending";
+    if (booking.status === "REJECTED") return "rejected";
+
     const now = new Date();
     const start = new Date(booking.startTime);
     const end = new Date(booking.endTime);
@@ -89,14 +92,18 @@ export function MyBookings() {
     return "upcoming";
   };
 
-  const getStatusLabel = (status: "upcoming" | "active" | "checked-in") => {
+  const getStatusLabel = (status: "pending" | "rejected" | "upcoming" | "active" | "checked-in") => {
     switch (status) {
+      case "pending":
+        return { label: "Felügyeletre vár", color: "text-amber-400 bg-amber-500/10 border-amber-500/30" };
+      case "rejected":
+        return { label: "Elutasítva", color: "text-rose-400 bg-rose-500/10 border-rose-500/30" };
       case "checked-in":
         return { label: "Bejelentkezve", color: "text-green-400 bg-green-500/10 border-green-500/20" };
       case "active":
         return { label: "Aktív", color: "text-primary bg-primary/10 border-primary/20" };
       default:
-        return { label: "Közelgő", color: "text-primary bg-primary/20 border-primary/20" };
+        return { label: "Jóváhagyva", color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20" };
     }
   };
 
@@ -159,11 +166,13 @@ export function MyBookings() {
                 </div>
                 <span className={`px-2.5 py-0.5 rounded font-mono text-xs uppercase tracking-wider font-semibold border ${statusInfo.color} flex items-center gap-1.5`}>
                   {status === "checked-in" && <CheckCircle size={12} />}
+                  {status === "pending" && <Clock size={12} className="animate-pulse" />}
+                  {status === "rejected" && <AlertCircle size={12} />}
                   {statusInfo.label}
                 </span>
               </div>
 
-              <div className="space-y-2.5 mb-6 font-mono text-xs">
+              <div className="space-y-2.5 mb-4 font-mono text-xs">
                 <div className="flex items-center gap-2.5 text-foreground">
                   <Calendar size={14} className="text-primary" />
                   <span className="capitalize">{formatDate(booking.date)}</span>
@@ -176,12 +185,26 @@ export function MyBookings() {
                 </div>
               </div>
 
+              {status === "pending" && (
+                <div className="mb-4 p-2.5 bg-amber-500/10 border border-amber-500/20 rounded text-[11px] font-mono text-amber-300 flex items-start gap-2">
+                  <Clock size={13} className="shrink-0 text-amber-400 mt-0.5" />
+                  <span>DÖK jóváhagyásra vár (értesítés elküldve Discordra).</span>
+                </div>
+              )}
+
+              {status === "rejected" && (
+                <div className="mb-4 p-2.5 bg-rose-500/10 border border-rose-500/20 rounded text-[11px] font-mono text-rose-300 flex items-start gap-2">
+                  <AlertCircle size={13} className="shrink-0 text-rose-400 mt-0.5" />
+                  <span>A felügyeleti kérelem elutasítva (nem lesz felügyelő).</span>
+                </div>
+              )}
+
               <div className="mt-auto pt-4 border-t border-border flex justify-end">
-                {status === "upcoming" && (
+                {(status === "upcoming" || status === "pending" || status === "rejected") && (
                   <button
                     className="p-2 rounded-lg text-muted-foreground hover:text-red-400 hover:bg-red-500/10 transition-colors"
                     onClick={() => handleDelete(booking.id)}
-                    title="Foglalás törlése"
+                    title={status === "pending" ? "Kérelem visszavonása" : "Foglalás törlése"}
                   >
                     <Trash2 size={18} />
                   </button>

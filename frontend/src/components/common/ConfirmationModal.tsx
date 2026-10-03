@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { AlertTriangle, AlertCircle, Info } from "lucide-react";
 
 interface ConfirmationModalProps {
@@ -60,10 +61,13 @@ export function ConfirmationModal({
 
   const styles = getVariantStyles();
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+      onClick={onClose}
+    >
       <div
-        className={`tactical-card border ${styles.border} shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200`}
+        className={`bg-[#0E131F] border ${styles.border} shadow-2xl w-full max-w-md overflow-hidden rounded-xl animate-in zoom-in-95 duration-200`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
@@ -96,6 +100,7 @@ export function ConfirmationModal({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

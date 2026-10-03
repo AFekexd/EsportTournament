@@ -207,7 +207,7 @@ export type BugReportGroupByOutputType = {
   _max: BugReportMaxAggregateOutputType | null
 }
 
-type GetBugReportGroupByPayload<T extends BugReportGroupByArgs> = Prisma.PrismaPromise<
+export type GetBugReportGroupByPayload<T extends BugReportGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<BugReportGroupByOutputType, T['by']> &
       {
@@ -1379,6 +1379,11 @@ export type BugReportFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Skip the first `n` BugReports.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of BugReports.
+   */
   distinct?: Prisma.BugReportScalarFieldEnum | Prisma.BugReportScalarFieldEnum[]
 }
 

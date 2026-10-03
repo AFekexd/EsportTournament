@@ -251,7 +251,7 @@ export type ComputerGroupByOutputType = {
   _max: ComputerMaxAggregateOutputType | null
 }
 
-type GetComputerGroupByPayload<T extends ComputerGroupByArgs> = Prisma.PrismaPromise<
+export type GetComputerGroupByPayload<T extends ComputerGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ComputerGroupByOutputType, T['by']> &
       {
@@ -2002,6 +2002,11 @@ export type ComputerFindManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Skip the first `n` Computers.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Computers.
+   */
   distinct?: Prisma.ComputerScalarFieldEnum | Prisma.ComputerScalarFieldEnum[]
 }
 

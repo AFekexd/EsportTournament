@@ -617,7 +617,7 @@ export function AdminPage() {
       </div>
 
       {/* Main Content Area */}
-      <div className="tactical-card p-6 min-h-[500px] rounded-t-none border-t-0">
+      <div className="bg-[#0E131F]/80 border border-border p-6 min-h-[500px] rounded-b-xl border-t-0 shadow-xl">
         <Suspense
           fallback={
             <div className="flex items-center justify-center h-[400px]">

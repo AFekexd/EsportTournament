@@ -41,6 +41,9 @@ export interface Booking {
     checkInCode?: string;
     checkedInAt?: string;
     reminderSent: boolean;
+    status?: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'REJECTED';
+    approvedBy?: string | null;
+    approvedAt?: string | null;
     createdAt: string;
     updatedAt: string;
 }

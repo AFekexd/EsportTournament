@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { Monitor, Cpu, HardDrive, Gamepad2, Plus, Info, ChevronDown, Trophy, Wrench } from 'lucide-react';
+import { useMemo } from 'react';
+import { Monitor, Gamepad2, Plus, Trophy, Wrench } from 'lucide-react';
 import type { Computer, Booking } from '../../store/slices/bookingsSlice';
 
 interface ComputerCardGridProps {
@@ -23,8 +23,6 @@ export function ComputerCardGrid({
     onBook,
     onCancelBooking,
 }: ComputerCardGridProps) {
-    const [expandedId, setExpandedId] = useState<string | null>(null);
-
     const computerStatuses = useMemo(() => {
         return computers.map(computer => {
             const startOfSlot = new Date(selectedDate);
@@ -60,11 +58,12 @@ export function ComputerCardGrid({
 
     const getStatusConfig = (status: typeof computerStatuses[0]) => {
         if (status.isOwn) {
+            const isPending = status.booking?.status === 'PENDING';
             return {
-                borderColor: 'border-primary',
-                bgColor: 'bg-gradient-to-br from-primary/20 to-indigo-500/10',
-                statusText: 'Saját foglalás',
-                statusColor: 'text-primary',
+                borderColor: isPending ? 'border-amber-500/50' : 'border-primary',
+                bgColor: isPending ? 'bg-gradient-to-br from-amber-500/15 to-[#121824]' : 'bg-gradient-to-br from-primary/20 to-indigo-500/10',
+                statusText: isPending ? 'Kérelem függőben (DÖK)' : 'Saját foglalás',
+                statusColor: isPending ? 'text-amber-400' : 'text-primary',
                 buttonText: 'Foglalás törlése',
                 buttonStyle: 'bg-red-500/20 hover:bg-red-500/30 text-red-400 border-red-500/30',
             };
@@ -121,27 +120,27 @@ export function ComputerCardGrid({
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {computerStatuses.map((status) => {
                     const config = getStatusConfig(status);
-                    const isExpanded = expandedId === status.computer.id;
 
                     return (
                         <div
                             key={status.computer.id}
                             className={`
-                relative rounded-2xl border-2 transition-all duration-300 overflow-hidden
+                relative rounded-2xl border-2 transition-all duration-300 overflow-hidden flex flex-col justify-between
                 ${config.borderColor} ${config.bgColor}
               `}
                         >
-                            {/* Header */}
-                            <div className="p-4">
-                                <div className="flex items-start justify-between mb-3">
-                                    <div className="flex items-center gap-3">
+                            {/* Card Content */}
+                            <div className="p-4 flex-1 flex flex-col justify-between">
+                                <div>
+                                    {/* Header */}
+                                    <div className="flex items-center gap-3 mb-3">
                                         <div className={`
-                      w-10 h-10 rounded-xl flex items-center justify-center
+                      w-10 h-10 rounded-xl flex items-center justify-center shrink-0
                       ${status.isAvailable ? 'bg-green-500/20 text-green-400' :
-                                                status.isOwn ? 'bg-primary/20 text-primary' :
-                                                    status.isTournament ? 'bg-yellow-500/20 text-yellow-400' :
-                                                        status.isBooked ? 'bg-red-500/20 text-red-400' :
-                                                            'bg-gray-700/50 text-muted-foreground'}
+                        status.isOwn ? (status.booking?.status === 'PENDING' ? 'bg-amber-500/20 text-amber-400' : 'bg-primary/20 text-primary') :
+                        status.isTournament ? 'bg-yellow-500/20 text-yellow-400' :
+                        status.isBooked ? 'bg-red-500/20 text-red-400' :
+                        'bg-gray-700/50 text-muted-foreground'}
                     `}>
                                             {status.isTournament ? <Trophy size={20} /> :
                                                 status.isMaintenance || status.isOutOfOrder ? <Wrench size={20} /> :
@@ -155,38 +154,32 @@ export function ComputerCardGrid({
                                         </div>
                                     </div>
 
-                                    {/* Info toggle */}
-                                    <button
-                                        onClick={() => setExpandedId(isExpanded ? null : status.computer.id)}
-                                        className={`
-                      p-2 rounded-lg transition-all
-                      ${isExpanded ? 'bg-primary/20 text-primary' : 'bg-secondary text-muted-foreground hover:text-foreground hover:bg-secondary/80'}
-                    `}
-                                    >
-                                        <ChevronDown
-                                            size={16}
-                                            className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
-                                        />
-                                    </button>
-                                </div>
-
-                                {/* Quick specs preview */}
-                                {status.computer.specs && (
-                                    <div className="flex flex-wrap gap-2 mb-3">
-                                        {status.computer.specs.gpu && (
-                                            <span className="flex items-center gap-1 text-[10px] px-2 py-1 bg-secondary rounded-full text-muted-foreground">
-                                                <Cpu size={10} />
-                                                {status.computer.specs.gpu.split(' ').slice(0, 2).join(' ')}
+                                    {/* Installed games list (rendered ONCE) */}
+                                    <div className="mb-4">
+                                        <div className="flex items-center gap-1.5 mb-1.5 text-muted-foreground">
+                                            <Gamepad2 size={13} className="text-primary" />
+                                            <span className="text-[10px] font-mono uppercase tracking-wider font-bold">
+                                                Telepített játékok:
                                             </span>
-                                        )}
-                                        {status.computer.specs.ram && (
-                                            <span className="flex items-center gap-1 text-[10px] px-2 py-1 bg-secondary rounded-full text-muted-foreground">
-                                                <HardDrive size={10} />
-                                                {status.computer.specs.ram}
-                                            </span>
+                                        </div>
+                                        {status.computer.installedGames && status.computer.installedGames.length > 0 ? (
+                                            <div className="flex flex-wrap gap-1.5">
+                                                {status.computer.installedGames.map((game, i) => (
+                                                    <span
+                                                        key={i}
+                                                        className="text-[10px] font-mono px-2 py-0.5 bg-secondary text-foreground/90 rounded border border-border/60"
+                                                    >
+                                                        {game}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p className="text-[10px] text-muted-foreground font-mono italic">
+                                                Alapértelmezett esport játékkészlet
+                                            </p>
                                         )}
                                     </div>
-                                )}
+                                </div>
 
                                 {/* Action button */}
                                 {config.buttonText && (
@@ -209,69 +202,6 @@ export function ComputerCardGrid({
                                     </button>
                                 )}
                             </div>
-
-                            {/* Expanded specs */}
-                            {isExpanded && (
-                                <div className="px-4 pb-4 pt-0 animate-in fade-in slide-in-from-top-2 duration-200">
-                                    <div className="border-t border-border pt-4">
-                                        {status.computer.specs ? (
-                                            <div className="space-y-3">
-                                                <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-                                                    <Info size={12} />
-                                                    Részletek
-                                                </h5>
-                                                <div className="grid grid-cols-2 gap-2 text-xs">
-                                                    {status.computer.specs.cpu && (
-                                                        <div className="p-2 bg-secondary rounded-lg">
-                                                            <span className="text-muted-foreground block">CPU</span>
-                                                            <span className="text-gray-300">{status.computer.specs.cpu}</span>
-                                                        </div>
-                                                    )}
-                                                    {status.computer.specs.gpu && (
-                                                        <div className="p-2 bg-secondary rounded-lg">
-                                                            <span className="text-muted-foreground block">GPU</span>
-                                                            <span className="text-gray-300">{status.computer.specs.gpu}</span>
-                                                        </div>
-                                                    )}
-                                                    {status.computer.specs.ram && (
-                                                        <div className="p-2 bg-secondary rounded-lg">
-                                                            <span className="text-muted-foreground block">RAM</span>
-                                                            <span className="text-gray-300">{status.computer.specs.ram}</span>
-                                                        </div>
-                                                    )}
-                                                    {status.computer.specs.monitor && (
-                                                        <div className="p-2 bg-secondary rounded-lg">
-                                                            <span className="text-muted-foreground block">Monitor</span>
-                                                            <span className="text-gray-300">{status.computer.specs.monitor}</span>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <p className="text-xs text-muted-foreground italic">Nincs elérhető specifikáció.</p>
-                                        )}
-
-                                        {status.computer.installedGames && status.computer.installedGames.length > 0 && (
-                                            <div className="mt-4">
-                                                <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5 mb-2">
-                                                    <Gamepad2 size={12} />
-                                                    Telepített játékok
-                                                </h5>
-                                                <div className="flex flex-wrap gap-1.5">
-                                                    {status.computer.installedGames.map((game, i) => (
-                                                        <span
-                                                            key={i}
-                                                            className="text-[10px] px-2 py-1 bg-primary/10 text-primary rounded-full"
-                                                        >
-                                                            {game}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
                         </div>
                     );
                 })}

@@ -192,7 +192,7 @@ export type BookingSupervisorGroupByOutputType = {
   _max: BookingSupervisorMaxAggregateOutputType | null
 }
 
-type GetBookingSupervisorGroupByPayload<T extends BookingSupervisorGroupByArgs> = Prisma.PrismaPromise<
+export type GetBookingSupervisorGroupByPayload<T extends BookingSupervisorGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<BookingSupervisorGroupByOutputType, T['by']> &
       {
@@ -1172,6 +1172,11 @@ export type BookingSupervisorFindManyArgs<ExtArgs extends runtime.Types.Extensio
    * Skip the first `n` BookingSupervisors.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of BookingSupervisors.
+   */
   distinct?: Prisma.BookingSupervisorScalarFieldEnum | Prisma.BookingSupervisorScalarFieldEnum[]
 }
 
