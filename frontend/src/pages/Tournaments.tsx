@@ -6,6 +6,7 @@ import {
   Users,
   Search,
   ArrowRight,
+  Tv,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import { fetchTournaments } from "../store/slices/tournamentsSlice";
@@ -109,6 +110,17 @@ function TournamentCard({ tournament }: { tournament: Tournament }) {
           <div className="absolute bottom-2.5 left-3 bg-[#0B0F17]/95 px-2.5 py-1 rounded border border-border/70 z-10">
             <span className="font-mono text-xs font-semibold text-cyan-400 tracking-wide uppercase">
               {tournament.game.name}
+            </span>
+          </div>
+        )}
+
+        {/* Stream Badge */}
+        {tournament.streamUrl && (
+          <div className="absolute bottom-2.5 right-3 bg-purple-950/90 border border-purple-500/50 px-2 py-0.5 rounded flex items-center gap-1.5 z-10 shadow-sm shadow-purple-900/50">
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+            <Tv size={11} className="text-purple-300" />
+            <span className="font-mono text-[10px] font-bold text-purple-200 tracking-wider uppercase">
+              Stream
             </span>
           </div>
         )}

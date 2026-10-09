@@ -21,6 +21,10 @@ import {
   ScrollText,
   ArrowRight,
   Info,
+  Tv,
+  ExternalLink,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import { useAuth } from "../hooks/useAuth";
@@ -77,6 +81,123 @@ const statusLabels: Record<
   },
 };
 
+interface StreamEmbedInfo {
+  platform: "twitch" | "youtube" | "tiktok" | "other";
+  title: string;
+  channelOrId: string;
+  embedUrl: string | null;
+  directUrl: string;
+}
+
+function getStreamEmbedInfo(urlInput?: string | null): StreamEmbedInfo | null {
+  if (!urlInput || typeof urlInput !== "string") return null;
+  const clean = urlInput.trim();
+  if (!clean) return null;
+
+  const directUrl = clean.startsWith("http://") || clean.startsWith("https://")
+    ? clean
+    : `https://${clean}`;
+
+  const currentHost =
+    typeof window !== "undefined" && window.location.hostname
+      ? window.location.hostname
+      : "localhost";
+
+  // 1. Twitch
+  if (clean.includes("twitch.tv")) {
+    try {
+      const urlObj = new URL(directUrl);
+      const segments = urlObj.pathname.split("/").filter(Boolean);
+      if (segments.length > 0) {
+        if (segments[0] === "videos" && segments[1]) {
+          const videoId = segments[1];
+          return {
+            platform: "twitch",
+            title: "Twitch Videó",
+            channelOrId: videoId,
+            embedUrl: `https://player.twitch.tv/?video=${videoId}&parent=${currentHost}&autoplay=false`,
+            directUrl,
+          };
+        }
+        const channel = segments[segments.length - 1];
+        return {
+          platform: "twitch",
+          title: "Twitch Közvetítés",
+          channelOrId: channel,
+          embedUrl: `https://player.twitch.tv/?channel=${channel}&parent=${currentHost}&autoplay=false`,
+          directUrl,
+        };
+      }
+    } catch {
+      const match = clean.match(/twitch\.tv\/([a-zA-Z0-9_]+)/i);
+      const channel = match ? match[1] : "stream";
+      return {
+        platform: "twitch",
+        title: "Twitch Közvetítés",
+        channelOrId: channel,
+        embedUrl: `https://player.twitch.tv/?channel=${channel}&parent=${currentHost}&autoplay=false`,
+        directUrl,
+      };
+    }
+  }
+
+  // 2. YouTube
+  if (clean.includes("youtube.com") || clean.includes("youtu.be")) {
+    try {
+      let videoId = "";
+      if (clean.includes("youtu.be/")) {
+        videoId = clean.split("youtu.be/")[1]?.split("?")[0] || "";
+      } else if (clean.includes("watch?v=")) {
+        videoId = clean.split("watch?v=")[1]?.split("&")[0] || "";
+      } else if (clean.includes("/embed/")) {
+        videoId = clean.split("/embed/")[1]?.split("?")[0] || "";
+      } else if (clean.includes("/live/")) {
+        videoId = clean.split("/live/")[1]?.split("?")[0] || "";
+      }
+
+      if (videoId) {
+        return {
+          platform: "youtube",
+          title: "YouTube Közvetítés",
+          channelOrId: videoId,
+          embedUrl: `https://www.youtube.com/embed/${videoId}?autoplay=0`,
+          directUrl,
+        };
+      }
+    } catch {
+      // fallback
+    }
+    return {
+      platform: "youtube",
+      title: "YouTube Közvetítés",
+      channelOrId: "",
+      embedUrl: null,
+      directUrl,
+    };
+  }
+
+  // 3. TikTok
+  if (clean.includes("tiktok.com")) {
+    const match = clean.match(/\/video\/(\d+)/);
+    const videoId = match ? match[1] : "";
+    return {
+      platform: "tiktok",
+      title: "TikTok Közvetítés",
+      channelOrId: videoId,
+      embedUrl: videoId ? `https://www.tiktok.com/embed/v2/${videoId}` : null,
+      directUrl,
+    };
+  }
+
+  return {
+    platform: "other",
+    title: "Élő Közvetítés",
+    channelOrId: "",
+    embedUrl: null,
+    directUrl,
+  };
+}
+
 export function TournamentDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -92,6 +213,7 @@ export function TournamentDetailPage() {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [isStreamExpanded, setIsStreamExpanded] = useState(true);
   const [showMatchModal, setShowMatchModal] = useState(false);
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -678,63 +800,94 @@ export function TournamentDetailPage() {
         </div>
       </div>
 
-      {/* Stream Section */}
-      {currentTournament.streamUrl && (
-        <div className="container mx-auto px-4 mb-4 animate-fade-in-up">
-          <div className="relative w-full pt-[56.25%] bg-black rounded-2xl overflow-hidden border border-border shadow-2xl shadow-primary/10">
-            {/* Twitch */}
-            {currentTournament.streamUrl.includes("twitch.tv") && (
-              <iframe
-                src={`https://player.twitch.tv/?channel=${currentTournament.streamUrl.split("/").pop()}&parent=${window.location.hostname}`}
-                className="absolute top-0 left-0 w-full h-full"
-                title="Twitch stream"
-                allowFullScreen
-              ></iframe>
-            )}
+      {/* Stream Section - Broadcast Theatre */}
+      {currentTournament.streamUrl && (() => {
+        const streamInfo = getStreamEmbedInfo(currentTournament.streamUrl);
+        if (!streamInfo) return null;
+        return (
+          <div className="container mx-auto px-4 mb-8 animate-fade-in-up">
+            <div className="bg-card/90 backdrop-blur-md rounded-2xl border border-purple-500/30 overflow-hidden shadow-2xl shadow-purple-950/20">
+              {/* Header Bar */}
+              <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 bg-gradient-to-r from-purple-950/40 via-card to-card border-b border-border/60">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-semibold uppercase tracking-wider">
+                    <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                    Élő Adás
+                  </div>
+                  <div className="flex items-center gap-2 text-foreground font-semibold text-sm sm:text-base">
+                    <Tv className="w-4 h-4 text-purple-400" />
+                    <span>{streamInfo.title}</span>
+                    {streamInfo.channelOrId && (
+                      <span className="text-muted-foreground font-mono text-xs sm:text-sm">
+                        (@{streamInfo.channelOrId})
+                      </span>
+                    )}
+                  </div>
+                </div>
 
-            {/* YouTube */}
-            {(currentTournament.streamUrl.includes("youtube.com") ||
-              currentTournament.streamUrl.includes("youtu.be")) && (
-                <iframe
-                  src={`https://www.youtube.com/embed/${currentTournament.streamUrl.includes("v=") ? currentTournament.streamUrl.split("v=")[1].split("&")[0] : currentTournament.streamUrl.split("/").pop()}`}
-                  className="absolute top-0 left-0 w-full h-full"
-                  title="YouTube stream"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              )}
-
-            {/* TikTok */}
-            {currentTournament.streamUrl.includes("tiktok.com") && (
-              <iframe
-                src={`https://www.tiktok.com/embed/v2/${currentTournament.streamUrl.split("/video/")[1]?.split("?")[0] || ""}`}
-                className="absolute top-0 left-0 w-full h-full"
-                title="TikTok stream"
-                allowFullScreen
-                sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation allow-same-origin"
-              ></iframe>
-            )}
-
-            {/* Fallback/Unknown - Just link it */}
-            {!currentTournament.streamUrl.includes("twitch.tv") &&
-              !currentTournament.streamUrl.includes("youtube.com") &&
-              !currentTournament.streamUrl.includes("youtu.be") &&
-              !currentTournament.streamUrl.includes("tiktok.com") && (
-                <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-muted-foreground gap-4">
-                  <p>Ismeretlen stream szolgáltató</p>
+                <div className="flex items-center gap-2">
                   <a
-                    href={currentTournament.streamUrl}
+                    href={streamInfo.directUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="px-6 py-2 bg-primary text-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-600/15 hover:bg-purple-600/25 border border-purple-500/30 text-purple-300 hover:text-purple-200 text-xs font-medium transition-colors"
                   >
-                    Megnyitás új lapon
+                    <span>Megnyitás</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
                   </a>
+
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsStreamExpanded(!isStreamExpanded)}
+                    className="h-8 px-2 text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                    title={isStreamExpanded ? "Összecsukás" : "Kinyitás"}
+                  >
+                    {isStreamExpanded ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+
+              {/* Stream Player Content */}
+              {isStreamExpanded && (
+                <div className="p-2 sm:p-4 bg-black/40">
+                  {streamInfo.embedUrl ? (
+                    <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden shadow-inner border border-white/5">
+                      <iframe
+                        src={streamInfo.embedUrl}
+                        className="absolute inset-0 w-full h-full border-0"
+                        title={streamInfo.title}
+                        allowFullScreen
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      />
+                    </div>
+                  ) : (
+                    <div className="py-12 flex flex-col items-center justify-center text-center gap-3">
+                      <Tv className="w-12 h-12 text-muted-foreground/40" />
+                      <p className="text-muted-foreground text-sm">
+                        Ehhez a közvetítéshez nincs közvetlen beágyazó lejátszó.
+                      </p>
+                      <a
+                        href={streamInfo.directUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-medium text-sm transition-colors shadow-lg shadow-purple-600/20"
+                      >
+                        Megnyitás új lapon
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    </div>
+                  )}
                 </div>
               )}
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       <div className="container mx-auto px-4">
         {/* Stats Grid */}
