@@ -52,7 +52,9 @@ const teamSizeLabels: Record<number, string> = {
   1: "1v1 PÁRBAJ",
   2: "2v2 DUÓ",
   3: "3v3 TRIÓ",
+  4: "4v4 CSAPAT",
   5: "5v5 CSAPAT",
+  6: "6v6 CSAPAT",
 };
 
 function TournamentCard({ tournament }: { tournament: Tournament }) {
@@ -347,7 +349,9 @@ export function TournamentsPage() {
             <option value="1">1v1</option>
             <option value="2">2v2</option>
             <option value="3">3v3</option>
+            <option value="4">4v4</option>
             <option value="5">5v5</option>
+            <option value="6">6v6</option>
           </select>
 
           <select

@@ -1056,6 +1056,9 @@ export function AdminPage() {
                             <td className="p-4 text-sm text-center font-mono bg-secondary rounded">
                               {tournament._count?.entries || 0} /{" "}
                               {tournament.maxTeams}
+                              <span className="text-[10px] text-muted-foreground block">
+                                {(tournament.teamSize || tournament.game?.teamSize || 1) === 1 ? "fő" : "csapat"}
+                              </span>
                             </td>
                             <td className="p-4 text-sm text-muted-foreground font-mono">
                               {new Date(

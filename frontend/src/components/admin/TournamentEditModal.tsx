@@ -40,11 +40,13 @@ export function TournamentEditModal({
     qualifierMinPoints: tournament.qualifierMinPoints || 50,
     seedingMethod: tournament.seedingMethod || "STANDARD",
     participationType:
-      tournament.teamSize === 1 ||
-        (!tournament.teamSize && tournament.game?.teamSize === 1)
+      (tournament.teamSize === 1 || (!tournament.teamSize && tournament.game?.teamSize === 1))
         ? "INDIVIDUAL"
         : "TEAM",
-    teamSize: tournament.teamSize || tournament.game?.teamSize || 5,
+    teamSize:
+      (tournament.teamSize === 1 || (!tournament.teamSize && tournament.game?.teamSize === 1))
+        ? 1
+        : ((tournament.teamSize && tournament.teamSize >= 2) ? tournament.teamSize : ((tournament.game?.teamSize && tournament.game.teamSize >= 2) ? tournament.game.teamSize : 2)),
     requireRank:
       tournament.requireRank !== undefined ? tournament.requireRank : true,
     streamUrl: tournament.streamUrl || "",
@@ -104,7 +106,7 @@ export function TournamentEditModal({
             teamSize:
               formData.participationType === "INDIVIDUAL"
                 ? 1
-                : formData.teamSize,
+                : (Number(formData.teamSize) >= 2 ? Number(formData.teamSize) : 2),
             requireRank: formData.requireRank,
             streamUrl: formData.streamUrl || undefined,
           },
@@ -224,10 +226,11 @@ export function TournamentEditModal({
                 <button
                   type="button"
                   onClick={() =>
-                    setFormData({
-                      ...formData,
+                    setFormData(prev => ({
+                      ...prev,
                       participationType: "INDIVIDUAL",
-                    })
+                      teamSize: 1,
+                    }))
                   }
                   className={`px-4 py-2.5 rounded border font-mono text-xs uppercase tracking-wider font-semibold transition-all ${formData.participationType === "INDIVIDUAL"
                     ? "bg-primary/20 border-primary text-primary shadow-sm"
@@ -239,7 +242,11 @@ export function TournamentEditModal({
                 <button
                   type="button"
                   onClick={() =>
-                    setFormData({ ...formData, participationType: "TEAM" })
+                    setFormData(prev => ({
+                      ...prev,
+                      participationType: "TEAM",
+                      teamSize: prev.teamSize >= 2 ? prev.teamSize : 2,
+                    }))
                   }
                   className={`px-4 py-2.5 rounded border font-mono text-xs uppercase tracking-wider font-semibold transition-all ${formData.participationType === "TEAM"
                     ? "bg-primary/20 border-primary text-primary shadow-sm"
@@ -262,12 +269,12 @@ export function TournamentEditModal({
                 <select
                   id="edit-team-size"
                   className="w-full px-4 py-2.5 bg-secondary/80 border border-border rounded text-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors"
-                  value={formData.teamSize}
+                  value={formData.teamSize >= 2 ? formData.teamSize : 2}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      teamSize: parseInt(e.target.value),
-                    })
+                    setFormData(prev => ({
+                      ...prev,
+                      teamSize: parseInt(e.target.value, 10),
+                    }))
                   }
                 >
                   <option value={2}>2v2</option>
@@ -416,7 +423,7 @@ export function TournamentEditModal({
               htmlFor="edit-tournament-maxTeams"
               className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5"
             >
-              Max csapatok
+              Max {formData.participationType === "INDIVIDUAL" ? "játékosok száma (fő)" : "csapatok száma (csapat)"}
             </label>
             <input
               id="edit-tournament-maxTeams"

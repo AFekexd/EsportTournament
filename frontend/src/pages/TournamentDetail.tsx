@@ -39,7 +39,7 @@ import {
 } from "../store/slices/tournamentsSlice";
 import { fetchMyTeams, fetchTeams } from "../store/slices/teamsSlice";
 import { searchUsers } from "../store/slices/usersSlice";
-import { TournamentStatusModal } from "../components/admin";
+import { TournamentStatusModal, TournamentEditModal } from "../components/admin";
 import { TournamentBracket, MatchEditModal } from "../components/tournament";
 import type { Match } from "../types";
 import { Button } from "@/components/ui/button";
@@ -91,6 +91,7 @@ export function TournamentDetailPage() {
 
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showMatchModal, setShowMatchModal] = useState(false);
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -511,14 +512,23 @@ export function TournamentDetailPage() {
 
           {/* Top Right Actions */}
           <div className="absolute top-8 right-4 md:right-4 flex items-center gap-2 z-20">
-            {user?.role === "ADMIN" && (
-              <Button
-                onClick={() => setShowStatusModal(true)}
-                className="bg-[#121824]/90 hover:bg-[#121824] border border-border/80 text-foreground h-9 w-9 p-0 rounded backdrop-blur-md transition-all"
-                title="Státusz módosítása"
-              >
-                <Edit2 size={15} />
-              </Button>
+            {(user?.role === "ADMIN" || user?.role === "ORGANIZER") && (
+              <>
+                <Button
+                  onClick={() => setShowEditModal(true)}
+                  className="bg-[#121824]/90 hover:bg-[#121824] border border-border/80 text-foreground h-9 w-9 p-0 rounded backdrop-blur-md transition-all"
+                  title="Verseny szerkesztése"
+                >
+                  <Edit2 size={15} />
+                </Button>
+                <Button
+                  onClick={() => setShowStatusModal(true)}
+                  className="bg-[#121824]/90 hover:bg-[#121824] border border-border/80 text-foreground h-9 w-9 p-0 rounded backdrop-blur-md transition-all"
+                  title="Státusz módosítása"
+                >
+                  <Clock size={15} />
+                </Button>
+              </>
             )}
 
             <Button
@@ -586,7 +596,10 @@ export function TournamentDetailPage() {
 
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded font-mono text-xs font-bold uppercase tracking-wider bg-[#121824] text-foreground border border-border/80 backdrop-blur-md">
                   <Users size={13} className="text-primary" />
-                  {requiredTeamSize}v{requiredTeamSize} FORMÁTUM
+                  {requiredTeamSize === 1
+                    ? "1v1 EGYÉNI"
+                    : `${requiredTeamSize}v${requiredTeamSize} CSAPAT`}{" "}
+                  FORMÁTUM
                 </span>
 
                 {currentTournament.requireRank && (
@@ -625,7 +638,8 @@ export function TournamentDetailPage() {
                     <span>
                       {currentTournament.participantsCount ??
                         (currentTournament._count?.entries || 0)}{" "}
-                      / {currentTournament.maxTeams} RÉSZTVEVŐ
+                      / {currentTournament.maxTeams}{" "}
+                      {requiredTeamSize === 1 ? "JÁTÉKOS" : "CSAPAT"}
                     </span>
                   </div>
                 </div>
@@ -887,12 +901,15 @@ export function TournamentDetailPage() {
               <div className="p-6 border-b border-border flex justify-between items-center bg-card/90">
                 <h2 className="text-lg font-display font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
                   <Users size={18} className="text-primary" />
-                  {currentTournament.game?.teamSize === 1
+                  {requiredTeamSize === 1
                     ? "Regisztrált játékosok"
-                    : "Regisztrált résztvevők"}
+                    : "Regisztrált csapatok"}
                 </h2>
                 <span className="bg-secondary/80 border border-border text-muted-foreground font-mono text-xs px-2.5 py-1 rounded">
-                  {currentTournament.entries?.length || 0} résztvevő
+                  {currentTournament.participantsCount ??
+                    currentTournament.entries?.length ??
+                    0}{" "}
+                  {requiredTeamSize === 1 ? "játékos" : "csapat"}
                 </span>
               </div>
 
@@ -903,7 +920,9 @@ export function TournamentDetailPage() {
                     <thead>
                       <tr className="bg-secondary border-b border-border text-xs text-muted-foreground uppercase tracking-wider">
                         <th className="px-4 md:px-6 py-4 font-medium w-20">#</th>
-                        <th className="px-4 md:px-6 py-4 font-medium">Résztvevő</th>
+                        <th className="px-4 md:px-6 py-4 font-medium">
+                          {requiredTeamSize === 1 ? "Játékos" : "Csapat"}
+                        </th>
                         {(user?.role === "ADMIN" ||
                           user?.role === "ORGANIZER") && (
                             <th className="px-4 md:px-6 py-4 font-medium text-right">
@@ -982,7 +1001,7 @@ export function TournamentDetailPage() {
                 ) : (
                   <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
                     <Users size={48} className="mb-4 opacity-50" />
-                    <p>Még nincsenek regisztrált résztvevők</p>
+                    <p>Még nincsenek regisztrált {requiredTeamSize === 1 ? "játékosok" : "csapatok"}</p>
                   </div>
                 )}
               </div>
@@ -1697,6 +1716,13 @@ export function TournamentDetailPage() {
             currentNotifyDiscord={currentTournament.notifyDiscord}
             currentDiscordChannel={currentTournament.discordChannelId}
             onClose={() => setShowStatusModal(false)}
+          />
+        )}
+
+        {showEditModal && currentTournament && (
+          <TournamentEditModal
+            tournament={currentTournament}
+            onClose={() => setShowEditModal(false)}
           />
         )}
 

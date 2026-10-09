@@ -58,19 +58,19 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
   const handleSelectGlobalGame = async (g: GlobalGame) => {
     setSelectingGlobal(true);
     try {
+      const defaultTeamSize = formData.participationType === "INDIVIDUAL" ? 1 : (formData.teamSize >= 2 ? formData.teamSize : 2);
       const savedGame = await dispatch(selectGlobalGame({
         name: g.name,
         imageUrl: g.backgroundImage,
         description: g.genres?.join(", ") || undefined,
-        teamSize: g.teamSize || 1,
+        teamSize: g.teamSize || defaultTeamSize,
       })).unwrap();
 
       setFormData(prev => ({
         ...prev,
         gameId: savedGame.id,
         imageUrl: prev.imageUrl || savedGame.imageUrl || "",
-        teamSize: savedGame.teamSize || prev.teamSize,
-        participationType: (savedGame.teamSize === 1) ? "INDIVIDUAL" : "TEAM"
+        teamSize: prev.participationType === "INDIVIDUAL" ? 1 : (prev.teamSize >= 2 ? prev.teamSize : 2),
       }));
       setShowGlobalPicker(false);
       toast.success(`Játék kiválasztva: ${savedGame.name}`);
@@ -129,7 +129,9 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
             ? formData.qualifierMinPoints
             : 0,
           teamSize:
-            formData.participationType === "INDIVIDUAL" ? 1 : formData.teamSize,
+            formData.participationType === "INDIVIDUAL"
+              ? 1
+              : (Number(formData.teamSize) >= 2 ? Number(formData.teamSize) : 2),
           requireRank: formData.requireRank,
           streamUrl: formData.streamUrl || undefined,
         }),
@@ -221,15 +223,14 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                 onChange={(e) => {
                   const selectedId = e.target.value;
                   const found = games.find(g => g.id === selectedId);
-                  setFormData({
-                    ...formData,
+                  setFormData(prev => ({
+                    ...prev,
                     gameId: selectedId,
-                    ...(found?.imageUrl && !formData.imageUrl ? { imageUrl: found.imageUrl } : {}),
-                    ...(found?.teamSize ? {
-                      teamSize: found.teamSize,
-                      participationType: found.teamSize === 1 ? "INDIVIDUAL" : "TEAM"
-                    } : {})
-                  });
+                    ...(found?.imageUrl && !prev.imageUrl ? { imageUrl: found.imageUrl } : {}),
+                    teamSize: prev.participationType === "INDIVIDUAL"
+                      ? 1
+                      : (prev.teamSize >= 2 ? prev.teamSize : (found?.teamSize && found.teamSize >= 2 ? found.teamSize : 2)),
+                  }));
                 }}
               >
                 <option value="">Válassz játékot...</option>
@@ -329,10 +330,11 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                 <button
                   type="button"
                   onClick={() =>
-                    setFormData({
-                      ...formData,
+                    setFormData(prev => ({
+                      ...prev,
                       participationType: "INDIVIDUAL",
-                    })
+                      teamSize: 1,
+                    }))
                   }
                   className={`px-4 py-2.5 rounded border font-mono text-xs uppercase tracking-wider font-semibold transition-all ${formData.participationType === "INDIVIDUAL"
                       ? "bg-primary/20 border-primary text-primary shadow-sm"
@@ -344,7 +346,11 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                 <button
                   type="button"
                   onClick={() =>
-                    setFormData({ ...formData, participationType: "TEAM" })
+                    setFormData(prev => ({
+                      ...prev,
+                      participationType: "TEAM",
+                      teamSize: prev.teamSize >= 2 ? prev.teamSize : 2,
+                    }))
                   }
                   className={`px-4 py-2.5 rounded border font-mono text-xs uppercase tracking-wider font-semibold transition-all ${formData.participationType === "TEAM"
                       ? "bg-primary/20 border-primary text-primary shadow-sm"
@@ -367,12 +373,12 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
                 <select
                   id="team-size"
                   className="w-full px-4 py-2.5 bg-secondary/80 border border-border rounded text-foreground font-mono text-sm focus:outline-none focus:border-primary transition-colors"
-                  value={formData.teamSize}
+                  value={formData.teamSize >= 2 ? formData.teamSize : 2}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      teamSize: parseInt(e.target.value),
-                    })
+                    setFormData(prev => ({
+                      ...prev,
+                      teamSize: parseInt(e.target.value, 10),
+                    }))
                   }
                 >
                   <option value={2}>2v2</option>
@@ -470,8 +476,8 @@ export function TournamentCreateModal({ onClose }: TournamentCreateModalProps) {
               >
                 Max{" "}
                 {formData.participationType === "INDIVIDUAL"
-                  ? "indulók"
-                  : "csapatok"}{" "}
+                  ? "játékosok száma (fő)"
+                  : "csapatok száma (csapat)"}{" "}
                 <span className="text-destructive">*</span>
               </label>
               <input
