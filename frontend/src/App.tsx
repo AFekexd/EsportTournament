@@ -23,6 +23,7 @@ const ProfilePage = lazy(() => import("./pages/Profile").then(m => ({ default: m
 const SettingsPage = lazy(() => import("./pages/Settings").then(m => ({ default: m.SettingsPage })));
 const NotificationsPage = lazy(() => import("./pages/Notifications").then(m => ({ default: m.NotificationsPage })));
 const AdminPage = lazy(() => import("./pages/Admin").then(m => ({ default: m.AdminPage })));
+const SchedulePage = lazy(() => import("./pages/SchedulePage").then(m => ({ default: m.SchedulePage })));
 const RequestsPage = lazy(() => import("./pages/admin/RequestsPage"));
 const ReleasesPage = lazy(() => import("./pages/admin/ReleasesPage"));
 const AdminLogs = lazy(() => import("./components/admin/AdminLogs").then(m => ({ default: m.AdminLogs })));
@@ -131,6 +132,8 @@ function AppContent() {
               <Route path="admin/logs" element={<AdminLogs />} />
               <Route path="teacher/time" element={<Navigate to="/booking" replace />} />
               <Route path="booking" element={<BookingPage />} />
+              <Route path="schedule" element={<SchedulePage />} />
+              <Route path="idobeosztas" element={<Navigate to="/schedule" replace />} />
               <Route path="bug-report" element={<BugReportPage />} />
               <Route path="incidents" element={<Navigate to="/bug-report?tab=incidents" replace />} />
               <Route path="rules" element={<GlobalRulesPage />} />

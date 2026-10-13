@@ -249,6 +249,8 @@ export function ProfilePage() {
         return "bg-primary/20 text-primary border-primary/20";
       case "TEACHER":
         return "bg-green-500/10 text-green-500 border-green-500/20";
+      case "DOK":
+        return "bg-orange-500/10 text-orange-400 border-orange-500/20";
       default:
         return "bg-gray-500/10 text-muted-foreground border-gray-500/20";
     }
@@ -264,6 +266,8 @@ export function ProfilePage() {
         return "Moderátor";
       case "TEACHER":
         return "Tanár";
+      case "DOK":
+        return "DÖK";
       default:
         return "Diák";
     }

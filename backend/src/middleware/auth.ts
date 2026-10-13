@@ -66,11 +66,17 @@ export const getHighestRole = (tokenPayload: KeycloakTokenPayload): UserRole => 
     if (realmRoles.includes(UserRole.ADMIN)) {
         return UserRole.ADMIN;
     }
+    if (realmRoles.includes(UserRole.ORGANIZER)) {
+        return UserRole.ORGANIZER;
+    }
+    if (realmRoles.includes(UserRole.TEACHER)) {
+        return UserRole.TEACHER;
+    }
     if (realmRoles.includes(UserRole.MODERATOR)) {
         return UserRole.MODERATOR;
     }
-    if (realmRoles.includes(UserRole.ORGANIZER)) {
-        return UserRole.ORGANIZER;
+    if (realmRoles.includes(UserRole.DOK)) {
+        return UserRole.DOK;
     }
 
     return UserRole.STUDENT;

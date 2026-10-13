@@ -6,6 +6,8 @@ import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { UserRole } from '../utils/enums.js';
 import { notificationService } from '../services/notificationService.js';
 import { processAndValidateImage } from '../utils/imageProcessor.js';
+import { syncUserRole } from '../utils/keycloak-admin.js';
+import { webSyncService } from '../services/webSyncService.js';
 
 export const usersRouter: Router = Router();
 
@@ -317,6 +319,22 @@ usersRouter.patch(
             where: { id: req.params.id },
             data: { role },
         });
+
+        // Sync with Keycloak if user has a keycloakId
+        if (user.keycloakId) {
+            try {
+                await syncUserRole(user.keycloakId, role);
+            } catch (err) {
+                console.error('Failed to sync role to Keycloak:', err);
+            }
+        }
+
+        // Sync with Discord if user has linked Discord
+        try {
+            await webSyncService.onUserUpdate(user.id);
+        } catch (err) {
+            console.error('Failed to sync role to Discord:', err);
+        }
 
         await logSystemActivity('USER_ROLE_UPDATE', `User ${user.username} role changed to ${role} by ${currentUser.username}`, { adminId: currentUser.id, userId: user.id });
 

@@ -15,6 +15,7 @@ import {
   GitCommit,
   Bug,
   ScrollText,
+  Clock,
 } from "lucide-react";
 
 import { useAuth } from "../../hooks/useAuth";
@@ -46,6 +47,12 @@ const navItems: NavItem[] = [
 ];
 
 const adminItems: NavItem[] = [
+  {
+    to: "/schedule",
+    icon: <Clock size={20} />,
+    label: "Időbeosztás",
+    roles: ["ADMIN", "DOK", "TEACHER", "ORGANIZER", "MODERATOR"],
+  },
   {
     to: "/admin",
     icon: <Shield size={20} />,
@@ -241,7 +248,7 @@ export function Sidebar() {
               <div className="mb-6 px-3">
                 {isOpen && (
                   <div className="px-3 pb-2 text-[10px] font-mono font-bold uppercase tracking-widest text-muted-foreground/60 select-none">
-                    // ADMINISZTRÁCIÓ
+                    // FELÜGYELET & ADMIN
                   </div>
                 )}
                 <div className="space-y-1">

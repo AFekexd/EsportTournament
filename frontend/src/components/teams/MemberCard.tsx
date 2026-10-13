@@ -87,6 +87,14 @@ export function MemberCard({
                 />
               </div>
             )}
+            {member.user?.role === "DOK" && (
+              <div title="DÖK">
+                <Shield
+                  size={16}
+                  className="text-orange-500 fill-orange-500/10"
+                />
+              </div>
+            )}
           </h3>
           <p className="text-xs font-medium text-muted-foreground mb-2 font-mono">
             @{member.user?.username}

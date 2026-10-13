@@ -3,7 +3,8 @@ export enum UserRole {
   ORGANIZER = 'ORGANIZER',
   MODERATOR = 'MODERATOR',
   TEACHER = 'TEACHER',
-  STUDENT = 'STUDENT'
+  STUDENT = 'STUDENT',
+  DOK = 'DOK'
 }
 
 export enum TournamentStatus {

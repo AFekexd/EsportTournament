@@ -5,7 +5,7 @@ export interface User {
     username: string;
     displayName?: string;
     avatarUrl?: string;
-    role: 'ADMIN' | 'ORGANIZER' | 'MODERATOR' | 'TEACHER' | 'STUDENT';
+    role: 'ADMIN' | 'ORGANIZER' | 'MODERATOR' | 'TEACHER' | 'STUDENT' | 'DOK';
     elo: number;
     timeBalanceSeconds: number;
     createdAt: string;
