@@ -6,6 +6,7 @@ import {
   Trophy,
   Shield,
   Plus,
+  Minus,
   Trash2,
   ChevronLeft,
   ChevronRight,
@@ -21,6 +22,9 @@ import {
   CalendarPlus,
   Award,
   Zap,
+  Users,
+  CheckSquare,
+  Square,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "../hooks/useAuth";
@@ -73,7 +77,6 @@ export function SchedulePage() {
 
   // Calendar State
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(() => {
-    // Start of current week (Monday)
     return startOfWeek(new Date(), { weekStartsOn: 1 });
   });
   const [showFullDayHours, setShowFullDayHours] = useState(false);
@@ -97,7 +100,9 @@ export function SchedulePage() {
   const [modalSelectedDays, setModalSelectedDays] = useState<string[]>([]);
   const [modalStartHour, setModalStartHour] = useState<number>(14);
   const [modalEndHour, setModalEndHour] = useState<number>(18);
-  const [modalTargetUserId, setModalTargetUserId] = useState<string>("");
+  const [modalSelectedUserIds, setModalSelectedUserIds] = useState<string[]>([]);
+  const [modalUserSearch, setModalUserSearch] = useState<string>("");
+  const [modalRoleFilter, setModalRoleFilter] = useState<string>("ALL");
   const [isSubmittingShift, setIsSubmittingShift] = useState(false);
 
   // Confirmation Modal State
@@ -126,12 +131,12 @@ export function SchedulePage() {
   );
   const isAdminOrTeacher = Boolean(user && ["ADMIN", "TEACHER"].includes(user.role));
 
-  // Initialize modal target user ID to current user
+  // Initialize modal selected user IDs to current user
   useEffect(() => {
-    if (user && !modalTargetUserId) {
-      setModalTargetUserId(user.id);
+    if (user && modalSelectedUserIds.length === 0) {
+      setModalSelectedUserIds([user.id]);
     }
-  }, [user, modalTargetUserId]);
+  }, [user, modalSelectedUserIds.length]);
 
   // Fetch shifts for the selected week
   const fetchWeekShifts = useCallback(async (weekStart: Date) => {
@@ -222,13 +227,24 @@ export function SchedulePage() {
     return list;
   }, [showFullDayHours]);
 
-  // Helper map: dateStr_hour -> shift
-  const shiftMap = useMemo(() => {
-    const map = new Map<string, SupervisorShift>();
+  // Timeline hours from 8 to 22
+  const timelineHours = useMemo(() => {
+    const list: number[] = [];
+    for (let h = 8; h <= 22; h++) {
+      list.push(h);
+    }
+    return list;
+  }, []);
+
+  // Helper map: dateStr_hour -> SupervisorShift[] (Multiple supervisors per slot supported!)
+  const shiftsBySlotMap = useMemo(() => {
+    const map = new Map<string, SupervisorShift[]>();
     shifts.forEach((shift) => {
       const dStr = format(new Date(shift.date), "yyyy-MM-dd");
       const key = `${dStr}_${shift.hour}`;
-      map.set(key, shift);
+      const list = map.get(key) || [];
+      list.push(shift);
+      map.set(key, list);
     });
     return map;
   }, [shifts]);
@@ -275,7 +291,7 @@ export function SchedulePage() {
     }
   };
 
-  // Quick 1-click assign self to an empty slot
+  // Quick 1-click assign self to an empty or existing slot
   const handleQuickAssign = async (dateStr: string, hour: number) => {
     if (!user) return;
     try {
@@ -298,12 +314,21 @@ export function SchedulePage() {
     }
   };
 
+  // Open modal for a specific date and hour slot (pre-filling date and hour)
+  const handleOpenSlotAssign = (dateStr: string, hour: number) => {
+    setModalDate(dateStr);
+    setModalStartHour(hour);
+    setModalEndHour(Math.min(22, hour + 1));
+    setModalMode("single");
+    setIsCreateModalOpen(true);
+  };
+
   // Delete shift
   const handleDeleteShift = (shift: SupervisorShift) => {
     setConfirmModal({
       isOpen: true,
       title: "Felügyelet lemondása",
-      message: `Biztosan lemondod a felügyeleti beosztást erre az időpontra: ${format(new Date(shift.date), "yyyy. MM. dd.")} ${shift.hour}:00?`,
+      message: `Biztosan lemondod ${shift.user.displayName || shift.user.username} felügyeleti beosztását erre az időpontra: ${format(new Date(shift.date), "yyyy. MM. dd.")} ${shift.hour}:00?`,
       variant: "danger",
       confirmLabel: "Igen, lemondom",
       onConfirm: async () => {
@@ -327,7 +352,7 @@ export function SchedulePage() {
     });
   };
 
-  // Handle shift create submission (Bulk / Range)
+  // Handle shift create submission (Bulk / Range / Multi-user)
   const handleSaveShifts = async () => {
     if (modalStartHour >= modalEndHour) {
       toast.error("A kezdő órának korábbinak kell lennie, mint a záró órának!");
@@ -349,16 +374,23 @@ export function SchedulePage() {
       datesToSend = modalSelectedDays;
     }
 
+    if (isAdminOrTeacher && modalSelectedUserIds.length === 0) {
+      toast.error("Válassz ki legalább egy felelőst a listából!");
+      return;
+    }
+
     setIsSubmittingShift(true);
     try {
       const payload: any = {
         dates: datesToSend,
         startHour: modalStartHour,
-        endHour: modalEndHour - 1, // End hour is exclusive in range (e.g. 14-18 means 14, 15, 16, 17)
+        endHour: modalEndHour - 1, // End hour is exclusive in range
       };
 
-      if (isAdminOrTeacher && modalTargetUserId && modalTargetUserId !== user?.id) {
-        payload.targetUserId = modalTargetUserId;
+      if (isAdminOrTeacher) {
+        payload.targetUserIds = modalSelectedUserIds;
+      } else if (user) {
+        payload.targetUserIds = [user.id];
       }
 
       const res = await apiFetch(`${API_URL}/supervisors/bulk`, {
@@ -389,6 +421,26 @@ export function SchedulePage() {
       setIsSubmittingShift(false);
     }
   };
+
+  // Toggle user selection in modal
+  const toggleUserSelection = (userId: string) => {
+    setModalSelectedUserIds((prev) =>
+      prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
+    );
+  };
+
+  // Filtered eligible supervisors for modal
+  const filteredEligibleSupervisors = useMemo(() => {
+    return eligibleSupervisors.filter((s) => {
+      const matchesRole = modalRoleFilter === "ALL" || s.role === modalRoleFilter;
+      const q = modalUserSearch.toLowerCase().trim();
+      const matchesSearch =
+        !q ||
+        s.username.toLowerCase().includes(q) ||
+        (s.displayName && s.displayName.toLowerCase().includes(q));
+      return matchesRole && matchesSearch;
+    });
+  }, [eligibleSupervisors, modalRoleFilter, modalUserSearch]);
 
   // Apply Quick Template
   const handleApplyTemplate = (start: number, end: number, label: string) => {
@@ -435,7 +487,6 @@ export function SchedulePage() {
   // My Shifts list
   const myShiftsList = useMemo(() => {
     if (!user || !statsData) return [];
-    // Filter from recent shifts and loaded week shifts
     const combined = new Map<string, SupervisorShift>();
     statsData.recentShifts.filter((s) => s.userId === user.id).forEach((s) => combined.set(s.id, s));
     shifts.filter((s) => s.userId === user.id).forEach((s) => combined.set(s.id, s));
@@ -520,7 +571,7 @@ export function SchedulePage() {
               Időbeosztás & Ügyelet
             </h1>
             <p className="text-muted-foreground text-sm mt-1 max-w-2xl">
-              Heti és havi elérhetőség rögzítése, teremfelügyeleti műszakok kezelése és felelősségi statisztikák.
+              Heti és havi elérhetőség rögzítése, párhuzamos teremfelügyeleti műszakok kezelése és felelősségi statisztikák.
             </p>
           </div>
 
@@ -698,9 +749,9 @@ export function SchedulePage() {
 
               <div className="text-xs font-mono text-muted-foreground flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 inline-block" />
-                <span>Ügyeletes beosztva</span>
+                <span>Ügyeletes(ek) beosztva</span>
                 <span className="w-2.5 h-2.5 rounded-full border border-dashed border-border inline-block ml-2" />
-                <span>Szabad</span>
+                <span>Szabad slot</span>
               </div>
             </div>
           </div>
@@ -716,7 +767,6 @@ export function SchedulePage() {
                     </th>
                     {weekDays.map((d) => {
                       const today = isToday(d.date);
-                      // Calculate covered hours for this day
                       const dayShiftsCount = shifts.filter((s) =>
                         isSameDay(new Date(s.date), d.date)
                       ).length;
@@ -746,7 +796,7 @@ export function SchedulePage() {
                                   : "bg-secondary text-muted-foreground/60 border-border"
                               }`}
                             >
-                              {dayShiftsCount} óra fedve
+                              {dayShiftsCount} felügyelet
                             </span>
                           </div>
                         </th>
@@ -764,81 +814,127 @@ export function SchedulePage() {
 
                       {weekDays.map((d) => {
                         const key = `${d.dateStr}_${hour}`;
-                        const shift = shiftMap.get(key);
+                        const slotShifts = shiftsBySlotMap.get(key) || [];
                         const isPast =
                           new Date(`${d.dateStr}T${String(hour).padStart(2, "0")}:00:00`).getTime() <
                           Date.now() - 5 * 60 * 1000;
-                        const isMyShift = Boolean(user && shift?.userId === user.id);
-                        const canDelete = Boolean(isMyShift || isAdminOrTeacher);
+                        const hasMyShift = Boolean(user && slotShifts.some((s) => s.userId === user.id));
 
                         return (
                           <td
                             key={d.dateStr}
-                            className={`p-1.5 border-r border-border/50 last:border-r-0 align-top h-20 transition-colors ${
+                            className={`p-1.5 border-r border-border/50 last:border-r-0 align-top min-h-24 transition-colors ${
                               isToday(d.date) ? "bg-primary/5" : ""
                             }`}
                           >
-                            {shift ? (
-                              <div
-                                className={`h-full rounded-md p-2 flex flex-col justify-between border transition-all ${
-                                  isMyShift
-                                    ? "bg-cyan-950/40 border-cyan-500/50 hover:border-cyan-400"
-                                    : "bg-secondary/70 border-border hover:border-border/90"
-                                }`}
-                              >
-                                <div className="flex items-start justify-between gap-1">
-                                  <div className="flex items-center gap-1.5 min-w-0">
-                                    {shift.user.avatarUrl ? (
-                                      <img
-                                        src={shift.user.avatarUrl}
-                                        alt=""
-                                        className="w-5 h-5 rounded-full object-cover shrink-0"
-                                      />
-                                    ) : (
-                                      <div className="w-5 h-5 rounded-full bg-primary/20 text-primary flex items-center justify-center font-mono text-[9px] font-bold shrink-0">
-                                        {(shift.user.displayName || shift.user.username)[0].toUpperCase()}
-                                      </div>
-                                    )}
-                                    <div className="truncate">
-                                      <div className="text-xs font-medium text-foreground truncate">
-                                        {shift.user.displayName || shift.user.username}
-                                      </div>
-                                      <div className="mt-0.5">{getRoleBadge(shift.user.role)}</div>
-                                    </div>
-                                  </div>
-
-                                  {canDelete && (!isPast || isAdminOrTeacher) && (
-                                    <button
-                                      onClick={() => handleDeleteShift(shift)}
-                                      className="text-muted-foreground hover:text-red-400 p-1 rounded hover:bg-red-500/10 transition-colors cursor-pointer shrink-0"
-                                      title="Ügyelet törlése"
+                            {slotShifts.length > 0 ? (
+                              <div className="space-y-1.5">
+                                {slotShifts.map((shift) => {
+                                  const isMyShift = Boolean(user && shift.userId === user.id);
+                                  const canDelete = Boolean(isMyShift || isAdminOrTeacher);
+                                  return (
+                                    <div
+                                      key={shift.id}
+                                      className={`rounded-md p-1.5 border transition-all ${
+                                        isMyShift
+                                          ? "bg-cyan-950/40 border-cyan-500/50 hover:border-cyan-400"
+                                          : "bg-secondary/80 border-border hover:border-border/90"
+                                      }`}
                                     >
-                                      <Trash2 size={13} />
-                                    </button>
-                                  )}
-                                </div>
+                                      <div className="flex items-center justify-between gap-1">
+                                        <div className="flex items-center gap-1.5 min-w-0">
+                                          {shift.user.avatarUrl ? (
+                                            <img
+                                              src={shift.user.avatarUrl}
+                                              alt=""
+                                              className="w-4 h-4 rounded-full object-cover shrink-0"
+                                            />
+                                          ) : (
+                                            <div className="w-4 h-4 rounded-full bg-primary/20 text-primary flex items-center justify-center font-mono text-[8px] font-bold shrink-0">
+                                              {(shift.user.displayName || shift.user.username)[0].toUpperCase()}
+                                            </div>
+                                          )}
+                                          <div className="truncate">
+                                            <div className="text-[11px] font-medium text-foreground truncate max-w-[85px]">
+                                              {shift.user.displayName || shift.user.username}
+                                            </div>
+                                          </div>
+                                        </div>
 
-                                <div className="flex items-center justify-between text-[10px] font-mono text-muted-foreground mt-1">
-                                  <span>
-                                    {hour}:00 - {hour + 1}:00
-                                  </span>
-                                  {isMyShift && (
-                                    <span className="text-cyan-400 font-bold uppercase text-[9px]">
-                                      // Saját
-                                    </span>
-                                  )}
+                                        <div className="flex items-center gap-1 shrink-0">
+                                          {getRoleBadge(shift.user.role)}
+                                          {canDelete && (!isPast || isAdminOrTeacher) && (
+                                            <button
+                                              onClick={() => handleDeleteShift(shift)}
+                                              className="text-muted-foreground hover:text-red-400 p-0.5 rounded hover:bg-red-500/10 transition-colors cursor-pointer"
+                                              title="Ügyelet törlése"
+                                            >
+                                              <Trash2 size={11} />
+                                            </button>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+
+                                {/* Multi-supervisor action buttons */}
+                                <div className="flex items-center justify-between pt-0.5 text-[9px] font-mono text-muted-foreground">
+                                  <span>{slotShifts.length} fő</span>
+                                  <div className="flex items-center gap-1.5">
+                                    {!isPast && !hasMyShift && (
+                                      <button
+                                        onClick={() => handleQuickAssign(d.dateStr, hour)}
+                                        className="text-cyan-400 hover:text-cyan-300 hover:underline cursor-pointer flex items-center gap-0.5"
+                                        title="Csatlakozom felügyelőként ehhez az órához"
+                                      >
+                                        <Plus size={10} />
+                                        <span>Csatlakozom</span>
+                                      </button>
+                                    )}
+                                    {isAdminOrTeacher && (
+                                      <button
+                                        onClick={() => handleOpenSlotAssign(d.dateStr, hour)}
+                                        className="text-primary hover:text-primary-hover hover:underline cursor-pointer flex items-center gap-0.5"
+                                        title="További felügyelő hozzáadása erre az órára"
+                                      >
+                                        <Plus size={10} />
+                                        <span>+ Hozzáadás</span>
+                                      </button>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                             ) : (
-                              <div className="h-full rounded-md border border-dashed border-border/60 hover:border-primary/50 hover:bg-primary/5 transition-all flex flex-col items-center justify-center group p-1 text-center">
+                              <div className="h-full min-h-16 rounded-md border border-dashed border-border/60 hover:border-primary/50 hover:bg-primary/5 transition-all flex flex-col items-center justify-center group p-1 text-center">
                                 {!isPast ? (
+                                  <div className="opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center gap-1">
+                                    <button
+                                      onClick={() => handleQuickAssign(d.dateStr, hour)}
+                                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground font-mono text-[10px] font-semibold cursor-pointer"
+                                      title="Ügyelet elvállalása (Önmagam)"
+                                    >
+                                      <Plus size={11} />
+                                      <span>Vállalom</span>
+                                    </button>
+                                    {isAdminOrTeacher && (
+                                      <button
+                                        onClick={() => handleOpenSlotAssign(d.dateStr, hour)}
+                                        className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground font-mono text-[9px] cursor-pointer border border-border"
+                                        title="Más felhasználó kijelölése"
+                                      >
+                                        <span>Kijelölés</span>
+                                      </button>
+                                    )}
+                                  </div>
+                                ) : isAdminOrTeacher ? (
                                   <button
-                                    onClick={() => handleQuickAssign(d.dateStr, hour)}
-                                    className="opacity-0 group-hover:opacity-100 transition-opacity inline-flex items-center gap-1 px-2 py-1 rounded bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground font-mono text-[11px] font-semibold cursor-pointer"
-                                    title="Ügyelet elvállalása"
+                                    onClick={() => handleOpenSlotAssign(d.dateStr, hour)}
+                                    className="opacity-0 group-hover:opacity-100 transition-opacity inline-flex items-center gap-1 px-2 py-1 rounded bg-amber-500/15 hover:bg-amber-500 text-amber-400 hover:text-black font-mono text-[10px] font-semibold cursor-pointer border border-amber-500/30"
+                                    title="Visszamenőleges ügyelet rögzítése"
                                   >
-                                    <Plus size={12} />
-                                    <span>Vállalom</span>
+                                    <Plus size={11} />
+                                    <span>Pótlás</span>
                                   </button>
                                 ) : (
                                   <span className="text-[10px] font-mono text-muted-foreground/40 select-none">
@@ -1293,35 +1389,42 @@ export function SchedulePage() {
         </div>
       )}
 
-      {/* SHIFT CREATION MODAL */}
+      {/* MODERN SHIFT CREATION MODAL */}
       {isCreateModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md">
-          <div className="tactical-card w-full max-w-xl bg-card border-border p-6 shadow-2xl relative animate-in fade-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-background/85 backdrop-blur-md overflow-y-auto">
+          <div className="tactical-card w-full max-w-2xl bg-card border-border p-5 sm:p-7 shadow-2xl relative animate-in fade-in zoom-in-95 duration-150 my-auto">
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-border pb-4 mb-5">
-              <div className="flex items-center gap-2">
-                <CalendarPlus size={20} className="text-primary" />
-                <h3 className="font-display text-xl font-bold uppercase tracking-wider text-foreground">
-                  Új Ügyelet Rögzítése
-                </h3>
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
+                  <CalendarPlus size={20} />
+                </div>
+                <div>
+                  <h3 className="font-display text-xl font-bold uppercase tracking-wider text-foreground">
+                    Ügyeleti Műszak Rögzítése
+                  </h3>
+                  <p className="text-xs font-mono text-muted-foreground">
+                    Időbeosztás, több felügyelő kijelölése és párhuzamos műszakok
+                  </p>
+                </div>
               </div>
               <button
                 onClick={() => setIsCreateModalOpen(false)}
-                className="text-muted-foreground hover:text-foreground p-1 rounded hover:bg-secondary transition-colors cursor-pointer"
+                className="text-muted-foreground hover:text-foreground p-1.5 rounded-lg hover:bg-secondary transition-colors cursor-pointer"
               >
-                <X size={18} />
+                <X size={20} />
               </button>
             </div>
 
-            {/* Mode Selector */}
-            <div className="grid grid-cols-3 gap-2 mb-5">
+            {/* Mode Switcher Tabs */}
+            <div className="grid grid-cols-3 gap-2 p-1 bg-secondary/50 rounded-lg border border-border mb-5">
               <button
                 type="button"
                 onClick={() => setModalMode("single")}
-                className={`py-2 px-3 rounded font-mono text-xs uppercase tracking-wider transition-colors cursor-pointer ${
+                className={`py-2 px-3 rounded-md font-mono text-xs uppercase tracking-wider transition-all cursor-pointer ${
                   modalMode === "single"
-                    ? "bg-primary text-primary-foreground font-bold"
-                    : "bg-secondary text-muted-foreground hover:text-foreground border border-border"
+                    ? "bg-primary text-primary-foreground font-bold shadow"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 Egyedi nap
@@ -1329,10 +1432,10 @@ export function SchedulePage() {
               <button
                 type="button"
                 onClick={() => setModalMode("multi-day")}
-                className={`py-2 px-3 rounded font-mono text-xs uppercase tracking-wider transition-colors cursor-pointer ${
+                className={`py-2 px-3 rounded-md font-mono text-xs uppercase tracking-wider transition-all cursor-pointer ${
                   modalMode === "multi-day"
-                    ? "bg-primary text-primary-foreground font-bold"
-                    : "bg-secondary text-muted-foreground hover:text-foreground border border-border"
+                    ? "bg-primary text-primary-foreground font-bold shadow"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 Több nap / Hét
@@ -1340,10 +1443,10 @@ export function SchedulePage() {
               <button
                 type="button"
                 onClick={() => setModalMode("template")}
-                className={`py-2 px-3 rounded font-mono text-xs uppercase tracking-wider transition-colors cursor-pointer ${
+                className={`py-2 px-3 rounded-md font-mono text-xs uppercase tracking-wider transition-all cursor-pointer ${
                   modalMode === "template"
-                    ? "bg-primary text-primary-foreground font-bold"
-                    : "bg-secondary text-muted-foreground hover:text-foreground border border-border"
+                    ? "bg-primary text-primary-foreground font-bold shadow"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 Gyors sablonok
@@ -1351,48 +1454,231 @@ export function SchedulePage() {
             </div>
 
             {/* Modal Form Content */}
-            <div className="space-y-4">
-              {/* Target User Selector (If Admin / Teacher) */}
-              {isAdminOrTeacher && (
-                <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">
-                    Kijelölt Felelős Személy (Admin jogosultság):
+            <div className="space-y-5 max-h-[68vh] overflow-y-auto pr-1">
+              {/* SECTION 1: FELELŐSÖK KIJELÖLÉSE (Multi-select user picker) */}
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground flex items-center gap-1.5 font-bold">
+                    <Users size={14} className="text-primary" />
+                    <span>Felelős(ök) kiválasztása:</span>
+                    <span className="text-primary font-bold">
+                      ({modalSelectedUserIds.length} kiválasztva)
+                    </span>
                   </label>
-                  <select
-                    value={modalTargetUserId}
-                    onChange={(e) => setModalTargetUserId(e.target.value)}
-                    className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm font-mono text-foreground focus:outline-none focus:border-primary"
-                  >
-                    {eligibleSupervisors.map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {s.displayName || s.username} ({s.role}) {s.id === user?.id ? "— Önmagam" : ""}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
 
-              {/* Date selection for single or template mode */}
+                  {isAdminOrTeacher && (
+                    <div className="flex items-center gap-1.5 text-[11px] font-mono">
+                      <button
+                        type="button"
+                        onClick={() => user && setModalSelectedUserIds([user.id])}
+                        className="px-2 py-0.5 rounded bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground border border-border cursor-pointer transition-colors"
+                      >
+                        Csak én
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setModalSelectedUserIds(filteredEligibleSupervisors.map((s) => s.id))
+                        }
+                        className="px-2 py-0.5 rounded bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground border border-border cursor-pointer transition-colors"
+                      >
+                        Mind
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setModalSelectedUserIds([])}
+                        className="px-2 py-0.5 rounded bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground border border-border cursor-pointer transition-colors"
+                      >
+                        Törlés
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {isAdminOrTeacher ? (
+                  <div className="p-3 rounded-lg bg-secondary/30 border border-border space-y-2.5">
+                    {/* Search and Role Filter */}
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                      <div className="relative flex-1">
+                        <Search
+                          size={13}
+                          className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Keresés felügyelő neve szerint..."
+                          value={modalUserSearch}
+                          onChange={(e) => setModalUserSearch(e.target.value)}
+                          className="w-full pl-7 pr-3 py-1 bg-secondary border border-border rounded text-xs font-mono text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary"
+                        />
+                      </div>
+
+                      <div className="flex items-center gap-1">
+                        {["ALL", "DOK", "ADMIN", "TEACHER"].map((role) => (
+                          <button
+                            key={role}
+                            type="button"
+                            onClick={() => setModalRoleFilter(role)}
+                            className={`px-2 py-1 rounded text-[10px] font-mono uppercase transition-colors cursor-pointer ${
+                              modalRoleFilter === role
+                                ? "bg-primary text-primary-foreground font-bold"
+                                : "bg-secondary text-muted-foreground hover:text-foreground"
+                            }`}
+                          >
+                            {role === "ALL" ? "Mind" : role}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Multi-Select User Cards Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-44 overflow-y-auto pr-1">
+                      {filteredEligibleSupervisors.map((s) => {
+                        const isSelected = modalSelectedUserIds.includes(s.id);
+                        return (
+                          <div
+                            key={s.id}
+                            onClick={() => toggleUserSelection(s.id)}
+                            className={`p-2 rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-2 select-none ${
+                              isSelected
+                                ? "bg-primary/15 border-primary shadow-sm shadow-primary/20"
+                                : "bg-secondary/50 border-border hover:bg-secondary/80 hover:border-border/80"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 min-w-0">
+                              {s.avatarUrl ? (
+                                <img
+                                  src={s.avatarUrl}
+                                  alt=""
+                                  className="w-6 h-6 rounded-full object-cover shrink-0"
+                                />
+                              ) : (
+                                <div className="w-6 h-6 rounded-full bg-secondary text-foreground flex items-center justify-center font-mono text-[10px] font-bold border border-border shrink-0">
+                                  {(s.displayName || s.username)[0].toUpperCase()}
+                                </div>
+                              )}
+                              <div className="truncate">
+                                <div className="text-xs font-medium text-foreground truncate flex items-center gap-1.5">
+                                  <span>{s.displayName || s.username}</span>
+                                  {s.id === user?.id && (
+                                    <span className="text-[9px] font-mono text-primary font-bold">
+                                      (Te)
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="text-[10px] font-mono text-muted-foreground">
+                                  @{s.username}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-1.5 shrink-0">
+                              {getRoleBadge(s.role)}
+                              <div
+                                className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                                  isSelected
+                                    ? "bg-primary border-primary text-primary-foreground"
+                                    : "border-border bg-card"
+                                }`}
+                              >
+                                {isSelected && <Check size={12} strokeWidth={3} />}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-3 rounded-lg bg-secondary/40 border border-border flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      {user?.avatarUrl ? (
+                        <img
+                          src={user.avatarUrl}
+                          alt=""
+                          className="w-8 h-8 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-mono text-xs font-bold">
+                          {(user?.displayName || user?.username || "U")[0].toUpperCase()}
+                        </div>
+                      )}
+                      <div>
+                        <div className="text-sm font-medium text-foreground">
+                          {user?.displayName || user?.username} (Önmagad)
+                        </div>
+                        <div className="text-xs font-mono text-muted-foreground">
+                          @{user?.username}
+                        </div>
+                      </div>
+                    </div>
+                    {user && getRoleBadge(user.role)}
+                  </div>
+                )}
+              </div>
+
+              {/* SECTION 2: DÁTUM VÁLASZTÁS */}
               {(modalMode === "single" || modalMode === "template") && (
-                <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">
-                    Dátum kiválasztása:
-                  </label>
-                  <input
-                    type="date"
-                    value={modalDate}
-                    min={format(new Date(), "yyyy-MM-dd")}
-                    onChange={(e) => setModalDate(e.target.value)}
-                    className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm font-mono text-foreground focus:outline-none focus:border-primary"
-                  />
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground font-bold flex items-center gap-1.5">
+                      <Calendar size={14} className="text-primary" />
+                      <span>Dátum kiválasztása:</span>
+                    </label>
+
+                    {/* Quick Day Chips */}
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => setModalDate(format(new Date(), "yyyy-MM-dd"))}
+                        className="px-2 py-0.5 rounded text-[10px] font-mono bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground border border-border cursor-pointer transition-colors"
+                      >
+                        Ma
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setModalDate(format(addDays(new Date(), 1), "yyyy-MM-dd"))}
+                        className="px-2 py-0.5 rounded text-[10px] font-mono bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground border border-border cursor-pointer transition-colors"
+                      >
+                        Holnap
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setModalDate(format(addDays(new Date(), 2), "yyyy-MM-dd"))}
+                        className="px-2 py-0.5 rounded text-[10px] font-mono bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground border border-border cursor-pointer transition-colors"
+                      >
+                        +2 nap
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="relative">
+                    <input
+                      type="date"
+                      value={modalDate}
+                      min={isAdminOrTeacher ? undefined : format(new Date(), "yyyy-MM-dd")}
+                      onChange={(e) => setModalDate(e.target.value)}
+                      className="w-full bg-secondary/80 border border-border rounded-lg px-3.5 py-2.5 text-sm font-mono text-foreground focus:outline-none focus:border-primary transition-colors cursor-pointer"
+                    />
+                  </div>
+
+                  {isAdminOrTeacher &&
+                    modalDate &&
+                    new Date(`${modalDate}T23:59:59`).getTime() < Date.now() && (
+                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono text-xs">
+                        <History size={14} className="shrink-0" />
+                        <span>Visszamenőleges ügyelet rögzítése (Adminisztrátori jogosultság)</span>
+                      </div>
+                    )}
                 </div>
               )}
 
               {/* Multi-day date picker */}
               {modalMode === "multi-day" && (
-                <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">
-                    Napok kiválasztása erre a hétre ({format(currentWeekStart, "MM. dd.")} – {format(addDays(currentWeekStart, 6), "MM. dd.")}):
+                <div className="space-y-2">
+                  <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground font-bold flex items-center gap-1.5">
+                    <CalendarDays size={14} className="text-primary" />
+                    <span>Napok kiválasztása erre a hétre ({format(currentWeekStart, "MM. dd.")} – {format(addDays(currentWeekStart, 6), "MM. dd.")}):</span>
                   </label>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {weekDays.map((d) => {
@@ -1408,14 +1694,21 @@ export function SchedulePage() {
                               setModalSelectedDays((prev) => [...prev, d.dateStr]);
                             }
                           }}
-                          className={`p-2 rounded border text-center transition-all cursor-pointer ${
+                          className={`p-2.5 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-between ${
                             isSelected
-                              ? "bg-primary/20 border-primary text-primary font-bold"
-                              : "bg-secondary/60 border-border text-muted-foreground hover:text-foreground"
+                              ? "bg-primary/20 border-primary text-primary font-bold shadow-sm"
+                              : "bg-secondary/50 border-border text-muted-foreground hover:text-foreground hover:bg-secondary/80"
                           }`}
                         >
-                          <div className="font-display text-xs">{d.dayName}</div>
-                          <div className="font-mono text-[10px]">{format(d.date, "MM. dd.")}</div>
+                          <div className="font-display text-sm">{d.dayName}</div>
+                          <div className="font-mono text-[11px] mt-0.5">{format(d.date, "MM. dd.")}</div>
+                          <div className="mt-1.5">
+                            {isSelected ? (
+                              <CheckSquare size={14} className="text-primary" />
+                            ) : (
+                              <Square size={14} className="text-muted-foreground/40" />
+                            )}
+                          </div>
                         </button>
                       );
                     })}
@@ -1425,82 +1718,211 @@ export function SchedulePage() {
 
               {/* Template Presets */}
               {modalMode === "template" && (
-                <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">
-                    Gyakori Műszaksablonok:
+                <div className="space-y-2">
+                  <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground font-bold flex items-center gap-1.5">
+                    <Zap size={14} className="text-primary" />
+                    <span>Gyakori Műszaksablonok:</span>
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     <button
                       type="button"
-                      onClick={() => handleApplyTemplate(14, 18, "Délutáni műszak")}
-                      className="p-2.5 rounded border border-border hover:border-primary/60 bg-secondary/60 hover:bg-primary/10 text-left transition-colors cursor-pointer"
+                      onClick={() => handleApplyTemplate(14, 18, "Délutáni")}
+                      className={`p-3 rounded-lg border text-left transition-all cursor-pointer ${
+                        modalStartHour === 14 && modalEndHour === 18
+                          ? "bg-primary/20 border-primary shadow-sm"
+                          : "border-border hover:border-primary/50 bg-secondary/50 hover:bg-secondary/80"
+                      }`}
                     >
-                      <div className="text-xs font-bold text-foreground">Délutáni</div>
-                      <div className="text-[11px] font-mono text-cyan-400">14:00 - 18:00 (4 óra)</div>
+                      <div className="text-xs font-bold text-foreground">Délutáni műszak</div>
+                      <div className="text-[11px] font-mono text-cyan-400 mt-0.5">
+                        14:00 - 18:00 (4 óra)
+                      </div>
                     </button>
                     <button
                       type="button"
-                      onClick={() => handleApplyTemplate(16, 20, "Záró műszak")}
-                      className="p-2.5 rounded border border-border hover:border-primary/60 bg-secondary/60 hover:bg-primary/10 text-left transition-colors cursor-pointer"
+                      onClick={() => handleApplyTemplate(16, 20, "Záró")}
+                      className={`p-3 rounded-lg border text-left transition-all cursor-pointer ${
+                        modalStartHour === 16 && modalEndHour === 20
+                          ? "bg-primary/20 border-primary shadow-sm"
+                          : "border-border hover:border-primary/50 bg-secondary/50 hover:bg-secondary/80"
+                      }`}
                     >
                       <div className="text-xs font-bold text-foreground">Záró műszak</div>
-                      <div className="text-[11px] font-mono text-cyan-400">16:00 - 20:00 (4 óra)</div>
+                      <div className="text-[11px] font-mono text-cyan-400 mt-0.5">
+                        16:00 - 20:00 (4 óra)
+                      </div>
                     </button>
                     <button
                       type="button"
                       onClick={() => handleApplyTemplate(12, 16, "Kora délutáni")}
-                      className="p-2.5 rounded border border-border hover:border-primary/60 bg-secondary/60 hover:bg-primary/10 text-left transition-colors cursor-pointer"
+                      className={`p-3 rounded-lg border text-left transition-all cursor-pointer ${
+                        modalStartHour === 12 && modalEndHour === 16
+                          ? "bg-primary/20 border-primary shadow-sm"
+                          : "border-border hover:border-primary/50 bg-secondary/50 hover:bg-secondary/80"
+                      }`}
                     >
                       <div className="text-xs font-bold text-foreground">Kora délutáni</div>
-                      <div className="text-[11px] font-mono text-cyan-400">12:00 - 16:00 (4 óra)</div>
+                      <div className="text-[11px] font-mono text-cyan-400 mt-0.5">
+                        12:00 - 16:00 (4 óra)
+                      </div>
                     </button>
                   </div>
                 </div>
               )}
 
-              {/* Hour Range Selectors */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">
-                    Kezdő óra:
+              {/* SECTION 3: INTERAKTÍV IDŐSÁV & ÓRÁK (Modern Stepper & Timeline - NO <select>) */}
+              <div className="space-y-3 p-4 rounded-xl bg-secondary/30 border border-border">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground font-bold flex items-center gap-1.5">
+                    <Clock size={14} className="text-primary" />
+                    <span>Ügyeleti Idősáv Beállítása:</span>
                   </label>
-                  <select
-                    value={modalStartHour}
-                    onChange={(e) => setModalStartHour(Number(e.target.value))}
-                    className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm font-mono text-foreground focus:outline-none focus:border-primary"
-                  >
-                    {Array.from({ length: 15 }, (_, i) => i + 8).map((h) => (
-                      <option key={h} value={h}>
-                        {h}:00
-                      </option>
+
+                  {/* Duration Presets */}
+                  <div className="flex items-center gap-1 text-[10px] font-mono">
+                    <span className="text-muted-foreground mr-1">Hossz:</span>
+                    {[1, 2, 3, 4].map((hours) => (
+                      <button
+                        key={hours}
+                        type="button"
+                        onClick={() => setModalEndHour(Math.min(22, modalStartHour + hours))}
+                        className={`px-2 py-0.5 rounded border transition-colors cursor-pointer ${
+                          modalEndHour - modalStartHour === hours
+                            ? "bg-primary text-primary-foreground font-bold border-primary"
+                            : "bg-secondary text-muted-foreground hover:text-foreground border-border"
+                        }`}
+                      >
+                        +{hours}ó
+                      </button>
                     ))}
-                  </select>
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">
-                    Záró óra:
-                  </label>
-                  <select
-                    value={modalEndHour}
-                    onChange={(e) => setModalEndHour(Number(e.target.value))}
-                    className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm font-mono text-foreground focus:outline-none focus:border-primary"
-                  >
-                    {Array.from({ length: 15 }, (_, i) => i + 9).map((h) => (
-                      <option key={h} value={h} disabled={h <= modalStartHour}>
-                        {h}:00
-                      </option>
-                    ))}
-                  </select>
+                {/* Dual Stepper Controls (Start & End) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Start Hour Stepper */}
+                  <div className="p-3 rounded-lg bg-card border border-border flex items-center justify-between">
+                    <div>
+                      <div className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+                        Kezdés ideje
+                      </div>
+                      <div className="font-display text-xl font-bold text-foreground mt-0.5">
+                        {modalStartHour}:00
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        disabled={modalStartHour <= 8}
+                        onClick={() => setModalStartHour((prev) => Math.max(8, prev - 1))}
+                        className="w-8 h-8 rounded-md bg-secondary hover:bg-secondary/80 text-foreground flex items-center justify-center border border-border disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                      >
+                        <Minus size={14} />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={modalStartHour >= modalEndHour - 1}
+                        onClick={() =>
+                          setModalStartHour((prev) => Math.min(modalEndHour - 1, prev + 1))
+                        }
+                        className="w-8 h-8 rounded-md bg-secondary hover:bg-secondary/80 text-foreground flex items-center justify-center border border-border disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                      >
+                        <Plus size={14} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* End Hour Stepper */}
+                  <div className="p-3 rounded-lg bg-card border border-border flex items-center justify-between">
+                    <div>
+                      <div className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+                        Befejezés ideje
+                      </div>
+                      <div className="font-display text-xl font-bold text-cyan-400 mt-0.5">
+                        {modalEndHour}:00
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        disabled={modalEndHour <= modalStartHour + 1}
+                        onClick={() =>
+                          setModalEndHour((prev) => Math.max(modalStartHour + 1, prev - 1))
+                        }
+                        className="w-8 h-8 rounded-md bg-secondary hover:bg-secondary/80 text-foreground flex items-center justify-center border border-border disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                      >
+                        <Minus size={14} />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={modalEndHour >= 22}
+                        onClick={() => setModalEndHour((prev) => Math.min(22, prev + 1))}
+                        className="w-8 h-8 rounded-md bg-secondary hover:bg-secondary/80 text-foreground flex items-center justify-center border border-border disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                      >
+                        <Plus size={14} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Interactive Visual Timeline Strip */}
+                <div className="space-y-1.5 pt-1">
+                  <div className="text-[10px] font-mono uppercase text-muted-foreground flex items-center justify-between">
+                    <span>Időtengely (08:00 - 22:00)</span>
+                    <span className="text-primary font-bold">
+                      {modalEndHour - modalStartHour} óra időtartam
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-8 sm:grid-cols-15 gap-1">
+                    {timelineHours.map((h) => {
+                      const isInRange = h >= modalStartHour && h < modalEndHour;
+                      const isStart = h === modalStartHour;
+                      const isLast = h === modalEndHour - 1;
+
+                      return (
+                        <button
+                          key={h}
+                          type="button"
+                          onClick={() => {
+                            if (h < modalStartHour) {
+                              setModalStartHour(h);
+                            } else if (h >= modalStartHour) {
+                              setModalEndHour(h + 1);
+                            }
+                          }}
+                          className={`py-1.5 rounded text-center font-mono text-[11px] transition-all cursor-pointer ${
+                            isInRange
+                              ? "bg-primary text-primary-foreground font-bold shadow-sm shadow-primary/30"
+                              : "bg-card hover:bg-secondary text-muted-foreground border border-border/80"
+                          } ${isStart ? "rounded-l-lg border-l-2 border-l-cyan-300" : ""} ${
+                            isLast ? "rounded-r-lg border-r-2 border-r-cyan-300" : ""
+                          }`}
+                          title={`${h}:00 - ${h + 1}:00`}
+                        >
+                          {h}h
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 
-              {/* Summary Pill */}
-              <div className="p-3 rounded-lg bg-secondary/80 border border-border/80 flex items-center justify-between text-xs font-mono">
-                <span className="text-muted-foreground">Időtartam és órák száma:</span>
-                <span className="text-primary font-bold">
-                  {modalEndHour > modalStartHour ? `${modalEndHour - modalStartHour} óra / nap` : "Érvénytelen"}
-                </span>
+              {/* SECTION 4: LIVE SUMMARY TACTICAL PILL */}
+              <div className="p-3.5 rounded-lg bg-primary/10 border border-primary/30 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono">
+                <div className="flex items-center gap-2">
+                  <CheckSquare size={16} className="text-primary shrink-0" />
+                  <span className="text-foreground">
+                    <span className="font-bold text-primary">{modalSelectedUserIds.length} fő</span> felügyelő kijelölve:{" "}
+                    <span className="font-bold text-foreground">
+                      {modalStartHour}:00 – {modalEndHour}:00
+                    </span>{" "}
+                    ({modalEndHour - modalStartHour} óra / nap)
+                  </span>
+                </div>
+                <div className="text-primary font-bold whitespace-nowrap">
+                  = {modalSelectedUserIds.length * (modalEndHour - modalStartHour)} ügyeleti óra
+                </div>
               </div>
             </div>
 
@@ -1517,13 +1939,17 @@ export function SchedulePage() {
               <button
                 type="button"
                 onClick={handleSaveShifts}
-                disabled={isSubmittingShift || modalStartHour >= modalEndHour}
-                className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs uppercase font-mono tracking-wider transition-all disabled:opacity-50 cursor-pointer"
+                disabled={
+                  isSubmittingShift ||
+                  modalStartHour >= modalEndHour ||
+                  (isAdminOrTeacher && modalSelectedUserIds.length === 0)
+                }
+                className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs uppercase font-mono tracking-wider transition-all disabled:opacity-50 cursor-pointer shadow-md shadow-primary/20"
               >
                 {isSubmittingShift ? (
                   <>
                     <span className="w-3.5 h-3.5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-                    <span>Rögzítés...</span>
+                    <span>Rögzítés folyamatban...</span>
                   </>
                 ) : (
                   <>

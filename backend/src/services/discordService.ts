@@ -1583,8 +1583,8 @@ class DiscordService {
 
                 if (esportUser) {
                     for (let h = supervisorStartHour; h <= supervisorEndHour; h++) {
-                        const existing = await tx.bookingSupervisor.findUnique({
-                            where: { date_hour: { date: booking.date, hour: h } }
+                        const existing = await tx.bookingSupervisor.findFirst({
+                            where: { date: booking.date, hour: h, userId: esportUser.id }
                         });
                         if (!existing) {
                             await tx.bookingSupervisor.create({

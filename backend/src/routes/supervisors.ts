@@ -339,31 +339,29 @@ supervisorsRouter.post(
             throw new ApiError('Az órának 0 és 23 között kell lennie', 400, 'INVALID_HOUR');
         }
 
-        // Allow 5 minutes grace period for past hours today
+        // Allow 5 minutes grace period for past hours today, unless admin or teacher
         const now = dayjs().tz('Europe/Budapest');
         const targetTime = dayjs.tz(`${parsedDate.toISOString().split('T')[0]} ${hour}:00`, 'YYYY-MM-DD HH:mm', 'Europe/Budapest');
 
-        if (targetTime.isBefore(now.subtract(5, 'minute'))) {
+        if (targetTime.isBefore(now.subtract(5, 'minute')) && !['ADMIN', 'TEACHER'].includes(user.role)) {
             throw new ApiError('Nem vállalhatsz felelősséget a múltban.', 400, 'PAST_DATE');
         }
 
         const supervisor = await prisma.$transaction(async (tx) => {
-            // Check if already assigned
+            // Check if this user is already assigned to this slot
             const existing = await tx.bookingSupervisor.findFirst({
                 where: {
                     date: parsedDate,
-                    hour
+                    hour,
+                    userId: actualUserId,
                 }
             });
 
             if (existing) {
-                if (existing.userId === actualUserId) {
-                    throw new ApiError(actualUserId === user.id ? 'Már te vagy a felelős ebben az órában.' : 'A felhasználó már be van osztva erre az órára.', 400, 'ALREADY_SUPERVISOR');
-                }
-                throw new ApiError('Erre az időpontra már van felelős.', 400, 'SLOT_TAKEN');
+                throw new ApiError(actualUserId === user.id ? 'Már te vagy a felelős ebben az órában.' : 'A kiválasztott felhasználó már be van osztva erre az órára.', 400, 'ALREADY_SUPERVISOR');
             }
 
-            // Optional: User cannot be supervisor if they already have a booking overlapping this hour
+            // Optional: User cannot be supervisor if they already have an active booking overlapping this hour (unless admin override)
             const startOfHour = targetTime.toDate();
             const endOfHour = targetTime.add(1, 'hour').toDate();
 
@@ -373,10 +371,11 @@ supervisorsRouter.post(
                     date: parsedDate,
                     startTime: { lt: endOfHour },
                     endTime: { gt: startOfHour },
+                    status: { notIn: ['CANCELLED', 'REJECTED'] }
                 }
             });
 
-            if (existingBooking) {
+            if (existingBooking && !['ADMIN', 'TEACHER'].includes(user.role)) {
                 throw new ApiError(actualUserId === user.id ? 'Nem lehetsz felelős, mert már van gépfoglalásod ebben az órában.' : 'A kiválasztott felhasználó nem lehet felelős, mert gépfoglalása van.', 400, 'HAS_BOOKING');
             }
 
@@ -402,7 +401,7 @@ supervisorsRouter.post(
     })
 );
 
-// Bulk assign supervisor shifts (e.g., weekly or multi-hour shifts)
+// Bulk assign supervisor shifts (e.g., weekly, multi-hour, or multi-user shifts)
 supervisorsRouter.post(
     '/bulk',
     authenticate,
@@ -415,7 +414,7 @@ supervisorsRouter.post(
             throw new ApiError('Felhasználó nem található', 404, 'USER_NOT_FOUND');
         }
 
-        const { dates, date, hours, startHour, endHour, targetUserId } = req.body;
+        const { dates, date, hours, startHour, endHour, targetUserId, targetUserIds } = req.body;
 
         let dateList: string[] = [];
         if (Array.isArray(dates) && dates.length > 0) {
@@ -444,25 +443,35 @@ supervisorsRouter.post(
             }
         }
 
-        let actualUserId = user.id;
-        if (!targetUserId || targetUserId === user.id) {
-            if (!['ADMIN', 'ORGANIZER', 'MODERATOR', 'DOK', 'TEACHER'].includes(user.role)) {
-                throw new ApiError('Nem rendelkezel felügyelői jogosultsággal.', 403, 'FORBIDDEN');
-            }
+        let targetUserIdsList: string[] = [];
+        if (Array.isArray(targetUserIds) && targetUserIds.length > 0) {
+            targetUserIdsList = targetUserIds;
+        } else if (targetUserId) {
+            targetUserIdsList = [targetUserId];
         } else {
-            if (!['ADMIN', 'TEACHER'].includes(user.role)) {
-                throw new ApiError('Csak adminisztrátor vagy tanár jelölhet ki más felhasználót.', 403, 'FORBIDDEN');
+            targetUserIdsList = [user.id];
+        }
+
+        // Validate each target user
+        for (const uid of targetUserIdsList) {
+            if (uid !== user.id) {
+                if (!['ADMIN', 'TEACHER'].includes(user.role)) {
+                    throw new ApiError('Csak adminisztrátor vagy tanár jelölhet ki más felhasználót.', 403, 'FORBIDDEN');
+                }
+                const targetUser = await prisma.user.findUnique({
+                    where: { id: uid },
+                });
+                if (!targetUser) {
+                    throw new ApiError(`A kijelölt felhasználó nem található.`, 404, 'NOT_FOUND');
+                }
+                if (!['ADMIN', 'ORGANIZER', 'MODERATOR', 'DOK', 'TEACHER'].includes(targetUser.role)) {
+                    throw new ApiError(`A felhasználó (${targetUser.username}) nem rendelkezik ügyeleti jogosultsággal.`, 400, 'INVALID_ROLE');
+                }
+            } else {
+                if (!['ADMIN', 'ORGANIZER', 'MODERATOR', 'DOK', 'TEACHER'].includes(user.role)) {
+                    throw new ApiError('Nem rendelkezel felügyelői jogosultsággal.', 403, 'FORBIDDEN');
+                }
             }
-            const targetUser = await prisma.user.findUnique({
-                where: { id: targetUserId },
-            });
-            if (!targetUser) {
-                throw new ApiError('A kijelölt felhasználó nem található.', 404, 'NOT_FOUND');
-            }
-            if (!['ADMIN', 'ORGANIZER', 'MODERATOR', 'DOK', 'TEACHER'].includes(targetUser.role)) {
-                throw new ApiError('A kijelölt felhasználó nem rendelkezik ügyeleti jogosultsággal.', 400, 'INVALID_ROLE');
-            }
-            actualUserId = targetUser.id;
         }
 
         const now = dayjs().tz('Europe/Budapest');
@@ -480,57 +489,56 @@ supervisorsRouter.post(
 
             for (const hour of hourList) {
                 const targetTime = dayjs.tz(`${normalizedDateStr} ${hour}:00`, 'YYYY-MM-DD HH:mm', 'Europe/Budapest');
-                if (targetTime.isBefore(now.subtract(5, 'minute'))) {
+                if (targetTime.isBefore(now.subtract(5, 'minute')) && !['ADMIN', 'TEACHER'].includes(user.role)) {
                     conflicts.push({ date: normalizedDateStr, hour, reason: 'Múltbeli időpont' });
                     continue;
                 }
 
-                // Check existing
-                const existing = await prisma.bookingSupervisor.findFirst({
-                    where: { date: parsedDate, hour },
-                    include: { user: { select: { displayName: true, username: true } } }
-                });
+                for (const uid of targetUserIdsList) {
+                    // Check if this specific user is already assigned to this slot
+                    const existing = await prisma.bookingSupervisor.findFirst({
+                        where: { date: parsedDate, hour, userId: uid },
+                        include: { user: { select: { displayName: true, username: true } } }
+                    });
 
-                if (existing) {
-                    if (existing.userId === actualUserId) {
-                        conflicts.push({ date: normalizedDateStr, hour, reason: 'Már be van osztva erre az órára' });
-                    } else {
-                        conflicts.push({ date: normalizedDateStr, hour, reason: `Foglalt (${existing.user.displayName || existing.user.username})` });
+                    if (existing) {
+                        conflicts.push({ date: normalizedDateStr, hour, reason: `${existing.user.displayName || existing.user.username} már be van osztva erre az órára` });
+                        continue;
                     }
-                    continue;
-                }
 
-                // Check booking conflict
-                const startOfHour = targetTime.toDate();
-                const endOfHour = targetTime.add(1, 'hour').toDate();
-                const existingBooking = await prisma.booking.findFirst({
-                    where: {
-                        userId: actualUserId,
-                        date: parsedDate,
-                        startTime: { lt: endOfHour },
-                        endTime: { gt: startOfHour },
-                    }
-                });
-
-                if (existingBooking) {
-                    conflicts.push({ date: normalizedDateStr, hour, reason: 'Ütköző gépfoglalás van ebben az órában' });
-                    continue;
-                }
-
-                try {
-                    const newShift = await prisma.bookingSupervisor.create({
-                        data: {
+                    // Check booking conflict for this user
+                    const startOfHour = targetTime.toDate();
+                    const endOfHour = targetTime.add(1, 'hour').toDate();
+                    const existingBooking = await prisma.booking.findFirst({
+                        where: {
+                            userId: uid,
                             date: parsedDate,
-                            hour,
-                            userId: actualUserId,
-                        },
-                        include: {
-                            user: { select: { id: true, username: true, displayName: true, role: true } }
+                            startTime: { lt: endOfHour },
+                            endTime: { gt: startOfHour },
+                            status: { notIn: ['CANCELLED', 'REJECTED'] }
                         }
                     });
-                    created.push(newShift);
-                } catch (err: any) {
-                    conflicts.push({ date: normalizedDateStr, hour, reason: 'Mentési hiba vagy párhuzamos foglalás' });
+
+                    if (existingBooking && !['ADMIN', 'TEACHER'].includes(user.role)) {
+                        conflicts.push({ date: normalizedDateStr, hour, reason: 'Ütköző aktív gépfoglalás van ebben az órában' });
+                        continue;
+                    }
+
+                    try {
+                        const newShift = await prisma.bookingSupervisor.create({
+                            data: {
+                                date: parsedDate,
+                                hour,
+                                userId: uid,
+                            },
+                            include: {
+                                user: { select: { id: true, username: true, displayName: true, role: true } }
+                            }
+                        });
+                        created.push(newShift);
+                    } catch (err: any) {
+                        conflicts.push({ date: normalizedDateStr, hour, reason: 'Mentési hiba vagy párhuzamos foglalás' });
+                    }
                 }
             }
         }
@@ -538,8 +546,8 @@ supervisorsRouter.post(
         if (created.length > 0) {
             await logSystemActivity(
                 'SUPERVISOR_BULK_ASSIGNED',
-                `User ${actualUserId === user.id ? user.username : 'target'} assigned ${created.length} supervisor shifts`,
-                { userId: user.id, metadata: { count: created.length, targetUserId: actualUserId } }
+                `User ${user.username} bulk assigned ${created.length} supervisor shifts for ${targetUserIdsList.length} user(s)`,
+                { userId: user.id, metadata: { count: created.length, targetUserIds: targetUserIdsList } }
             );
         }
 

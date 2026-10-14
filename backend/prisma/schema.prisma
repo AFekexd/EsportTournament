@@ -578,7 +578,8 @@ model BookingSupervisor {
   user      User     @relation("BookingSupervisorUser", fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
-  @@unique([date, hour])
+  @@unique([date, hour, userId])
+  @@index([date, hour])
   @@index([date])
   @@index([userId])
 }
