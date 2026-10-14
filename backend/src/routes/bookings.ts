@@ -698,8 +698,7 @@ bookingsRouter.patch(
                 type: 'SYSTEM',
                 title: status === 'REJECTED' ? 'Gépfoglalási kérelem elutasítva' : 'Foglalás törölve',
                 message: `A(z) ${booking.computer.name} gépre leadott foglalásod törlésre került (${approverName} által). A hely felszabadult, a heti kereted nem csökkent.`,
-                link: '/booking',
-                sendEmail: true
+                link: '/booking'
             });
 
             res.json({ success: true, data: { ...booking, status, deleted: true } });
@@ -722,8 +721,7 @@ bookingsRouter.patch(
                 type: 'SYSTEM',
                 title: 'Gépfoglalásod Jóváhagyva!',
                 message: `A(z) ${booking.computer.name} gépre szóló foglalásodat jóváhagyta ${approverName}. Lesz felügyelet, jó játékot!`,
-                link: '/booking',
-                sendEmail: true
+                link: '/booking'
             });
         }
 

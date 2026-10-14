@@ -159,8 +159,7 @@ adminKioskRouter.post('/users/bulk-time', authenticate, requireRole('ADMIN', 'TE
                         n.userId,
                         n.secondsNum,
                         n.updatedBalance,
-                        n.reason,
-                        true // skipEmail for bulk
+                        n.reason
                     );
                 }
             } catch (err) {

@@ -2,7 +2,6 @@ import prisma from '../lib/prisma.js';
 import { discordService } from './discordService.js';
 import { notificationService } from './notificationService.js';
 import { discordLogService } from './discordLogService.js';
-import { emailService } from './emailService.js';
 
 // Track sent reminders to avoid duplicates
 const sentReminders = new Set<string>();
@@ -189,56 +188,11 @@ export class TournamentSchedulerService {
                     );
                 }
 
-                // Send email to users who haven't registered yet but might be interested
-                if (tournament.notifyUsers) {
-                    await this.sendRegistrationReminderEmails(tournament);
-                }
-
                 sentReminders.add(reminderKey);
             }
 
         } catch (error) {
             console.error('[Scheduler] Error checking registration deadlines:', error);
-        }
-    }
-
-    /**
-     * Send registration reminder emails to interested users
-     */
-    private static async sendRegistrationReminderEmails(tournament: any) {
-        try {
-            // Find users interested in this game who haven't registered
-            const registeredUserIds = await prisma.tournamentEntry.findMany({
-                where: { tournamentId: tournament.id },
-                select: { userId: true }
-            }).then(entries => entries.map(e => e.userId).filter(Boolean));
-
-            const interestedUsers = await prisma.user.findMany({
-                where: {
-                    emailPrefTournaments: true,
-                    emailNotifications: true,
-                    gameStats: { some: { gameId: tournament.gameId } },
-                    id: { notIn: registeredUserIds as string[] }
-                },
-                select: { id: true, email: true, displayName: true }
-            });
-
-            console.log(`[Scheduler] Sending registration reminder emails to ${interestedUsers.length} users for ${tournament.name}`);
-
-            for (const user of interestedUsers) {
-                try {
-                    await emailService.sendTournamentInvite(
-                        user.email,
-                        tournament.name,
-                        tournament.id,
-                        user.id
-                    );
-                } catch (e) {
-                    // Ignore individual email failures
-                }
-            }
-        } catch (error) {
-            console.error('[Scheduler] Error sending registration reminder emails:', error);
         }
     }
 

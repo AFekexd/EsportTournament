@@ -48,7 +48,6 @@ export const IncidentController = {
             title: `Új incidens: ${title}`,
             message: `Jelentő: ${user.username || user.displayName}. Kötődő gép: ${computerId ? 'Van' : 'Nincs'}`,
             link: `/admin/incidents`,
-            sendEmail: true,
             sendDiscord: true
         });
       } else {
@@ -65,7 +64,6 @@ export const IncidentController = {
             title: `Új incidens: ${title}`,
             message: `Jelentő: ${user.username || user.displayName}`,
             link: `/admin/incidents`,
-            sendEmail: true,
             sendDiscord: true
            })
         ));
@@ -157,8 +155,7 @@ export const IncidentController = {
                 type: 'SYSTEM',
                 title: `Incidens frissítés: ${incident.title}`,
                 message: `Státusz: ${status}. ${resolutionNote ? `Megjegyzés: ${resolutionNote}` : ''}`,
-                link: `/bug-report`,
-                sendEmail: true
+                link: `/bug-report`
              });
         }
         

@@ -1,7 +1,5 @@
 import prisma from '../lib/prisma.js';
 import { NotificationType } from '../generated/prisma/client.js';
-import { emailService } from './emailService.js';
-
 
 export class BookingNotificationService {
     // 30 perc
@@ -23,7 +21,7 @@ export class BookingNotificationService {
     }
 
     /**
-     * Called when a booking is created - sends confirmation email and in-app notification
+     * Called when a booking is created - sends in-app notification
      */
     static async createdBooking(booking: any) {
         const isPending = booking.status === 'PENDING';
@@ -31,82 +29,14 @@ export class BookingNotificationService {
             ? `Foglalási kérelem elküldve! Gép: ${booking.computer.name}, Időpont: ${new Date(booking.startTime).toLocaleString('hu-HU', { timeZone: 'Europe/Budapest' })}. A DÖK értesítést kapott a felügyelet vállalására!`
             : `Sikeres foglalás! Gép: ${booking.computer.name}, Időpont: ${new Date(booking.startTime).toLocaleString('hu-HU', { timeZone: 'Europe/Budapest' })}`;
         await this.createNotification(booking.userId, 'BOOKING_CONFIRMED', message);
-
-        // Send confirmation email
-        const user = await prisma.user.findUnique({
-            where: { id: booking.userId },
-            select: { email: true }
-        });
-
-        if (user?.email) {
-            const date = new Date(booking.startTime).toLocaleDateString('hu-HU', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                timeZone: 'Europe/Budapest'
-            });
-            const startTime = new Date(booking.startTime).toLocaleTimeString('hu-HU', {
-                hour: '2-digit',
-                minute: '2-digit',
-                timeZone: 'Europe/Budapest'
-            });
-            const endTime = new Date(booking.endTime).toLocaleTimeString('hu-HU', {
-                hour: '2-digit',
-                minute: '2-digit',
-                timeZone: 'Europe/Budapest'
-            });
-
-            await emailService.sendBookingConfirmation(
-                user.email,
-                {
-                    computerName: booking.computer.name,
-                    date,
-                    startTime,
-                    endTime,
-                    qrCode: booking.checkInCode || undefined
-                },
-                booking.userId
-            );
-        }
     }
 
     /**
-     * Called when a booking is cancelled - sends cancellation email
+     * Called when a booking is cancelled - sends in-app notification
      */
     static async cancelledBooking(booking: any, reason?: string) {
         const message = `Foglalás törölve: ${booking.computer.name}, Időpont: ${new Date(booking.startTime).toLocaleString('hu-HU', { timeZone: 'Europe/Budapest' })}`;
         await this.createNotification(booking.userId, 'BOOKING_CANCELLED', message);
-
-        // Send cancellation email
-        const user = await prisma.user.findUnique({
-            where: { id: booking.userId },
-            select: { email: true }
-        });
-
-        if (user?.email) {
-            const date = new Date(booking.startTime).toLocaleDateString('hu-HU', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                timeZone: 'Europe/Budapest'
-            });
-            const startTime = new Date(booking.startTime).toLocaleTimeString('hu-HU', {
-                hour: '2-digit',
-                minute: '2-digit',
-                timeZone: 'Europe/Budapest'
-            });
-
-            await emailService.sendBookingCancelled(
-                user.email,
-                {
-                    computerName: booking.computer.name,
-                    date,
-                    startTime,
-                    reason
-                },
-                booking.userId
-            );
-        }
     }
 
     /**
@@ -145,16 +75,6 @@ export class BookingNotificationService {
                     // In-app notification
                     const message = `Emlékeztető: A foglalásod hamarosan kezdődik! (${booking.computer.name} - ${startTimeStr})`;
                     await this.createNotification(booking.userId, 'BOOKING_REMINDER', message);
-
-                    // Email reminder
-                    if (booking.user.email) {
-                        await emailService.sendBookingReminder(
-                            booking.user.email,
-                            booking.computer.name,
-                            startTimeStr,
-                            booking.userId
-                        );
-                    }
 
                     // Update reminderSent flag
                     await prisma.booking.update({
@@ -212,16 +132,6 @@ export class BookingNotificationService {
                     // In-app notification
                     const message = `Jó hír! Felszabadult egy gép, amire vártál: ${entry.computer.name} (${availableTimeStr})`;
                     await this.createNotification(entry.userId, 'WAITLIST_AVAILABLE', message);
-
-                    // Email notification
-                    if (entry.user.email) {
-                        await emailService.sendWaitlistNotification(
-                            entry.user.email,
-                            entry.computer.name,
-                            availableTimeStr,
-                            entry.userId
-                        );
-                    }
 
                     console.log(`Waitlist notification sent to user ${entry.userId} for ${entry.computer.name}`);
                 }

@@ -20,7 +20,6 @@ import {
     ExternalLink,
     FileText,
     Bell,
-    Mail,
     Plus,
     X,
 } from "lucide-react";
@@ -437,16 +436,6 @@ export function BugReportsAdmin() {
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <button
-                                                onClick={() => handleToggleNotification(setting.userId, "receiveEmail")}
-                                                className={`p-2 rounded-lg transition-colors ${setting.receiveEmail
-                                                    ? "bg-green-500/20 text-green-400"
-                                                    : "bg-secondary text-muted-foreground"
-                                                    }`}
-                                                title="Email értesítés"
-                                            >
-                                                <Mail size={16} />
-                                            </button>
                                             <button
                                                 onClick={() => handleToggleNotification(setting.userId, "receiveDiscord")}
                                                 className={`p-2 rounded-lg transition-colors ${setting.receiveDiscord

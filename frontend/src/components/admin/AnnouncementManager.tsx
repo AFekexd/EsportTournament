@@ -3,7 +3,6 @@ import { toast } from "sonner";
 import {
   Send,
   MessageSquare,
-  Mail,
   AlertTriangle,
   User,
   Search,
@@ -15,9 +14,6 @@ import { authService } from "../../lib/auth-service";
 export function AnnouncementManager() {
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
-  const [targetChannel, setTargetChannel] = useState<
-    "discord" | "email" | "both"
-  >("discord");
   const [recipientType, setRecipientType] = useState<
     "broadcast" | "individual"
   >("broadcast");
@@ -85,16 +81,10 @@ export function AnnouncementManager() {
     try {
       const token = authService.keycloak?.token;
 
-      const channels = [];
-      if (targetChannel === "discord" || targetChannel === "both")
-        channels.push("discord");
-      if (targetChannel === "email" || targetChannel === "both")
-        channels.push("email");
-
       const body: any = {
         message: message,
         title: title,
-        channels: channels,
+        channels: ["discord"],
       };
 
       // If individual, add targetUserId
@@ -321,16 +311,10 @@ export function AnnouncementManager() {
             </h3>
 
             <div className="space-y-3 font-mono text-xs">
-              <button
-                onClick={() => setTargetChannel("discord")}
-                className={`w-full flex items-center gap-3 p-3 rounded border transition-all ${targetChannel === "discord"
-                    ? "bg-primary/10 border-primary text-foreground"
-                    : "bg-secondary/40 border-border text-muted-foreground hover:bg-secondary hover:text-foreground"
-                  }`}
+              <div
+                className="w-full flex items-center gap-3 p-3 rounded border bg-primary/10 border-primary text-foreground"
               >
-                <div
-                  className={`p-2 rounded ${targetChannel === "discord" ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
-                >
+                <div className="p-2 rounded bg-primary text-primary-foreground">
                   <MessageSquare size={16} />
                 </div>
                 <div className="text-left">
@@ -341,43 +325,7 @@ export function AnnouncementManager() {
                       : "Közös csatorna"}
                   </div>
                 </div>
-              </button>
-
-              <button
-                onClick={() => setTargetChannel("email")}
-                className={`w-full flex items-center gap-3 p-3 rounded border transition-all ${targetChannel === "email"
-                    ? "bg-emerald-500/10 border-emerald-500/50 text-foreground"
-                    : "bg-secondary/40 border-border text-muted-foreground hover:bg-secondary hover:text-foreground"
-                  }`}
-              >
-                <div
-                  className={`p-2 rounded ${targetChannel === "email" ? "bg-emerald-500 text-white" : "bg-secondary text-muted-foreground"}`}
-                >
-                  <Mail size={16} />
-                </div>
-                <div className="text-left">
-                  <div className="font-semibold">Email</div>
-                  <div className="text-[11px] opacity-70">Csak Email értesítés</div>
-                </div>
-              </button>
-
-              <button
-                onClick={() => setTargetChannel("both")}
-                className={`w-full flex items-center gap-3 p-3 rounded border transition-all ${targetChannel === "both"
-                    ? "bg-accent/10 border-accent/50 text-foreground"
-                    : "bg-secondary/40 border-border text-muted-foreground hover:bg-secondary hover:text-foreground"
-                  }`}
-              >
-                <div
-                  className={`p-2 rounded ${targetChannel === "both" ? "bg-accent text-accent-foreground" : "bg-secondary text-muted-foreground"}`}
-                >
-                  <Send size={16} />
-                </div>
-                <div className="text-left">
-                  <div className="font-medium">Mindkettő</div>
-                  <div className="text-xs opacity-70">Discord + Email</div>
-                </div>
-              </button>
+              </div>
             </div>
 
             <div className="pt-4 border-t border-border">

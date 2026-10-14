@@ -11,9 +11,7 @@ import { authenticate, AuthenticatedRequest } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { logSystemActivity } from '../services/logService.js';
 import prisma from '../lib/prisma.js';
-import { DiscordLogType, DiscordLogStatus, EmailType } from '../generated/prisma/client.js';
-import { emailService } from '../services/emailService.js';
-import { announcementTemplate } from '../services/emailTemplates.js';
+import { DiscordLogType, DiscordLogStatus } from '../generated/prisma/client.js';
 
 export const adminDiscordRouter: Router = Router();
 const BOT_RELAY_CHANNEL_ID = '1496789752098328667';
@@ -296,52 +294,6 @@ adminDiscordRouter.post(
                 }
             }
             results.discord = success;
-        }
-
-        // --- EMAIL LOGIC ---
-        if (channels.includes('email')) {
-             const subject = title || 'Rendszerüzenet';
-             const htmlContent = announcementTemplate(subject, message, adminUser.username);
-             
-             if (targetUserId) {
-                 const targetUser = await prisma.user.findUnique({ where: { id: targetUserId }, select: { email: true } });
-                 if (targetUser?.email) {
-                     results.email = await emailService.sendEmail({
-                         to: targetUser.email,
-                         subject,
-                         html: htmlContent,
-                         type: 'SYSTEM'
-                     });
-                 } else {
-                     results.errors.push('A felhasználónak nincs email címe');
-                 }
-             } else {
-                 // Broadcast - Send to those enabled system notifications
-                 const users = await prisma.user.findMany({
-                     where: { emailNotifications: true, emailPrefSystem: true },
-                     select: { email: true }
-                 });
-                 
-                 let sentCount = 0;
-                 for (const u of users) {
-                     if (u.email) {
-                         const sent = await emailService.sendEmail({
-                             to: u.email,
-                             subject,
-                             html: htmlContent,
-                             type: 'ADMIN_BROADCAST'
-                         });
-                         if (sent) sentCount++;
-                     }
-                 }
-                 results.email = sentCount > 0;
-                 
-                 await logSystemActivity(
-                    'SYSTEM_ANNOUNCE' as any, // Using SYSTEM_ANNOUNCE logging
-                    `Admin ${adminUser.username} sent Email broadcast to ${sentCount} users`,
-                    { adminId: adminUser.id, metadata: { recipientCount: sentCount, subject } }
-                );
-             }
         }
 
         res.json({

@@ -2,18 +2,13 @@ import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import {
   Save,
-  Bell,
   Lock,
   User,
   Shield,
   Mail,
   AtSign,
   RefreshCw,
-  Trophy,
   Gamepad2,
-  Calendar,
-  AlertCircle,
-  Newspaper,
   Clock,
   CheckCircle2,
 } from "lucide-react";
@@ -25,15 +20,6 @@ import { DiscordConnectModal } from "../components/common/DiscordConnectModal";
 import { API_URL } from "../config";
 import { apiFetch } from "../lib/api-client";
 
-interface EmailPreference {
-  key: string;
-  label: string;
-  description: string;
-  icon: React.ReactNode;
-  value: boolean;
-  setValue: (val: boolean) => void;
-}
-
 export function SettingsPage() {
   const dispatch = useAppDispatch();
   const { user, isAuthenticated, isAdmin } = useAuth();
@@ -41,26 +27,6 @@ export function SettingsPage() {
   // Settings state - must be declared before any conditional returns
   const [displayName, setDisplayName] = useState(user?.displayName || "");
   const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || "");
-
-  // Email preferences state
-  const [emailNotifications, setEmailNotifications] = useState(
-    user?.emailNotifications ?? true,
-  );
-  const [emailPrefTournaments, setEmailPrefTournaments] = useState(
-    user?.emailPrefTournaments ?? true,
-  );
-  const [emailPrefMatches, setEmailPrefMatches] = useState(
-    user?.emailPrefMatches ?? true,
-  );
-  const [emailPrefBookings, setEmailPrefBookings] = useState(
-    user?.emailPrefBookings ?? true,
-  );
-  const [emailPrefSystem, setEmailPrefSystem] = useState(
-    user?.emailPrefSystem ?? true,
-  );
-  const [emailPrefWeeklyDigest, setEmailPrefWeeklyDigest] = useState(
-    user?.emailPrefWeeklyDigest ?? false,
-  );
 
   const [saveLoading, setSaveLoading] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -89,49 +55,6 @@ export function SettingsPage() {
     };
     checkPendingRequests();
   }, []);
-
-  const emailPreferences: EmailPreference[] = [
-    {
-      key: "emailPrefTournaments",
-      label: "Verseny értesítések",
-      description: "Új versenyek, meghívók és regisztrációs emlékeztetők",
-      icon: <Trophy size={20} />,
-      value: emailPrefTournaments,
-      setValue: setEmailPrefTournaments,
-    },
-    {
-      key: "emailPrefMatches",
-      label: "Meccs értesítések",
-      description: "Meccs emlékeztetők és eredmények",
-      icon: <Gamepad2 size={20} />,
-      value: emailPrefMatches,
-      setValue: setEmailPrefMatches,
-    },
-    {
-      key: "emailPrefBookings",
-      label: "Foglalás értesítések",
-      description: "Foglalás megerősítések, emlékeztetők és szabad helyek",
-      icon: <Calendar size={20} />,
-      value: emailPrefBookings,
-      setValue: setEmailPrefBookings,
-    },
-    {
-      key: "emailPrefSystem",
-      label: "Rendszer értesítések",
-      description: "Fontos rendszerüzenetek és bejelentések",
-      icon: <AlertCircle size={20} />,
-      value: emailPrefSystem,
-      setValue: setEmailPrefSystem,
-    },
-    {
-      key: "emailPrefWeeklyDigest",
-      label: "Heti összefoglaló",
-      description: "Heti statisztikák és közelgő versenyek összefoglalója",
-      icon: <Newspaper size={20} />,
-      value: emailPrefWeeklyDigest,
-      setValue: setEmailPrefWeeklyDigest,
-    },
-  ];
 
   const handleSteamSync = async () => {
     if (!steamId) return;
@@ -202,12 +125,6 @@ export function SettingsPage() {
         body: JSON.stringify({
           displayName,
           avatarUrl: avatarUrl || undefined,
-          emailNotifications,
-          emailPrefTournaments,
-          emailPrefMatches,
-          emailPrefBookings,
-          emailPrefSystem,
-          emailPrefWeeklyDigest,
         }),
       });
 
@@ -508,104 +425,6 @@ export function SettingsPage() {
                 </button>
               </div>
             </div>
-          </div>
-
-          {/* Email Notifications */}
-          <div className="tactical-card p-6 sm:p-8">
-            <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-border">
-              <div className="p-2.5 bg-secondary rounded border border-border text-yellow-400">
-                <Bell size={20} />
-              </div>
-              <div>
-                <h2 className="font-display text-lg font-bold uppercase tracking-wider text-foreground">
-                  Email Értesítések
-                </h2>
-                <p className="text-xs text-muted-foreground">
-                  Válaszd ki, milyen eseményekről szeretnél emailt kapni
-                </p>
-              </div>
-            </div>
-
-            {/* Master Toggle */}
-            <div
-              className={`flex items-center justify-between p-3.5 bg-secondary/40 border border-border rounded mb-4 cursor-pointer hover:border-primary/40 transition-colors ${pendingRequest ? "opacity-50 pointer-events-none" : ""}`}
-              onClick={() => setEmailNotifications(!emailNotifications)}
-            >
-              <div className="flex items-center gap-4">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${emailNotifications
-                      ? "bg-primary/20 text-primary"
-                      : "bg-gray-800 text-muted-foreground"
-                    }`}
-                >
-                  <Mail size={20} />
-                </div>
-                <div>
-                  <h3 className="font-medium text-foreground">
-                    Összes email értesítés
-                  </h3>
-                  <p className="text-xs text-muted-foreground">
-                    Fő kapcsoló - kikapcsolva egyik emailt sem kapod meg
-                  </p>
-                </div>
-              </div>
-
-              <div
-                className={`w-12 h-7 rounded-full p-1 transition-colors relative ${emailNotifications ? "bg-primary" : "bg-gray-700"
-                  }`}
-              >
-                <div
-                  className={`w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${emailNotifications ? "translate-x-5" : "translate-x-0"
-                    }`}
-                />
-              </div>
-            </div>
-
-            {/* Individual Preferences */}
-            <div
-              className={`space-y-2 ${!emailNotifications || pendingRequest ? "opacity-50 pointer-events-none" : ""}`}
-            >
-              {emailPreferences.map((pref) => (
-                <div
-                  key={pref.key}
-                  className="flex items-center justify-between p-3 bg-secondary/30 border border-border rounded hover:bg-secondary/60 hover:border-primary/40 transition-all cursor-pointer"
-                  onClick={() => pref.setValue(!pref.value)}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`w-8 h-8 rounded flex items-center justify-center transition-colors ${pref.value
-                          ? "bg-primary/20 text-primary"
-                          : "bg-secondary text-muted-foreground"
-                        }`}
-                    >
-                      {pref.icon}
-                    </div>
-                    <div>
-                      <h3 className="font-medium text-foreground text-sm">
-                        {pref.label}
-                      </h3>
-                      <p className="text-xs text-muted-foreground">
-                        {pref.description}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div
-                    className={`w-10 h-6 rounded-full p-0.5 transition-colors relative ${pref.value ? "bg-primary" : "bg-gray-700"
-                      }`}
-                  >
-                    <div
-                      className={`w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${pref.value ? "translate-x-4" : "translate-x-0"
-                        }`}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <p className="text-xs text-muted-foreground text-center mt-4">
-              💡 Az email értesítéseket az adott email "Leiratkozás" linkjével is kikapcsolhatod.
-            </p>
           </div>
         </div>
       </div>

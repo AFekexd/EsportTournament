@@ -1628,8 +1628,7 @@ class DiscordService {
                 type: 'SYSTEM',
                 title: 'Foglalásod jóváhagyva!',
                 message: `A(z) ${booking.computer.name} gépre leadott foglalásodat elfogadta a DÖK (${approverName}). Lesz felügyelet, jó játékot!`,
-                link: '/booking',
-                sendEmail: true
+                link: '/booking'
             });
 
         } catch (error) {
@@ -1697,8 +1696,7 @@ class DiscordService {
                 type: 'SYSTEM',
                 title: 'Foglalási kérelem elutasítva',
                 message: `A(z) ${booking.computer.name} gépre leadott foglalásodhoz a DÖK sajnos nem tudott felügyeletet biztosítani erre az időpontra. A kérelem törölve lett, így a heti kereted nem csökkent és szabadon választhatsz másik időpontot.`,
-                link: '/booking',
-                sendEmail: true
+                link: '/booking'
             });
 
         } catch (error) {

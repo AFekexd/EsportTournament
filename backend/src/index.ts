@@ -35,16 +35,13 @@ import { changeRequestsRouter } from './routes/changeRequests.js';
 // Kiosk Routes
 import { kioskRouter } from './routes/kiosk.js';
 import { adminKioskRouter } from './routes/admin-kiosk.js';
-import { adminEmailRouter } from './routes/admin-email.js';
 import { adminDiscordRouter } from './routes/admin-discord.js';
-import { digestService } from './services/digestService.js';
 import { supervisorsRouter } from './routes/supervisors.js';
 import { incidentsRouter } from './routes/incidents.js';
 import { adminSettingsRouter } from './routes/adminSettings.js';
 import { changelogRouter } from './routes/changelog.js';
 import { bugReportsRouter } from './routes/bugReports.js';
 import { bugReportSettingsRouter } from './routes/bugReportSettings.js';
-import unsubscribeRouter from './routes/unsubscribe.js';
 // ...
 import { adminStudentsRouter } from './routes/admin-students.js';
 // CORS origins from environment variable or default
@@ -79,7 +76,6 @@ setIo(io);
 // Start background jobs
 BookingNotificationService.startReminderJob();
 TournamentSchedulerService.startScheduler();
-digestService.startScheduler();
 
 const PORT = process.env.PORT || 3000;
 
@@ -149,12 +145,9 @@ app.use('/share', shareRouter);
 // Kiosk & Admin Kiosk Routes
 app.use('/api/kiosk', kioskRouter);
 app.use('/api/admin/kiosk', adminKioskRouter);
-app.use('/api/admin/email', adminEmailRouter);
 app.use('/api/admin/discord', adminDiscordRouter);
 
 app.use('/api/admin/students', adminStudentsRouter);
-
-app.use('/api/unsubscribe', unsubscribeRouter);
 
 // Incident Routes
 

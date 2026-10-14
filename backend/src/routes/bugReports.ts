@@ -3,21 +3,10 @@ import prisma from '../lib/prisma.js';
 import { authenticate, AuthenticatedRequest } from '../middleware/auth.js';
 import { ApiError, asyncHandler } from '../middleware/errorHandler.js';
 import { UserRole } from '../utils/enums.js';
-import { emailService } from '../services/emailService.js';
-import { generateEmailTemplate } from '../services/emailTemplates.js';
 import { discordService } from '../services/discordService.js';
 import { processAndValidateImage } from '../utils/imageProcessor.js';
 
 export const bugReportsRouter: Router = Router();
-
-function escapeHtml(str: unknown): string {
-    return String(str ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-}
 
 // Helper function to send notifications to configured admins
 async function notifyAdminsAboutBugReport(bugReport: any, reporter: any) {
@@ -50,56 +39,7 @@ async function notifyAdminsAboutBugReport(bugReport: any, reporter: any) {
             'HIGH': 'Magas'
         };
 
-        const safeReporterName = escapeHtml(reporter.displayName || reporter.username);
-        const safeTitle = escapeHtml(bugReport.title);
-        const safeCategory = escapeHtml(categoryLabels[bugReport.category] || bugReport.category);
-        const safePriority = escapeHtml(priorityLabels[bugReport.priority] || bugReport.priority);
-        const safeDescription = escapeHtml(bugReport.description).replace(/\n/g, '<br>');
-
         for (const setting of settings) {
-            // Send email notification
-            if (setting.receiveEmail && setting.user.email) {
-                const adminUrl = `${process.env.FRONTEND_URL || 'https://esport.pollak.info'}/admin?tab=bug-reports`;
-                emailService.sendEmail({
-                    to: setting.user.email,
-                    subject: `[Pollák Esport] 🐛 Új hibajelentés: ${bugReport.title}`,
-                    type: 'SYSTEM',
-                    html: generateEmailTemplate({
-                        title: 'Új Hibajelentés Érkezett',
-                        badgeText: 'ESPORT // HIBAJELENTÉS',
-                        badgeColor: 'rose',
-                        content: `
-                            <p style="margin: 0 0 16px; color: #E2E8F0;">
-                                Új hibajelentést rögzített egy felhasználó az Esport rendszerben:
-                            </p>
-                            
-                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #141B2D; border: 1px solid #1E293B; border-radius: 8px; margin-bottom: 16px;">
-                                <tr>
-                                    <td style="padding: 10px 16px; border-bottom: 1px solid #1E293B; color: #94A3B8; font-size: 13px;">Bejelentő:</td>
-                                    <td style="padding: 10px 16px; border-bottom: 1px solid #1E293B; color: #FFFFFF; font-weight: 700; font-size: 13px;" align="right">${safeReporterName}</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 10px 16px; border-bottom: 1px solid #1E293B; color: #94A3B8; font-size: 13px;">Kategória:</td>
-                                    <td style="padding: 10px 16px; border-bottom: 1px solid #1E293B; color: #38BDF8; font-size: 13px;" align="right">${safeCategory}</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 10px 16px; color: #94A3B8; font-size: 13px;">Prioritás:</td>
-                                    <td style="padding: 10px 16px; color: #EF4444; font-weight: 700; font-size: 13px;" align="right">${safePriority}</td>
-                                </tr>
-                            </table>
-
-                            <div style="background-color: #162032; border: 1px solid #1E293B; border-radius: 6px; padding: 14px 16px; margin-bottom: 16px;">
-                                <div style="font-size: 11px; font-family: 'Courier New', Courier, monospace; color: #94A3B8; text-transform: uppercase; margin-bottom: 6px;">Leírás</div>
-                                <div style="color: #F8FAFC; line-height: 1.6; font-size: 14px;">${safeDescription}</div>
-                            </div>
-                        `,
-                        button: {
-                            text: 'Megtekintés az Admin felületen →',
-                            url: adminUrl
-                        }
-                    })
-                }).catch(err => console.error('Bug report email notification failed:', err));
-            }
 
             // Send Discord DM notification
             if (setting.receiveDiscord && setting.user.discordId) {
