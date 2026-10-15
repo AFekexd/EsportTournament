@@ -29,8 +29,13 @@ export function ChangelogModal({ isOpen, onClose }: ChangelogModalProps) {
   useEffect(() => {
     if (isOpen) {
       fetchChangelogs();
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") onClose();
+      };
+      document.addEventListener("keydown", handleKeyDown);
+      return () => document.removeEventListener("keydown", handleKeyDown);
     }
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   const fetchChangelogs = async () => {
     try {

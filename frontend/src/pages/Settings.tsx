@@ -94,16 +94,16 @@ export function SettingsPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col items-center justify-center py-20 glass-card rounded-2xl">
-          <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mb-6 neon-border">
-            <Lock size={40} className="text-muted-foreground" />
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="flex flex-col items-center justify-center py-20 tactical-card rounded-xl">
+          <div className="w-16 h-16 bg-secondary border border-border/80 rounded-xl flex items-center justify-center mb-4 text-muted-foreground">
+            <Lock size={32} />
           </div>
-          <h3 className="text-xl font-bold text-foreground mb-2 text-glow">
+          <h3 className="font-display text-xl font-bold uppercase tracking-wider text-foreground mb-1">
             Nem vagy bejelentkezve
           </h3>
-          <p className="text-muted-foreground">
-            Jelentkezz be a beállítások módosításához.
+          <p className="text-muted-foreground text-sm font-mono">
+            Jelentkezz be a fiókbeállítások módosításához.
           </p>
         </div>
       </div>

@@ -563,11 +563,35 @@ export function TournamentDetailPage() {
     }
   };
 
-  if (isLoading || !currentTournament) {
+  if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh]">
-        <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-muted-foreground animate-pulse">Betöltés...</p>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3">
+        <div className="w-14 h-14 border-4 border-primary border-t-transparent rounded-full animate-spin mb-2" />
+        <p className="text-muted-foreground font-mono text-xs uppercase tracking-wider animate-pulse">
+          Verseny betöltése...
+        </p>
+      </div>
+    );
+  }
+
+  if (!currentTournament) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 p-6 text-center">
+        <div className="w-16 h-16 bg-[#121824] rounded-xl border border-border flex items-center justify-center text-muted-foreground">
+          <Trophy size={32} />
+        </div>
+        <h2 className="font-display text-2xl font-bold uppercase tracking-wider text-foreground">
+          A verseny nem található
+        </h2>
+        <p className="text-muted-foreground text-sm max-w-md font-mono">
+          A keresett bajnokság nem létezik vagy időközben törlésre került.
+        </p>
+        <Button asChild className="mt-2">
+          <Link to="/tournaments" className="flex items-center gap-2">
+            <ArrowLeft size={16} />
+            <span>Vissza a versenyekhez</span>
+          </Link>
+        </Button>
       </div>
     );
   }

@@ -165,13 +165,36 @@ export function TeamDetailPage() {
     });
   };
 
-  if (isLoading || !currentTeam) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
           <p className="text-muted-foreground font-mono text-sm">Csapat betöltése...</p>
         </div>
+      </div>
+    );
+  }
+
+  if (!currentTeam) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4 p-6 text-center">
+        <div className="w-16 h-16 bg-[#121824] rounded-xl border border-border flex items-center justify-center text-muted-foreground">
+          <Users size={32} />
+        </div>
+        <h2 className="font-display text-2xl font-bold uppercase tracking-wider text-foreground">
+          A csapat nem található
+        </h2>
+        <p className="text-muted-foreground text-sm max-w-md font-mono">
+          A keresett csapat nem létezik, időközben megszűnt vagy helytelen azonosítóra hivatkoztál.
+        </p>
+        <button
+          onClick={() => navigate("/teams")}
+          className="inline-flex items-center gap-2 mt-2 px-5 py-2.5 rounded-md bg-primary hover:bg-primary/90 text-white font-mono text-xs uppercase font-bold tracking-wider transition-all shadow-md shadow-primary/20"
+        >
+          <ArrowLeft size={16} />
+          <span>Vissza a csapatokhoz</span>
+        </button>
       </div>
     );
   }
