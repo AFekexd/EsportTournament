@@ -49,6 +49,7 @@ Ha már regisztráltál, kattints a gombra, és add meg az OM azonosítódat a f
 
 const DEFAULT_VERIFICATION_CHANNEL_ID = '1461056761988382862';
 const DEFAULT_BOOKING_CHANNEL_ID = '1555878350843678841';
+const DEFAULT_DOK_ROLE_ID = '1470692513625931808';
 
 class DiscordService {
     private client: Client;
@@ -57,6 +58,7 @@ class DiscordService {
     private categoryId: string = '';
     private verificationChannelId: string = DEFAULT_VERIFICATION_CHANNEL_ID;
     private bookingChannelId: string = DEFAULT_BOOKING_CHANNEL_ID;
+    private dokRoleId: string = DEFAULT_DOK_ROLE_ID;
 
     constructor() {
         this.client = new Client({
@@ -72,7 +74,7 @@ class DiscordService {
     }
 
     private async initialize() {
-        const { DISCORD_BOT_TOKEN, DISCORD_GUILD_ID, DISCORD_CATEGORY_ID, DISCORD_VERIFICATION_CHANNEL_ID, DISCORD_BOOKING_CHANNEL_ID } = process.env;
+        const { DISCORD_BOT_TOKEN, DISCORD_GUILD_ID, DISCORD_CATEGORY_ID, DISCORD_VERIFICATION_CHANNEL_ID, DISCORD_BOOKING_CHANNEL_ID, DISCORD_DOK_ROLE_ID } = process.env;
 
         if (!DISCORD_BOT_TOKEN || !DISCORD_GUILD_ID) {
             console.warn('⚠️ Discord Bot Token or Guild ID not configured. Discord service disabled.');
@@ -83,6 +85,7 @@ class DiscordService {
         this.categoryId = DISCORD_CATEGORY_ID || '';
         this.verificationChannelId = DISCORD_VERIFICATION_CHANNEL_ID || DEFAULT_VERIFICATION_CHANNEL_ID;
         this.bookingChannelId = DISCORD_BOOKING_CHANNEL_ID || DEFAULT_BOOKING_CHANNEL_ID;
+        this.dokRoleId = DISCORD_DOK_ROLE_ID || DEFAULT_DOK_ROLE_ID;
 
         this.client.once('ready', async () => {
             console.log(`✅ Discord Bot logged in as ${this.client.user?.tag}`);
@@ -1513,7 +1516,7 @@ class DiscordService {
             }
 
             await (channel as TextChannel).send({
-                content: isPending ? '📢 **Új gépfoglalási igény érkezett!** @here' : undefined,
+                content: isPending ? `📢 **Új gépfoglalási igény érkezett!** <@&${this.dokRoleId}>` : undefined,
                 embeds: [embed],
                 components,
             });
