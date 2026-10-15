@@ -1,5 +1,5 @@
+import { useEffect, useState } from "react";
 import { X, ExternalLink, Link as LinkIcon, Hash } from "lucide-react";
-import { useState } from "react";
 
 interface DiscordConnectModalProps {
   isOpen: boolean;
@@ -11,6 +11,16 @@ export function DiscordConnectModal({
   onClose,
 }: DiscordConnectModalProps) {
   const [showInstructions, setShowInstructions] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+      return () => document.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 

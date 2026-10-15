@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Check, ScrollText, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DOMPurify from "dompurify";
@@ -21,6 +21,14 @@ export function RuleAcceptanceModal({
   viewOnly = false,
 }: RuleAcceptanceModalProps) {
   const [accepted, setAccepted] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
 
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">

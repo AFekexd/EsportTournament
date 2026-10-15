@@ -8,6 +8,7 @@ import { Layout } from "./components/layout";
 import { PuffLoader } from "react-spinners";
 import { Toaster, toast } from "sonner";
 import { HomePage } from "./pages/Home";
+import { ErrorBoundary } from "./components/common/ErrorBoundary";
 
 // Lazy-loaded routes for fast initial page load & code splitting
 const TournamentsPage = lazy(() => import("./pages/Tournaments").then(m => ({ default: m.TournamentsPage })));
@@ -100,61 +101,63 @@ function AppContent() {
   const shouldShowTerms = Boolean(user && !user.tosAcceptedAt);
 
   return (
-    <BrowserRouter>
-      {isLoading ? (
-        loadingContent
-      ) : (
-        <Suspense fallback={<RouteLoadingFallback />}>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<HomePage />} />
-              <Route path="tournaments" element={<TournamentsPage />} />
-              <Route path="tournaments/:id" element={<TournamentWrapper />} />
-              <Route path="tournaments/:id/rules" element={<TournamentRulesPage />} />
+    <ErrorBoundary>
+      <BrowserRouter>
+        {isLoading ? (
+          loadingContent
+        ) : (
+          <Suspense fallback={<RouteLoadingFallback />}>
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<HomePage />} />
+                <Route path="tournaments" element={<TournamentsPage />} />
+                <Route path="tournaments/:id" element={<TournamentWrapper />} />
+                <Route path="tournaments/:id/rules" element={<TournamentRulesPage />} />
 
-              <Route path="teams" element={<TeamsPage />} />
-              <Route path="teams/create" element={<TeamCreatePage />} />
-              <Route path="teams/:id" element={<TeamDetailPage />} />
-              <Route path="leaderboards" element={<LeaderboardsPage />} />
-              <Route path="notifications" element={<NotificationsPage />} />
+                <Route path="teams" element={<TeamsPage />} />
+                <Route path="teams/create" element={<TeamCreatePage />} />
+                <Route path="teams/:id" element={<TeamDetailPage />} />
+                <Route path="leaderboards" element={<LeaderboardsPage />} />
+                <Route path="notifications" element={<NotificationsPage />} />
+                <Route
+                  path="auth/discord/callback"
+                  element={<DiscordCallbackPage />}
+                />
+                <Route path="calendar" element={<CalendarPage />} />
+                <Route path="profile" element={<ProfileWrapper />} />
+                <Route path="profile/:id" element={<ProfileWrapper />} />
+                <Route path="settings" element={<SettingsPage />} />
+
+                <Route path="admin" element={<AdminPage />} />
+                <Route path="admin/requests" element={<RequestsPage />} />
+                <Route path="admin/releases" element={<ReleasesPage />} />
+                <Route path="admin/logs" element={<AdminLogs />} />
+                <Route path="teacher/time" element={<Navigate to="/booking" replace />} />
+                <Route path="booking" element={<BookingPage />} />
+                <Route path="schedule" element={<SchedulePage />} />
+                <Route path="idobeosztas" element={<Navigate to="/schedule" replace />} />
+                <Route path="bug-report" element={<BugReportPage />} />
+                <Route path="incidents" element={<Navigate to="/bug-report?tab=incidents" replace />} />
+                <Route path="rules" element={<GlobalRulesPage />} />
+              </Route>
               <Route
-                path="auth/discord/callback"
-                element={<DiscordCallbackPage />}
+                path="/embed/tournaments/:id"
+                element={<TournamentEmbedPage />}
               />
-              <Route path="calendar" element={<CalendarPage />} />
-              <Route path="profile" element={<ProfileWrapper />} />
-              <Route path="profile/:id" element={<ProfileWrapper />} />
-              <Route path="settings" element={<SettingsPage />} />
-
-              <Route path="admin" element={<AdminPage />} />
-              <Route path="admin/requests" element={<RequestsPage />} />
-              <Route path="admin/releases" element={<ReleasesPage />} />
-              <Route path="admin/logs" element={<AdminLogs />} />
-              <Route path="teacher/time" element={<Navigate to="/booking" replace />} />
-              <Route path="booking" element={<BookingPage />} />
-              <Route path="schedule" element={<SchedulePage />} />
-              <Route path="idobeosztas" element={<Navigate to="/schedule" replace />} />
-              <Route path="bug-report" element={<BugReportPage />} />
-              <Route path="incidents" element={<Navigate to="/bug-report?tab=incidents" replace />} />
-              <Route path="rules" element={<GlobalRulesPage />} />
-            </Route>
-            <Route
-              path="/embed/tournaments/:id"
-              element={<TournamentEmbedPage />}
-            />
-            <Route path="/embed/teams/:id" element={<TeamEmbedPage />} />
-            <Route path="/tv" element={<TVDisplayPage />} />
-            <Route path="/tv2" element={<TVRecruitmentPage />} />
-          </Routes>
-        </Suspense>
-      )}
-      <Toaster />
-      {shouldShowTerms && (
-        <Suspense fallback={null}>
-          <TermsModal />
-        </Suspense>
-      )}
-    </BrowserRouter>
+              <Route path="/embed/teams/:id" element={<TeamEmbedPage />} />
+              <Route path="/tv" element={<TVDisplayPage />} />
+              <Route path="/tv2" element={<TVRecruitmentPage />} />
+            </Routes>
+          </Suspense>
+        )}
+        <Toaster />
+        {shouldShowTerms && (
+          <Suspense fallback={null}>
+            <TermsModal />
+          </Suspense>
+        )}
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 

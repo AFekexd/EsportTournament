@@ -305,7 +305,7 @@ export function CalendarPage() {
                       {day.events.slice(0, 3).map((event) => (
                         <div
                           key={event.id}
-                          className="text-xs p-1 rounded bg-primary/10 border border-primary/20 text-primary-200 truncate cursor-pointer hover:bg-primary/20 hover:border-primary/40 transition-colors"
+                          className="text-xs p-1 rounded bg-primary/10 border border-primary/20 text-blue-300 font-medium truncate cursor-pointer hover:bg-primary/20 hover:border-primary/40 transition-colors"
                           title={event.title}
                           onClick={(e) => handleEventClick(e, event)}
                         >

@@ -144,7 +144,7 @@ export function NotificationsPage() {
               key={notification.id}
               className={`tactical-card p-4 sm:p-5 flex items-start gap-4 transition-all duration-150 ${
                 !notification.read
-                  ? 'border-l-4 border-l-primary bg-secondary/30'
+                  ? 'border-primary/50 bg-primary/[0.04]'
                   : 'opacity-80 hover:opacity-100'
               }`}
             >
@@ -165,7 +165,7 @@ export function NotificationsPage() {
                     {formatDate(notification.createdAt)}
                   </span>
                 </div>
-                <p className="text-sm text-secondary-foreground leading-relaxed">
+                <p className="text-sm text-secondary-foreground leading-relaxed break-words">
                   {notification.message}
                 </p>
               </div>

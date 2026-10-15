@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { AlertTriangle, AlertCircle, Info } from "lucide-react";
 
@@ -22,6 +23,19 @@ export function ConfirmationModal({
   cancelLabel = "Mégse",
   variant = "primary",
 }: ConfirmationModalProps) {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+      return () => document.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const getVariantStyles = () => {
@@ -29,13 +43,13 @@ export function ConfirmationModal({
       case "danger":
         return {
           icon: <AlertTriangle className="text-red-500" size={24} />,
-          button: "bg-red-500 hover:bg-red-600 text-foreground shadow-red-500/20",
+          button: "bg-red-600 hover:bg-red-700 text-white shadow-red-500/20",
           border: "border-red-500/20",
           bgIcon: "bg-red-500/10",
         };
       case "warning":
         return {
-          icon: <AlertTriangle className="text-yellow-500" size={24} />,
+          icon: <AlertTriangle className="text-yellow-400" size={24} />,
           button:
             "bg-yellow-500 hover:bg-yellow-600 text-black shadow-yellow-500/20",
           border: "border-yellow-500/20",
@@ -44,7 +58,7 @@ export function ConfirmationModal({
       case "info":
         return {
           icon: <Info className="text-primary" size={24} />,
-          button: "bg-blue-500 hover:bg-blue-600 text-foreground shadow-blue-500/20",
+          button: "bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/20",
           border: "border-primary/20",
           bgIcon: "bg-primary/20",
         };
@@ -52,7 +66,7 @@ export function ConfirmationModal({
         return {
           icon: <AlertCircle className="text-primary" size={24} />,
           button:
-            "bg-primary hover:bg-primary-hover text-foreground shadow-primary/20",
+            "bg-primary hover:bg-primary/90 text-white shadow-primary/20",
           border: "border-primary/20",
           bgIcon: "bg-primary/10",
         };
@@ -65,6 +79,9 @@ export function ConfirmationModal({
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 animate-in fade-in duration-200"
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirm-modal-title"
     >
       <div
         className={`bg-[#0E131F] border ${styles.border} shadow-2xl w-full max-w-md overflow-hidden rounded-xl animate-in zoom-in-95 duration-200`}
@@ -75,9 +92,13 @@ export function ConfirmationModal({
             <div className={`p-2.5 rounded ${styles.bgIcon} flex-shrink-0 border ${styles.border}`}>
               {styles.icon}
             </div>
-            <div className="flex-1">
-              <h3 className="text-lg font-display font-bold uppercase tracking-tight text-foreground mb-1">{title}</h3>
-              <p className="text-xs font-mono text-muted-foreground leading-relaxed">{message}</p>
+            <div className="flex-1 min-w-0">
+              <h3 id="confirm-modal-title" className="text-lg font-display font-bold uppercase tracking-tight text-foreground mb-1 break-words">
+                {title}
+              </h3>
+              <p className="text-xs font-mono text-muted-foreground leading-relaxed break-words">
+                {message}
+              </p>
             </div>
           </div>
         </div>

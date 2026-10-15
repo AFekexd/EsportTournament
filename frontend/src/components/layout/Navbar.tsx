@@ -322,8 +322,8 @@ export function Navbar() {
                   to="/profile"
                   className="flex items-center gap-3 transition-opacity hover:opacity-80"
                 >
-                  <div className="hidden md:flex md:flex-col md:items-end">
-                    <span className="text-sm font-semibold text-foreground">
+                  <div className="hidden md:flex md:flex-col md:items-end min-w-0">
+                    <span className="text-sm font-semibold text-foreground max-w-[160px] truncate">
                       {user.displayName || user.username}
                     </span>
                     {user.role !== "STUDENT" && (

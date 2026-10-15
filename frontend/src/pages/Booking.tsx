@@ -117,6 +117,19 @@ export function BookingPage() {
     }
   }, [dispatch, activeTab, viewMode, selectedDate, selectedWeekStart]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (showBookingModal) setShowBookingModal(false);
+        if (showMapModal) setShowMapModal(false);
+      }
+    };
+    if (showBookingModal || showMapModal) {
+      document.addEventListener("keydown", handleKeyDown);
+      return () => document.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [showBookingModal, showMapModal]);
+
 
   const openCreateModal = (
     computer: Computer,

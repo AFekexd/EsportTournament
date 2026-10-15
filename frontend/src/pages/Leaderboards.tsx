@@ -265,7 +265,13 @@ export function LeaderboardsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50">
-                {activeTab === "players"
+                {(activeTab === "players" ? players : teams).length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="py-12 text-center text-muted-foreground font-mono text-xs uppercase tracking-wider">
+                      Nincsenek elérhető ranglista adatok
+                    </td>
+                  </tr>
+                ) : activeTab === "players"
                   ? players.map((player) => (
                       <tr
                         key={player.id}
@@ -332,7 +338,10 @@ export function LeaderboardsPage() {
                           </div>
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
-                          <div className="flex items-center gap-3">
+                          <Link
+                            to={`/teams/${team.id}`}
+                            className="flex items-center gap-3 group"
+                          >
                             <div className="w-8 h-8 rounded border border-border/80 bg-[#0B0F17] flex items-center justify-center text-foreground font-display font-bold shrink-0 overflow-hidden">
                               {team.logoUrl ? (
                                 <img
@@ -345,10 +354,10 @@ export function LeaderboardsPage() {
                                 <span>{team.name.charAt(0).toUpperCase()}</span>
                               )}
                             </div>
-                            <span className="font-display text-sm font-bold uppercase tracking-wide text-foreground">
+                            <span className="font-display text-sm font-bold uppercase tracking-wide text-foreground group-hover:text-primary transition-colors">
                               {team.name}
                             </span>
-                          </div>
+                          </Link>
                         </td>
                         <td className="px-4 py-3 font-mono text-xs text-foreground whitespace-nowrap">
                           {team.matchesPlayed}
