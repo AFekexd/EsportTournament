@@ -184,9 +184,9 @@ class DiscordService {
                     const bookingId = interaction.customId.replace('booking_approve_', '');
                     await this.handleBookingApproval(interaction as ButtonInteraction, bookingId);
                     return;
-                } else if (interaction.customId.startsWith('booking_reject_')) {
-                    const bookingId = interaction.customId.replace('booking_reject_', '');
-                    await this.handleBookingRejection(interaction as ButtonInteraction, bookingId);
+                } else if (interaction.customId.startsWith('booking_reject_') || interaction.customId.startsWith('booking_decline_')) {
+                    const bookingId = interaction.customId.replace('booking_reject_', '').replace('booking_decline_', '');
+                    await this.handleBookingDecline(interaction as ButtonInteraction, bookingId);
                     return;
                 } else if (interaction.customId.startsWith('toggle_role_')) {
                     const roleName = interaction.customId.replace('toggle_role_', '');
@@ -1505,21 +1505,32 @@ class DiscordService {
                 const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
                     new ButtonBuilder()
                         .setCustomId(`booking_approve_${params.bookingId}`)
-                        .setLabel('✅ Elfogadás (Lesz felügyelet)')
+                        .setLabel('✅ Elfogadás (Vállalom)')
                         .setStyle(ButtonStyle.Success),
                     new ButtonBuilder()
-                        .setCustomId(`booking_reject_${params.bookingId}`)
-                        .setLabel('❌ Elutasítás')
-                        .setStyle(ButtonStyle.Danger)
+                        .setCustomId(`booking_decline_${params.bookingId}`)
+                        .setLabel('❌ Nem érek rá')
+                        .setStyle(ButtonStyle.Secondary)
                 );
                 components.push(row);
             }
 
-            await (channel as TextChannel).send({
-                content: isPending ? `📢 **Új gépfoglalási igény érkezett!** <@&${this.dokRoleId}>` : undefined,
+            const sentMessage = await (channel as TextChannel).send({
+                content: isPending ? `📢 **Új gépfoglalási igény érkezett!** ${this.dokRoleId ? `<@&${this.dokRoleId}>` : '@here'}` : undefined,
                 embeds: [embed],
                 components,
             });
+
+            if (sentMessage?.id) {
+                try {
+                    await prisma.booking.update({
+                        where: { id: params.bookingId },
+                        data: { discordMessageId: sentMessage.id }
+                    });
+                } catch (updateErr) {
+                    console.error('Failed to save discordMessageId on booking:', updateErr);
+                }
+            }
 
             return true;
         } catch (error) {
@@ -1641,9 +1652,9 @@ class DiscordService {
     }
 
     /**
-     * Handles DÖK rejection via Discord button
+     * Handles DÖK decline ("Nem érek rá") via Discord button
      */
-    private async handleBookingRejection(interaction: ButtonInteraction, bookingId: string) {
+    private async handleBookingDecline(interaction: ButtonInteraction, bookingId: string) {
         try {
             await interaction.deferUpdate();
 
@@ -1657,29 +1668,90 @@ class DiscordService {
                 return;
             }
 
-            if (booking.status === 'CONFIRMED' || booking.status === 'REJECTED') {
-                await interaction.followUp({ content: `ℹ️ Ez a foglalás már kezelve lett (${booking.status}).`, ephemeral: true });
+            if (booking.status !== 'PENDING') {
+                await interaction.followUp({ content: `ℹ️ Ez a foglalási kérelem már nem függőben lévő (${booking.status}).`, ephemeral: true });
                 return;
             }
 
-            const rejectorTag = interaction.user.tag || interaction.user.username;
-            const rejectorMention = `<@${interaction.user.id}>`;
+            const declinerId = interaction.user.id;
+            const currentDeclined = booking.declinedBy || [];
 
-            // Delete the booking from database so the computer and student's quota are immediately freed
-            await prisma.booking.delete({
-                where: { id: bookingId }
+            if (currentDeclined.includes(declinerId)) {
+                await interaction.followUp({ content: 'ℹ️ Már korábban jelezted, hogy nem érsz rá erre az időpontra.', ephemeral: true });
+                return;
+            }
+
+            const updatedDeclined = [...currentDeclined, declinerId];
+
+            await prisma.booking.update({
+                where: { id: bookingId },
+                data: { declinedBy: updatedDeclined }
             });
 
             const oldEmbed = interaction.message.embeds[0];
+            const declinedMentions = updatedDeclined.map(id => `<@${id}>`).join(', ');
+
+            const existingFields = oldEmbed?.fields ? [...oldEmbed.fields] : [];
+            const declineFieldIndex = existingFields.findIndex(f => f.name.includes('Nem ér rá'));
+
+            const declineFieldName = `❌ Nem ér rá (${updatedDeclined.length} fő)`;
+            if (declineFieldIndex >= 0) {
+                existingFields[declineFieldIndex] = {
+                    name: declineFieldName,
+                    value: declinedMentions,
+                    inline: false
+                };
+            } else {
+                existingFields.push({
+                    name: declineFieldName,
+                    value: declinedMentions,
+                    inline: false
+                });
+            }
+
             const updatedEmbed = EmbedBuilder.from(oldEmbed)
+                .setFields(existingFields);
+
+            await interaction.message.edit({
+                embeds: [updatedEmbed],
+                // Keep action row buttons active for other members
+            });
+
+            await interaction.followUp({
+                content: '✅ Rögzítettük, hogy nem érsz rá erre az időpontra. Köszönjük a visszajelzést!',
+                ephemeral: true
+            });
+
+        } catch (error) {
+            console.error('Error handling booking decline:', error);
+            await interaction.followUp({ content: '❌ Hiba történt a művelet során.', ephemeral: true });
+        }
+    }
+
+    /**
+     * Updates Discord message embed when a pending booking is auto-cancelled (24h before start)
+     */
+    public async cancelPendingBookingNotification(bookingId: string, discordMessageId?: string | null) {
+        if (!this.isReady || !discordMessageId) return;
+
+        try {
+            const channel = await this.client.channels.fetch(this.bookingChannelId);
+            if (!channel || !channel.isTextBased()) return;
+
+            const message = await (channel as TextChannel).messages.fetch(discordMessageId).catch(() => null);
+            if (!message) return;
+
+            const oldEmbed = message.embeds[0];
+            const updatedEmbed = EmbedBuilder.from(oldEmbed || new EmbedBuilder())
                 .setColor(0xEF4444)
-                .setTitle(`❌ Gépfoglalási Kérelem Elutasítva & Törölve`)
+                .setTitle('❌ Gépfoglalási Kérelem Törölve (Nincs felügyelő)')
+                .setDescription('A foglalás kezdete előtt 24 órával senki sem vállalta a felügyeletet, ezért a kérelem automatikusan törlésre került.')
                 .setFields(
                     (oldEmbed?.fields || []).map(f => {
                         if (f.name === '📌 Státusz') {
                             return {
                                 name: '📌 Státusz',
-                                value: `❌ **Elutasítva és törölve** (${rejectorMention} által: Nincs felügyelet)\n*A foglalás törölve lett, a gép és az idősáv szabad maradt.*`,
+                                value: '❌ **Automatikusan törölve (Lejárt az idő, nem volt felügyelő)**',
                                 inline: false
                             };
                         }
@@ -1687,27 +1759,15 @@ class DiscordService {
                     })
                 );
 
-            await interaction.editReply({
-                content: `❌ **A foglalási kérelmet elutasította és törölte:** ${rejectorMention} (Nem lesz felügyelet).`,
+            await message.edit({
+                content: '⚠️ **A foglalási kérelem törölve lett:** Nem jelentkezett DÖK felügyelő a kezdést megelőző 24 óráig.',
                 embeds: [updatedEmbed],
-                components: [],
+                components: []
             });
-
-            const { notificationService } = await import('./notificationService.js');
-            await notificationService.createNotification({
-                userId: booking.userId,
-                type: 'SYSTEM',
-                title: 'Foglalási kérelem elutasítva',
-                message: `A(z) ${booking.computer.name} gépre leadott foglalásodhoz a DÖK sajnos nem tudott felügyeletet biztosítani erre az időpontra. A kérelem törölve lett, így a heti kereted nem csökkent és szabadon választhatsz másik időpontot.`,
-                link: '/booking'
-            });
-
         } catch (error) {
-            console.error('Error handling booking rejection:', error);
-            await interaction.followUp({ content: '❌ Hiba történt az elutasítás során.', ephemeral: true });
+            console.error('Error cancelling pending booking notification in Discord:', error);
         }
     }
-
 }
 
 export const discordService = new DiscordService();

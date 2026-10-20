@@ -40,13 +40,80 @@ export class BookingNotificationService {
     }
 
     /**
+     * Checks for pending booking requests where no supervisor volunteered
+     * and the start time is 24 hours or less away.
+     * Automatically deletes them and notifies the student and Discord channel.
+     */
+    static async checkAndAutoCancelPendingBookings() {
+        try {
+            const now = new Date();
+            const autoCancelThreshold = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
+            // Find all PENDING bookings that start within the next 24 hours (or in past if somehow unprocessed)
+            const pendingBookings = await prisma.booking.findMany({
+                where: {
+                    status: 'PENDING',
+                    startTime: {
+                        lte: autoCancelThreshold
+                    }
+                },
+                include: {
+                    computer: true,
+                    user: true
+                }
+            });
+
+            for (const booking of pendingBookings) {
+                const startTimeStr = new Date(booking.startTime).toLocaleString('hu-HU', {
+                    timeZone: 'Europe/Budapest',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                // 1. Notify Discord message if available
+                if (booking.discordMessageId) {
+                    try {
+                        const { discordService } = await import('./discordService.js');
+                        await discordService.cancelPendingBookingNotification(booking.id, booking.discordMessageId);
+                    } catch (discordErr) {
+                        console.error(`Failed to update Discord embed for cancelled booking ${booking.id}:`, discordErr);
+                    }
+                }
+
+                // 2. Delete booking to free slot and quota
+                await prisma.booking.delete({
+                    where: { id: booking.id }
+                });
+
+                // 3. Notify student
+                const message = `A(z) ${booking.computer.name} gépre leadott foglalási kérelmed (${startTimeStr}) automatikusan törölve lett, mivel a kezdés előtti 24 óráig egy DÖK tag sem vállalta a felügyeletet. A heti kereted nem csökkent.`;
+                await this.createNotification(booking.userId, 'BOOKING_CANCELLED', message);
+
+                console.log(`Auto-cancelled pending booking ${booking.id} (no supervisor 24h prior)`);
+            }
+        } catch (error) {
+            console.error('Error in checkAndAutoCancelPendingBookings:', error);
+        }
+    }
+
+    /**
      * Background job that sends reminders 30 minutes before bookings start
+     * and auto-cancels unapproved bookings 24 hours before start.
      */
     static async startReminderJob() {
-        console.log('Starting Booking Reminder Job...');
+        console.log('Starting Booking Reminder and Auto-Cancel Job...');
+
+        // Initial run on server start
+        await this.checkAndAutoCancelPendingBookings();
 
         setInterval(async () => {
             try {
+                // Check and auto-cancel pending bookings without supervisor 24h prior
+                await this.checkAndAutoCancelPendingBookings();
+
                 const now = new Date();
                 const reminderThreshold = new Date(now.getTime() + this.REMINDER_TIME_MS);
 

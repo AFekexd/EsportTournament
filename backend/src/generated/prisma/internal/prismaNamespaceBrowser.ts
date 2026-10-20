@@ -376,6 +376,8 @@ export const BookingScalarFieldEnum = {
   status: 'status',
   approvedBy: 'approvedBy',
   approvedAt: 'approvedAt',
+  declinedBy: 'declinedBy',
+  discordMessageId: 'discordMessageId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

@@ -156,6 +156,17 @@ export function BookingPage() {
   const handleBooking = async () => {
     if (!selectedComputer || selectedStartHour === null) return;
 
+    const now = new Date();
+    const isWeekendNow = (now.getDay() === 0 || now.getDay() === 6);
+    const [bYear, bMonth, bDay] = selectedDate.split('-').map(Number);
+    const bDateObj = new Date(bYear, bMonth - 1, bDay);
+    const isMonday = bDateObj.getDay() === 1;
+    const diffDays = Math.round((bDateObj.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    if (isWeekendNow && isMonday && diffDays >= 0 && diffDays <= 3 && user?.role !== 'ADMIN' && user?.role !== 'TEACHER') {
+      setBookingError("Hétvégén (szombaton és vasárnap) nem lehet hétfőre időpontot foglalni. Kérjük, péntekig add le a hétfői foglalásodat!");
+      return;
+    }
+
     // Use selectedDate from state which should be set correctly for both daily/weekly via openCreateModal
     const startTime = new Date(selectedDate);
     startTime.setHours(selectedStartHour, selectedStartMinute, 0, 0);

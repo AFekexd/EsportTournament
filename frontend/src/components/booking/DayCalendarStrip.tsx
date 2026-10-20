@@ -11,7 +11,7 @@ interface DayCalendarStripProps {
   computersCount: number;
 }
 
-type SaturationLevel = 'free' | 'limited' | 'full' | 'supervisor_only' | 'closed';
+type SaturationLevel = 'free' | 'limited' | 'full' | 'supervisor_only' | 'closed' | 'weekend_restricted';
 
 interface DayInfo {
   date: string;
@@ -74,7 +74,12 @@ export function DayCalendarStrip({
 
         saturationPercent = totalSlots > 0 ? Math.min(100, (bookedSlots / totalSlots) * 100) : 0;
 
-        if (!schedule.isOpenForBooking) {
+        const isWeekendNow = (today.getDay() === 0 || today.getDay() === 6);
+        const isUpcomingMonday = dayOfWeek === 1 && i <= 2;
+
+        if (isWeekendNow && isUpcomingMonday) {
+          saturation = 'weekend_restricted';
+        } else if (!schedule.isOpenForBooking) {
           saturation = 'supervisor_only';
         } else if (saturationPercent >= 80) {
           saturation = 'full';
@@ -125,6 +130,12 @@ export function DayCalendarStrip({
         border: isSelected ? 'border-indigo-400' : 'border-indigo-500/30',
         text: 'text-indigo-400',
         label: 'Ügyelet',
+      },
+      weekend_restricted: {
+        bg: isSelected ? 'bg-amber-950/30' : 'bg-amber-950/15',
+        border: isSelected ? 'border-amber-500/50' : 'border-amber-500/30',
+        text: 'text-amber-400',
+        label: 'Hétvégén zárolva',
       },
       closed: {
         bg: 'bg-gray-800/50',
@@ -227,6 +238,7 @@ export function DayCalendarStrip({
                 day.saturation === 'limited' ? 'bg-amber-500' :
                   day.saturation === 'full' ? 'bg-destructive' :
                     day.saturation === 'supervisor_only' ? 'bg-indigo-500' :
+                      day.saturation === 'weekend_restricted' ? 'bg-amber-400' :
                       'bg-muted-foreground'
                 }`} title={styles.label} />
             </button>

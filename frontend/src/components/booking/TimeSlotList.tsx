@@ -50,6 +50,15 @@ export function TimeSlotList({
 
     const canSupervise = !!user && user.role !== 'STUDENT';
     const isAdmin = user?.role === 'ADMIN';
+    const isAdminOrTeacher = isAdmin || user?.role === 'TEACHER';
+
+    const now = new Date();
+    const isWeekendNow = (now.getDay() === 0 || now.getDay() === 6);
+    const [selYear, selMonth, selDay] = selectedDate.split('-').map(Number);
+    const selectedDateObj = new Date(selYear, selMonth - 1, selDay);
+    const isMonday = selectedDateObj.getDay() === 1;
+    const diffDays = Math.round((selectedDateObj.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    const isWeekendRestrictedForMonday = isWeekendNow && isMonday && diffDays >= 0 && diffDays <= 3 && !isAdminOrTeacher;
 
     // Click outside handler for delegation dropdown
     useEffect(() => {
@@ -181,10 +190,38 @@ export function TimeSlotList({
             };
         }
 
+        if (isWeekendRestrictedForMonday) {
+            return {
+                bg: 'bg-muted/10',
+                border: 'border-border/30',
+                text: 'text-muted-foreground',
+                badgeBg: 'bg-red-500/10 text-red-400 border-red-500/30',
+                label: 'Hétvégén zárolva',
+                disabled: true,
+                bookable: false,
+            };
+        }
+
         const isSupervisor = slot.supervisor && user && slot.supervisor.userId === user.id;
 
         // If NO supervisor, booking is allowed (will create PENDING booking request for DÖK)
+        // unless it's within 24 hours (auto-cancelled / too late)
         if (!slot.supervisor) {
+            const startOfSlot = new Date(selYear, selMonth - 1, selDay, slot.hour, slot.minute, 0, 0);
+            const hoursUntilSlot = (startOfSlot.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+            if (hoursUntilSlot < 24 && !isAdminOrTeacher) {
+                return {
+                    bg: 'bg-muted/10',
+                    border: 'border-border/30',
+                    text: 'text-muted-foreground',
+                    badgeBg: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+                    label: '24 órán belül nincs felügyelő',
+                    disabled: true,
+                    bookable: false,
+                };
+            }
+
             if (slot.isSelected) {
                 return {
                     bg: 'bg-primary/10',
@@ -339,6 +376,15 @@ export function TimeSlotList({
                     </div>
                 </div>
             </div>
+
+            {isWeekendRestrictedForMonday && (
+                <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center gap-3 text-amber-300">
+                    <AlertCircle size={20} className="shrink-0 text-amber-400" />
+                    <p className="text-sm font-mono">
+                        <strong>Hétvégi korlátozás:</strong> Szombaton és vasárnap nem lehet hétfőre időpontot foglalni. Kérjük, legkésőbb péntekig add le a hétfői foglalási igényedet!
+                    </p>
+                </div>
+            )}
 
             {/* Time Slot Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

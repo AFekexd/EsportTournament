@@ -37,6 +37,7 @@ export type BookingMinAggregateOutputType = {
   status: string | null
   approvedBy: string | null
   approvedAt: Date | null
+  discordMessageId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -54,6 +55,7 @@ export type BookingMaxAggregateOutputType = {
   status: string | null
   approvedBy: string | null
   approvedAt: Date | null
+  discordMessageId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -71,6 +73,8 @@ export type BookingCountAggregateOutputType = {
   status: number
   approvedBy: number
   approvedAt: number
+  declinedBy: number
+  discordMessageId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -90,6 +94,7 @@ export type BookingMinAggregateInputType = {
   status?: true
   approvedBy?: true
   approvedAt?: true
+  discordMessageId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -107,6 +112,7 @@ export type BookingMaxAggregateInputType = {
   status?: true
   approvedBy?: true
   approvedAt?: true
+  discordMessageId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -124,6 +130,8 @@ export type BookingCountAggregateInputType = {
   status?: true
   approvedBy?: true
   approvedAt?: true
+  declinedBy?: true
+  discordMessageId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -214,6 +222,8 @@ export type BookingGroupByOutputType = {
   status: string
   approvedBy: string | null
   approvedAt: Date | null
+  declinedBy: string[]
+  discordMessageId: string | null
   createdAt: Date
   updatedAt: Date
   _count: BookingCountAggregateOutputType | null
@@ -252,6 +262,8 @@ export type BookingWhereInput = {
   status?: Prisma.StringFilter<"Booking"> | string
   approvedBy?: Prisma.StringNullableFilter<"Booking"> | string | null
   approvedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  declinedBy?: Prisma.StringNullableListFilter<"Booking">
+  discordMessageId?: Prisma.StringNullableFilter<"Booking"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   computer?: Prisma.XOR<Prisma.ComputerScalarRelationFilter, Prisma.ComputerWhereInput>
@@ -271,6 +283,8 @@ export type BookingOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   approvedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  declinedBy?: Prisma.SortOrder
+  discordMessageId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   computer?: Prisma.ComputerOrderByWithRelationInput
@@ -293,6 +307,8 @@ export type BookingWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.StringFilter<"Booking"> | string
   approvedBy?: Prisma.StringNullableFilter<"Booking"> | string | null
   approvedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  declinedBy?: Prisma.StringNullableListFilter<"Booking">
+  discordMessageId?: Prisma.StringNullableFilter<"Booking"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   computer?: Prisma.XOR<Prisma.ComputerScalarRelationFilter, Prisma.ComputerWhereInput>
@@ -312,6 +328,8 @@ export type BookingOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   approvedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  declinedBy?: Prisma.SortOrder
+  discordMessageId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BookingCountOrderByAggregateInput
@@ -335,6 +353,8 @@ export type BookingScalarWhereWithAggregatesInput = {
   status?: Prisma.StringWithAggregatesFilter<"Booking"> | string
   approvedBy?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
   approvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
+  declinedBy?: Prisma.StringNullableListFilter<"Booking">
+  discordMessageId?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Booking"> | Date | string
 }
@@ -350,6 +370,8 @@ export type BookingCreateInput = {
   status?: string
   approvedBy?: string | null
   approvedAt?: Date | string | null
+  declinedBy?: Prisma.BookingCreatedeclinedByInput | string[]
+  discordMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   computer: Prisma.ComputerCreateNestedOneWithoutBookingsInput
@@ -369,6 +391,8 @@ export type BookingUncheckedCreateInput = {
   status?: string
   approvedBy?: string | null
   approvedAt?: Date | string | null
+  declinedBy?: Prisma.BookingCreatedeclinedByInput | string[]
+  discordMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -384,6 +408,8 @@ export type BookingUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  declinedBy?: Prisma.BookingUpdatedeclinedByInput | string[]
+  discordMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   computer?: Prisma.ComputerUpdateOneRequiredWithoutBookingsNestedInput
@@ -403,6 +429,8 @@ export type BookingUncheckedUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  declinedBy?: Prisma.BookingUpdatedeclinedByInput | string[]
+  discordMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -420,6 +448,8 @@ export type BookingCreateManyInput = {
   status?: string
   approvedBy?: string | null
   approvedAt?: Date | string | null
+  declinedBy?: Prisma.BookingCreatedeclinedByInput | string[]
+  discordMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -435,6 +465,8 @@ export type BookingUpdateManyMutationInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  declinedBy?: Prisma.BookingUpdatedeclinedByInput | string[]
+  discordMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -452,6 +484,8 @@ export type BookingUncheckedUpdateManyInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  declinedBy?: Prisma.BookingUpdatedeclinedByInput | string[]
+  discordMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -479,6 +513,8 @@ export type BookingCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   approvedBy?: Prisma.SortOrder
   approvedAt?: Prisma.SortOrder
+  declinedBy?: Prisma.SortOrder
+  discordMessageId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -496,6 +532,7 @@ export type BookingMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   approvedBy?: Prisma.SortOrder
   approvedAt?: Prisma.SortOrder
+  discordMessageId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -513,6 +550,7 @@ export type BookingMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   approvedBy?: Prisma.SortOrder
   approvedAt?: Prisma.SortOrder
+  discordMessageId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -601,6 +639,15 @@ export type BookingUncheckedUpdateManyWithoutComputerNestedInput = {
   deleteMany?: Prisma.BookingScalarWhereInput | Prisma.BookingScalarWhereInput[]
 }
 
+export type BookingCreatedeclinedByInput = {
+  set: string[]
+}
+
+export type BookingUpdatedeclinedByInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
 export type BookingCreateWithoutUserInput = {
   id?: string
   date: Date | string
@@ -612,6 +659,8 @@ export type BookingCreateWithoutUserInput = {
   status?: string
   approvedBy?: string | null
   approvedAt?: Date | string | null
+  declinedBy?: Prisma.BookingCreatedeclinedByInput | string[]
+  discordMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   computer: Prisma.ComputerCreateNestedOneWithoutBookingsInput
@@ -629,6 +678,8 @@ export type BookingUncheckedCreateWithoutUserInput = {
   status?: string
   approvedBy?: string | null
   approvedAt?: Date | string | null
+  declinedBy?: Prisma.BookingCreatedeclinedByInput | string[]
+  discordMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -675,6 +726,8 @@ export type BookingScalarWhereInput = {
   status?: Prisma.StringFilter<"Booking"> | string
   approvedBy?: Prisma.StringNullableFilter<"Booking"> | string | null
   approvedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  declinedBy?: Prisma.StringNullableListFilter<"Booking">
+  discordMessageId?: Prisma.StringNullableFilter<"Booking"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
 }
@@ -690,6 +743,8 @@ export type BookingCreateWithoutComputerInput = {
   status?: string
   approvedBy?: string | null
   approvedAt?: Date | string | null
+  declinedBy?: Prisma.BookingCreatedeclinedByInput | string[]
+  discordMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutBookingsInput
@@ -707,6 +762,8 @@ export type BookingUncheckedCreateWithoutComputerInput = {
   status?: string
   approvedBy?: string | null
   approvedAt?: Date | string | null
+  declinedBy?: Prisma.BookingCreatedeclinedByInput | string[]
+  discordMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -749,6 +806,8 @@ export type BookingCreateManyUserInput = {
   status?: string
   approvedBy?: string | null
   approvedAt?: Date | string | null
+  declinedBy?: Prisma.BookingCreatedeclinedByInput | string[]
+  discordMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -764,6 +823,8 @@ export type BookingUpdateWithoutUserInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  declinedBy?: Prisma.BookingUpdatedeclinedByInput | string[]
+  discordMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   computer?: Prisma.ComputerUpdateOneRequiredWithoutBookingsNestedInput
@@ -781,6 +842,8 @@ export type BookingUncheckedUpdateWithoutUserInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  declinedBy?: Prisma.BookingUpdatedeclinedByInput | string[]
+  discordMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -797,6 +860,8 @@ export type BookingUncheckedUpdateManyWithoutUserInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  declinedBy?: Prisma.BookingUpdatedeclinedByInput | string[]
+  discordMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -813,6 +878,8 @@ export type BookingCreateManyComputerInput = {
   status?: string
   approvedBy?: string | null
   approvedAt?: Date | string | null
+  declinedBy?: Prisma.BookingCreatedeclinedByInput | string[]
+  discordMessageId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -828,6 +895,8 @@ export type BookingUpdateWithoutComputerInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  declinedBy?: Prisma.BookingUpdatedeclinedByInput | string[]
+  discordMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutBookingsNestedInput
@@ -845,6 +914,8 @@ export type BookingUncheckedUpdateWithoutComputerInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  declinedBy?: Prisma.BookingUpdatedeclinedByInput | string[]
+  discordMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -861,6 +932,8 @@ export type BookingUncheckedUpdateManyWithoutComputerInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  declinedBy?: Prisma.BookingUpdatedeclinedByInput | string[]
+  discordMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -880,6 +953,8 @@ export type BookingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   status?: boolean
   approvedBy?: boolean
   approvedAt?: boolean
+  declinedBy?: boolean
+  discordMessageId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   computer?: boolean | Prisma.ComputerDefaultArgs<ExtArgs>
@@ -899,6 +974,8 @@ export type BookingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   status?: boolean
   approvedBy?: boolean
   approvedAt?: boolean
+  declinedBy?: boolean
+  discordMessageId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   computer?: boolean | Prisma.ComputerDefaultArgs<ExtArgs>
@@ -918,6 +995,8 @@ export type BookingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   status?: boolean
   approvedBy?: boolean
   approvedAt?: boolean
+  declinedBy?: boolean
+  discordMessageId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   computer?: boolean | Prisma.ComputerDefaultArgs<ExtArgs>
@@ -937,11 +1016,13 @@ export type BookingSelectScalar = {
   status?: boolean
   approvedBy?: boolean
   approvedAt?: boolean
+  declinedBy?: boolean
+  discordMessageId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "computerId" | "userId" | "date" | "startTime" | "endTime" | "checkInCode" | "checkedInAt" | "reminderSent" | "status" | "approvedBy" | "approvedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
+export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "computerId" | "userId" | "date" | "startTime" | "endTime" | "checkInCode" | "checkedInAt" | "reminderSent" | "status" | "approvedBy" | "approvedAt" | "declinedBy" | "discordMessageId" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
 export type BookingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   computer?: boolean | Prisma.ComputerDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -974,6 +1055,8 @@ export type $BookingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     status: string
     approvedBy: string | null
     approvedAt: Date | null
+    declinedBy: string[]
+    discordMessageId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["booking"]>
@@ -1413,6 +1496,8 @@ export interface BookingFieldRefs {
   readonly status: Prisma.FieldRef<"Booking", 'String'>
   readonly approvedBy: Prisma.FieldRef<"Booking", 'String'>
   readonly approvedAt: Prisma.FieldRef<"Booking", 'DateTime'>
+  readonly declinedBy: Prisma.FieldRef<"Booking", 'String[]'>
+  readonly discordMessageId: Prisma.FieldRef<"Booking", 'String'>
   readonly createdAt: Prisma.FieldRef<"Booking", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Booking", 'DateTime'>
 }

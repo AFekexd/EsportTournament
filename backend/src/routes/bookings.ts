@@ -433,6 +433,25 @@ bookingsRouter.post(
         const localEnd = getHungaryDate(end);
 
         const dayOfWeek = localStart.getDay();
+
+        // Weekend rule: Students cannot book Monday slots during Saturday or Sunday
+        if (!['ADMIN', 'TEACHER'].includes(user.role)) {
+            const nowHungary = getHungaryDate(new Date());
+            const currentDayOfWeek = nowHungary.getDay(); // 0: Sunday, 6: Saturday
+            const isWeekendNow = (currentDayOfWeek === 0 || currentDayOfWeek === 6);
+            if (isWeekendNow && dayOfWeek === 1) {
+                const diffTime = start.getTime() - Date.now();
+                // Target is this coming Monday (within 7 days)
+                if (diffTime > 0 && diffTime < 7 * 24 * 60 * 60 * 1000) {
+                    throw new ApiError(
+                        'Hétvégén (szombaton és vasárnap) nem lehet hétfőre időpontot foglalni. Kérjük, péntekig add le a hétfői foglalásodat!',
+                        400,
+                        'WEEKEND_BOOKING_FOR_MONDAY_RESTRICTED'
+                    );
+                }
+            }
+        }
+
         const startMinutesOfDay = localStart.getHours() * 60 + localStart.getMinutes();
         let endMinutesOfDay = localEnd.getHours() * 60 + localEnd.getMinutes();
 
@@ -580,6 +599,17 @@ bookingsRouter.post(
                 }
             }
 
+            if (hasMissingSupervisor) {
+                const hoursUntilStart = (start.getTime() - Date.now()) / (1000 * 60 * 60);
+                if (hoursUntilStart < 24) {
+                    throw new ApiError(
+                        'Erre az időpontra jelenleg nincs kijelölt DÖK felügyelő. Felügyelet nélküli időpontra legkésőbb 24 órával a kezdés előtt adhatsz le kérelmet.',
+                        400,
+                        'SUPERVISOR_REQUEST_TOO_LATE'
+                    );
+                }
+            }
+
             const initialStatus = hasMissingSupervisor ? 'PENDING' : 'CONFIRMED';
 
             // 4. Check Computer Availability (Race Condition Protection)
@@ -667,7 +697,7 @@ bookingsRouter.patch(
             where: { keycloakId: req.user!.sub },
         });
 
-        if (!user || !['ADMIN', 'ORGANIZER', 'TEACHER'].includes(user.role)) {
+        if (!user || !['ADMIN', 'ORGANIZER', 'TEACHER', 'DOK', 'MODERATOR'].includes(user.role)) {
             throw new ApiError('Nincs jogosultságod a foglalás állapotának módosításához', 403, 'FORBIDDEN');
         }
 
@@ -693,6 +723,15 @@ bookingsRouter.patch(
                 where: { id: booking.id }
             });
 
+            if (booking.discordMessageId) {
+                try {
+                    const { discordService } = await import('../services/discordService.js');
+                    await discordService.cancelPendingBookingNotification(booking.id, booking.discordMessageId);
+                } catch (discordErr) {
+                    console.error('Failed to update discord notification on status cancellation:', discordErr);
+                }
+            }
+
             await notificationService.createNotification({
                 userId: booking.userId,
                 type: 'SYSTEM',
@@ -716,6 +755,30 @@ bookingsRouter.patch(
         });
 
         if (status === 'CONFIRMED') {
+            const getHungaryDate = (d: Date) => {
+                const dateString = d.toLocaleString('en-US', { timeZone: 'Europe/Budapest' });
+                return new Date(dateString);
+            };
+            const localStart = getHungaryDate(booking.startTime);
+            const localEnd = getHungaryDate(booking.endTime);
+            const supervisorStartHour = localStart.getHours();
+            const supervisorEndHour = localEnd.getMinutes() === 0 ? localEnd.getHours() - 1 : localEnd.getHours();
+
+            for (let h = supervisorStartHour; h <= supervisorEndHour; h++) {
+                const existing = await prisma.bookingSupervisor.findFirst({
+                    where: { date: booking.date, hour: h, userId: user.id }
+                });
+                if (!existing) {
+                    await prisma.bookingSupervisor.create({
+                        data: {
+                            date: booking.date,
+                            hour: h,
+                            userId: user.id
+                        }
+                    });
+                }
+            }
+
             await notificationService.createNotification({
                 userId: booking.userId,
                 type: 'SYSTEM',
