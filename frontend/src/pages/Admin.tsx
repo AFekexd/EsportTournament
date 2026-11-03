@@ -17,6 +17,7 @@ import {
   Bug,
   AlertTriangle,
   BookText,
+  ClipboardList,
 } from "lucide-react";
 import { ConfirmationModal } from "../components/common/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
@@ -92,6 +93,11 @@ const AdminIncidents = lazy(() =>
     default: module.AdminIncidents,
   })),
 );
+const AdminLogs = lazy(() =>
+  import("../components/admin/AdminLogs").then((module) => ({
+    default: module.AdminLogs,
+  })),
+);
 const GradesUploadAdmin = lazy(() =>
   import("../components/admin/GradesUploadAdmin").then((module) => ({
     default: module.GradesUploadAdmin,
@@ -135,6 +141,7 @@ export function AdminPage() {
     | "bugreports"
     | "incidents"
     | "grades"
+    | "logs"
   >("overview");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [stats, setStats] = useState({
@@ -357,6 +364,7 @@ export function AdminPage() {
         { id: "announcements", label: "Bejelentések", icon: MessageSquare },
         { id: "bugreports", label: "Hibajelentések", icon: Bug },
         { id: "incidents", label: "Incidensek", icon: AlertTriangle },
+        { id: "logs", label: "Rendszer Napló", icon: ClipboardList },
       ],
     },
     {
@@ -942,6 +950,12 @@ export function AdminPage() {
           {activeTab === "incidents" && (
             <div className="animate-fade-in">
               <AdminIncidents />
+            </div>
+          )}
+
+          {activeTab === "logs" && (
+            <div className="animate-fade-in">
+              <AdminLogs />
             </div>
           )}
 

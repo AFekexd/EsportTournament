@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import {
   AlertCircle,
   Info,
@@ -64,6 +64,7 @@ export function AdminLogs() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const [filterType, setFilterType] = useState<string>("");
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -104,7 +105,8 @@ export function AdminLogs() {
       const data = await response.json();
       if (data.success) {
         setLogs(data.data.logs);
-        setTotalPages(data.data.pagination.pages);
+        setTotalPages(Math.max(1, data.data.pagination.pages || 1));
+        setTotalCount(data.data.pagination.total || 0);
       }
     } catch (error) {
       console.error("Failed to fetch logs:", error);
@@ -223,6 +225,8 @@ export function AdminLogs() {
         return <Users className="text-orange-400" size={16} />;
       case "BOOKING_CHECKIN":
         return <CalendarIcon className="text-green-500" size={16} />;
+      case "BOOKING_AUTO_CANCEL":
+        return <Clock className="text-orange-500" size={16} />;
       case "WAITLIST_JOIN":
       case "WAITLIST_LEAVE":
         return <ListTodo className="text-primary" size={16} />;
@@ -255,6 +259,7 @@ export function AdminLogs() {
       case "TEAM_KICK":
       case "TEAM_LEAVE":
       case "WAITLIST_LEAVE":
+      case "BOOKING_AUTO_CANCEL":
         return "bg-yellow-500/10 border-yellow-500/20 text-yellow-500";
       case "SUCCESS":
       case "UNLOCK":
@@ -374,9 +379,8 @@ export function AdminLogs() {
                 </tr>
               ) : (
                 logs.map((log) => (
-                  <>
+                  <Fragment key={log.id}>
                     <tr
-                      key={log.id}
                       className={`group transition-colors text-sm cursor-pointer ${expandedLogId === log.id
                           ? "bg-white/[0.03]"
                           : "hover:bg-white/[0.02]"
@@ -526,7 +530,7 @@ export function AdminLogs() {
                         </td>
                       </tr>
                     )}
-                  </>
+                  </Fragment>
                 ))
               )}
             </tbody>
@@ -536,7 +540,7 @@ export function AdminLogs() {
         {/* Footer / Pagination */}
         <div className="bg-secondary/40 border-t border-border p-3.5 flex items-center justify-between font-mono text-xs">
           <div className="text-muted-foreground">
-            Összesen {totalPages * 50} bejegyzés (becsült)
+            Összesen {totalCount} bejegyzés
           </div>
 
           <div className="flex items-center gap-2">

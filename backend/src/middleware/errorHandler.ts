@@ -12,10 +12,15 @@ export const errorHandler = (
     res: Response,
     next: NextFunction
 ) => {
-    console.error('Error:', err);
-
     const statusCode = err.statusCode || 500;
     const message = err.message || 'Internal Server Error';
+
+    // Only dump full stack trace for 500+ unexpected server errors
+    if (statusCode >= 500) {
+        console.error(`[Server Error 500] ${req.method} ${req.originalUrl}:`, err);
+    } else {
+        console.warn(`[Client ${statusCode}] ${req.method} ${req.originalUrl} - ${err.code || 'ERROR'}: ${message}`);
+    }
 
     res.status(statusCode).json({
         success: false,

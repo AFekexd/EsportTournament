@@ -1,5 +1,6 @@
 import prisma from '../lib/prisma.js';
 import { NotificationType } from '../generated/prisma/client.js';
+import { logSystemActivity } from './logService.js';
 
 export class BookingNotificationService {
     // 30 perc
@@ -87,6 +88,22 @@ export class BookingNotificationService {
                 await prisma.booking.delete({
                     where: { id: booking.id }
                 });
+
+                // Audit log
+                await logSystemActivity(
+                    'BOOKING_AUTO_CANCEL',
+                    `A(z) ${booking.computer.name} gépre leadott foglalás automatikusan törölve (${startTimeStr}) - 48 órával a kezdés előtt nem volt felügyelő`,
+                    {
+                        userId: booking.userId,
+                        computerId: booking.computerId,
+                        metadata: {
+                            bookingId: booking.id,
+                            reason: 'NO_SUPERVISOR_48H',
+                            startTime: booking.startTime,
+                            endTime: booking.endTime
+                        }
+                    }
+                );
 
                 // 3. Notify student
                 const message = `A(z) ${booking.computer.name} gépre leadott foglalási kérelmed (${startTimeStr}) automatikusan törölve lett, mivel a kezdés előtti 48 óráig egy DÖK tag sem vállalta a felügyeletet. A heti kereted nem csökkent.`;

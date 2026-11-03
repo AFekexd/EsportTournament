@@ -97,21 +97,48 @@ export function LogsToolbar({
                 <option value="ERROR">Hiba</option>
                 <option value="WARN">Figyelmeztetés</option>
               </optgroup>
-              <optgroup label="Gépkezelés">
-                <option value="LOCK">Lezárás</option>
-                <option value="UNLOCK">Feloldás</option>
+              <optgroup label="Gépfoglalás & Labor">
+                <option value="BOOKING_CREATE">Foglalás létrehozása</option>
+                <option value="BOOKING_DELETE">Foglalás törlése</option>
+                <option value="BOOKING_AUTO_CANCEL">Automatikus törlés (48h)</option>
+                <option value="BOOKING_CHECKIN">Bejelentkezés gépen</option>
+                <option value="SCHEDULE_CREATE">Nyitvatartás felvétele</option>
+                <option value="SCHEDULE_UPDATE">Nyitvatartás módosítása</option>
+                <option value="SCHEDULE_DELETE">Nyitvatartás törlése</option>
+                <option value="WAITLIST_JOIN">Várólista jelentkezés</option>
+                <option value="WAITLIST_LEAVE">Várólista elhagyása</option>
+              </optgroup>
+              <optgroup label="Kioszk & Időegyenleg">
+                <option value="LOCK">Gép lezárás</option>
+                <option value="UNLOCK">Gép feloldás</option>
                 <option value="ADD_TIME">Idő jóváírás</option>
                 <option value="REMOVE_TIME">Idő levonás</option>
               </optgroup>
-              <optgroup label="Versenyek">
-                <option value="TOURNAMENT_CREATE">Létrehozás</option>
-                <option value="TOURNAMENT_UPDATE">Módosítás</option>
-                <option value="TOURNAMENT_DELETE">Törlés</option>
+              <optgroup label="Versenyek & Mérkőzések">
+                <option value="TOURNAMENT_CREATE">Verseny létrehozás</option>
+                <option value="TOURNAMENT_UPDATE">Verseny módosítás</option>
+                <option value="TOURNAMENT_DELETE">Verseny törlés</option>
                 <option value="MATCH_RESULT_UPDATE">Eredmény rögzítés</option>
               </optgroup>
-              <optgroup label="Adminisztráció">
+              <optgroup label="Csapatok">
+                <option value="TEAM_CREATE">Csapat létrehozás</option>
+                <option value="TEAM_UPDATE">Csapat módosítás</option>
+                <option value="TEAM_DELETE">Csapat törlés</option>
+                <option value="TEAM_JOIN">Belépés csapatba</option>
+                <option value="TEAM_LEAVE">Kilépés csapatból</option>
+                <option value="TEAM_KICK">Tag eltávolítása</option>
+              </optgroup>
+              <optgroup label="Gépek & Játékok">
+                <option value="COMPUTER_CREATE">Új gép regisztráció</option>
+                <option value="COMPUTER_DELETE">Gép törlése</option>
+                <option value="GAME_CREATE">Játék hozzáadás</option>
+                <option value="GAME_UPDATE">Játék módosítás</option>
+                <option value="GAME_DELETE">Játék törlés</option>
+              </optgroup>
+              <optgroup label="Adminisztráció & Felhasználók">
                 <option value="USER_ROLE_UPDATE">Rang módosítás</option>
                 <option value="USER_PROFILE_UPDATE">Profil szerkesztés</option>
+                <option value="USER_DELETE">Felhasználó törlése</option>
               </optgroup>
             </select>
           </div>

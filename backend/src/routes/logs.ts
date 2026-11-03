@@ -37,13 +37,23 @@ logsRouter.get(
 
         if (startDate || endDate) {
             where.createdAt = {};
-            if (startDate) where.createdAt.gte = new Date(startDate);
-            if (endDate) where.createdAt.lte = new Date(endDate);
+            if (startDate) {
+                const s = new Date(startDate);
+                s.setHours(0, 0, 0, 0);
+                where.createdAt.gte = s;
+            }
+            if (endDate) {
+                const e = new Date(endDate);
+                e.setHours(23, 59, 59, 999);
+                where.createdAt.lte = e;
+            }
         }
 
         if (search) {
             where.OR = [
                 { message: { contains: search, mode: 'insensitive' } },
+                { type: { contains: search, mode: 'insensitive' } },
+                { computer: { name: { contains: search, mode: 'insensitive' } } },
                 { user: { username: { contains: search, mode: 'insensitive' } } },
                 { user: { displayName: { contains: search, mode: 'insensitive' } } },
                 { admin: { username: { contains: search, mode: 'insensitive' } } },
