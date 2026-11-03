@@ -188,7 +188,10 @@ export function MyBookings() {
               {status === "pending" && (
                 <div className="mb-4 p-2.5 bg-amber-500/10 border border-amber-500/20 rounded text-[11px] font-mono text-amber-300 flex items-start gap-2">
                   <Clock size={13} className="shrink-0 text-amber-400 mt-0.5" />
-                  <span>DÖK jóváhagyásra vár (értesítés elküldve Discordra).</span>
+                  <div>
+                    <span className="font-semibold block text-amber-200">DÖK felügyeletre vár</span>
+                    <span>Értesítés elküldve Discordra. Ha a kezdés előtt 48 óráig senki nem vállalja, a kérelem automatikusan törlődik és a heti kereted nem csökken.</span>
+                  </div>
                 </div>
               )}
 

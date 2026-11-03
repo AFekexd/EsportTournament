@@ -1464,7 +1464,7 @@ class DiscordService {
                 .setTitle(isPending ? '🎮 Új Gépfoglalási Kérelem (Felügyeletre vár)' : '🎮 Új Gépfoglalás (Jóváhagyva)')
                 .setDescription(
                     isPending
-                        ? 'Egy diák gépfoglalást adott le olyan időpontra, ahol **még nincs kijelölt felügyelő**.\nHa tudsz ügyeletet vállalni, fogadd el az alábbi gombbal, hogy a diák tudjon jönni játszani!'
+                        ? 'Egy diák gépfoglalást adott le olyan időpontra, ahol **még nincs kijelölt felügyelő**.\nHa tudsz ügyeletet vállalni, fogadd el az alábbi gombbal, hogy a diák tudjon jönni játszani!\n*(Ha a kezdés előtt 48 óráig senki nem vállalja, a rendszer automatikusan törli.)*'
                         : 'Új gépfoglalás lett rögzítve. Erre az időszakra a felügyelet már biztosított.'
                 )
                 .setColor(isPending ? 0xF59E0B : 0x10B981)
@@ -1729,7 +1729,7 @@ class DiscordService {
     }
 
     /**
-     * Updates Discord message embed when a pending booking is auto-cancelled (24h before start)
+     * Updates Discord message embed when a pending booking is auto-cancelled (48h before start)
      */
     public async cancelPendingBookingNotification(bookingId: string, discordMessageId?: string | null) {
         if (!this.isReady || !discordMessageId) return;
@@ -1745,7 +1745,7 @@ class DiscordService {
             const updatedEmbed = EmbedBuilder.from(oldEmbed || new EmbedBuilder())
                 .setColor(0xEF4444)
                 .setTitle('❌ Gépfoglalási Kérelem Törölve (Nincs felügyelő)')
-                .setDescription('A foglalás kezdete előtt 24 órával senki sem vállalta a felügyeletet, ezért a kérelem automatikusan törlésre került.')
+                .setDescription('A foglalás kezdete előtt 48 órával senki sem vállalta a felügyeletet, ezért a kérelem automatikusan törlésre került.')
                 .setFields(
                     (oldEmbed?.fields || []).map(f => {
                         if (f.name === '📌 Státusz') {

@@ -41,15 +41,15 @@ export class BookingNotificationService {
 
     /**
      * Checks for pending booking requests where no supervisor volunteered
-     * and the start time is 24 hours or less away.
+     * and the start time is 48 hours or less away.
      * Automatically deletes them and notifies the student and Discord channel.
      */
     static async checkAndAutoCancelPendingBookings() {
         try {
             const now = new Date();
-            const autoCancelThreshold = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+            const autoCancelThreshold = new Date(now.getTime() + 48 * 60 * 60 * 1000);
 
-            // Find all PENDING bookings that start within the next 24 hours (or in past if somehow unprocessed)
+            // Find all PENDING bookings that start within the next 48 hours (or in past if somehow unprocessed)
             const pendingBookings = await prisma.booking.findMany({
                 where: {
                     status: 'PENDING',
@@ -89,10 +89,10 @@ export class BookingNotificationService {
                 });
 
                 // 3. Notify student
-                const message = `A(z) ${booking.computer.name} gépre leadott foglalási kérelmed (${startTimeStr}) automatikusan törölve lett, mivel a kezdés előtti 24 óráig egy DÖK tag sem vállalta a felügyeletet. A heti kereted nem csökkent.`;
+                const message = `A(z) ${booking.computer.name} gépre leadott foglalási kérelmed (${startTimeStr}) automatikusan törölve lett, mivel a kezdés előtti 48 óráig egy DÖK tag sem vállalta a felügyeletet. A heti kereted nem csökkent.`;
                 await this.createNotification(booking.userId, 'BOOKING_CANCELLED', message);
 
-                console.log(`Auto-cancelled pending booking ${booking.id} (no supervisor 24h prior)`);
+                console.log(`Auto-cancelled pending booking ${booking.id} (no supervisor 48h prior)`);
             }
         } catch (error) {
             console.error('Error in checkAndAutoCancelPendingBookings:', error);
@@ -101,7 +101,7 @@ export class BookingNotificationService {
 
     /**
      * Background job that sends reminders 30 minutes before bookings start
-     * and auto-cancels unapproved bookings 24 hours before start.
+     * and auto-cancels unapproved bookings 48 hours before start.
      */
     static async startReminderJob() {
         console.log('Starting Booking Reminder and Auto-Cancel Job...');
@@ -111,7 +111,7 @@ export class BookingNotificationService {
 
         setInterval(async () => {
             try {
-                // Check and auto-cancel pending bookings without supervisor 24h prior
+                // Check and auto-cancel pending bookings without supervisor 48h prior
                 await this.checkAndAutoCancelPendingBookings();
 
                 const now = new Date();

@@ -205,18 +205,18 @@ export function TimeSlotList({
         const isSupervisor = slot.supervisor && user && slot.supervisor.userId === user.id;
 
         // If NO supervisor, booking is allowed (will create PENDING booking request for DÖK)
-        // unless it's within 24 hours (auto-cancelled / too late)
+        // unless it's within 48 hours (auto-cancelled / too late)
         if (!slot.supervisor) {
             const startOfSlot = new Date(selYear, selMonth - 1, selDay, slot.hour, slot.minute, 0, 0);
             const hoursUntilSlot = (startOfSlot.getTime() - now.getTime()) / (1000 * 60 * 60);
 
-            if (hoursUntilSlot < 24 && !isAdminOrTeacher) {
+            if (hoursUntilSlot < 48 && !isAdminOrTeacher) {
                 return {
                     bg: 'bg-muted/10',
                     border: 'border-border/30',
                     text: 'text-muted-foreground',
                     badgeBg: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
-                    label: '24 órán belül nincs felügyelő',
+                    label: '48 órán belül nincs felügyelő',
                     disabled: true,
                     bookable: false,
                 };
@@ -377,12 +377,19 @@ export function TimeSlotList({
                 </div>
             </div>
 
-            {isWeekendRestrictedForMonday && (
+            {isWeekendRestrictedForMonday ? (
                 <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center gap-3 text-amber-300">
                     <AlertCircle size={20} className="shrink-0 text-amber-400" />
                     <p className="text-sm font-mono">
                         <strong>Hétvégi korlátozás:</strong> Szombaton és vasárnap nem lehet hétfőre időpontot foglalni. Kérjük, legkésőbb péntekig add le a hétfői foglalási igényedet!
                     </p>
+                </div>
+            ) : (
+                <div className="mb-4 px-3 py-2 bg-secondary/30 border border-border/40 rounded text-[11px] font-mono text-muted-foreground flex items-center gap-2">
+                    <Clock size={13} className="text-primary shrink-0" />
+                    <span>
+                        <strong>Tudnivaló:</strong> A sárga színű <em>Felügyelet kérése</em> idősávokhoz még nincs beosztva felügyelő. Erre a kezdés előtt legkésőbb 48 órával lehet kérelmet leadni a DÖK felé.
+                    </span>
                 </div>
             )}
 

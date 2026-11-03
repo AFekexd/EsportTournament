@@ -601,9 +601,9 @@ bookingsRouter.post(
 
             if (hasMissingSupervisor) {
                 const hoursUntilStart = (start.getTime() - Date.now()) / (1000 * 60 * 60);
-                if (hoursUntilStart < 24) {
+                if (hoursUntilStart < 48 && !['ADMIN', 'TEACHER'].includes(user.role)) {
                     throw new ApiError(
-                        'Erre az időpontra jelenleg nincs kijelölt DÖK felügyelő. Felügyelet nélküli időpontra legkésőbb 24 órával a kezdés előtt adhatsz le kérelmet.',
+                        'Erre az időpontra jelenleg nincs kijelölt DÖK felügyelő. Felügyelet nélküli időpontra legkésőbb 48 órával a kezdés előtt adhatsz le kérelmet.',
                         400,
                         'SUPERVISOR_REQUEST_TOO_LATE'
                     );
