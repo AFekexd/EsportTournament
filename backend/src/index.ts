@@ -22,6 +22,7 @@ import { statsRouter } from './routes/stats.js';
 import { notificationsRouter } from './routes/notifications.js';
 import { leaderboardsRouter } from './routes/leaderboards.js';
 import { discordRouter } from './routes/discordSettings.js';
+import { discordService } from './services/discordService.js';
 import { bookingsRouter } from './routes/bookings.js';
 import { shareRouter } from './routes/share.js';
 import { BookingNotificationService } from './services/BookingNotificationService.js';
@@ -95,7 +96,11 @@ app.set('io', io);
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    discord: discordService.getStatus(),
+  });
 });
 
 // Rate Limiters to prevent DoS and brute-force
@@ -190,5 +195,17 @@ httpServer.listen(PORT, () => {
   console.log(`🔌 WebSocket server ready`);
   console.log(`Backend restart forced at ${new Date().toISOString()}`);
 });
+
+const gracefulShutdown = async (signal: string) => {
+  console.log(`\n🛑 Received ${signal}, shutting down gracefully...`);
+  await discordService.shutdown();
+  httpServer.close(() => {
+    process.exit(0);
+  });
+  setTimeout(() => process.exit(0), 5000).unref();
+};
+
+process.on('SIGTERM', () => void gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => void gracefulShutdown('SIGINT'));
 
 export default app;

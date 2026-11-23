@@ -66,6 +66,48 @@ const requireAdmin = asyncHandler(async (req: AuthenticatedRequest, _res: Respon
 });
 
 /**
+ * GET /api/admin/discord/status
+ * Get Discord bot connection status
+ */
+adminDiscordRouter.get(
+    '/status',
+    authenticate,
+    requireAdmin,
+    asyncHandler(async (_req: AuthenticatedRequest, res: Response) => {
+        res.json({
+            success: true,
+            data: discordService.getStatus()
+        });
+    })
+);
+
+/**
+ * POST /api/admin/discord/reconnect
+ * Force a clean Discord bot reconnect without restarting the whole backend
+ */
+adminDiscordRouter.post(
+    '/reconnect',
+    authenticate,
+    requireAdmin,
+    asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+        const adminUser = (req as any).adminUser;
+        const result = await discordService.reconnect();
+
+        await logSystemActivity(
+            'DISCORD_RECONNECT',
+            `Admin ${adminUser.username} triggered manual Discord bot reconnect`,
+            { adminId: adminUser.id, metadata: { started: result.started } }
+        );
+
+        res.json({
+            success: result.started,
+            message: result.message,
+            data: discordService.getStatus()
+        });
+    })
+);
+
+/**
  * GET /api/admin/discord/stats
  * Get Discord bot activity statistics
  */

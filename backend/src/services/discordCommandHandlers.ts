@@ -6,11 +6,63 @@
 import {
     ChatInputCommandInteraction,
     EmbedBuilder,
-    ColorResolvable
+    ColorResolvable,
+    PermissionsBitField
 } from 'discord.js';
 import prisma from '../lib/prisma.js';
 
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://esport.pollak.info';
+
+function getSafeImageUrl(url?: string | null): string | null {
+    if (!url) return null;
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('attachment://')) {
+        return url;
+    }
+    return null;
+}
+
+function truncateField(text: string, maxLen: number = 1024): string {
+    if (text.length <= maxLen) return text;
+    return `${text.slice(0, maxLen - 3)}...`;
+}
+
+/**
+ * /ping command - Check bot liveness, Discord WS latency and DB latency
+ */
+export async function handlePingCommand(interaction: ChatInputCommandInteraction): Promise<void> {
+    const start = Date.now();
+    await interaction.deferReply({ ephemeral: true });
+
+    let dbStatus = 'OK';
+    let dbLatencyMs = 0;
+    try {
+        const dbStart = Date.now();
+        await prisma.$queryRaw`SELECT 1`;
+        dbLatencyMs = Date.now() - dbStart;
+    } catch {
+        dbStatus = 'HIBA';
+    }
+
+    const wsPing = Math.round(interaction.client.ws.ping);
+    const totalMs = Date.now() - start;
+    const uptimeSeconds = Math.floor((interaction.client.uptime || 0) / 1000);
+    const hours = Math.floor(uptimeSeconds / 3600);
+    const minutes = Math.floor((uptimeSeconds % 3600) / 60);
+    const seconds = uptimeSeconds % 60;
+
+    const embed = new EmbedBuilder()
+        .setTitle('🏓 Pollák Bot Státusz')
+        .setColor(dbStatus === 'OK' ? 0x22c55e : 0xef4444)
+        .addFields(
+            { name: '📡 Discord WS', value: `${wsPing} ms`, inline: true },
+            { name: '🗄️ Adatbázis', value: dbStatus === 'OK' ? `OK (${dbLatencyMs} ms)` : '❌ Hiba', inline: true },
+            { name: '⏱️ Üzemidő', value: `${hours}ó ${minutes}p ${seconds}mp`, inline: true },
+            { name: '⚡ Válaszidő', value: `${totalMs} ms`, inline: true }
+        )
+        .setTimestamp();
+
+    await interaction.editReply({ embeds: [embed] });
+}
 
 // ========================================
 // USER COMMANDS
@@ -84,7 +136,7 @@ export async function handleStatsCommand(interaction: ChatInputCommandInteractio
 
     const embed = new EmbedBuilder()
         .setTitle(`📊 ${user.displayName || user.username}`)
-        .setThumbnail(avatarUrl)
+        .setThumbnail(getSafeImageUrl(avatarUrl))
         .addFields(
             { name: '🏆 Elo', value: user.elo.toString(), inline: true },
             { name: '⚔️ Meccsek', value: totalMatches.toString(), inline: true },
@@ -98,7 +150,7 @@ export async function handleStatsCommand(interaction: ChatInputCommandInteractio
         .setTimestamp();
 
     if (user.teamMemberships.length > 0) {
-        const teams = user.teamMemberships.map(m => m.team.name).join(', ');
+        const teams = truncateField(user.teamMemberships.map(m => m.team.name).join(', '));
         embed.addFields({ name: '👥 Csapatok', value: teams, inline: false });
     }
 
@@ -227,12 +279,12 @@ export async function handleTeamCommand(interaction: ChatInputCommandInteraction
     const embed = new EmbedBuilder()
         .setTitle(`👥 ${team.name}`)
         .setDescription(team.description || 'Nincs leírás')
-        .setThumbnail(team.logoUrl || null)
+        .setThumbnail(getSafeImageUrl(team.logoUrl))
         .addFields(
             { name: '🏆 Elo', value: team.elo.toString(), inline: true },
             { name: '🎮 Versenyek', value: team._count.tournamentEntries.toString(), inline: true },
             { name: '📅 Létrehozva', value: team.createdAt.toLocaleDateString('hu-HU'), inline: true },
-            { name: `👥 Tagok (${team.members.length})`, value: memberList || 'Nincs tag', inline: false }
+            { name: `👥 Tagok (${team.members.length})`, value: truncateField(memberList || 'Nincs tag'), inline: false }
         )
         .setColor(0x22c55e as ColorResolvable)
         .setTimestamp();
@@ -248,6 +300,11 @@ export async function handleTeamCommand(interaction: ChatInputCommandInteraction
  * /sync-all command - Sync all users (Admin)
  */
 export async function handleSyncAllCommand(interaction: ChatInputCommandInteraction): Promise<void> {
+    if (!interaction.memberPermissions?.has(PermissionsBitField.Flags.Administrator)) {
+        await interaction.reply({ content: '❌ Nincs jogosultságod ehhez a parancshoz.', ephemeral: true });
+        return;
+    }
+
     await interaction.deferReply({ ephemeral: true });
 
     await interaction.editReply('🔄 Szinkronizálás folyamatban...');

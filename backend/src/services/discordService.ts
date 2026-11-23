@@ -23,7 +23,9 @@ import {
     TextInputBuilder,
     TextInputStyle,
     ButtonInteraction,
-    ModalSubmitInteraction
+    ModalSubmitInteraction,
+    ActivityType,
+    Status
 } from 'discord.js';
 import prisma from '../lib/prisma.js';
 import { DISCORD_ROLE_MAP, BASE_VERIFIED_ROLES, GUEST_ROLES } from '../config/discordRoles.js';
@@ -59,9 +61,22 @@ class DiscordService {
     private verificationChannelId: string = DEFAULT_VERIFICATION_CHANNEL_ID;
     private bookingChannelId: string = DEFAULT_BOOKING_CHANNEL_ID;
     private dokRoleId: string = DEFAULT_DOK_ROLE_ID;
+    private botToken: string = '';
+    private loginRetryTimer: NodeJS.Timeout | null = null;
+    private watchdogTimer: NodeJS.Timeout | null = null;
+    private loginAttempt: number = 0;
+    private isFatalAuthError: boolean = false;
+    private disconnectedSince: number | null = null;
+    private lastError: string | null = null;
+    private lastReadyAt: string | null = null;
 
     constructor() {
-        this.client = new Client({
+        this.client = this.createClient();
+        this.initialize();
+    }
+
+    private createClient(): Client {
+        return new Client({
             intents: [
                 GatewayIntentBits.Guilds,
                 GatewayIntentBits.GuildMessages,
@@ -69,41 +84,216 @@ class DiscordService {
                 GatewayIntentBits.MessageContent, // Needed for reading message content
             ],
         });
+    }
 
-        this.initialize();
+    public getStatus() {
+        return {
+            isReady: this.isReady,
+            tag: this.client.user?.tag || null,
+            wsStatus: this.client.ws?.status ?? null,
+            ping: this.isReady ? this.client.ws.ping : null,
+            uptimeSeconds: this.isReady && this.client.uptime ? Math.floor(this.client.uptime / 1000) : 0,
+            lastError: this.lastError,
+            lastReadyAt: this.lastReadyAt,
+            loginAttempt: this.loginAttempt,
+        };
+    }
+
+    private startWatchdog() {
+        if (this.watchdogTimer) return;
+
+        // Every 60s verify the bot isn't stuck in a zombie disconnected state
+        this.watchdogTimer = setInterval(() => {
+            if (!this.botToken || this.isFatalAuthError || this.loginRetryTimer) return;
+
+            const wsReady = this.client.ws?.status === Status.Ready;
+            if (this.isReady && wsReady) {
+                this.disconnectedSince = null;
+                return;
+            }
+
+            if (!this.disconnectedSince) {
+                this.disconnectedSince = Date.now();
+                return;
+            }
+
+            // If stuck not-ready for over 2 minutes, force a fresh login cycle
+            if (Date.now() - this.disconnectedSince > 2 * 60 * 1000) {
+                console.warn('⚠️ Discord watchdog detected stale connection (>2m not ready). Forcing reconnect...');
+                this.disconnectedSince = null;
+                this.scheduleLoginRetry();
+            }
+        }, 60_000);
+    }
+
+    public async reconnect(): Promise<{ started: boolean; message: string }> {
+        if (!this.botToken) {
+            return { started: false, message: 'DISCORD_BOT_TOKEN nincs beállítva' };
+        }
+
+        if (this.loginRetryTimer) {
+            clearTimeout(this.loginRetryTimer);
+            this.loginRetryTimer = null;
+        }
+
+        this.isFatalAuthError = false;
+        this.isReady = false;
+        this.loginAttempt = 0;
+        this.disconnectedSince = null;
+
+        try {
+            await this.client.destroy();
+        } catch {
+            // Ignore destroy errors
+        }
+
+        this.client = this.createClient();
+        this.attachClientListeners();
+        void this.attemptLogin();
+
+        return { started: true, message: 'Discord bot újracsatlakozás elindítva' };
+    }
+
+    public async shutdown() {
+        if (this.loginRetryTimer) {
+            clearTimeout(this.loginRetryTimer);
+            this.loginRetryTimer = null;
+        }
+        if (this.watchdogTimer) {
+            clearInterval(this.watchdogTimer);
+            this.watchdogTimer = null;
+        }
+        this.isReady = false;
+        try {
+            await this.client.destroy();
+            console.log('👋 Discord Bot disconnected gracefully.');
+        } catch (error) {
+            console.error('Error during Discord Bot shutdown:', error);
+        }
+    }
+
+    private attachClientListeners() {
+        this.client.on('error', (error) => {
+            this.lastError = error.message;
+            console.error('❌ Discord client error:', error);
+        });
+
+        this.client.on('shardError', (error, shardId) => {
+            this.lastError = error.message;
+            console.error(`❌ Discord shard ${shardId} error:`, error);
+        });
+
+        this.client.on('shardDisconnect', (event, shardId) => {
+            this.isReady = false;
+            this.disconnectedSince = this.disconnectedSince || Date.now();
+            console.warn(`⚠️ Discord shard ${shardId} disconnected (code: ${event.code}).`);
+        });
+
+        this.client.on('shardReconnecting', (shardId) => {
+            this.isReady = false;
+            this.disconnectedSince = this.disconnectedSince || Date.now();
+            console.log(`🔄 Discord shard ${shardId} reconnecting...`);
+        });
+
+        this.client.on('shardResume', (shardId, replayedEvents) => {
+            this.isReady = true;
+            this.disconnectedSince = null;
+            this.lastError = null;
+            console.log(`✅ Discord shard ${shardId} resumed (replayed ${replayedEvents} events).`);
+        });
+
+        this.client.on('invalidated', () => {
+            this.isReady = false;
+            this.lastError = 'Discord session invalidated';
+            console.error('❌ Discord session invalidated. Scheduling reconnect...');
+            this.scheduleLoginRetry();
+        });
+
+        this.client.once('ready', async () => {
+            console.log(`✅ Discord Bot logged in as ${this.client.user?.tag}`);
+            this.isReady = true;
+            this.disconnectedSince = null;
+            this.loginAttempt = 0;
+            this.lastError = null;
+            this.lastReadyAt = new Date().toISOString();
+
+            this.client.user?.setPresence({
+                status: 'online',
+                activities: [{ name: 'esport.pollak.info', type: ActivityType.Watching }],
+            });
+
+            await this.ensureVerificationMessage();
+            await this.registerCommands(this.botToken, this.guildId);
+        });
+
+        this.setupInteractionHandler();
+        this.setupGuildMemberAdd();
+        this.setupMessageMonitor();
+    }
+
+    private scheduleLoginRetry() {
+        if (this.loginRetryTimer || !this.botToken || this.isFatalAuthError) return;
+
+        this.loginAttempt += 1;
+        const delayMs = Math.min(5000 * Math.pow(2, this.loginAttempt - 1), 60000);
+        console.warn(`🔄 Retrying Discord login in ${Math.round(delayMs / 1000)}s (attempt #${this.loginAttempt})...`);
+
+        this.loginRetryTimer = setTimeout(async () => {
+            this.loginRetryTimer = null;
+            try {
+                await this.client.destroy();
+            } catch {
+                // Ignore destroy errors on partially initialized client
+            }
+            this.client = this.createClient();
+            this.attachClientListeners();
+            await this.attemptLogin();
+        }, delayMs);
+    }
+
+    private async attemptLogin() {
+        try {
+            await this.client.login(this.botToken);
+        } catch (error: any) {
+            this.isReady = false;
+            this.lastError = error?.message || String(error);
+            console.error('❌ Failed to login to Discord:', error);
+
+            const code = error?.code;
+            const isFatalAuthError =
+                code === 'TokenInvalid' ||
+                code === 'DisallowedIntents' ||
+                /invalid token|disallowed intents/i.test(this.lastError || '');
+
+            if (isFatalAuthError) {
+                this.isFatalAuthError = true;
+                console.error('🛑 Fatal Discord auth/intent error detected. Automatic retry stopped.');
+                return;
+            }
+
+            this.scheduleLoginRetry();
+        }
     }
 
     private async initialize() {
         const { DISCORD_BOT_TOKEN, DISCORD_GUILD_ID, DISCORD_CATEGORY_ID, DISCORD_VERIFICATION_CHANNEL_ID, DISCORD_BOOKING_CHANNEL_ID, DISCORD_DOK_ROLE_ID } = process.env;
 
         if (!DISCORD_BOT_TOKEN || !DISCORD_GUILD_ID) {
+            this.lastError = 'DISCORD_BOT_TOKEN or DISCORD_GUILD_ID not configured';
             console.warn('⚠️ Discord Bot Token or Guild ID not configured. Discord service disabled.');
             return;
         }
 
+        this.botToken = DISCORD_BOT_TOKEN;
         this.guildId = DISCORD_GUILD_ID;
         this.categoryId = DISCORD_CATEGORY_ID || '';
         this.verificationChannelId = DISCORD_VERIFICATION_CHANNEL_ID || DEFAULT_VERIFICATION_CHANNEL_ID;
         this.bookingChannelId = DISCORD_BOOKING_CHANNEL_ID || DEFAULT_BOOKING_CHANNEL_ID;
         this.dokRoleId = DISCORD_DOK_ROLE_ID || DEFAULT_DOK_ROLE_ID;
 
-        this.client.once('ready', async () => {
-            console.log(`✅ Discord Bot logged in as ${this.client.user?.tag}`);
-            this.isReady = true;
-            this.setupInteractionHandler();
-            this.setupGuildMemberAdd();
-            this.setupMessageMonitor();
-            await this.ensureVerificationMessage();
-
-            // Register Slash Command
-            await this.registerCommands(DISCORD_BOT_TOKEN, DISCORD_GUILD_ID);
-        });
-
-        try {
-            await this.client.login(DISCORD_BOT_TOKEN);
-        } catch (error) {
-            console.error('❌ Failed to login to Discord:', error);
-        }
+        this.attachClientListeners();
+        this.startWatchdog();
+        await this.attemptLogin();
     }
 
     private async registerCommands(token: string, guildId: string) {
@@ -154,6 +344,11 @@ class DiscordService {
                         .setDescription('Csapat neve')
                         .setRequired(true)),
 
+            // Utility commands
+            new SlashCommandBuilder()
+                .setName('ping')
+                .setDescription('Bot állapotának és válaszidejének ellenőrzése'),
+
             // Admin commands
             new SlashCommandBuilder()
                 .setName('sync-all')
@@ -179,61 +374,76 @@ class DiscordService {
 
     private setupInteractionHandler() {
         this.client.on('interactionCreate', async (interaction: Interaction<CacheType>) => {
-            if (interaction.isButton()) {
-                if (interaction.customId.startsWith('booking_approve_')) {
-                    const bookingId = interaction.customId.replace('booking_approve_', '');
-                    await this.handleBookingApproval(interaction as ButtonInteraction, bookingId);
+            try {
+                if (interaction.isButton()) {
+                    if (interaction.customId.startsWith('booking_approve_')) {
+                        const bookingId = interaction.customId.replace('booking_approve_', '');
+                        await this.handleBookingApproval(interaction as ButtonInteraction, bookingId);
+                        return;
+                    } else if (interaction.customId.startsWith('booking_reject_') || interaction.customId.startsWith('booking_decline_')) {
+                        const bookingId = interaction.customId.replace('booking_reject_', '').replace('booking_decline_', '');
+                        await this.handleBookingDecline(interaction as ButtonInteraction, bookingId);
+                        return;
+                    } else if (interaction.customId.startsWith('toggle_role_')) {
+                        const roleName = interaction.customId.replace('toggle_role_', '');
+                        await this.handleRoleToggle(interaction, roleName);
+                    } else if (interaction.customId === 'verify_button') {
+                        await this.handleVerifyButton(interaction);
+                    }
                     return;
-                } else if (interaction.customId.startsWith('booking_reject_') || interaction.customId.startsWith('booking_decline_')) {
-                    const bookingId = interaction.customId.replace('booking_reject_', '').replace('booking_decline_', '');
-                    await this.handleBookingDecline(interaction as ButtonInteraction, bookingId);
+                }
+
+                if (interaction.isModalSubmit()) {
+                    if (interaction.customId === 'verify_modal') {
+                        await this.handleVerifyModal(interaction);
+                    }
                     return;
-                } else if (interaction.customId.startsWith('toggle_role_')) {
-                    const roleName = interaction.customId.replace('toggle_role_', '');
-                    await this.handleRoleToggle(interaction, roleName);
-                } else if (interaction.customId === 'verify_button') {
-                    await this.handleVerifyButton(interaction);
                 }
-                return;
-            }
 
-            if (interaction.isModalSubmit()) {
-                if (interaction.customId === 'verify_modal') {
-                    await this.handleVerifyModal(interaction);
+                if (interaction.isChatInputCommand()) {
+                    // Log command usage
+                    const { discordLogService } = await import('./discordLogService.js');
+                    await discordLogService.logCommand(interaction.commandName, interaction.user.id);
+
+                    switch (interaction.commandName) {
+                        case 'om':
+                            await this.handleOmCommand(interaction);
+                            break;
+                        case 'recheck':
+                            await this.handleRecheckCommand(interaction);
+                            break;
+                        case 'deploy-verify':
+                            await this.handleDeployVerify(interaction);
+                            break;
+                        case 'stats':
+                            await CommandHandlers.handleStatsCommand(interaction);
+                            break;
+                        case 'leaderboard':
+                            await CommandHandlers.handleLeaderboardCommand(interaction);
+                            break;
+                        case 'tournament':
+                            await CommandHandlers.handleTournamentCommand(interaction);
+                            break;
+                        case 'team':
+                            await CommandHandlers.handleTeamCommand(interaction);
+                            break;
+                        case 'ping':
+                            await CommandHandlers.handlePingCommand(interaction);
+                            break;
+                        case 'sync-all':
+                            await CommandHandlers.handleSyncAllCommand(interaction);
+                            break;
+                    }
                 }
-                return;
-            }
-
-            if (interaction.isChatInputCommand()) {
-                // Log command usage
-                const { discordLogService } = await import('./discordLogService.js');
-                await discordLogService.logCommand(interaction.commandName, interaction.user.id);
-
-                switch (interaction.commandName) {
-                    case 'om':
-                        await this.handleOmCommand(interaction);
-                        break;
-                    case 'recheck':
-                        await this.handleRecheckCommand(interaction);
-                        break;
-                    case 'deploy-verify':
-                        await this.handleDeployVerify(interaction);
-                        break;
-                    case 'stats':
-                        await CommandHandlers.handleStatsCommand(interaction);
-                        break;
-                    case 'leaderboard':
-                        await CommandHandlers.handleLeaderboardCommand(interaction);
-                        break;
-                    case 'tournament':
-                        await CommandHandlers.handleTournamentCommand(interaction);
-                        break;
-                    case 'team':
-                        await CommandHandlers.handleTeamCommand(interaction);
-                        break;
-                    case 'sync-all':
-                        await CommandHandlers.handleSyncAllCommand(interaction);
-                        break;
+            } catch (error) {
+                console.error('❌ Unhandled error in Discord interactionCreate:', error);
+                if (interaction.isRepliable()) {
+                    const errorMsg = '❌ Váratlan hiba történt a művelet közben. Kérlek próbáld újra később!';
+                    if (interaction.deferred || interaction.replied) {
+                        await interaction.followUp({ content: errorMsg, ephemeral: true }).catch(() => {});
+                    } else {
+                        await interaction.reply({ content: errorMsg, ephemeral: true }).catch(() => {});
+                    }
                 }
             }
         });
@@ -241,28 +451,34 @@ class DiscordService {
 
     private setupGuildMemberAdd() {
         this.client.on('guildMemberAdd', async (member) => {
-            const welcomeChannel = member.guild.channels.cache.find(c => c.name === 'general' || c.name === 'csevegő' || c.name === 'hirdetmények') as TextChannel;
-            if (welcomeChannel) {
-                await welcomeChannel.send(`Üdvözöllek ${member.toString()}! Kérlek igazold magad az OM azonosítóddal a hitelesítő csatornában található **Fiók összekapcsolása** gombbal.`);
-            }
+            try {
+                const welcomeChannel = member.guild.channels.cache.find(c => c.name === 'general' || c.name === 'csevegő' || c.name === 'hirdetmények') as TextChannel;
+                if (welcomeChannel) {
+                    await welcomeChannel.send(`Üdvözöllek ${member.toString()}! Kérlek igazold magad az OM azonosítóddal a hitelesítő csatornában található **Fiók összekapcsolása** gombbal.`).catch(err => {
+                        console.error('Failed to send welcome message:', err);
+                    });
+                }
 
-            // Auto-assign Guest Roles
-            if (!member.user.bot) { // Don't assign to bots automatically unless intended
-                const allRoles = await member.guild.roles.fetch();
+                // Auto-assign Guest Roles
+                if (!member.user.bot) { // Don't assign to bots automatically unless intended
+                    const allRoles = await member.guild.roles.fetch();
 
-                for (const roleName of GUEST_ROLES) {
-                    const role = allRoles.find(r => r.name.toLowerCase() === roleName.toLowerCase());
-                    if (role) {
-                        try {
-                            await member.roles.add(role);
-                            console.log(`✅ Assigned role ${roleName} to new member ${member.user.tag}`);
-                        } catch (err) {
-                            console.error(`Failed to assign role ${roleName} to ${member.user.tag}:`, err);
+                    for (const roleName of GUEST_ROLES) {
+                        const role = allRoles.find(r => r.name.toLowerCase() === roleName.toLowerCase());
+                        if (role) {
+                            try {
+                                await member.roles.add(role);
+                                console.log(`✅ Assigned role ${roleName} to new member ${member.user.tag}`);
+                            } catch (err) {
+                                console.error(`Failed to assign role ${roleName} to ${member.user.tag}:`, err);
+                            }
+                        } else {
+                            console.warn(`Role ${roleName} not found for auto-assignment.`);
                         }
-                    } else {
-                        console.warn(`Role ${roleName} not found for auto-assignment.`);
                     }
                 }
+            } catch (error) {
+                console.error(`Failed to handle guildMemberAdd for ${member.user?.tag}:`, error);
             }
         });
     }
@@ -501,9 +717,10 @@ class DiscordService {
         await this.processVerification(interaction, omId);
     }
 
-    private async processVerification(interaction: ChatInputCommandInteraction | ModalSubmitInteraction, omId: string) {
-        // Basic validation
-        if (omId.length !== 11) { // Strict 11 chars
+    private async processVerification(interaction: ChatInputCommandInteraction | ModalSubmitInteraction, rawOmId: string) {
+        const omId = rawOmId.trim();
+        // Basic validation: strictly 11 digits
+        if (!/^\d{11}$/.test(omId)) {
             await interaction.editReply('❌ Az oktatási azonosítónak pontosan 11 számjegyből kell állnia.');
             return;
         }
@@ -822,32 +1039,48 @@ class DiscordService {
         }
     }
 
-    private async handleRoleToggle(interaction: any, roleName: string) {
+    private async handleRoleToggle(interaction: ButtonInteraction, roleName: string) {
         try {
-            const guild = await this.client.guilds.fetch(this.guildId);
-            if (!guild) return;
+            await interaction.deferReply({ ephemeral: true });
 
-            // Find role by name (case insensitive)
-            const role = guild.roles.cache.find(r => r.name.toLowerCase() === roleName.toLowerCase());
+            const guild = await this.client.guilds.fetch(this.guildId);
+            if (!guild) {
+                await interaction.editReply('❌ A szerver jelenleg nem elérhető.');
+                return;
+            }
+
+            // Find role by name (case insensitive), fetching if not in cache
+            let role = guild.roles.cache.find(r => r.name.toLowerCase() === roleName.toLowerCase());
+            if (!role) {
+                const roles = await guild.roles.fetch();
+                role = roles.find(r => r.name.toLowerCase() === roleName.toLowerCase());
+            }
 
             if (!role) {
-                await interaction.reply({ content: '❌ A kért rang nem található.', ephemeral: true });
+                await interaction.editReply('❌ A kért rang nem található.');
                 return;
             }
 
             const member = await guild.members.fetch(interaction.user.id);
-            if (!member) return;
+            if (!member) {
+                await interaction.editReply('❌ Nem sikerült lekérni a szerver-tagságodat.');
+                return;
+            }
 
             if (member.roles.cache.has(role.id)) {
                 await member.roles.remove(role);
-                await interaction.reply({ content: `✅ Eltávolítva a(z) **${role.name}** értesítés.`, ephemeral: true });
+                await interaction.editReply(`✅ Eltávolítva a(z) **${role.name}** értesítés.`);
             } else {
                 await member.roles.add(role);
-                await interaction.reply({ content: `✅ Feliratkozva a(z) **${role.name}** értesítésekre!`, ephemeral: true });
+                await interaction.editReply(`✅ Feliratkozva a(z) **${role.name}** értesítésekre!`);
             }
         } catch (error) {
             console.error('Failed to toggle role:', error);
-            await interaction.reply({ content: '❌ Hiba történt a rang módosítása közben.', ephemeral: true });
+            if (interaction.deferred || interaction.replied) {
+                await interaction.editReply('❌ Hiba történt a rang módosítása közben.').catch(() => {});
+            } else {
+                await interaction.reply({ content: '❌ Hiba történt a rang módosítása közben.', ephemeral: true }).catch(() => {});
+            }
         }
     }
 
@@ -1224,7 +1457,7 @@ class DiscordService {
                 { name: 'Játék', value: tournament.game, inline: true },
                 { name: 'Kezdés', value: tournament.startDate.toLocaleDateString('hu-HU'), inline: true },
                 { name: 'Max csapatok', value: tournament.maxTeams.toString(), inline: true },
-                { name: 'Link', value: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/tournaments/${tournament.id}`, inline: false },
+                { name: 'Link', value: `${process.env.FRONTEND_URL || 'https://esport.pollak.info'}/tournaments/${tournament.id}`, inline: false },
             ],
             image: tournament.imageUrl ? { url: tournament.imageUrl } : undefined,
             timestamp: new Date().toISOString(),
@@ -1614,7 +1847,7 @@ class DiscordService {
             });
 
             const oldEmbed = interaction.message.embeds[0];
-            const updatedEmbed = EmbedBuilder.from(oldEmbed)
+            const updatedEmbed = EmbedBuilder.from(oldEmbed || new EmbedBuilder())
                 .setColor(0x22C55E)
                 .setTitle(`🎮 Gépfoglalás Jóváhagyva (Lesz felügyelet)`)
                 .setFields(
@@ -1647,7 +1880,7 @@ class DiscordService {
 
         } catch (error) {
             console.error('Error handling booking approval:', error);
-            await interaction.followUp({ content: '❌ Hiba történt a jóváhagyás során.', ephemeral: true });
+            await interaction.followUp({ content: '❌ Hiba történt a jóváhagyás során.', ephemeral: true }).catch(() => {});
         }
     }
 
@@ -1709,7 +1942,7 @@ class DiscordService {
                 });
             }
 
-            const updatedEmbed = EmbedBuilder.from(oldEmbed)
+            const updatedEmbed = EmbedBuilder.from(oldEmbed || new EmbedBuilder())
                 .setFields(existingFields);
 
             await interaction.message.edit({
@@ -1724,7 +1957,7 @@ class DiscordService {
 
         } catch (error) {
             console.error('Error handling booking decline:', error);
-            await interaction.followUp({ content: '❌ Hiba történt a művelet során.', ephemeral: true });
+            await interaction.followUp({ content: '❌ Hiba történt a művelet során.', ephemeral: true }).catch(() => {});
         }
     }
 
@@ -1760,7 +1993,7 @@ class DiscordService {
                 );
 
             await message.edit({
-                content: '⚠️ **A foglalási kérelem törölve lett:** Nem jelentkezett DÖK felügyelő a kezdést megelőző 24 óráig.',
+                content: '⚠️ **A foglalási kérelem törölve lett:** Nem jelentkezett DÖK felügyelő a kezdést megelőző 48 óráig.',
                 embeds: [updatedEmbed],
                 components: []
             });
